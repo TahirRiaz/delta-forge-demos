@@ -2,7 +2,7 @@
 -- Sales Data Quickstart — Demo Setup Script
 -- ============================================================================
 -- A minimal demo to get started with Delta Forge in under 2 minutes.
--- Creates a zone, schema, role, and two small sales tables.
+-- Creates a zone, schema, and two small sales tables.
 --
 -- Variables (auto-injected by Delta Forge):
 --   {{data_path}}     — Local path where demo data files were downloaded
@@ -11,9 +11,7 @@
 -- What this script does:
 --   1. Creates the 'external' zone (shared across all demos)
 --   2. Creates the 'external.csv' schema (named after the file format)
---   3. Creates a 'sales_reader' role with SELECT access
---   4. Creates 2 external tables from CSV files
---   5. Grants the sales_reader role to the current user
+--   3. Creates 2 external tables from CSV files
 --
 -- Naming convention: external.format.table
 --   zone   = 'external'  (all external/demo tables live here)
@@ -44,17 +42,7 @@ CREATE SCHEMA IF NOT EXISTS external.csv
 
 
 -- ============================================================================
--- STEP 3: Role & Permissions Setup
--- ============================================================================
-
-CREATE ROLE IF NOT EXISTS sales_reader
-    COMMENT 'Read-only access to sales quickstart data';
-
-GRANT USAGE ON SCHEMA external.csv TO ROLE sales_reader;
-
-
--- ============================================================================
--- STEP 4: External Tables
+-- STEP 3: External Tables
 -- ============================================================================
 
 -- SALES — 10 sales transactions across 4 regions
@@ -74,18 +62,3 @@ LOCATION '{{data_path}}/sales_extended.csv'
 OPTIONS (
     header = 'true'
 );
-
-
--- ============================================================================
--- STEP 5: Table Permissions
--- ============================================================================
-
-GRANT SELECT ON TABLE external.csv.sales TO ROLE sales_reader;
-GRANT SELECT ON TABLE external.csv.sales_extended TO ROLE sales_reader;
-
-
--- ============================================================================
--- STEP 6: Assign Role to Current User
--- ============================================================================
-
-GRANT ROLE sales_reader TO USER {{current_user}};
