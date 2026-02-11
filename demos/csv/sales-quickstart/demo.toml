@@ -5,11 +5,11 @@ version = "1.0.0"
 author = "Delta Forge Team"
 description = """
 A minimal demo to get started with Delta Forge in under 2 minutes. \
-Creates a workspace, schema, and role with two small CSV tables — \
+Creates external tables with a role and two small CSV tables — \
 perfect for learning basic queries, filtering, aggregations, and RBAC.
 """
 category = "Getting Started"
-tags = ["csv", "beginner", "quickstart", "sales", "workspace", "rbac"]
+tags = ["csv", "beginner", "quickstart", "sales", "rbac"]
 difficulty = "beginner"
 estimated_time_minutes = 2
 

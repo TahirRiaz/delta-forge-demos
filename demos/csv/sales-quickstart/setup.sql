@@ -9,18 +9,21 @@
 --   {{current_user}}  — Username of the current logged-in user
 --
 -- What this script does:
---   1. Creates the 'sales' zone
---   2. Creates the 'sales.demo' schema
+--   1. Creates the 'external' zone (shared across all demos)
+--   2. Creates the 'external.csv' schema (named after the file format)
 --   3. Creates a 'sales_reader' role with SELECT access
 --   4. Creates 2 external tables from CSV files
 --   5. Grants the sales_reader role to the current user
 --
--- All objects use fully qualified 3-part names: zone.schema.table
+-- Naming convention: external.format.table
+--   zone   = 'external'  (all external/demo tables live here)
+--   schema = 'csv'       (the file format)
+--   table  = object name
 --
 -- After running, try these queries:
---   SELECT * FROM sales.demo.sales;
+--   SELECT * FROM external.csv.sales;
 --   SELECT region, SUM(quantity * unit_price) AS revenue
---   FROM sales.demo.sales GROUP BY region ORDER BY revenue DESC;
+--   FROM external.csv.sales GROUP BY region ORDER BY revenue DESC;
 -- ============================================================================
 
 
@@ -28,16 +31,16 @@
 -- STEP 1: Zone
 -- ============================================================================
 
-CREATE ZONE IF NOT EXISTS sales
-    COMMENT 'Sales Data Quickstart — minimal demo for learning basic queries';
+CREATE ZONE IF NOT EXISTS external
+    COMMENT 'External tables — demo datasets and file-backed data';
 
 
 -- ============================================================================
 -- STEP 2: Schema
 -- ============================================================================
 
-CREATE SCHEMA IF NOT EXISTS sales.demo
-    COMMENT 'Sales transaction data for quickstart demo';
+CREATE SCHEMA IF NOT EXISTS external.csv
+    COMMENT 'CSV-backed external tables';
 
 
 -- ============================================================================
@@ -47,7 +50,7 @@ CREATE SCHEMA IF NOT EXISTS sales.demo
 CREATE ROLE IF NOT EXISTS sales_reader
     COMMENT 'Read-only access to sales quickstart data';
 
-GRANT USAGE ON SCHEMA sales.demo TO ROLE sales_reader;
+GRANT USAGE ON SCHEMA external.csv TO ROLE sales_reader;
 
 
 -- ============================================================================
@@ -56,7 +59,7 @@ GRANT USAGE ON SCHEMA sales.demo TO ROLE sales_reader;
 
 -- SALES — 10 sales transactions across 4 regions
 -- Columns: id, product_name, quantity, unit_price, sale_date, region
-CREATE EXTERNAL TABLE IF NOT EXISTS sales.demo.sales
+CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.sales
 USING CSV
 LOCATION '{{data_path}}/sales.csv'
 OPTIONS (
@@ -65,7 +68,7 @@ OPTIONS (
 
 -- SALES_EXTENDED — Extended sales record with additional demo flag column
 -- Columns: id, product_name, quantity, unit_price, sale_date, region, demo
-CREATE EXTERNAL TABLE IF NOT EXISTS sales.demo.sales_extended
+CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.sales_extended
 USING CSV
 LOCATION '{{data_path}}/sales_extended.csv'
 OPTIONS (
@@ -77,8 +80,8 @@ OPTIONS (
 -- STEP 5: Table Permissions
 -- ============================================================================
 
-GRANT SELECT ON TABLE sales.demo.sales TO ROLE sales_reader;
-GRANT SELECT ON TABLE sales.demo.sales_extended TO ROLE sales_reader;
+GRANT SELECT ON TABLE external.csv.sales TO ROLE sales_reader;
+GRANT SELECT ON TABLE external.csv.sales_extended TO ROLE sales_reader;
 
 
 -- ============================================================================

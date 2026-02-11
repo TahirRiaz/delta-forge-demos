@@ -2,30 +2,38 @@
 
 ## Overview
 
-A minimal demo to get started with Delta Forge in under 2 minutes. Creates a
-workspace, schema, and role with two small CSV tables — perfect for learning
-basic queries, filtering, aggregations, and role-based access control.
+A minimal demo to get started with Delta Forge in under 2 minutes. Creates
+external tables with a role — perfect for learning basic queries, filtering,
+aggregations, and role-based access control.
 
 ## What This Demo Sets Up
 
 ### Infrastructure
 
 | Resource | Name | Description |
-|----------|------|-------------|
-| Workspace | `sales_quickstart` | Isolated namespace for sales demo data |
-| Schema | `transactions` | Contains sales transaction tables |
-| Role | `sales_reader` | Read-only access to all sales data |
+| -------- | ---- | ----------- |
+| Zone | `external` | Shared namespace for all external/demo tables |
+| Schema | `csv` | CSV-backed external tables |
+| Role | `sales_reader` | Read-only access to sales data |
 
-### Tables Created (in `transactions` schema)
+### Naming Convention
+
+All objects use 3-part fully qualified names: `external.format.table`
+
+- **Zone** = `external` (shared across all demos)
+- **Schema** = `csv` (the file format)
+- **Table** = object name (e.g. `sales`, `sales_extended`)
+
+### Tables Created (in `external.csv` schema)
 
 | Table | Records | Description |
-|-------|---------|-------------|
-| `sales_quickstart.transactions.sales` | 10 | Sales transactions with product, quantity, price, date, and region |
-| `sales_quickstart.transactions.sales_extended` | 1 | Extended sales record with additional demo flag column |
+| ----- | ------- | ----------- |
+| `external.csv.sales` | 10 | Sales transactions with product, quantity, price, date, and region |
+| `external.csv.sales_extended` | 1 | Extended sales record with additional demo flag column |
 
 ### Permissions Granted
 
-- `sales_reader` role gets `USAGE` on workspace and schema
+- `sales_reader` role gets `USAGE` on the `external.csv` schema
 - `sales_reader` role gets `SELECT` on both tables
 - The role is automatically assigned to the user who installs the demo
 
@@ -33,17 +41,17 @@ basic queries, filtering, aggregations, and role-based access control.
 
 ```sql
 -- View all sales
-SELECT * FROM sales_quickstart.transactions.sales;
+SELECT * FROM external.csv.sales;
 
 -- Total revenue by region
 SELECT region, SUM(quantity * unit_price) AS revenue
-FROM sales_quickstart.transactions.sales
+FROM external.csv.sales
 GROUP BY region
 ORDER BY revenue DESC;
 
 -- Average order value by product
 SELECT product_name, AVG(unit_price * quantity) AS avg_value
-FROM sales_quickstart.transactions.sales
+FROM external.csv.sales
 GROUP BY product_name
 ORDER BY avg_value DESC;
 ```
