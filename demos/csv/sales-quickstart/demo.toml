@@ -1,0 +1,29 @@
+[demo]
+id = "sales-quickstart"
+name = "Sales Data Quickstart"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+A minimal demo to get started with Delta Forge in under 2 minutes. \
+Creates a workspace, schema, and role with two small CSV tables — \
+perfect for learning basic queries, filtering, aggregations, and RBAC.
+"""
+category = "Getting Started"
+tags = ["csv", "beginner", "quickstart", "sales", "workspace", "rbac"]
+difficulty = "beginner"
+estimated_time_minutes = 2
+
+[demo.variables]
+data_path = { description = "Root path where demo data files are stored", required = true }
+
+[[demo.data_files]]
+path = "data/sales.csv"
+format = "csv"
+description = "Sales transactions (10 records)"
+size_bytes = 512
+
+[[demo.data_files]]
+path = "data/sales_extended.csv"
+format = "csv"
+description = "Extended sales with demo flag (1 record)"
+size_bytes = 256

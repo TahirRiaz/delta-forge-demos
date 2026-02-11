@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-11T12:00:00Z",
+  "demos": [
+    {
+      "id": "northwind-database",
+      "path": "demos/csv/northwind-database",
+      "name": "Northwind Trading Company",
+      "summary": "Classic relational database with customers, orders, products, employees, and suppliers. 13 interconnected tables demonstrating joins, aggregations, and business analytics.",
+      "category": "Retail",
+      "tags": ["csv", "relational", "joins", "analytics", "northwind", "orders", "products"],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 512000,
+      "fileCount": 11,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-11T12:00:00Z"
+    },
+    {
+      "id": "sales-quickstart",
+      "path": "demos/csv/sales-quickstart",
+      "name": "Sales Data Quickstart",
+      "summary": "Minimal sales dataset to get started quickly. Two CSV files showing basic queries, filtering, and aggregations.",
+      "category": "Getting Started",
+      "tags": ["csv", "beginner", "quickstart", "sales"],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 2,
+      "dataSizeBytes": 2048,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-11T12:00:00Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "getting-started",
+      "name": "Getting Started",
+      "icon": "rocket",
+      "description": "Quick introductory demos to learn Delta Forge basics"
+    },
+    {
+      "id": "retail",
+      "name": "Retail & E-Commerce",
+      "icon": "shopping-cart",
+      "description": "Retail analytics, order management, and supply chain demos"
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare",
+      "icon": "heart",
+      "description": "Healthcare data demos with FHIR, HL7, and clinical datasets"
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "icon": "dollar-sign",
+      "description": "Financial data, transactions, and reporting demos"
+    },
+    {
+      "id": "iot",
+      "name": "IoT & Sensors",
+      "icon": "cpu",
+      "description": "IoT telemetry, sensor data, and time-series demos"
+    }
+  ]
+}
