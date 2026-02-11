@@ -20,8 +20,8 @@ basic queries, filtering, aggregations, and role-based access control.
 
 | Table | Records | Description |
 |-------|---------|-------------|
-| `transactions.sales` | 10 | Sales transactions with product, quantity, price, date, and region |
-| `transactions.sales_extended` | 1 | Extended sales record with additional demo flag column |
+| `sales_quickstart.transactions.sales` | 10 | Sales transactions with product, quantity, price, date, and region |
+| `sales_quickstart.transactions.sales_extended` | 1 | Extended sales record with additional demo flag column |
 
 ### Permissions Granted
 
@@ -33,17 +33,17 @@ basic queries, filtering, aggregations, and role-based access control.
 
 ```sql
 -- View all sales
-SELECT * FROM transactions.sales;
+SELECT * FROM sales_quickstart.transactions.sales;
 
 -- Total revenue by region
 SELECT region, SUM(quantity * unit_price) AS revenue
-FROM transactions.sales
+FROM sales_quickstart.transactions.sales
 GROUP BY region
 ORDER BY revenue DESC;
 
 -- Average order value by product
 SELECT product_name, AVG(unit_price * quantity) AS avg_value
-FROM transactions.sales
+FROM sales_quickstart.transactions.sales
 GROUP BY product_name
 ORDER BY avg_value DESC;
 ```
