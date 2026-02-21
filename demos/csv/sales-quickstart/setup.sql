@@ -69,7 +69,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.sales
 USING CSV
 LOCATION '{{data_path}}/sales*.csv'
 OPTIONS (
-    header = 'true'
+    header = 'true',
+    file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
 
 
