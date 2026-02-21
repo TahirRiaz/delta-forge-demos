@@ -10,38 +10,24 @@
 
 
 -- ============================================================================
--- STEP 1: Revoke Role from User
+-- STEP 1: Revoke Table Permissions
 -- ============================================================================
 
-REVOKE ROLE northwind_reader FROM USER {{current_user}};
-
-
--- ============================================================================
--- STEP 2: Revoke Table Permissions
--- ============================================================================
-
-REVOKE SELECT ON TABLE external.csv.customers FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.employees FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.orders FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.order_details FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.products FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.categories FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.suppliers FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.shippers FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.regions FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.territories FROM ROLE northwind_reader;
-REVOKE SELECT ON TABLE external.csv.employee_territories FROM ROLE northwind_reader;
+REVOKE READ ON TABLE external.csv.customers FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.employees FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.orders FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.order_details FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.products FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.categories FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.suppliers FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.shippers FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.regions FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.territories FROM USER {{current_user}};
+REVOKE READ ON TABLE external.csv.employee_territories FROM USER {{current_user}};
 
 
 -- ============================================================================
--- STEP 3: Revoke Schema Permission
--- ============================================================================
-
-REVOKE USAGE ON SCHEMA external.csv FROM ROLE northwind_reader;
-
-
--- ============================================================================
--- STEP 4: Drop Schema Columns
+-- STEP 2: Drop Schema Columns
 -- ============================================================================
 
 DROP SCHEMA COLUMNS FOR TABLE external.csv.customers;
@@ -58,7 +44,7 @@ DROP SCHEMA COLUMNS FOR TABLE external.csv.employee_territories;
 
 
 -- ============================================================================
--- STEP 5: Drop External Tables
+-- STEP 3: Drop External Tables
 -- ============================================================================
 
 DROP EXTERNAL TABLE IF EXISTS external.csv.employee_territories;
@@ -75,21 +61,14 @@ DROP EXTERNAL TABLE IF EXISTS external.csv.customers;
 
 
 -- ============================================================================
--- STEP 6: Drop Role
--- ============================================================================
-
-DROP ROLE IF EXISTS northwind_reader;
-
-
--- ============================================================================
--- STEP 7: Drop Schema
+-- STEP 4: Drop Schema
 -- ============================================================================
 
 DROP SCHEMA IF EXISTS external.csv;
 
 
 -- ============================================================================
--- STEP 8: Drop Zone
+-- STEP 5: Drop Zone
 -- ============================================================================
 
 DROP ZONE IF EXISTS external;

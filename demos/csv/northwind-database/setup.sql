@@ -11,10 +11,9 @@
 -- What this script does:
 --   1. Creates the 'external' zone (shared across all demos)
 --   2. Creates the 'external.csv' schema (named after the file format)
---   3. Creates a 'northwind_reader' role with SELECT access
---   4. Creates 11 external tables from semicolon-delimited CSV files
---   5. Detects schema for all tables
---   6. Grants the northwind_reader role to the current user
+--   3. Creates 11 external tables from semicolon-delimited CSV files
+--   4. Detects schema for all tables
+--   5. Grants read access on each table to the current user
 --
 -- See queries.sql for cross-table demo queries.
 --
@@ -43,17 +42,7 @@ CREATE SCHEMA IF NOT EXISTS external.csv
 
 
 -- ============================================================================
--- STEP 3: Role & Schema Permissions
--- ============================================================================
-
-CREATE ROLE IF NOT EXISTS northwind_reader
-    COMMENT 'Read-only access to Northwind trading data';
-
-GRANT USAGE ON SCHEMA external.csv TO ROLE northwind_reader;
-
-
--- ============================================================================
--- STEP 4: External Tables
+-- STEP 3: External Tables
 -- ============================================================================
 -- Each table reads from a semicolon-delimited CSV file. All names are fully
 -- qualified: external.csv.<table_name>
@@ -160,7 +149,7 @@ OPTIONS (
 
 
 -- ============================================================================
--- STEP 5: Detect Schema
+-- STEP 4: Detect Schema
 -- ============================================================================
 -- Discovers column metadata from the CSV files and saves it to the catalog.
 
@@ -178,24 +167,17 @@ DETECT SCHEMA FOR TABLE external.csv.employee_territories;
 
 
 -- ============================================================================
--- STEP 6: Table Permissions
+-- STEP 5: Table Permissions
 -- ============================================================================
 
-GRANT SELECT ON TABLE external.csv.customers TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.employees TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.orders TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.order_details TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.products TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.categories TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.suppliers TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.shippers TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.regions TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.territories TO ROLE northwind_reader;
-GRANT SELECT ON TABLE external.csv.employee_territories TO ROLE northwind_reader;
-
-
--- ============================================================================
--- STEP 7: Assign Role to Current User
--- ============================================================================
-
-GRANT ROLE northwind_reader TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.customers TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.employees TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.orders TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.order_details TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.products TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.categories TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.suppliers TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.shippers TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.regions TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.territories TO USER {{current_user}};
+GRANT READ ON TABLE external.csv.employee_territories TO USER {{current_user}};
