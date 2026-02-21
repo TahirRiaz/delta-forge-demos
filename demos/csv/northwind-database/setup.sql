@@ -33,6 +33,7 @@
 -- ============================================================================
 
 CREATE ZONE IF NOT EXISTS external
+    TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
 
