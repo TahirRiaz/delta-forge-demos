@@ -17,21 +17,28 @@ REVOKE READ ON TABLE external.csv.sales FROM USER {{current_user}};
 
 
 -- ============================================================================
--- STEP 2: Drop External Table
+-- STEP 2: Drop Schema Columns
+-- ============================================================================
+
+DROP SCHEMA COLUMNS FOR TABLE external.csv.sales;
+clear
+
+-- ============================================================================
+-- STEP 3: Drop External Table
 -- ============================================================================
 
 DROP EXTERNAL TABLE IF EXISTS external.csv.sales;
 
 
 -- ============================================================================
--- STEP 3: Drop Schema
+-- STEP 4: Drop Schema
 -- ============================================================================
 
 DROP SCHEMA IF EXISTS external.csv;
 
 
 -- ============================================================================
--- STEP 4: Drop Zone
+-- STEP 5: Drop Zone
 -- ============================================================================
 
 DROP ZONE IF EXISTS external;

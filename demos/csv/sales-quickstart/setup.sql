@@ -74,7 +74,17 @@ OPTIONS (
 
 
 -- ============================================================================
--- STEP 4: Table Permission
+-- STEP 4: Detect Schema
+-- ============================================================================
+-- Discovers column metadata from the CSV files and saves it to the catalog.
+-- This populates the external_table_columns so the engine knows what columns
+-- each file contains (crucial for schema-evolution scenarios).
+
+DETECT SCHEMA FOR TABLE external.csv.sales;
+
+
+-- ============================================================================
+-- STEP 5: Table Permission
 -- ============================================================================
 
 GRANT READ ON TABLE external.csv.sales TO USER {{current_user}};
