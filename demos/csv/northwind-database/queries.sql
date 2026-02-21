@@ -5,18 +5,18 @@
 -- across the 11 Northwind tables.
 --
 -- Relationships:
---   customers ──< orders ──< order_details >── products >── categories
---                   │                              │
---                   └── employees                  └── suppliers
---                         │
---                         └──< employee_territories >── territories >── regions
+--   nw_customers ──< nw_orders ──< nw_order_details >── nw_products >── nw_categories
+--                       │                                    │
+--                       └── nw_employees                     └── nw_suppliers
+--                             │
+--                             └──< nw_employee_territories >── nw_territories >── nw_regions
 -- ============================================================================
 
 
 -- ============================================================================
 -- 1. Top 10 Customers by Total Order Value
 -- ============================================================================
--- Joins: customers → orders → order_details
+-- Joins: nw_customers → nw_orders → nw_order_details
 --
 -- Expected results (top 5):
 --   QUICK-Stop            | 28 orders | 110,277.31
@@ -26,13 +26,13 @@
 --   Hungry Owl All-Night Grocers | 19 orders | 49,979.91
 
 SELECT
-    c.companyName,
-    COUNT(DISTINCT o.orderID) AS order_count,
-    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_value
-FROM external.csv.customers c
-JOIN external.csv.orders o ON c.customerID = o.customerID
-JOIN external.csv.order_details od ON o.orderID = od.orderID
-GROUP BY c.companyName
+    c."companyName",
+    COUNT(DISTINCT o."orderID") AS order_count,
+    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_value
+FROM external.csv.nw_customers c
+JOIN external.csv.nw_orders o ON c."customerID" = o."customerID"
+JOIN external.csv.nw_order_details od ON o."orderID" = od."orderID"
+GROUP BY c."companyName"
 ORDER BY total_value DESC
 LIMIT 10;
 
@@ -40,7 +40,7 @@ LIMIT 10;
 -- ============================================================================
 -- 2. Revenue by Product Category
 -- ============================================================================
--- Joins: order_details → products → categories
+-- Joins: nw_order_details → nw_products → nw_categories
 --
 -- Expected results (all 8 categories):
 --   Beverages      | 12 products | 267,868.18
@@ -53,20 +53,20 @@ LIMIT 10;
 --   Grains/Cereals |  7 products |  95,744.59
 
 SELECT
-    cat.categoryName,
-    COUNT(DISTINCT p.productID) AS product_count,
-    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_revenue
-FROM external.csv.order_details od
-JOIN external.csv.products p ON od.productID = p.productID
-JOIN external.csv.categories cat ON p.categoryID = cat.categoryID
-GROUP BY cat.categoryName
+    cat."categoryName",
+    COUNT(DISTINCT p."productID") AS product_count,
+    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_revenue
+FROM external.csv.nw_order_details od
+JOIN external.csv.nw_products p ON od."productID" = p."productID"
+JOIN external.csv.nw_categories cat ON p."categoryID" = cat."categoryID"
+GROUP BY cat."categoryName"
 ORDER BY total_revenue DESC;
 
 
 -- ============================================================================
 -- 3. Employee Sales Performance
 -- ============================================================================
--- Joins: employees → orders → order_details
+-- Joins: nw_employees → nw_orders → nw_order_details
 --
 -- Expected results (all 9 employees):
 --   Margaret Peacock | Sales Representative        | 156 orders | 232,890.85
@@ -80,21 +80,21 @@ ORDER BY total_revenue DESC;
 --   Steven Buchanan  | Sales Manager               |  42 orders |  68,792.28
 
 SELECT
-    e.firstName || ' ' || e.lastName AS employee_name,
+    e."firstName" || ' ' || e."lastName" AS employee_name,
     e.title,
-    COUNT(DISTINCT o.orderID) AS orders_handled,
-    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_sales
-FROM external.csv.employees e
-JOIN external.csv.orders o ON e.employeeID = o.employeeID
-JOIN external.csv.order_details od ON o.orderID = od.orderID
-GROUP BY e.firstName, e.lastName, e.title
+    COUNT(DISTINCT o."orderID") AS orders_handled,
+    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_sales
+FROM external.csv.nw_employees e
+JOIN external.csv.nw_orders o ON e."employeeID" = o."employeeID"
+JOIN external.csv.nw_order_details od ON o."orderID" = od."orderID"
+GROUP BY e."firstName", e."lastName", e.title
 ORDER BY total_sales DESC;
 
 
 -- ============================================================================
 -- 4. Monthly Order Trends
 -- ============================================================================
--- Single table: orders
+-- Single table: nw_orders
 -- 23 months from July 1996 to May 1998
 --
 -- Expected results (first 3 and last 3 months):
@@ -107,11 +107,11 @@ ORDER BY total_sales DESC;
 --   1998-05 | 14 orders |    685.08 freight
 
 SELECT
-    EXTRACT(YEAR FROM o.orderDate) AS year,
-    EXTRACT(MONTH FROM o.orderDate) AS month,
+    EXTRACT(YEAR FROM o."orderDate") AS year,
+    EXTRACT(MONTH FROM o."orderDate") AS month,
     COUNT(*) AS order_count,
     ROUND(SUM(o.freight), 2) AS total_freight
-FROM external.csv.orders o
+FROM external.csv.nw_orders o
 GROUP BY year, month
 ORDER BY year, month;
 
@@ -119,7 +119,7 @@ ORDER BY year, month;
 -- ============================================================================
 -- 5. Products Below Reorder Level (Need Restocking)
 -- ============================================================================
--- Joins: products → categories + products → suppliers
+-- Joins: nw_products → nw_categories + nw_products → nw_suppliers
 --
 -- Expected results: 18 products below reorder level (not discontinued)
 -- Top 3 by restock urgency:
@@ -128,24 +128,24 @@ ORDER BY year, month;
 --   Louisiana Hot Spiced Okra | Condiments | stock: 4  | reorder: 20 | on order: 100
 
 SELECT
-    p.productName,
-    cat.categoryName,
-    s.companyName AS supplier,
-    p.unitsInStock,
-    p.reorderLevel,
-    p.unitsOnOrder
-FROM external.csv.products p
-JOIN external.csv.categories cat ON p.categoryID = cat.categoryID
-JOIN external.csv.suppliers s ON p.supplierID = s.supplierID
-WHERE p.unitsInStock < p.reorderLevel
+    p."productName",
+    cat."categoryName",
+    s."companyName" AS supplier,
+    p."unitsInStock",
+    p."reorderLevel",
+    p."unitsOnOrder"
+FROM external.csv.nw_products p
+JOIN external.csv.nw_categories cat ON p."categoryID" = cat."categoryID"
+JOIN external.csv.nw_suppliers s ON p."supplierID" = s."supplierID"
+WHERE p."unitsInStock" < p."reorderLevel"
   AND p.discontinued = 0
-ORDER BY (p.reorderLevel - p.unitsInStock) DESC;
+ORDER BY (p."reorderLevel" - p."unitsInStock") DESC;
 
 
 -- ============================================================================
 -- 6. Shipping Analysis by Carrier
 -- ============================================================================
--- Joins: orders → shippers, orders → order_details
+-- Joins: nw_orders → nw_shippers, nw_orders → nw_order_details
 --
 -- Expected results (all 3 carriers):
 --   United Package   | 326 shipments | avg freight: 86.64  | value: 533,547.63
@@ -153,21 +153,21 @@ ORDER BY (p.reorderLevel - p.unitsInStock) DESC;
 --   Speedy Express   | 249 shipments | avg freight: 65.00  | value: 348,839.94
 
 SELECT
-    sh.companyName AS shipper,
-    COUNT(DISTINCT o.orderID) AS shipments,
+    sh."companyName" AS shipper,
+    COUNT(DISTINCT o."orderID") AS shipments,
     ROUND(AVG(o.freight), 2) AS avg_freight,
-    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_order_value
-FROM external.csv.orders o
-JOIN external.csv.shippers sh ON o.shipVia = sh.shipperID
-JOIN external.csv.order_details od ON o.orderID = od.orderID
-GROUP BY sh.companyName
+    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_order_value
+FROM external.csv.nw_orders o
+JOIN external.csv.nw_shippers sh ON o."shipVia" = sh."shipperID"
+JOIN external.csv.nw_order_details od ON o."orderID" = od."orderID"
+GROUP BY sh."companyName"
 ORDER BY shipments DESC;
 
 
 -- ============================================================================
 -- 7. Customer Orders by Country
 -- ============================================================================
--- Joins: customers → orders
+-- Joins: nw_customers → nw_orders
 --
 -- Expected results (top 5 by order count):
 --   Germany   | 11 customers | 122 orders | avg freight: 92.49
@@ -178,11 +178,11 @@ ORDER BY shipments DESC;
 
 SELECT
     c.country,
-    COUNT(DISTINCT c.customerID) AS customer_count,
-    COUNT(DISTINCT o.orderID) AS order_count,
+    COUNT(DISTINCT c."customerID") AS customer_count,
+    COUNT(DISTINCT o."orderID") AS order_count,
     ROUND(AVG(o.freight), 2) AS avg_freight
-FROM external.csv.customers c
-JOIN external.csv.orders o ON c.customerID = o.customerID
+FROM external.csv.nw_customers c
+JOIN external.csv.nw_orders o ON c."customerID" = o."customerID"
 GROUP BY c.country
 ORDER BY order_count DESC;
 
@@ -190,7 +190,7 @@ ORDER BY order_count DESC;
 -- ============================================================================
 -- 8. Employee Territory Coverage
 -- ============================================================================
--- Joins: employees → employee_territories → territories → regions
+-- Joins: nw_employees → nw_employee_territories → nw_territories → nw_regions
 --
 -- Expected results (9 employees across 4 regions):
 --   Andrew Fuller    | Eastern  | 7 territories
@@ -204,21 +204,21 @@ ORDER BY order_count DESC;
 --   Steven Buchanan  | Eastern  | 7 territories
 
 SELECT
-    e.firstName || ' ' || e.lastName AS employee_name,
-    r.regionDescription AS region,
-    COUNT(t.territoryID) AS territory_count
-FROM external.csv.employees e
-JOIN external.csv.employee_territories et ON e.employeeID = et.employeeID
-JOIN external.csv.territories t ON et.territoryID = t.territoryID
-JOIN external.csv.regions r ON t.regionID = r.regionID
-GROUP BY e.firstName, e.lastName, r.regionDescription
+    e."firstName" || ' ' || e."lastName" AS employee_name,
+    r."regionDescription" AS region,
+    COUNT(t."territoryID") AS territory_count
+FROM external.csv.nw_employees e
+JOIN external.csv.nw_employee_territories et ON e."employeeID" = et."employeeID"
+JOIN external.csv.nw_territories t ON et."territoryID" = t."territoryID"
+JOIN external.csv.nw_regions r ON t."regionID" = r."regionID"
+GROUP BY e."firstName", e."lastName", r."regionDescription"
 ORDER BY employee_name, region;
 
 
 -- ============================================================================
 -- 9. Top Suppliers by Revenue
 -- ============================================================================
--- Joins: suppliers → products → order_details
+-- Joins: nw_suppliers → nw_products → nw_order_details
 --
 -- Expected results (top 5):
 --   Aux joyeux ecclesiastiques           | France  | 2 products | 153,691.28
@@ -228,14 +228,14 @@ ORDER BY employee_name, region;
 --   G'day, Mate                          | Australia | 3 products | 65,626.77
 
 SELECT
-    s.companyName AS supplier,
+    s."companyName" AS supplier,
     s.country,
-    COUNT(DISTINCT p.productID) AS products_supplied,
-    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_revenue
-FROM external.csv.suppliers s
-JOIN external.csv.products p ON s.supplierID = p.supplierID
-JOIN external.csv.order_details od ON p.productID = od.productID
-GROUP BY s.companyName, s.country
+    COUNT(DISTINCT p."productID") AS products_supplied,
+    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_revenue
+FROM external.csv.nw_suppliers s
+JOIN external.csv.nw_products p ON s."supplierID" = p."supplierID"
+JOIN external.csv.nw_order_details od ON p."productID" = od."productID"
+GROUP BY s."companyName", s.country
 ORDER BY total_revenue DESC
 LIMIT 10;
 
@@ -243,7 +243,7 @@ LIMIT 10;
 -- ============================================================================
 -- 10. Late Shipments — Orders Shipped After Required Date
 -- ============================================================================
--- Joins: orders → customers
+-- Joins: nw_orders → nw_customers
 --
 -- Expected results: 37 late orders
 -- Most recent 3 late shipments:
@@ -252,12 +252,12 @@ LIMIT 10;
 --   Order 10927 | La corne d'abondance       | required 1998-04-02 | shipped 1998-04-08
 
 SELECT
-    o.orderID,
-    c.companyName,
-    o.orderDate,
-    o.requiredDate,
-    o.shippedDate
-FROM external.csv.orders o
-JOIN external.csv.customers c ON o.customerID = c.customerID
-WHERE o.shippedDate > o.requiredDate
-ORDER BY o.shippedDate DESC;
+    o."orderID",
+    c."companyName",
+    o."orderDate",
+    o."requiredDate",
+    o."shippedDate"
+FROM external.csv.nw_orders o
+JOIN external.csv.nw_customers c ON o."customerID" = c."customerID"
+WHERE o."shippedDate" > o."requiredDate"
+ORDER BY o."shippedDate" DESC;
