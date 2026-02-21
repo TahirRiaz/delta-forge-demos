@@ -71,3 +71,10 @@ LOCATION '{{data_path}}/sales*.csv'
 OPTIONS (
     header = 'true'
 );
+
+
+-- ============================================================================
+-- STEP 4: Table Permission
+-- ============================================================================
+
+GRANT READ ON TABLE external.csv.sales TO USER {{current_user}};

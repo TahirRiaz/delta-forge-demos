@@ -10,21 +10,28 @@
 
 
 -- ============================================================================
--- STEP 1: Drop External Table
+-- STEP 1: Revoke Table Permission
+-- ============================================================================
+
+REVOKE READ ON TABLE external.csv.sales FROM USER {{current_user}};
+
+
+-- ============================================================================
+-- STEP 2: Drop External Table
 -- ============================================================================
 
 DROP EXTERNAL TABLE IF EXISTS external.csv.sales;
 
 
 -- ============================================================================
--- STEP 2: Drop Schema (no-op warning if other tables remain)
+-- STEP 3: Drop Schema
 -- ============================================================================
 
 DROP SCHEMA IF EXISTS external.csv;
 
 
 -- ============================================================================
--- STEP 3: Drop Zone (no-op warning if other schemas remain)
+-- STEP 4: Drop Zone
 -- ============================================================================
 
 DROP ZONE IF EXISTS external;
