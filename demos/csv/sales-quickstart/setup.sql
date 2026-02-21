@@ -5,8 +5,8 @@
 -- Creates a zone, schema, and two small sales tables.
 --
 -- Variables (auto-injected by Delta Forge):
---   {{data_path}}     — Local path where demo data files were downloaded
---   {{current_user}}  — Username of the current logged-in user
+--   data_path     — Local path where demo data files were downloaded
+--   current_user  — Username of the current logged-in user
 --
 -- What this script does:
 --   1. Creates the 'external' zone (shared across all demos)
@@ -30,6 +30,7 @@
 -- ============================================================================
 
 CREATE ZONE IF NOT EXISTS external
+    TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
 
