@@ -6,9 +6,8 @@ The Northwind database is a classic sample dataset representing a fictional spec
 food trading company. It contains 11 interconnected CSV files covering the full
 business domain: customers, orders, products, employees, suppliers, and shipping.
 
-This demo provisions external tables with schema, role-based access control, and
-demonstrates how Delta Forge handles relational joins, aggregations, and business
-analytics across multiple files.
+This demo focuses on **cross-table queries** — joins, aggregations, and business
+analytics across multiple relational tables.
 
 ## What This Demo Sets Up
 
@@ -66,14 +65,40 @@ customers ──< orders ──< order_details >── products >── categori
 - **Headers**: First row contains column names
 - **Encoding**: UTF-8
 
+## File Structure
+
+```text
+northwind-database/
+├── demo.toml               Metadata configuration
+├── README.md                This file
+├── setup.sql                Full setup — all 11 tables at once
+├── cleanup.sql              Full teardown — removes all objects
+├── queries.sql              10 cross-table demo queries
+└── data/                    CSV data files (semicolon-delimited)
+    ├── customers.csv
+    ├── employees.csv
+    ├── orders.csv
+    ├── order_details.csv
+    ├── products.csv
+    ├── categories.csv
+    ├── suppliers.csv
+    ├── shippers.csv
+    ├── regions.csv
+    ├── territories.csv
+    └── employee_territories.csv
+```
+
 ## Sample Queries
 
-After running setup, try these queries:
+After running `setup.sql`, see `queries.sql` for 10 ready-to-run cross-table
+queries. Here are a few highlights:
 
 ```sql
 -- Top 10 customers by total order value
-SELECT c.companyName, COUNT(o.orderID) AS order_count,
-       ROUND(SUM(od.unitPrice * od.quantity), 2) AS total_value
+SELECT
+    c.companyName,
+    COUNT(DISTINCT o.orderID) AS order_count,
+    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_value
 FROM external.csv.customers c
 JOIN external.csv.orders o ON c.customerID = o.customerID
 JOIN external.csv.order_details od ON o.orderID = od.orderID
@@ -81,23 +106,35 @@ GROUP BY c.companyName
 ORDER BY total_value DESC
 LIMIT 10;
 
--- Monthly order trends
-SELECT EXTRACT(YEAR FROM o.orderDate) AS year,
-       EXTRACT(MONTH FROM o.orderDate) AS month,
-       COUNT(*) AS order_count
-FROM external.csv.orders o
-GROUP BY year, month
-ORDER BY year, month;
+-- Revenue by product category
+SELECT
+    cat.categoryName,
+    COUNT(DISTINCT p.productID) AS product_count,
+    ROUND(SUM(od.unitPrice * od.quantity * (1 - od.discount)), 2) AS total_revenue
+FROM external.csv.order_details od
+JOIN external.csv.products p ON od.productID = p.productID
+JOIN external.csv.categories cat ON p.categoryID = cat.categoryID
+GROUP BY cat.categoryName
+ORDER BY total_revenue DESC;
 
--- Products below reorder level (need restocking)
-SELECT p.productName, p.unitsInStock, p.reorderLevel,
-       c.categoryName, s.companyName AS supplier
-FROM external.csv.products p
-JOIN external.csv.categories c ON p.categoryID = c.categoryID
-JOIN external.csv.suppliers s ON p.supplierID = s.supplierID
-WHERE p.unitsInStock < p.reorderLevel AND p.discontinued = 0
-ORDER BY p.unitsInStock;
+-- Employee territory coverage (4-way join)
+SELECT
+    e.firstName || ' ' || e.lastName AS employee_name,
+    r.regionDescription AS region,
+    COUNT(t.territoryID) AS territory_count
+FROM external.csv.employees e
+JOIN external.csv.employee_territories et ON e.employeeID = et.employeeID
+JOIN external.csv.territories t ON et.territoryID = t.territoryID
+JOIN external.csv.regions r ON t.regionID = r.regionID
+GROUP BY e.firstName, e.lastName, r.regionDescription
+ORDER BY employee_name, region;
 ```
+
+## Cleanup
+
+Run `cleanup.sql` to remove all objects created by this demo. It revokes
+permissions, drops schema columns, tables, the role, and optionally the
+shared schema and zone (safe even if other demos are using them).
 
 ## Data Source
 

@@ -1,22 +1,18 @@
 [demo]
 id = "northwind-database"
 name = "Northwind Trading Company"
-version = "1.0.0"
+version = "2.0.0"
 author = "Delta Forge Team"
 description = """
 The Northwind database is a classic sample dataset representing a fictional specialty \
 food trading company. It includes 11 interconnected tables covering customers, orders, \
 products, employees, suppliers, and shipping.
 
-This demo creates external tables under the shared 'external' zone with role-based \
-access control. It demonstrates how Delta Forge handles relational joins, \
-aggregations, and business analytics across multiple CSV files with semicolon delimiters.
-
-After setup, explore the data with SQL — try joining orders with customers and products \
-to analyze sales by region, top customers, or monthly trends.
+This demo focuses on cross-table queries — joins, aggregations, and business analytics \
+across multiple CSV files. See queries.sql for ready-to-run demo queries.
 """
 category = "Retail"
-tags = ["csv", "relational", "joins", "analytics", "northwind", "orders", "products", "rbac"]
+tags = ["csv", "relational", "joins", "analytics", "northwind", "orders", "products", "rbac", "cross-table"]
 difficulty = "beginner"
 estimated_time_minutes = 5
 
