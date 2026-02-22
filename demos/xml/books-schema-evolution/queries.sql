@@ -5,7 +5,7 @@
 --   - All 15 books from 5 files are read
 --   - New columns added in later files appear as NULL in earlier files
 --   - Dropped columns appear as NULL in files that lack them
---   - Attributes (@id, @format) are extracted correctly
+--   - Attributes (@id, @format) are extracted as attr_id, attr_format
 -- ============================================================================
 
 
@@ -28,7 +28,7 @@ FROM external.xml.books_evolved;
 
 SELECT *
 FROM external.xml.books_evolved
-ORDER BY "@id";
+ORDER BY attr_id;
 
 
 -- ============================================================================
@@ -134,12 +134,12 @@ FROM external.xml.books_evolved;
 -- ============================================================================
 -- 11. FORMAT ATTRIBUTE (added in file 5) — 12 NULLs from files 1-4
 -- ============================================================================
--- The @format attribute on <book> should be extracted as a column.
+-- The @format attribute on <book> is extracted as column attr_format.
 
-SELECT '@format_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE "@format" IS NULL) AS actual,
+SELECT 'attr_format_nulls' AS check_name,
+       COUNT(*) FILTER (WHERE attr_format IS NULL) AS actual,
        12 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE "@format" IS NULL) = 12
+       CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM external.xml.books_evolved;
 
@@ -148,10 +148,10 @@ FROM external.xml.books_evolved;
 -- 12. VALUE SPOT-CHECK — Verify specific books have correct data
 -- ============================================================================
 
-SELECT "@id", author, title, genre, price
+SELECT attr_id, author, title, genre, price
 FROM external.xml.books_evolved
-WHERE "@id" IN ('bk101', 'bk108', 'bk113')
-ORDER BY "@id";
+WHERE attr_id IN ('bk101', 'bk108', 'bk113')
+ORDER BY attr_id;
 
 
 -- ============================================================================
@@ -186,5 +186,5 @@ SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE pages IS NULL) = 9 THEN '
 UNION ALL
 SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
 UNION ALL
-SELECT '@format_nulls', CASE WHEN COUNT(*) FILTER (WHERE "@format" IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
 ORDER BY check_name;

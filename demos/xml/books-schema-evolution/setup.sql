@@ -3,8 +3,10 @@
 -- ============================================================================
 -- Creates one external table that reads 5 XML files spanning 2000–2004.
 -- Each file adds or removes elements, demonstrating schema evolution.
--- DETECT SCHEMA discovers the union of all XML paths and stores the
--- xml_flatten_config in the catalog so it can be retrieved on every query.
+--
+-- The xml_flatten_config pre-selects the union of all paths across all files.
+-- DETECT SCHEMA then uses this config to generate the column definitions
+-- (ConfigBasedStrategy), so no file I/O is needed at schema-discovery time.
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
@@ -17,13 +19,44 @@ CREATE SCHEMA IF NOT EXISTS external.xml
 -- ============================================================================
 -- TABLE: books_evolved — All 5 catalog files (schema evolution)
 -- ============================================================================
--- Reads every .xml file in the data directory. The 5 files have different
--- element sets; DETECT SCHEMA finds the union and saves the flatten config.
+-- The xml_flatten_config specifies:
+--   row_xpath        — //book  (each <book> element becomes a row)
+--   include_paths    — union of all leaf elements + attributes across 5 files
+--   include_attributes — true (extract @id and @format as columns)
+--   separator        — _ (nested paths join with underscore)
+--
+-- Column naming convention (from XmlFlattenConfig.column_name):
+--   /catalog/book/@id    →  attr_id      (@ → attr_)
+--   /catalog/book/author →  author       (leaf element, no prefix)
+-- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS external.xml.books_evolved
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
-    has_header = 'true'
+    xml_flatten_config = '{
+        "row_xpath": "//book",
+        "include_paths": [
+            "/catalog/book/@id",
+            "/catalog/book/@format",
+            "/catalog/book/author",
+            "/catalog/book/title",
+            "/catalog/book/genre",
+            "/catalog/book/price",
+            "/catalog/book/publish_date",
+            "/catalog/book/description",
+            "/catalog/book/isbn",
+            "/catalog/book/language",
+            "/catalog/book/publisher",
+            "/catalog/book/rating",
+            "/catalog/book/edition",
+            "/catalog/book/pages",
+            "/catalog/book/series"
+        ],
+        "include_attributes": true,
+        "separator": "_",
+        "max_depth": 10,
+        "strip_namespace_prefixes": true
+    }'
 );
 DETECT SCHEMA FOR TABLE external.xml.books_evolved;
 GRANT READ ON TABLE external.xml.books_evolved TO USER {{current_user}};
