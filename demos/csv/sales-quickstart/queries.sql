@@ -26,7 +26,7 @@
 -- Records 13-15 have NULL region, discount_pct
 
 SELECT *
-FROM external.csv.sales
+FROM {{zone_name}}.csv.sales
 ORDER BY id;
 
 
@@ -48,7 +48,7 @@ SELECT
     product_name,
     SUM(quantity) AS total_quantity,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM external.csv.sales
+FROM {{zone_name}}.csv.sales
 GROUP BY product_name
 ORDER BY total_revenue DESC;
 
@@ -68,7 +68,7 @@ SELECT
     sales_rep,
     COUNT(*) AS sale_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM external.csv.sales
+FROM {{zone_name}}.csv.sales
 GROUP BY sales_rep
 ORDER BY total_revenue DESC;
 
@@ -90,7 +90,7 @@ SELECT
     EXTRACT(QUARTER FROM sale_date) AS quarter,
     COUNT(*) AS sale_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM external.csv.sales
+FROM {{zone_name}}.csv.sales
 GROUP BY year, quarter
 ORDER BY year, quarter;
 
@@ -118,7 +118,7 @@ SELECT
     sale_date,
     region,
     territory
-FROM external.csv.sales
+FROM {{zone_name}}.csv.sales
 ORDER BY id;
 
 
@@ -140,5 +140,5 @@ SELECT
     product_name,
     df_file_name,
     df_row_number
-FROM external.csv.sales
+FROM {{zone_name}}.csv.sales
 ORDER BY id;

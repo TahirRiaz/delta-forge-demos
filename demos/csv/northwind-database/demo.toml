@@ -11,13 +11,14 @@ products, employees, suppliers, and shipping.
 This demo focuses on cross-table queries — joins, aggregations, and business analytics \
 across multiple CSV files. See queries.sql for ready-to-run demo queries.
 """
-category = "Retail"
+categories = ["retail", "csv"]
 tags = ["csv", "relational", "joins", "analytics", "northwind", "orders", "products", "rbac", "cross-table"]
 difficulty = "beginner"
 estimated_time_minutes = 5
 
 [demo.variables]
 data_path = { description = "Root path where demo data files are stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
 
 [[demo.data_files]]
 path = "data/customers.csv"

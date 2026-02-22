@@ -3,14 +3,14 @@
 -- ============================================================================
 
 -- Revoke permissions
-REVOKE READ ON TABLE external.xml.books_evolved FROM USER {{current_user}};
+REVOKE READ ON TABLE {{zone_name}}.xml.books_evolved FROM USER {{current_user}};
 
 -- Drop schema columns metadata
-DROP SCHEMA COLUMNS FOR TABLE external.xml.books_evolved;
+DROP SCHEMA COLUMNS FOR TABLE {{zone_name}}.xml.books_evolved;
 
 -- Drop external tables
-DROP EXTERNAL TABLE IF EXISTS external.xml.books_evolved;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.books_evolved;
 
 -- Shared resources (safe — will warn if other demos still use them)
-DROP SCHEMA IF EXISTS external.xml;
-DROP ZONE IF EXISTS external;
+DROP SCHEMA IF EXISTS {{zone_name}}.xml;
+DROP ZONE IF EXISTS {{zone_name}};

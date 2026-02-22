@@ -10,13 +10,14 @@ Five quarterly sales files span 2024-Q1 to 2025-Q1 — columns are added \
 across the series. A single external table unifies them all; missing columns \
 from older files surface as NULL.
 """
-category = "Getting Started"
+categories = ["getting-started", "csv"]
 tags = ["csv", "beginner", "quickstart", "sales", "schema-evolution"]
 difficulty = "beginner"
 estimated_time_minutes = 3
 
 [demo.variables]
 data_path = { description = "Root path where demo data files are stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
 
 [[demo.data_files]]
 path = "data/sales_2024_q1.csv"

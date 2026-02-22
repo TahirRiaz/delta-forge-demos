@@ -14,24 +14,25 @@
 --   Q1 2025  - discount_pct (retired), + channel
 --
 -- Variables (auto-injected by Delta Forge):
---   data_path     — Local path where demo data files were downloaded
+--   data_path     — Local or cloud path where demo data files were downloaded
 --   current_user  — Username of the current logged-in user
+--   zone_name     — Target zone name (defaults to 'external')
 --
 -- What this script does:
---   1. Creates the 'external' zone (shared across all demos)
---   2. Creates the 'external.csv' schema (named after the file format)
+--   1. Creates the target zone (defaults to 'external')
+--   2. Creates the '{{zone_name}}.csv' schema (named after the file format)
 --   3. Creates one external table over the sales-evolution directory
 --
--- Naming convention: external.format.table
---   zone   = 'external'  (all external/demo tables live here)
---   schema = 'csv'       (the file format)
+-- Naming convention: zone_name.format.table
+--   zone   = {{zone_name}}  (defaults to 'external')
+--   schema = 'csv'          (the file format)
 --   table  = object name
 --
 -- After running, try these queries:
---   SELECT * FROM external.csv.sales ORDER BY id;
---   SELECT id, sale_date, region, territory FROM external.csv.sales ORDER BY id;
+--   SELECT * FROM {{zone_name}}.csv.sales ORDER BY id;
+--   SELECT id, sale_date, region, territory FROM {{zone_name}}.csv.sales ORDER BY id;
 --   SELECT sales_rep, SUM(quantity * unit_price) AS revenue
---   FROM external.csv.sales WHERE sales_rep IS NOT NULL
+--   FROM {{zone_name}}.csv.sales WHERE sales_rep IS NOT NULL
 --   GROUP BY sales_rep ORDER BY revenue DESC;
 -- ============================================================================
 
@@ -40,7 +41,7 @@
 -- STEP 1: Zone
 -- ============================================================================
 
-CREATE ZONE IF NOT EXISTS external
+CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
@@ -49,7 +50,7 @@ CREATE ZONE IF NOT EXISTS external
 -- STEP 2: Schema
 -- ============================================================================
 
-CREATE SCHEMA IF NOT EXISTS external.csv
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
     COMMENT 'CSV-backed external tables';
 
 
@@ -65,7 +66,7 @@ CREATE SCHEMA IF NOT EXISTS external.csv
 --   sales_2024_q4.csv  8 cols  (region removed, + territory)
 --   sales_2025_q1.csv  8 cols  (discount_pct removed, + channel)
 -- Delta Forge unifies all schemas; missing columns appear as NULL.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.sales
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.sales
 USING CSV
 LOCATION '{{data_path}}/sales*.csv'
 OPTIONS (
@@ -81,11 +82,11 @@ OPTIONS (
 -- This populates the external_table_columns so the engine knows what columns
 -- each file contains (crucial for schema-evolution scenarios).
 
-DETECT SCHEMA FOR TABLE external.csv.sales;
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.sales;
 
 
 -- ============================================================================
 -- STEP 5: Table Permission
 -- ============================================================================
 
-GRANT READ ON TABLE external.csv.sales TO USER {{current_user}};
+GRANT READ ON TABLE {{zone_name}}.csv.sales TO USER {{current_user}};

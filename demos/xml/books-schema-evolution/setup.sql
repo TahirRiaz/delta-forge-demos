@@ -10,10 +10,10 @@
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
-CREATE ZONE IF NOT EXISTS external TYPE EXTERNAL
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS external.xml
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
     COMMENT 'XML-backed external tables';
 
 -- ============================================================================
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS external.xml
 --   /catalog/book/@id    →  attr_id      (@ → attr_)
 --   /catalog/book/author →  author       (leaf element, no prefix)
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS external.xml.books_evolved
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.books_evolved
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -59,5 +59,5 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE external.xml.books_evolved;
-GRANT READ ON TABLE external.xml.books_evolved TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.xml.books_evolved;
+GRANT READ ON TABLE {{zone_name}}.xml.books_evolved TO USER {{current_user}};

@@ -6,10 +6,10 @@
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
-CREATE ZONE IF NOT EXISTS external TYPE EXTERNAL
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS external.csv
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
     COMMENT 'CSV-backed external tables';
 
 -- ============================================================================
@@ -17,30 +17,30 @@ CREATE SCHEMA IF NOT EXISTS external.csv
 -- ============================================================================
 -- Data uses pipe as separator. If delimiter is not wired, the entire
 -- line becomes a single column instead of 4 separate columns.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_delimiter
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_delimiter
 USING CSV
 LOCATION '{{data_path}}/01_pipe_delimited.csv'
 OPTIONS (
     has_header = 'true',
     delimiter = '|'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_delimiter;
-GRANT READ ON TABLE external.csv.opt_delimiter TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_delimiter;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_delimiter TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 2: opt_null_value — Tests null_value='N/A'
 -- ============================================================================
 -- Rows 2 and 4 have "N/A" in the score column. If null_value is wired,
 -- those become SQL NULL. If not, they remain the literal string "N/A".
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_null_value
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_null_value
 USING CSV
 LOCATION '{{data_path}}/02_null_markers.csv'
 OPTIONS (
     has_header = 'true',
     null_value = 'N/A'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_null_value;
-GRANT READ ON TABLE external.csv.opt_null_value TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_null_value;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_null_value TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 3: opt_comment — Tests comment_char='#'
@@ -48,15 +48,15 @@ GRANT READ ON TABLE external.csv.opt_null_value TO USER {{current_user}};
 -- File has 4 comment lines starting with #. If comment_char is wired,
 -- only 3 data rows are returned. If not, the parser errors or returns
 -- garbage rows from the comment lines.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_comment
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_comment
 USING CSV
 LOCATION '{{data_path}}/03_comment_lines.csv'
 OPTIONS (
     has_header = 'true',
     comment_char = '#'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_comment;
-GRANT READ ON TABLE external.csv.opt_comment TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_comment;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_comment TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 4: opt_skip_rows — Tests skip_starting_rows=3
@@ -64,52 +64,52 @@ GRANT READ ON TABLE external.csv.opt_comment TO USER {{current_user}};
 -- First 3 lines are report metadata (not CSV). If skip_starting_rows
 -- is wired, line 4 becomes the header. If not, "Report: Quarterly..."
 -- becomes the first column name.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_skip_rows
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_skip_rows
 USING CSV
 LOCATION '{{data_path}}/04_skip_metadata.csv'
 OPTIONS (
     has_header = 'true',
     skip_starting_rows = '3'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_skip_rows;
-GRANT READ ON TABLE external.csv.opt_skip_rows TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_skip_rows;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_skip_rows TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 5: opt_max_rows — Tests max_rows=5
 -- ============================================================================
 -- File has 10 data rows. If max_rows is wired, only 5 rows are returned.
 -- If not, all 10 rows appear.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_max_rows
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_max_rows
 USING CSV
 LOCATION '{{data_path}}/05_max_rows.csv'
 OPTIONS (
     has_header = 'true',
     max_rows = '5'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_max_rows;
-GRANT READ ON TABLE external.csv.opt_max_rows TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_max_rows;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_max_rows TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 6: opt_trim — Tests trim_whitespace='true'
 -- ============================================================================
 -- Values have leading/trailing spaces. If trim_whitespace is wired,
 -- name='Alice' (length 5). If not, name='  Alice  ' (length 9).
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_trim
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_trim
 USING CSV
 LOCATION '{{data_path}}/06_whitespace.csv'
 OPTIONS (
     has_header = 'true',
     trim_whitespace = 'true'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_trim;
-GRANT READ ON TABLE external.csv.opt_trim TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_trim;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_trim TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 7: opt_quoted — Tests delimiter=';' with quoted fields
 -- ============================================================================
 -- Semicolon delimiter with descriptions containing literal semicolons
 -- inside quotes. If quoting is not handled, columns split incorrectly.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_quoted
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_quoted
 USING CSV
 LOCATION '{{data_path}}/07_semicolon_quoted.csv'
 OPTIONS (
@@ -117,15 +117,15 @@ OPTIONS (
     delimiter = ';',
     quote = '"'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_quoted;
-GRANT READ ON TABLE external.csv.opt_quoted TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_quoted;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_quoted TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 8: opt_combined — Tests multiple options together
 -- ============================================================================
 -- Pipe delimiter + comment lines + null markers + whitespace trimming.
 -- All options must work simultaneously for correct results.
-CREATE EXTERNAL TABLE IF NOT EXISTS external.csv.opt_combined
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.opt_combined
 USING CSV
 LOCATION '{{data_path}}/08_combined.csv'
 OPTIONS (
@@ -135,5 +135,5 @@ OPTIONS (
     null_value = 'N/A',
     trim_whitespace = 'true'
 );
-DETECT SCHEMA FOR TABLE external.csv.opt_combined;
-GRANT READ ON TABLE external.csv.opt_combined TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_combined;
+GRANT READ ON TABLE {{zone_name}}.csv.opt_combined TO USER {{current_user}};

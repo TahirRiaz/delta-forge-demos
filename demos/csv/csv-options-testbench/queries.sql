@@ -16,11 +16,11 @@
 SELECT 'delimiter' AS option_tested,
        COUNT(*) AS row_count,
        CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_delimiter;
+FROM {{zone_name}}.csv.opt_delimiter;
 
 -- Verify column parsing works — this query fails if delimiter not wired
 SELECT id, name, amount, category
-FROM external.csv.opt_delimiter
+FROM {{zone_name}}.csv.opt_delimiter
 ORDER BY id;
 
 
@@ -35,10 +35,10 @@ SELECT 'null_value' AS option_tested,
        COUNT(*) FILTER (WHERE score IS NULL) AS null_count,
        CASE WHEN COUNT(*) FILTER (WHERE score IS NULL) = 2
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_null_value;
+FROM {{zone_name}}.csv.opt_null_value;
 
 SELECT id, name, score, status
-FROM external.csv.opt_null_value
+FROM {{zone_name}}.csv.opt_null_value
 ORDER BY id;
 
 
@@ -52,10 +52,10 @@ ORDER BY id;
 SELECT 'comment_char' AS option_tested,
        COUNT(*) AS row_count,
        CASE WHEN COUNT(*) = 3 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_comment;
+FROM {{zone_name}}.csv.opt_comment;
 
 SELECT id, sensor, temperature, humidity
-FROM external.csv.opt_comment
+FROM {{zone_name}}.csv.opt_comment
 ORDER BY id;
 
 
@@ -69,11 +69,11 @@ ORDER BY id;
 SELECT 'skip_starting_rows' AS option_tested,
        COUNT(*) AS row_count,
        CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_skip_rows;
+FROM {{zone_name}}.csv.opt_skip_rows;
 
 -- This query would fail entirely if skip_rows not wired (no "product" column)
 SELECT id, product, warehouse, quantity, unit_cost
-FROM external.csv.opt_skip_rows
+FROM {{zone_name}}.csv.opt_skip_rows
 ORDER BY id;
 
 
@@ -87,7 +87,7 @@ ORDER BY id;
 SELECT 'max_rows' AS option_tested,
        COUNT(*) AS row_count,
        CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_max_rows;
+FROM {{zone_name}}.csv.opt_max_rows;
 
 
 -- ============================================================================
@@ -101,12 +101,12 @@ SELECT 'trim_whitespace' AS option_tested,
        name,
        LENGTH(name) AS name_length,
        CASE WHEN LENGTH(name) = 5 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_trim
+FROM {{zone_name}}.csv.opt_trim
 WHERE CAST(id AS INT) = 1;
 
 -- Verify exact match works (would fail without trim)
 SELECT id, name, city, score
-FROM external.csv.opt_trim
+FROM {{zone_name}}.csv.opt_trim
 WHERE name = 'Alice';
 
 
@@ -120,11 +120,11 @@ WHERE name = 'Alice';
 SELECT 'semicolon_quoted' AS option_tested,
        COUNT(*) AS row_count,
        CASE WHEN COUNT(*) = 4 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_quoted;
+FROM {{zone_name}}.csv.opt_quoted;
 
 -- The semicolons inside description should NOT split the column
 SELECT id, name, description, price
-FROM external.csv.opt_quoted
+FROM {{zone_name}}.csv.opt_quoted
 ORDER BY id;
 
 
@@ -140,11 +140,11 @@ SELECT 'combined_options' AS option_tested,
        CASE WHEN COUNT(*) = 5
              AND COUNT(*) FILTER (WHERE score IS NULL) = 2
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.csv.opt_combined;
+FROM {{zone_name}}.csv.opt_combined;
 
 -- Verify trim + null + comment all work
 SELECT id, name, LENGTH(name) AS name_len, score, department
-FROM external.csv.opt_combined
+FROM {{zone_name}}.csv.opt_combined
 ORDER BY CAST(id AS INT);
 
 
@@ -153,17 +153,17 @@ ORDER BY CAST(id AS INT);
 -- ============================================================================
 -- Collects PASS/FAIL for every option into one view.
 
-SELECT 'delimiter' AS option, CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END AS result FROM external.csv.opt_delimiter
+SELECT 'delimiter' AS option, CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END AS result FROM {{zone_name}}.csv.opt_delimiter
 UNION ALL
-SELECT 'null_value', CASE WHEN COUNT(*) FILTER (WHERE score IS NULL) = 2 THEN 'PASS' ELSE 'FAIL' END FROM external.csv.opt_null_value
+SELECT 'null_value', CASE WHEN COUNT(*) FILTER (WHERE score IS NULL) = 2 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.csv.opt_null_value
 UNION ALL
-SELECT 'comment_char', CASE WHEN COUNT(*) = 3 THEN 'PASS' ELSE 'FAIL' END FROM external.csv.opt_comment
+SELECT 'comment_char', CASE WHEN COUNT(*) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.csv.opt_comment
 UNION ALL
-SELECT 'skip_starting_rows', CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END FROM external.csv.opt_skip_rows
+SELECT 'skip_starting_rows', CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.csv.opt_skip_rows
 UNION ALL
-SELECT 'max_rows', CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END FROM external.csv.opt_max_rows
+SELECT 'max_rows', CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.csv.opt_max_rows
 UNION ALL
-SELECT 'semicolon_quoted', CASE WHEN COUNT(*) = 4 THEN 'PASS' ELSE 'FAIL' END FROM external.csv.opt_quoted
+SELECT 'semicolon_quoted', CASE WHEN COUNT(*) = 4 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.csv.opt_quoted
 UNION ALL
-SELECT 'combined_options', CASE WHEN COUNT(*) = 5 AND COUNT(*) FILTER (WHERE score IS NULL) = 2 THEN 'PASS' ELSE 'FAIL' END FROM external.csv.opt_combined
+SELECT 'combined_options', CASE WHEN COUNT(*) = 5 AND COUNT(*) FILTER (WHERE score IS NULL) = 2 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.csv.opt_combined
 ORDER BY option;

@@ -11,13 +11,14 @@ The single external table reads all files, produces the union schema, and \
 fills missing columns with NULL — proving that the XML flatten config is \
 correctly saved, retrieved, and applied by the backend.
 """
-category = "XML"
+categories = ["xml"]
 tags = ["xml", "intermediate", "schema-evolution", "flattening", "books"]
 difficulty = "intermediate"
 estimated_time_minutes = 5
 
 [demo.variables]
 data_path = { description = "Root path where demo XML data files are stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
 
 [[demo.data_files]]
 path = "data/01_catalog_2000.xml"

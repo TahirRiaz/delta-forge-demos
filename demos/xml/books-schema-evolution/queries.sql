@@ -19,7 +19,7 @@ SELECT 'total_rows' AS check_name,
        COUNT(*) AS actual,
        15 AS expected,
        CASE WHEN COUNT(*) = 15 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -27,7 +27,7 @@ FROM external.xml.books_evolved;
 -- ============================================================================
 
 SELECT *
-FROM external.xml.books_evolved
+FROM {{zone_name}}.xml.books_evolved
 ORDER BY attr_id;
 
 
@@ -42,7 +42,7 @@ SELECT 'isbn_nulls' AS check_name,
        3 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE isbn IS NULL) = 3
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -54,7 +54,7 @@ SELECT 'language_nulls' AS check_name,
        3 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE language IS NULL) = 3
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -66,7 +66,7 @@ SELECT 'publisher_nulls' AS check_name,
        6 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE publisher IS NULL) = 6
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -78,7 +78,7 @@ SELECT 'rating_nulls' AS check_name,
        6 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE rating IS NULL) = 6
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -92,7 +92,7 @@ SELECT 'description_nulls' AS check_name,
        6 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE description IS NULL) = 6
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -104,7 +104,7 @@ SELECT 'edition_nulls' AS check_name,
        9 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE edition IS NULL) = 9
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -116,7 +116,7 @@ SELECT 'pages_nulls' AS check_name,
        9 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE pages IS NULL) = 9
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -128,7 +128,7 @@ SELECT 'series_nulls' AS check_name,
        12 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE series IS NULL) = 12
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -141,7 +141,7 @@ SELECT 'attr_format_nulls' AS check_name,
        12 AS expected,
        CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12
             THEN 'PASS' ELSE 'FAIL' END AS result
-FROM external.xml.books_evolved;
+FROM {{zone_name}}.xml.books_evolved;
 
 
 -- ============================================================================
@@ -149,7 +149,7 @@ FROM external.xml.books_evolved;
 -- ============================================================================
 
 SELECT attr_id, author, title, genre, price
-FROM external.xml.books_evolved
+FROM {{zone_name}}.xml.books_evolved
 WHERE attr_id IN ('bk101', 'bk108', 'bk113')
 ORDER BY attr_id;
 
@@ -159,7 +159,7 @@ ORDER BY attr_id;
 -- ============================================================================
 
 SELECT genre, COUNT(*) AS book_count
-FROM external.xml.books_evolved
+FROM {{zone_name}}.xml.books_evolved
 GROUP BY genre
 ORDER BY book_count DESC;
 
@@ -168,23 +168,23 @@ ORDER BY book_count DESC;
 -- 14. SUMMARY — All Schema Evolution Checks
 -- ============================================================================
 
-SELECT 'total_rows' AS check_name, CASE WHEN COUNT(*) = 15 THEN 'PASS' ELSE 'FAIL' END AS result FROM external.xml.books_evolved
+SELECT 'total_rows' AS check_name, CASE WHEN COUNT(*) = 15 THEN 'PASS' ELSE 'FAIL' END AS result FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'isbn_nulls', CASE WHEN COUNT(*) FILTER (WHERE isbn IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'isbn_nulls', CASE WHEN COUNT(*) FILTER (WHERE isbn IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'language_nulls', CASE WHEN COUNT(*) FILTER (WHERE language IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'language_nulls', CASE WHEN COUNT(*) FILTER (WHERE language IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'publisher_nulls', CASE WHEN COUNT(*) FILTER (WHERE publisher IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'publisher_nulls', CASE WHEN COUNT(*) FILTER (WHERE publisher IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'rating_nulls', CASE WHEN COUNT(*) FILTER (WHERE rating IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'rating_nulls', CASE WHEN COUNT(*) FILTER (WHERE rating IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'description_nulls', CASE WHEN COUNT(*) FILTER (WHERE description IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'description_nulls', CASE WHEN COUNT(*) FILTER (WHERE description IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'edition_nulls', CASE WHEN COUNT(*) FILTER (WHERE edition IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'edition_nulls', CASE WHEN COUNT(*) FILTER (WHERE edition IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE pages IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE pages IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM external.xml.books_evolved
+SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 ORDER BY check_name;

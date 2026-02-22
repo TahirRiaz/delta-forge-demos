@@ -11,13 +11,14 @@ trim_whitespace, quote, escape) with data designed so that incorrect parsing \
 produces obviously wrong results. Includes a summary query that reports \
 PASS/FAIL for each option.
 """
-category = "CSV"
+categories = ["csv"]
 tags = ["csv", "intermediate", "options", "parsing", "testing", "validation"]
 difficulty = "intermediate"
 estimated_time_minutes = 5
 
 [demo.variables]
 data_path = { description = "Root path where demo data files are stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
 
 [[demo.data_files]]
 path = "data/01_pipe_delimited.csv"

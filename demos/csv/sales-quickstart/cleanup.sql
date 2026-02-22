@@ -13,32 +13,32 @@
 -- STEP 1: Revoke Table Permission
 -- ============================================================================
 
-REVOKE READ ON TABLE external.csv.sales FROM USER {{current_user}};
+REVOKE READ ON TABLE {{zone_name}}.csv.sales FROM USER {{current_user}};
 
 
 -- ============================================================================
 -- STEP 2: Drop Schema Columns
 -- ============================================================================
 
-DROP SCHEMA COLUMNS FOR TABLE external.csv.sales;
+DROP SCHEMA COLUMNS FOR TABLE {{zone_name}}.csv.sales;
 
 
 -- ============================================================================
 -- STEP 3: Drop External Table
 -- ============================================================================
 
-DROP EXTERNAL TABLE IF EXISTS external.csv.sales;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.sales;
 
 
 -- ============================================================================
 -- STEP 4: Drop Schema
 -- ============================================================================
 
-DROP SCHEMA IF EXISTS external.csv;
+DROP SCHEMA IF EXISTS {{zone_name}}.csv;
 
 
 -- ============================================================================
 -- STEP 5: Drop Zone
 -- ============================================================================
 
-DROP ZONE IF EXISTS external;
+DROP ZONE IF EXISTS {{zone_name}};

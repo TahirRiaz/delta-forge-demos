@@ -7,7 +7,7 @@
       "path": "demos/csv/northwind-database",
       "name": "Northwind Trading Company",
       "summary": "Classic relational database with customers, orders, products, employees, and suppliers. 13 interconnected tables demonstrating joins, aggregations, and business analytics.",
-      "category": "Retail",
+      "categories": ["retail", "csv"],
       "tags": ["csv", "relational", "joins", "analytics", "northwind", "orders", "products"],
       "difficulty": "beginner",
       "estimatedTimeMinutes": 5,
@@ -22,7 +22,7 @@
       "path": "demos/csv/sales-quickstart",
       "name": "Sales Data Quickstart",
       "summary": "Minimal sales dataset to get started quickly. Two CSV files showing basic queries, filtering, and aggregations.",
-      "category": "Getting Started",
+      "categories": ["getting-started", "csv"],
       "tags": ["csv", "beginner", "quickstart", "sales"],
       "difficulty": "beginner",
       "estimatedTimeMinutes": 2,
@@ -37,7 +37,7 @@
       "path": "demos/csv/csv-options-testbench",
       "name": "CSV Advanced Options Testbench",
       "summary": "Verifies that every CSV parsing option (delimiter, null_value, comment_char, skip_rows, max_rows, trim_whitespace, quote, escape) is correctly wired from the GUI to the backend. Each table exercises one option with data that exposes incorrect parsing.",
-      "category": "CSV",
+      "categories": ["csv"],
       "tags": ["csv", "intermediate", "options", "parsing", "testing", "validation"],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 5,
@@ -52,7 +52,7 @@
       "path": "demos/xml/books-schema-evolution",
       "name": "XML Books — Schema Evolution",
       "summary": "Demonstrates XML schema evolution across 5 catalog export files spanning 2000–2004. Each year adds new elements (isbn, publisher, rating, edition, series) and one drops description. Verifies the union schema, NULL filling, and attribute extraction.",
-      "category": "XML",
+      "categories": ["xml"],
       "tags": ["xml", "intermediate", "schema-evolution", "flattening", "books"],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 5,
@@ -93,6 +93,12 @@
       "name": "IoT & Sensors",
       "icon": "cpu",
       "description": "IoT telemetry, sensor data, and time-series demos"
+    },
+    {
+      "id": "csv",
+      "name": "CSV",
+      "icon": "database",
+      "description": "CSV format demos with parsing options, delimiters, and data validation"
     },
     {
       "id": "xml",
