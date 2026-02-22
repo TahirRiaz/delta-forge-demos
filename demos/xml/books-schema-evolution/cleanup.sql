@@ -11,6 +11,6 @@ DROP SCHEMA COLUMNS FOR TABLE external.xml.books_evolved;
 -- Drop external tables
 DROP EXTERNAL TABLE IF EXISTS external.xml.books_evolved;
 
--- Shared resources (safe — won't fail if other demos use them)
+-- Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS external.xml;
 DROP ZONE IF EXISTS external;
