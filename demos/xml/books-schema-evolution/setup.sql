@@ -56,7 +56,8 @@ OPTIONS (
         "separator": "_",
         "max_depth": 10,
         "strip_namespace_prefixes": true
-    }'
+    }',
+    file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE external.xml.books_evolved;
 GRANT READ ON TABLE external.xml.books_evolved TO USER {{current_user}};
