@@ -46,6 +46,21 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-22T12:00:00Z"
+    },
+    {
+      "id": "xml-books-schema-evolution",
+      "path": "demos/xml/books-schema-evolution",
+      "name": "XML Books — Schema Evolution",
+      "summary": "Demonstrates XML schema evolution across 5 catalog export files spanning 2000–2004. Each year adds new elements (isbn, publisher, rating, edition, series) and one drops description. Verifies the union schema, NULL filling, and attribute extraction.",
+      "category": "XML",
+      "tags": ["xml", "intermediate", "schema-evolution", "flattening", "books"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 4300,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-22T12:00:00Z"
     }
   ],
   "categories": [
@@ -78,6 +93,12 @@
       "name": "IoT & Sensors",
       "icon": "cpu",
       "description": "IoT telemetry, sensor data, and time-series demos"
+    },
+    {
+      "id": "xml",
+      "name": "XML",
+      "icon": "file-code",
+      "description": "XML format demos with flattening, schema evolution, and XPath-based extraction"
     }
   ]
 }
