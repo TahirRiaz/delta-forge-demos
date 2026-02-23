@@ -17,9 +17,10 @@ REVOKE READ ON TABLE {{zone_name}}.csv.sales FROM USER {{current_user}};
 
 
 -- ============================================================================
--- STEP 2: Drop Schema Columns
+-- STEP 2: Drop Schema History & Columns
 -- ============================================================================
 
+DROP SCHEMA HISTORY FOR TABLE {{zone_name}}.csv.sales;
 DROP SCHEMA COLUMNS FOR TABLE {{zone_name}}.csv.sales;
 
 
