@@ -106,6 +106,81 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "h3-point-in-polygon",
+      "path": "demos/spatial/h3-point-in-polygon",
+      "name": "H3 Point-in-Polygon — 1M Row Performance",
+      "summary": "Demonstrates blazing-fast point-in-polygon queries using H3 hexagonal spatial indexing. 1,000,000 ride-share driver GPS positions are checked against 12 pricing zones across 8 world cities using O(1) H3 cell matching instead of O(n×m) polygon intersection. Progressive queries build from 'what is H3' to million-row analytics with 10 automated PASS/FAIL checks.",
+      "categories": ["geospatial", "iot"],
+      "tags": ["h3", "spatial", "delta-table", "point-in-polygon", "performance", "geospatial", "advanced", "generate-series"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "json-customers-basics",
+      "path": "demos/json/customers-basics",
+      "name": "JSON Customers — Basics",
+      "summary": "Demonstrates JSON fundamentals: creating an external table from a JSON array file, applying column_mappings for clean names ($.first → first_name, $.last → last_name), and using type_hints for proper timestamp handling. 200 CRM customer records with include_paths, max_depth, and file_metadata.",
+      "categories": ["json"],
+      "tags": ["json", "beginner", "column-mappings", "type-hints", "basics"],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 43694,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "json-music-catalog",
+      "path": "demos/json/music-catalog",
+      "name": "JSON Music Catalog — Nested Arrays & Explode",
+      "summary": "Demonstrates nested JSON flattening with array explosion. 347 music albums with nested vendor objects and track detail arrays across 3 genre-based catalog files. Two tables: album_tracks (exploded, 3,503 rows) and album_summary (347 rows with vendor as JSON blob). Covers explode_paths, json_paths, column_mappings, default_array_handling, and multi-file reading.",
+      "categories": ["json"],
+      "tags": ["json", "intermediate", "explode", "nested-arrays", "column-mappings", "json-paths", "multi-file"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 1095591,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "json-country-factbook",
+      "path": "demos/json/country-factbook",
+      "name": "JSON Country Factbook — Deep Nesting & Schema Evolution",
+      "summary": "Demonstrates deep JSON nesting (3+ levels), schema evolution with NULL filling, and selective path extraction using CIA World Factbook data for 10 African countries. One-object-per-file format with optional Terrorism/Space sections. Two tables: countries (flattened overview with preserve_original) and country_economy (GDP, sectors, trade). Covers exclude_paths, column_mappings, max_depth, and multi-file reading.",
+      "categories": ["json"],
+      "tags": ["json", "advanced", "deep-nesting", "schema-evolution", "column-mappings", "exclude-paths", "preserve-original", "multi-file"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 560111,
+      "fileCount": 10,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "excel-sales-analytics",
+      "path": "demos/excel/sales-analytics",
+      "name": "Excel Sales Analytics — Superstore Orders",
+      "summary": "Demonstrates all Excel reading features using 4 years of Superstore sales data (2014–2017, 16,676 orders). Five tables exercise sheet_name, has_header, skip_rows, max_rows, range, trim_whitespace, null_values, empty_cell_handling, infer_schema_rows, file_filter, multi-file reading, file_metadata, and automatic type inference for dates, numbers, and strings.",
+      "categories": ["excel", "retail"],
+      "tags": ["excel", "intermediate", "sheet-name", "range", "multi-file", "type-inference", "file-metadata"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 1592005,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
     }
   ],
   "categories": [
@@ -150,6 +225,18 @@
       "name": "XML",
       "icon": "file-code",
       "description": "XML format demos with flattening, schema evolution, and XPath-based extraction"
+    },
+    {
+      "id": "json",
+      "name": "JSON",
+      "icon": "braces",
+      "description": "JSON format demos with flattening, nested arrays, schema evolution, and path-based extraction"
+    },
+    {
+      "id": "excel",
+      "name": "Excel",
+      "icon": "file-spreadsheet",
+      "description": "Excel format demos with sheet selection, cell ranges, multi-file reading, and type inference"
     },
     {
       "id": "geospatial",

@@ -1,0 +1,21 @@
+[demo]
+id = "json-music-catalog"
+name = "JSON Music Catalog — Nested Arrays & Explode"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """\
+Demonstrates nested JSON flattening with array explosion. A digital music \
+distributor receives catalog feeds as JSON arrays with nested vendor objects \
+and track detail arrays. Two tables show the dual-view pattern: album_tracks \
+(exploded, one row per track) and album_summary (one row per album with track \
+count and vendor as JSON blob). Covers explode_paths, json_paths, \
+column_mappings, default_array_handling, and multi-file reading.
+"""
+categories = ["json"]
+tags = ["json", "intermediate", "explode", "nested-arrays", "column-mappings", "json-paths", "multi-file"]
+difficulty = "intermediate"
+estimated_time_minutes = 8
+
+[demo.variables]
+data_path = { description = "Path to the directory containing catalog JSON files", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }

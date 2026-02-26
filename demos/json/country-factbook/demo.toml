@@ -1,0 +1,22 @@
+[demo]
+id = "json-country-factbook"
+name = "JSON Country Factbook — Deep Nesting & Schema Evolution"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """\
+Demonstrates deep JSON nesting (3+ levels), schema evolution, and selective \
+path extraction using CIA World Factbook data for 10 African countries. Each \
+country is a single deeply nested JSON document with optional sections \
+(Terrorism, Space) that produce NULL filling. Two tables: a flattened country \
+overview and an economy-focused extraction. Covers root_path, include_paths, \
+exclude_paths, column_mappings, preserve_original, max_depth, and multi-file \
+reading with schema variation.
+"""
+categories = ["json"]
+tags = ["json", "advanced", "deep-nesting", "schema-evolution", "column-mappings", "exclude-paths", "preserve-original", "multi-file"]
+difficulty = "advanced"
+estimated_time_minutes = 10
+
+[demo.variables]
+data_path = { description = "Path to the directory containing country JSON files", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
