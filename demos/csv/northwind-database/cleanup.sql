@@ -9,20 +9,7 @@
 -- other tables / schemas still exist — so it is always safe to leave them in.
 -- ============================================================================
 
--- STEP 1: Revoke Table Permissions
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_customers FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_employees FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_orders FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_order_details FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_products FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_categories FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_suppliers FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_shippers FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_regions FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_territories FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.nw_employee_territories FROM USER {{current_user}};
-
--- STEP 2: Drop External Tables
+-- STEP 1: Drop External Tables
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_employee_territories;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_territories;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_regions;
@@ -35,8 +22,8 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_orders;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_employees;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_customers;
 
--- STEP 3: Drop Schema
+-- STEP 2: Drop Schema
 DROP SCHEMA IF EXISTS {{zone_name}}.csv;
 
--- STEP 4: Drop Zone
+-- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

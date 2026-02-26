@@ -4,10 +4,6 @@
 -- DROP TABLE commands automatically clean up catalog metadata (columns, etc.).
 -- ============================================================================
 
--- Revoke permissions
-REVOKE ADMIN ON TABLE {{zone_name}}.xml.order_lines FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.xml.order_summary FROM USER {{current_user}};
-
 -- Drop external tables
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.order_lines;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.order_summary;

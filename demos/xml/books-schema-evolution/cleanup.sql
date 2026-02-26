@@ -4,9 +4,6 @@
 -- DROP TABLE commands automatically clean up catalog metadata (columns, etc.).
 -- ============================================================================
 
--- Revoke permissions
-REVOKE ADMIN ON TABLE {{zone_name}}.xml.books_evolved FROM USER {{current_user}};
-
 -- Drop external tables
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.books_evolved;
 

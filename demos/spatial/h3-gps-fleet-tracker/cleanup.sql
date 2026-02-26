@@ -6,20 +6,15 @@
 -- DROP TABLE commands automatically clean up catalog metadata (columns, etc.).
 -- ============================================================================
 
--- STEP 1: Revoke permissions
-REVOKE ADMIN ON TABLE {{zone_name}}.spatial.landmarks FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.spatial.regions FROM USER {{current_user}};
-REVOKE ADMIN ON TABLE {{zone_name}}.spatial.gps_points FROM USER {{current_user}};
-
--- STEP 2: Drop views (depend on tables, so drop first)
+-- STEP 1: Drop views (depend on tables, so drop first)
 DROP VIEW IF EXISTS {{zone_name}}.spatial.region_cells;
 DROP VIEW IF EXISTS {{zone_name}}.spatial.points_h3;
 
--- STEP 3: Drop Delta tables
+-- STEP 2: Drop Delta tables
 DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.gps_points;
 DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.regions;
 DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.landmarks;
 
--- STEP 4: Shared resources (safe — will warn if other demos still use them)
+-- STEP 3: Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.spatial;
 DROP ZONE IF EXISTS {{zone_name}};

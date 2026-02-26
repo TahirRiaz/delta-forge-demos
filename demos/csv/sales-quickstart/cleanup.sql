@@ -9,14 +9,11 @@
 -- other tables / schemas still exist — so it is always safe to leave them in.
 -- ============================================================================
 
--- STEP 1: Revoke Table Permission
-REVOKE ADMIN ON TABLE {{zone_name}}.csv.sales FROM USER {{current_user}};
-
--- STEP 2: Drop External Table
+-- STEP 1: Drop External Table
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.sales;
 
--- STEP 3: Drop Schema
+-- STEP 2: Drop Schema
 DROP SCHEMA IF EXISTS {{zone_name}}.csv;
 
--- STEP 4: Drop Zone
+-- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};
