@@ -56,7 +56,7 @@ INSERT INTO {{zone_name}}.spatial.landmarks VALUES
     (10, 'Shibuya Crossing',      'Tokyo',         'Japan',     35.6595,  139.7004);
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.landmarks;
-GRANT READ ON TABLE {{zone_name}}.spatial.landmarks TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.landmarks TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -82,7 +82,7 @@ INSERT INTO {{zone_name}}.spatial.regions VALUES
     (5, 'Central Tokyo', 'Japan',  'POLYGON((139.65 35.63, 139.80 35.63, 139.80 35.73, 139.65 35.73, 139.65 35.63))',      'Asia/Tokyo');
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.regions;
-GRANT READ ON TABLE {{zone_name}}.spatial.regions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.regions TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -152,7 +152,7 @@ SELECT
 FROM generate_series(1, 2000) AS t(id);
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.gps_points;
-GRANT READ ON TABLE {{zone_name}}.spatial.gps_points TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.gps_points TO USER {{current_user}};
 
 
 -- ============================================================================

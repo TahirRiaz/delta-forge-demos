@@ -76,7 +76,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.xml.order_lines;
-GRANT READ ON TABLE {{zone_name}}.xml.order_lines TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml.order_lines TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -118,4 +118,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.xml.order_summary;
-GRANT READ ON TABLE {{zone_name}}.xml.order_summary TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml.order_summary TO USER {{current_user}};

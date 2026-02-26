@@ -1,12 +1,11 @@
 -- ============================================================================
 -- XML Books Schema Evolution — Cleanup Script
 -- ============================================================================
+-- DROP TABLE commands automatically clean up catalog metadata (columns, etc.).
+-- ============================================================================
 
 -- Revoke permissions
-REVOKE READ ON TABLE {{zone_name}}.xml.books_evolved FROM USER {{current_user}};
-
--- Drop schema columns metadata
-DROP SCHEMA COLUMNS FOR TABLE {{zone_name}}.xml.books_evolved;
+REVOKE ADMIN ON TABLE {{zone_name}}.xml.books_evolved FROM USER {{current_user}};
 
 -- Drop external tables
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.books_evolved;

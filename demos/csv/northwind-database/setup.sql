@@ -171,14 +171,14 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_employee_territories;
 -- STEP 5: Table Permissions
 -- ============================================================================
 
-GRANT READ ON TABLE {{zone_name}}.csv.nw_customers TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_employees TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_orders TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_order_details TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_products TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_categories TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_suppliers TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_shippers TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_regions TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_territories TO USER {{current_user}};
-GRANT READ ON TABLE {{zone_name}}.csv.nw_employee_territories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_customers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_employees TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_orders TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_order_details TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_products TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_categories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_suppliers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_shippers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_regions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_territories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_employee_territories TO USER {{current_user}};
