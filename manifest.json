@@ -91,6 +91,21 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "h3-gps-fleet-tracker",
+      "path": "demos/spatial/h3-gps-fleet-tracker",
+      "name": "H3 GPS Fleet Tracker",
+      "summary": "Demonstrates H3 hexagonal spatial indexing with Delta tables for GPS fleet tracking. Creates 10,000 GPS pings across 5 world cities, defines region boundaries as WKT polygons, and performs O(1) spatial joins via H3 cell matching. Verifies 21 H3 functions with known values: coordinate conversion, grid topology (ring/disk counts), cell hierarchy, area/edge metrics, polyfill, and spatial join accuracy.",
+      "categories": ["geospatial", "iot"],
+      "tags": ["h3", "spatial", "delta-table", "gps", "polyfill", "geospatial", "advanced", "generate-series"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
     }
   ],
   "categories": [
@@ -135,6 +150,12 @@
       "name": "XML",
       "icon": "file-code",
       "description": "XML format demos with flattening, schema evolution, and XPath-based extraction"
+    },
+    {
+      "id": "geospatial",
+      "name": "Geospatial",
+      "icon": "globe",
+      "description": "Geospatial and H3 spatial indexing demos with coordinate conversion, polyfill, and spatial joins"
     }
   ]
 }
