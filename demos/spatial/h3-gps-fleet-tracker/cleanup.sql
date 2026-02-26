@@ -1,5 +1,5 @@
 -- ============================================================================
--- H3 Spatial Index — Geographic Analysis Cleanup Script
+-- H3 GPS Fleet Tracker — Cleanup Script
 -- ============================================================================
 -- Removes all objects created by setup.sql.
 -- Views must be dropped before tables they depend on.
