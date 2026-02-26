@@ -25,7 +25,7 @@ OPTIONS (
     delimiter = '|'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_delimiter;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_delimiter TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_delimiter TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 2: opt_null_value — Tests null_value='N/A'
@@ -40,7 +40,7 @@ OPTIONS (
     null_value = 'N/A'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_null_value;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_null_value TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_null_value TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 3: opt_comment — Tests comment_char='#'
@@ -56,7 +56,7 @@ OPTIONS (
     comment_char = '#'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_comment;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_comment TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_comment TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 4: opt_skip_rows — Tests skip_starting_rows=3
@@ -72,7 +72,7 @@ OPTIONS (
     skip_starting_rows = '3'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_skip_rows;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_skip_rows TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_skip_rows TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 5: opt_max_rows — Tests max_rows=5
@@ -87,7 +87,7 @@ OPTIONS (
     max_rows = '5'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_max_rows;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_max_rows TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_max_rows TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 6: opt_trim — Tests trim_whitespace='true'
@@ -102,7 +102,7 @@ OPTIONS (
     trim_whitespace = 'true'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_trim;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_trim TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_trim TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 7: opt_quoted — Tests delimiter=';' with quoted fields
@@ -118,7 +118,7 @@ OPTIONS (
     quote = '"'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_quoted;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_quoted TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_quoted TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 8: opt_combined — Tests multiple options together
@@ -136,4 +136,4 @@ OPTIONS (
     trim_whitespace = 'true'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_combined;
-GRANT READ ON TABLE {{zone_name}}.csv.opt_combined TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_combined TO USER {{current_user}};

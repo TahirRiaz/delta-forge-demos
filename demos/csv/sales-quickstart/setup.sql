@@ -89,4 +89,4 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.csv.sales;
 -- STEP 5: Table Permission
 -- ============================================================================
 
-GRANT READ ON TABLE {{zone_name}}.csv.sales TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv.sales TO USER {{current_user}};

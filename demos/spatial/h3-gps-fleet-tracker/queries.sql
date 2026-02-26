@@ -148,23 +148,22 @@ SELECT 'grid_distance_neighbor' AS check_name,
 -- ============================================================================
 -- 10. GRID PATH — Path between adjacent cells has 2 elements (inclusive)
 -- ============================================================================
+-- Note: Uses array indexing [1] instead of UNNEST+LIMIT to get the neighbor,
+-- because UNNEST inside a subquery arg to h3_grid_path can cause DataFusion
+-- to decorrelate and compute paths for all ring cells.
 
 SELECT 'grid_path_adjacent' AS check_name,
        (SELECT COUNT(*) FROM (
            SELECT UNNEST(h3_grid_path(
                h3_latlng_to_cell(37.7792, -122.4191, 9),
-               (SELECT cell FROM (
-                   SELECT UNNEST(h3_hex_ring(h3_latlng_to_cell(37.7792, -122.4191, 9), 1)) AS cell
-               ) LIMIT 1)
+               (h3_hex_ring(h3_latlng_to_cell(37.7792, -122.4191, 9), 1))[1]
            )) AS cell
        )) AS actual,
        2 AS expected,
        CASE WHEN (SELECT COUNT(*) FROM (
            SELECT UNNEST(h3_grid_path(
                h3_latlng_to_cell(37.7792, -122.4191, 9),
-               (SELECT cell FROM (
-                   SELECT UNNEST(h3_hex_ring(h3_latlng_to_cell(37.7792, -122.4191, 9), 1)) AS cell
-               ) LIMIT 1)
+               (h3_hex_ring(h3_latlng_to_cell(37.7792, -122.4191, 9), 1))[1]
            )) AS cell
        )) = 2 THEN 'PASS' ELSE 'FAIL' END AS result;
 
@@ -511,9 +510,7 @@ SELECT 'grid_path_adjacent',
        CASE WHEN (SELECT COUNT(*) FROM (
            SELECT UNNEST(h3_grid_path(
                h3_latlng_to_cell(37.7792, -122.4191, 9),
-               (SELECT cell FROM (
-                   SELECT UNNEST(h3_hex_ring(h3_latlng_to_cell(37.7792, -122.4191, 9), 1)) AS cell
-               ) LIMIT 1)
+               (h3_hex_ring(h3_latlng_to_cell(37.7792, -122.4191, 9), 1))[1]
            )) AS cell
        )) = 2 THEN 'PASS' ELSE 'FAIL' END
 UNION ALL
