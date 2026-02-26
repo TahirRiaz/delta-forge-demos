@@ -47,7 +47,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.excel.all_orders;
-GRANT READ ON TABLE {{zone_name}}.excel.all_orders TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel.all_orders TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -66,7 +66,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.excel.orders_2017;
-GRANT READ ON TABLE {{zone_name}}.excel.orders_2017 TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel.orders_2017 TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -85,7 +85,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.excel.orders_range;
-GRANT READ ON TABLE {{zone_name}}.excel.orders_range TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel.orders_range TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -106,7 +106,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.excel.orders_trimmed;
-GRANT READ ON TABLE {{zone_name}}.excel.orders_trimmed TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel.orders_trimmed TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -127,4 +127,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.excel.orders_no_header;
-GRANT READ ON TABLE {{zone_name}}.excel.orders_no_header TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel.orders_no_header TO USER {{current_user}};

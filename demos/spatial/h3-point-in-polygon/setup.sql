@@ -88,7 +88,7 @@ INSERT INTO {{zone_name}}.spatial.zones VALUES
      10.0);
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.zones;
-GRANT READ ON TABLE {{zone_name}}.spatial.zones TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.zones TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -207,7 +207,7 @@ SELECT
 FROM generate_series(1, 50000) AS t(id);
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.driver_positions;
-GRANT READ ON TABLE {{zone_name}}.spatial.driver_positions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.driver_positions TO USER {{current_user}};
 
 
 -- ============================================================================

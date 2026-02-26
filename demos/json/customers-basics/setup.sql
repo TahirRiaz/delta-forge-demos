@@ -58,4 +58,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.json.customers;
-GRANT READ ON TABLE {{zone_name}}.json.customers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json.customers TO USER {{current_user}};

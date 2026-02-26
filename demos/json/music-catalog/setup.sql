@@ -72,7 +72,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.json.album_tracks;
-GRANT READ ON TABLE {{zone_name}}.json.album_tracks TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json.album_tracks TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -112,4 +112,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.json.album_summary;
-GRANT READ ON TABLE {{zone_name}}.json.album_summary TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json.album_summary TO USER {{current_user}};
