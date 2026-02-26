@@ -61,6 +61,36 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-22T12:00:00Z"
+    },
+    {
+      "id": "xml-nyt-news-rss",
+      "path": "demos/xml/nyt-news-rss",
+      "name": "XML NYT News — RSS Feed Analysis",
+      "summary": "Demonstrates XML namespace handling (4 namespaces: dc, media, atom, nyt), repeating element modes (JoinComma and Explode), self-closing element attributes, column_mappings, exclude_paths, and multi-file reading across 7 NYT RSS feed exports with 231 news articles and 2023 category keywords.",
+      "categories": ["xml"],
+      "tags": ["xml", "intermediate", "namespaces", "repeating-elements", "explode", "column-mappings", "rss", "news"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 492058,
+      "fileCount": 7,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "xml-ecommerce-order-lines",
+      "path": "demos/xml/ecommerce-order-lines",
+      "name": "XML E-Commerce — Order Line Explosion",
+      "summary": "Demonstrates deep XML nesting (3+ levels), explode_paths for one-row-per-line-item, CDATA sections, exclude_paths, column_mappings, preserve_original, xml_paths (keep subtrees as JSON), nested_output_format, and self-closing flag elements on e-commerce order batch data with 5 orders and 11 line items.",
+      "categories": ["xml", "retail"],
+      "tags": ["xml", "advanced", "explode", "cdata", "deep-nesting", "column-mappings", "exclude-paths", "preserve-original", "xml-paths", "ecommerce"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 6015,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
     }
   ],
   "categories": [
