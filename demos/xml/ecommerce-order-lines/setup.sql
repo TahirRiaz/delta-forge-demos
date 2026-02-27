@@ -63,9 +63,17 @@ OPTIONS (
             "/orders/order/@status": "order_status",
             "/orders/order/customer/name": "customer_name",
             "/orders/order/customer/tier": "customer_tier",
+            "/orders/order/order_date": "order_date",
             "/orders/order/items/item/@sku": "sku",
+            "/orders/order/items/item/product": "product",
+            "/orders/order/items/item/description": "description",
+            "/orders/order/items/item/quantity": "quantity",
+            "/orders/order/items/item/unit_price": "unit_price",
             "/orders/order/items/item/variant/size": "item_size",
-            "/orders/order/items/item/variant/color": "item_color"
+            "/orders/order/items/item/variant/color": "item_color",
+            "/orders/order/gift_wrap": "gift_wrap",
+            "/orders/order/express": "express",
+            "/orders/order/shipping_total": "shipping_total"
         },
         "include_attributes": true,
         "separator": "_",
@@ -107,7 +115,13 @@ OPTIONS (
         "default_repeat_handling": "count",
         "column_mappings": {
             "/orders/order/@id": "order_id",
-            "/orders/order/@status": "order_status"
+            "/orders/order/@status": "order_status",
+            "/orders/order/customer": "customer",
+            "/orders/order/order_date": "order_date",
+            "/orders/order/items/item": "item",
+            "/orders/order/gift_wrap": "gift_wrap",
+            "/orders/order/express": "express",
+            "/orders/order/shipping_total": "shipping_total"
         },
         "include_attributes": true,
         "separator": "_",

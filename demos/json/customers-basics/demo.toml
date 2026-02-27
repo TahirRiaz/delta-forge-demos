@@ -17,3 +17,9 @@ estimated_time_minutes = 5
 [demo.variables]
 data_path = { description = "Path to the directory containing customers.json", required = true }
 zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.data_files]]
+path = "data/customers.json"
+format = "json"
+description = "CRM customer export — 200 flat records with id, email, name, company, signup date, and country"
+size_bytes = 43694

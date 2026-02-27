@@ -47,9 +47,9 @@ SELECT
 -- ============================================================================
 SELECT
     9 AS resolution,
-    ROUND(h3_cell_area(h3_latlng_to_cell(37.6213, -122.3790, 9), 'm2'), 0) AS area_m2,
-    ROUND(h3_cell_area(h3_latlng_to_cell(37.6213, -122.3790, 9), 'm2') / 10000.0, 2) AS area_hectares,
-    ROUND(h3_edge_length(h3_latlng_to_cell(37.6213, -122.3790, 9), 'm'), 0) AS edge_length_m;
+    ROUND(h3_cell_area(h3_latlng_to_cell(37.6213, -122.3790, 9)), 0) AS area_m2,
+    ROUND(h3_cell_area(h3_latlng_to_cell(37.6213, -122.3790, 9)) / 10000.0, 2) AS area_hectares,
+    ROUND(h3_edge_length(h3_latlng_to_cell(37.6213, -122.3790, 9)), 0) AS edge_length_m;
 
 
 -- ============================================================================
@@ -396,7 +396,7 @@ SELECT check_name, result FROM (
     -- Check 9: Cell area within expected range (50K–200K m² at res 9)
     SELECT 'cell_area_range' AS check_name,
            CASE WHEN (
-               SELECT h3_cell_area(h3_latlng_to_cell(37.6213, -122.3790, 9), 'm2')
+               SELECT h3_cell_area(h3_latlng_to_cell(37.6213, -122.3790, 9))
            ) BETWEEN 50000 AND 200000
            THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -405,7 +405,7 @@ SELECT check_name, result FROM (
     -- Check 10: Edge length within expected range (100–250 m at res 9)
     SELECT 'edge_length_range' AS check_name,
            CASE WHEN (
-               SELECT h3_edge_length(h3_latlng_to_cell(37.6213, -122.3790, 9), 'm')
+               SELECT h3_edge_length(h3_latlng_to_cell(37.6213, -122.3790, 9))
            ) BETWEEN 100 AND 250
            THEN 'PASS' ELSE 'FAIL' END AS result
 

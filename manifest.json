@@ -5,6 +5,7 @@
     {
       "id": "northwind-database",
       "path": "demos/csv/northwind-database",
+      "iconPath": "icons/northwind-database.svg",
       "name": "Northwind Trading Company",
       "summary": "Classic relational database with customers, orders, products, employees, and suppliers. 13 interconnected tables demonstrating joins, aggregations, and business analytics.",
       "categories": ["retail", "csv"],
@@ -20,6 +21,7 @@
     {
       "id": "sales-quickstart",
       "path": "demos/csv/sales-quickstart",
+      "iconPath": "icons/sales-quickstart.svg",
       "name": "Sales Data Quickstart",
       "summary": "Minimal sales dataset to get started quickly. Two CSV files showing basic queries, filtering, and aggregations.",
       "categories": ["getting-started", "csv"],
@@ -35,6 +37,7 @@
     {
       "id": "csv-options-testbench",
       "path": "demos/csv/csv-options-testbench",
+      "iconPath": "icons/csv-options-testbench.svg",
       "name": "CSV Advanced Options Testbench",
       "summary": "Verifies that every CSV parsing option (delimiter, null_value, comment_char, skip_rows, max_rows, trim_whitespace, quote, escape) is correctly wired from the GUI to the backend. Each table exercises one option with data that exposes incorrect parsing.",
       "categories": ["csv"],
@@ -50,6 +53,7 @@
     {
       "id": "xml-books-schema-evolution",
       "path": "demos/xml/books-schema-evolution",
+      "iconPath": "icons/xml-books-schema-evolution.svg",
       "name": "XML Books — Schema Evolution",
       "summary": "Demonstrates XML schema evolution across 5 catalog export files spanning 2000–2004. Each year adds new elements (isbn, publisher, rating, edition, series) and one drops description. Verifies the union schema, NULL filling, and attribute extraction.",
       "categories": ["xml"],
@@ -65,6 +69,7 @@
     {
       "id": "xml-nyt-news-rss",
       "path": "demos/xml/nyt-news-rss",
+      "iconPath": "icons/xml-nyt-news-rss.svg",
       "name": "XML NYT News — RSS Feed Analysis",
       "summary": "Demonstrates XML namespace handling (4 namespaces: dc, media, atom, nyt), repeating element modes (JoinComma and Explode), self-closing element attributes, column_mappings, exclude_paths, and multi-file reading across 7 NYT RSS feed exports with 231 news articles and 2023 category keywords.",
       "categories": ["xml"],
@@ -80,6 +85,7 @@
     {
       "id": "xml-ecommerce-order-lines",
       "path": "demos/xml/ecommerce-order-lines",
+      "iconPath": "icons/xml-ecommerce-order-lines.svg",
       "name": "XML E-Commerce — Order Line Explosion",
       "summary": "Demonstrates deep XML nesting (3+ levels), explode_paths for one-row-per-line-item, CDATA sections, exclude_paths, column_mappings, preserve_original, xml_paths (keep subtrees as JSON), nested_output_format, and self-closing flag elements on e-commerce order batch data with 5 orders and 11 line items.",
       "categories": ["xml", "retail"],
@@ -95,6 +101,7 @@
     {
       "id": "h3-gps-fleet-tracker",
       "path": "demos/spatial/h3-gps-fleet-tracker",
+      "iconPath": "icons/h3-gps-fleet-tracker.svg",
       "name": "H3 GPS Fleet Tracker",
       "summary": "Demonstrates H3 hexagonal spatial indexing with Delta tables for GPS fleet tracking. Creates 10,000 GPS pings across 5 world cities, defines region boundaries as WKT polygons, and performs O(1) spatial joins via H3 cell matching. Verifies 21 H3 functions with known values: coordinate conversion, grid topology (ring/disk counts), cell hierarchy, area/edge metrics, polyfill, and spatial join accuracy.",
       "categories": ["geospatial", "iot"],
@@ -110,6 +117,7 @@
     {
       "id": "h3-point-in-polygon",
       "path": "demos/spatial/h3-point-in-polygon",
+      "iconPath": "icons/h3-point-in-polygon.svg",
       "name": "H3 Point-in-Polygon — 1M Row Performance",
       "summary": "Demonstrates blazing-fast point-in-polygon queries using H3 hexagonal spatial indexing. 1,000,000 ride-share driver GPS positions are checked against 12 pricing zones across 8 world cities using O(1) H3 cell matching instead of O(n×m) polygon intersection. Progressive queries build from 'what is H3' to million-row analytics with 10 automated PASS/FAIL checks.",
       "categories": ["geospatial", "iot"],
@@ -125,6 +133,7 @@
     {
       "id": "json-customers-basics",
       "path": "demos/json/customers-basics",
+      "iconPath": "icons/json-customers-basics.svg",
       "name": "JSON Customers — Basics",
       "summary": "Demonstrates JSON fundamentals: creating an external table from a JSON array file, applying column_mappings for clean names ($.first → first_name, $.last → last_name), and using type_hints for proper timestamp handling. 200 CRM customer records with include_paths, max_depth, and file_metadata.",
       "categories": ["json"],
@@ -140,6 +149,7 @@
     {
       "id": "json-music-catalog",
       "path": "demos/json/music-catalog",
+      "iconPath": "icons/json-music-catalog.svg",
       "name": "JSON Music Catalog — Nested Arrays & Explode",
       "summary": "Demonstrates nested JSON flattening with array explosion. 347 music albums with nested vendor objects and track detail arrays across 3 genre-based catalog files. Two tables: album_tracks (exploded, 3,503 rows) and album_summary (347 rows with vendor as JSON blob). Covers explode_paths, json_paths, column_mappings, default_array_handling, and multi-file reading.",
       "categories": ["json"],
@@ -155,6 +165,7 @@
     {
       "id": "json-country-factbook",
       "path": "demos/json/country-factbook",
+      "iconPath": "icons/json-country-factbook.svg",
       "name": "JSON Country Factbook — Deep Nesting & Schema Evolution",
       "summary": "Demonstrates deep JSON nesting (3+ levels), schema evolution with NULL filling, and selective path extraction using CIA World Factbook data for 10 African countries. One-object-per-file format with optional Terrorism/Space sections. Two tables: countries (flattened overview with preserve_original) and country_economy (GDP, sectors, trade). Covers exclude_paths, column_mappings, max_depth, and multi-file reading.",
       "categories": ["json"],
@@ -170,6 +181,7 @@
     {
       "id": "excel-sales-analytics",
       "path": "demos/excel/sales-analytics",
+      "iconPath": "icons/excel-sales-analytics.svg",
       "name": "Excel Sales Analytics — Superstore Orders",
       "summary": "Demonstrates all Excel reading features using 4 years of Superstore sales data (2014–2017, 16,676 orders). Five tables exercise sheet_name, has_header, skip_rows, max_rows, range, trim_whitespace, null_values, empty_cell_handling, infer_schema_rows, file_filter, multi-file reading, file_metadata, and automatic type inference for dates, numbers, and strings.",
       "categories": ["excel", "retail"],
@@ -181,6 +193,54 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "parquet-supply-chain",
+      "path": "demos/parquet/supply-chain",
+      "iconPath": "icons/parquet-supply-chain.svg",
+      "name": "Parquet Supply Chain — Order Analytics",
+      "summary": "Demonstrates Parquet reading features using 14 quarterly order files (2012–2016, 73,089 rows) organized in year-based subdirectories. Four tables exercise recursive directory scanning, file_filter for year/quarter extraction, max_rows for sampling, row_group_filter for predicate pushdown, file_metadata for traceability, and Parquet's self-describing schema.",
+      "categories": ["parquet", "retail"],
+      "tags": ["parquet", "intermediate", "recursive", "file-filter", "row-group-filter", "multi-file", "file-metadata"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 1288428,
+      "fileCount": 14,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "avro-iot-sensors",
+      "path": "demos/avro/iot-sensors",
+      "iconPath": "icons/avro-iot-sensors.svg",
+      "name": "Avro IoT Sensors — Smart Building Telemetry",
+      "summary": "Demonstrates Avro reading features using 5 building-floor sensor files (2,500 rows) with schema evolution (v1→v2 adds battery_pct, firmware_version) and mixed compression codecs (null, deflate). Three tables exercise multi-file reading, file_filter for single-floor extraction, max_rows for sampling, file_metadata, and Avro's self-describing schema with automatic type detection.",
+      "categories": ["avro", "iot"],
+      "tags": ["avro", "intermediate", "schema-evolution", "compression", "file-filter", "multi-file", "file-metadata"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 102679,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "orc-server-logs",
+      "path": "demos/orc/server-logs",
+      "iconPath": "icons/orc-server-logs.svg",
+      "name": "ORC Server Logs — HTTP Access Analytics",
+      "summary": "Demonstrates ORC reading features using 5 server access log files (2,500 rows) with schema evolution (v1→v2 adds request_body_bytes, cache_hit). Three tables exercise multi-file reading, file_filter for single-server extraction, max_rows for sampling, file_metadata, and ORC's self-describing schema with automatic type detection from file footers.",
+      "categories": ["orc", "iot"],
+      "tags": ["orc", "intermediate", "schema-evolution", "file-filter", "multi-file", "file-metadata"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 261717,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
     }
   ],
   "categories": [
@@ -237,6 +297,24 @@
       "name": "Excel",
       "icon": "file-spreadsheet",
       "description": "Excel format demos with sheet selection, cell ranges, multi-file reading, and type inference"
+    },
+    {
+      "id": "parquet",
+      "name": "Parquet",
+      "icon": "layers",
+      "description": "Parquet format demos with columnar reading, recursive scanning, row group filtering, and multi-file analytics"
+    },
+    {
+      "id": "avro",
+      "name": "Avro",
+      "icon": "file-binary",
+      "description": "Avro format demos with self-describing schema, schema evolution, compression codecs, and multi-file reading"
+    },
+    {
+      "id": "orc",
+      "name": "ORC",
+      "icon": "file-binary",
+      "description": "ORC format demos with self-describing schema, schema evolution, and multi-file reading"
     },
     {
       "id": "geospatial",

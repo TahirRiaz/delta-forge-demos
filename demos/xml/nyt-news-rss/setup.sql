@@ -53,7 +53,14 @@ OPTIONS (
         "exclude_paths": ["/rss/channel/image", "/rss/channel/title", "/rss/channel/link", "/rss/channel/description", "/rss/channel/language", "/rss/channel/copyright", "/rss/channel/lastBuildDate", "/rss/channel/pubDate"],
         "default_repeat_handling": "join_comma",
         "column_mappings": {
+            "/rss/channel/item/title": "title",
+            "/rss/channel/item/link": "link",
+            "/rss/channel/item/guid": "guid",
+            "/rss/channel/item/guid/@isPermaLink": "guid_permalink",
+            "/rss/channel/item/description": "description",
             "/rss/channel/item/creator": "author",
+            "/rss/channel/item/pubDate": "pubDate",
+            "/rss/channel/item/category": "category",
             "/rss/channel/item/credit": "media_credit",
             "/rss/channel/item/content/@url": "thumbnail_url",
             "/rss/channel/item/content/@height": "thumbnail_height",
@@ -105,7 +112,11 @@ OPTIONS (
         ],
         "exclude_paths": ["/rss/channel/image", "/rss/channel/title", "/rss/channel/link", "/rss/channel/description", "/rss/channel/language", "/rss/channel/copyright", "/rss/channel/lastBuildDate", "/rss/channel/pubDate"],
         "column_mappings": {
+            "/rss/channel/item/title": "title",
+            "/rss/channel/item/link": "link",
             "/rss/channel/item/creator": "author",
+            "/rss/channel/item/pubDate": "pubDate",
+            "/rss/channel/item/category": "category",
             "/rss/channel/item/category/@domain": "category_type"
         },
         "include_attributes": true,

@@ -52,6 +52,23 @@ OPTIONS (
             "/catalog/book/pages",
             "/catalog/book/series"
         ],
+        "column_mappings": {
+            "/catalog/book/@id": "attr_id",
+            "/catalog/book/@format": "attr_format",
+            "/catalog/book/author": "author",
+            "/catalog/book/title": "title",
+            "/catalog/book/genre": "genre",
+            "/catalog/book/price": "price",
+            "/catalog/book/publish_date": "publish_date",
+            "/catalog/book/description": "description",
+            "/catalog/book/isbn": "isbn",
+            "/catalog/book/language": "language",
+            "/catalog/book/publisher": "publisher",
+            "/catalog/book/rating": "rating",
+            "/catalog/book/edition": "edition",
+            "/catalog/book/pages": "pages",
+            "/catalog/book/series": "series"
+        },
         "include_attributes": true,
         "separator": "_",
         "max_depth": 10,
