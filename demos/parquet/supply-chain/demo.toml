@@ -14,7 +14,6 @@ categories = ["parquet", "retail"]
 tags = ["parquet", "intermediate", "recursive", "file-filter", "row-group-filter", "multi-file", "file-metadata"]
 difficulty = "intermediate"
 estimated_time_minutes = 8
-output_folder = "df-demo"
 
 [demo.variables]
 data_path = { description = "Path to the demo directory containing the orders/ subdirectory with Parquet files", required = true }
