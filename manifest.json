@@ -241,6 +241,102 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-patient-demographics",
+      "path": "demos/fhir/fhir-patient-demographics",
+      "iconPath": "icons/fhir-patient-demographics.svg",
+      "name": "FHIR Patient Demographics — Basics",
+      "summary": "Demonstrates FHIR R5 Patient resource ingestion from both bulk NDJSON exports (50 patients) and individual JSON files (7 detailed patients). Two tables show flat bulk demographics vs rich nested FHIR data with names, telecom, addresses, and managing organizations. Covers NDJSON format, column_mappings, schema evolution, and file_metadata.",
+      "categories": ["healthcare", "fhir", "json"],
+      "tags": ["fhir", "healthcare", "json", "beginner", "patient", "demographics", "ndjson", "column-mappings"],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 265646,
+      "fileCount": 8,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-clinical-observations",
+      "path": "demos/fhir/fhir-clinical-observations",
+      "iconPath": "icons/fhir-clinical-observations.svg",
+      "name": "FHIR Clinical Observations — Vital Signs & Lab Results",
+      "summary": "Demonstrates FHIR R5 Observation resource ingestion across vital signs (body weight, height, BMI, blood pressure, temperature, SpO2), lab results (glucose, CO2, hemoglobin), and clinical assessments (Glasgow Coma Scale). 100 bulk heart rate readings plus 14 individual clinical observations. Covers deep nested JSON flattening, schema evolution across observation types, and multi-file reading.",
+      "categories": ["healthcare", "fhir", "json"],
+      "tags": ["fhir", "healthcare", "json", "intermediate", "observation", "vital-signs", "lab-results", "ndjson", "nested-json"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 104620,
+      "fileCount": 15,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-medications-prescriptions",
+      "path": "demos/fhir/fhir-medications-prescriptions",
+      "iconPath": "icons/fhir-medications-prescriptions.svg",
+      "name": "FHIR Medications — Prescriptions & Coverage",
+      "summary": "Demonstrates FHIR R5 MedicationRequest and Coverage resource ingestion. 12 prescriptions with contained Medication resources, dosage instructions, dispense requests, and substitution rules. 4 Coverage resources with insurance classes and beneficiary references. Covers json_paths for preserving complex subtrees, contained resources, and deep FHIR nesting.",
+      "categories": ["healthcare", "fhir", "json"],
+      "tags": ["fhir", "healthcare", "json", "intermediate", "medication", "prescription", "coverage", "insurance", "nested-json", "contained-resources"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 128341,
+      "fileCount": 16,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-clinical-records",
+      "path": "demos/fhir/fhir-clinical-records",
+      "iconPath": "icons/fhir-clinical-records.svg",
+      "name": "FHIR Clinical Records — Conditions, Procedures & Allergies",
+      "summary": "Demonstrates advanced FHIR R5 resource ingestion across three clinical resource types: 8 Condition resources (diagnoses with SNOMED CT coding, severity, body site), 8 Procedure resources (surgeries with performers and outcomes), and 6 AllergyIntolerance resources (allergies with reaction history and criticality). Three tables showcase multi-resource-type directory scanning, deep nested arrays, and cross-resource references.",
+      "categories": ["healthcare", "fhir", "json"],
+      "tags": ["fhir", "healthcare", "json", "advanced", "condition", "procedure", "allergy", "clinical", "snomed", "multi-resource", "deep-nesting"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 103830,
+      "fileCount": 22,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-xml-clinical-resources",
+      "path": "demos/fhir/fhir-xml-clinical-resources",
+      "iconPath": "icons/fhir-xml-clinical-resources.svg",
+      "name": "FHIR XML — Clinical Patients & Observations",
+      "summary": "Demonstrates HL7 FHIR R4 clinical data in native XML format. FHIR XML stores all primitive values as @value attributes. 8 Patient and 8 Observation XML files showcase FHIR namespace handling, @value extraction, exclude_paths for narrative XHTML, xml_paths for component/referenceRange subtrees, repeating element join_comma, deep XPath column_mappings, and schema evolution.",
+      "categories": ["healthcare", "fhir", "xml"],
+      "tags": ["fhir", "healthcare", "xml", "intermediate", "patient", "observation", "namespace", "attribute-extraction", "xpath", "schema-evolution"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 46658,
+      "fileCount": 16,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "pseudonymisation-healthcare",
+      "path": "demos/pseudonymisation/pseudonymisation-healthcare",
+      "iconPath": "icons/pseudonymisation-healthcare.svg",
+      "name": "Pseudonymisation — Healthcare HL7, FHIR & EDI",
+      "summary": "Demonstrates GDPR-compliant pseudonymisation across HL7 v2 ADT patients, FHIR R4 Patient resources, and EDI HIPAA X12 claims. All 7 transform types (keyed_hash, encrypt, redact, generalize, tokenize, mask, hash), wildcard column patterns (address_*, *_name), scoped linkability (person, relationship, transaction), APPLY for permanent de-identification, and HIPAA Safe Harbor compliance mapping.",
+      "categories": ["healthcare", "pseudonymisation"],
+      "tags": ["pseudonymisation", "healthcare", "hl7", "fhir", "edi", "hipaa", "gdpr", "data-protection", "keyed-hash", "encrypt", "redact", "tokenize", "mask", "generalize", "compliance"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
     }
   ],
   "categories": [
@@ -321,6 +417,18 @@
       "name": "Geospatial",
       "icon": "globe",
       "description": "Geospatial and H3 spatial indexing demos with coordinate conversion, polyfill, and spatial joins"
+    },
+    {
+      "id": "fhir",
+      "name": "FHIR",
+      "icon": "flame",
+      "description": "FHIR healthcare resource demos in JSON, NDJSON, and XML formats with Patient, Observation, MedicationRequest, Condition, Procedure, AllergyIntolerance, and Coverage resources"
+    },
+    {
+      "id": "pseudonymisation",
+      "name": "Pseudonymisation",
+      "icon": "shield",
+      "description": "Data protection demos with GDPR-compliant pseudonymisation rules, HIPAA Safe Harbor de-identification, and compliance mapping"
     }
   ]
 }
