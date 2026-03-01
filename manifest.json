@@ -179,6 +179,22 @@
       "updatedAt": "2026-02-26T12:00:00Z"
     },
     {
+      "id": "json-subtree-capture",
+      "path": "demos/json/json-subtree-capture",
+      "iconPath": "icons/json-subtree-capture.svg",
+      "name": "JSON Subtree Capture — json_paths",
+      "summary": "Demonstrates json_paths for capturing complex JSON subtrees as serialized string columns instead of flattening. Two tables show the same property listing data: one with location and pricing subtrees captured as JSON blobs (json_paths), one fully flattened for comparison. Covers json_paths, column_mappings, include_paths, and multi-file reading.",
+      "categories": ["json"],
+      "tags": ["json", "intermediate", "json-paths", "subtree-capture", "column-mappings", "nested-json"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 5112,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-01T12:00:00Z"
+    },
+    {
       "id": "json-country-factbook",
       "path": "demos/json/country-factbook",
       "iconPath": "icons/json-country-factbook.svg",
