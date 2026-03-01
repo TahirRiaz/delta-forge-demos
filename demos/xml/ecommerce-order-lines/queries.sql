@@ -2,7 +2,7 @@
 -- XML E-Commerce Order Line Explosion — Verification Queries
 -- ============================================================================
 -- Each query verifies a specific XML feature: deep nesting, explode_paths,
--- CDATA, exclude_paths, column_mappings, preserve_original, xml_paths.
+-- CDATA, exclude_paths, column_mappings, xml_paths.
 -- ============================================================================
 
 
@@ -94,19 +94,7 @@ WHERE table_name = 'order_lines'
 
 
 -- ============================================================================
--- 8. PRESERVE ORIGINAL — _xml_source column exists and is non-NULL
--- ============================================================================
-
-SELECT 'preserve_original' AS check_name,
-       COUNT(*) FILTER (WHERE _xml_source IS NOT NULL) AS actual,
-       11 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE _xml_source IS NOT NULL) = 11
-            THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.xml.order_lines;
-
-
--- ============================================================================
--- 9. ORDER SUMMARY — 5 rows, one per order
+-- 8. ORDER SUMMARY — 5 rows, one per order
 -- ============================================================================
 
 SELECT 'summary_rows' AS check_name,
@@ -117,7 +105,7 @@ FROM {{zone_name}}.xml.order_summary;
 
 
 -- ============================================================================
--- 10. BROWSE ORDER SUMMARY — see per-order view
+-- 9. BROWSE ORDER SUMMARY — see per-order view
 -- ============================================================================
 
 SELECT order_id, order_status, customer, order_date, item, shipping_total
@@ -126,7 +114,7 @@ ORDER BY order_id;
 
 
 -- ============================================================================
--- 11. XML_PATHS — customer column contains JSON string (not flattened)
+-- 10. XML_PATHS — customer column contains JSON string (not flattened)
 -- ============================================================================
 -- The customer subtree is preserved as a JSON blob via xml_paths +
 -- nested_output_format: json.
@@ -139,7 +127,7 @@ FROM {{zone_name}}.xml.order_summary;
 
 
 -- ============================================================================
--- 12. LINE ITEM ANALYTICS — total quantity ordered by product
+-- 11. LINE ITEM ANALYTICS — total quantity ordered by product
 -- ============================================================================
 
 SELECT product,
@@ -151,7 +139,7 @@ ORDER BY total_qty DESC;
 
 
 -- ============================================================================
--- 13. REVENUE BY ORDER — join quantity and price
+-- 12. REVENUE BY ORDER — join quantity and price
 -- ============================================================================
 
 SELECT order_id, customer_name,
@@ -163,7 +151,7 @@ ORDER BY order_total DESC;
 
 
 -- ============================================================================
--- 14. SUMMARY — All checks
+-- 13. SUMMARY — All checks
 -- ============================================================================
 
 SELECT 'exploded_rows' AS check_name,

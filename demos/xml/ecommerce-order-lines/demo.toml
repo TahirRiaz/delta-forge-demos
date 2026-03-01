@@ -5,7 +5,7 @@ version = "1.0.0"
 author = "Delta Forge Team"
 description = """
 Demonstrates deep XML nesting (3+ levels), explode_paths for one-row-per-line-item, \
-CDATA sections with embedded HTML, exclude_paths, column_mappings, preserve_original, \
+CDATA sections with embedded HTML, exclude_paths, column_mappings, \
 xml_paths (keep subtrees as JSON), and self-closing flag elements. Two daily order \
 batch exports contain 5 orders with 11 line items, each with nested variant \
 (size/color), CDATA product descriptions, optional <gift_wrap/> and <express/> \
@@ -13,7 +13,7 @@ flags, and an internal_audit block that is excluded from analytics. Two tables \
 show the same data: one exploded to line items, one summarized per order.
 """
 categories = ["xml", "retail"]
-tags = ["xml", "advanced", "explode", "cdata", "deep-nesting", "column-mappings", "exclude-paths", "preserve-original", "xml-paths", "ecommerce"]
+tags = ["xml", "advanced", "explode", "cdata", "deep-nesting", "column-mappings", "exclude-paths", "xml-paths", "ecommerce"]
 difficulty = "advanced"
 estimated_time_minutes = 10
 

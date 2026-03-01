@@ -11,7 +11,6 @@
 --   - CDATA sections: HTML-embedded product descriptions
 --   - exclude_paths: internal_audit block hidden from analytics
 --   - column_mappings: deep XPaths → friendly column names
---   - preserve_original: source XML kept per row for audit
 --   - xml_paths: customer subtree kept as JSON blob (not flattened)
 --   - nested_output_format: JSON for kept subtrees
 --   - default_repeat_handling: count (items per order in summary)
@@ -31,7 +30,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
 -- Each <item> within each <order> becomes its own row. Order-level fields
 -- (order_id, status, customer_name, order_date) are duplicated on each row.
 -- The internal_audit block is excluded. Deep variant paths are mapped to
--- friendly names (item_size, item_color). Source XML preserved per row.
+-- friendly names (item_size, item_color).
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.order_lines
 USING XML
@@ -78,7 +77,6 @@ OPTIONS (
         "include_attributes": true,
         "separator": "_",
         "max_depth": 10,
-        "preserve_original": true,
         "strip_namespace_prefixes": true
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
