@@ -8,7 +8,7 @@
 --   - JSON array format (single file, multi-line)
 --   - include_paths (selective field extraction)
 --   - column_mappings (rename $.first → first_name, $.last → last_name, etc.)
---   - type_hints ($.created_at → Timestamp)
+--   - infer_types (automatic type detection)
 --   - file_metadata (df_file_name, df_row_number)
 -- ============================================================================
 
@@ -25,7 +25,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- A CRM system exported its customer database as a JSON array. Each element
 -- is a flat object with id, email, first name, last name, company, signup
 -- date, and country. Column mappings rename short field names to descriptive
--- column names. The created_at field is typed as Timestamp.
+-- column names. Type inference handles automatic timestamp detection.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.customers
 USING JSON
@@ -50,10 +50,7 @@ OPTIONS (
         "max_depth": 1,
         "separator": "_",
         "default_array_handling": "to_json",
-        "infer_types": true,
-        "type_hints": {
-            "$.created_at": "Timestamp"
-        }
+        "infer_types": true
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );

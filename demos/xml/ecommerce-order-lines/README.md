@@ -1,6 +1,6 @@
 # XML E-Commerce — Order Line Explosion
 
-Demonstrates how Delta Forge handles deeply nested XML with explode_paths, CDATA sections, exclude_paths, column_mappings, and xml_paths. Two daily order batch exports are read into an exploded line-item table and a per-order summary table.
+Demonstrates how Delta Forge handles deeply nested XML with explode_paths, CDATA sections, exclude_paths, column_mappings, and default_repeat_handling. Two daily order batch exports are read into an exploded line-item table and a per-order summary table.
 
 ## Data Story
 
@@ -62,20 +62,22 @@ Exploded via `explode_paths`. Order-level fields duplicated per item.
 
 ### `order_summary` — One row per order (5 rows)
 
-Non-exploded. Repeating items counted. Customer kept as JSON blob.
+Non-exploded. Repeating items counted. Customer fields flattened.
 
 | Column | Source | Notes |
 |--------|--------|-------|
 | `order_id` | `@id` | Column mapping |
 | `order_status` | `@status` | Column mapping |
-| `customer` | `customer/*` | Kept as JSON string via `xml_paths` |
+| `customer_name` | `customer/name` | Flattened from customer subtree |
+| `customer_email` | `customer/email` | Flattened from customer subtree |
+| `customer_tier` | `customer/tier` | Flattened from customer subtree |
 | `order_date` | `order_date` | Order header |
-| `item` | `items/item` (count) | `default_repeat_handling: count` |
+| `item_count` | `items/item` (count) | `default_repeat_handling: count` |
 | `shipping_total` | `shipping_total` | Order total |
 
 ## How to Verify
 
-Run the **Summary** query (#13) to see PASS/FAIL for each check:
+Run the **Summary** query (#12) to see PASS/FAIL for each check:
 
 ```sql
 SELECT 'exploded_rows' AS check_name,
@@ -92,7 +94,5 @@ ORDER BY check_name;
 3. **CDATA sections** — `<![CDATA[<b>HTML</b>]]>` extracted as raw text with HTML preserved
 4. **exclude_paths** — `internal_audit` block (cost_center, margin_pct) hidden from both tables
 5. **column_mappings** — Deep XPaths renamed to friendly names (item_size, item_color, order_id)
-6. **xml_paths** — Customer subtree kept as JSON blob in summary table (not flattened)
-7. **nested_output_format** — JSON format for preserved subtrees
-8. **default_repeat_handling: count** — Line items counted per order in summary view
-9. **Self-closing elements** — `<gift_wrap/>` and `<express/>` extracted as columns
+6. **default_repeat_handling: count** — Line items counted per order in summary view
+7. **Self-closing elements** — `<gift_wrap/>` and `<express/>` extracted as columns

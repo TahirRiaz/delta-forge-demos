@@ -55,7 +55,7 @@ LIMIT 10;
 -- ============================================================================
 -- 5. SIGNUP DATE RANGE — Verify timestamps parsed correctly
 -- ============================================================================
--- All records have created_at values from 2014–2015. If type_hints worked,
+-- All records have created_at values from 2014–2015. With infer_types enabled,
 -- signup_date should be a proper timestamp enabling MIN/MAX.
 
 SELECT MIN(signup_date) AS earliest_signup,

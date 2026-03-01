@@ -2,7 +2,7 @@
 -- XML E-Commerce Order Line Explosion — Verification Queries
 -- ============================================================================
 -- Each query verifies a specific XML feature: deep nesting, explode_paths,
--- CDATA, exclude_paths, column_mappings, xml_paths.
+-- CDATA, exclude_paths, column_mappings, default_repeat_handling.
 -- ============================================================================
 
 
@@ -105,29 +105,17 @@ FROM {{zone_name}}.xml.order_summary;
 
 
 -- ============================================================================
--- 9. BROWSE ORDER SUMMARY — see per-order view
+-- 9. BROWSE ORDER SUMMARY — see per-order view with flattened customer
 -- ============================================================================
 
-SELECT order_id, order_status, customer, order_date, item, shipping_total
+SELECT order_id, order_status, customer_name, customer_email, customer_tier,
+       order_date, item_count, shipping_total
 FROM {{zone_name}}.xml.order_summary
 ORDER BY order_id;
 
 
 -- ============================================================================
--- 10. XML_PATHS — customer column contains JSON string (not flattened)
--- ============================================================================
--- The customer subtree is preserved as a JSON blob via xml_paths +
--- nested_output_format: json.
-
-SELECT 'customer_as_json' AS check_name,
-       COUNT(*) FILTER (WHERE customer LIKE '{%' OR customer LIKE '[%') AS actual,
-       CASE WHEN COUNT(*) FILTER (WHERE customer LIKE '{%' OR customer LIKE '[%') > 0
-            THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.xml.order_summary;
-
-
--- ============================================================================
--- 11. LINE ITEM ANALYTICS — total quantity ordered by product
+-- 10. LINE ITEM ANALYTICS — total quantity ordered by product
 -- ============================================================================
 
 SELECT product,
@@ -139,7 +127,7 @@ ORDER BY total_qty DESC;
 
 
 -- ============================================================================
--- 12. REVENUE BY ORDER — join quantity and price
+-- 11. REVENUE BY ORDER — join quantity and price
 -- ============================================================================
 
 SELECT order_id, customer_name,
@@ -151,7 +139,7 @@ ORDER BY order_total DESC;
 
 
 -- ============================================================================
--- 13. SUMMARY — All checks
+-- 12. SUMMARY — All checks
 -- ============================================================================
 
 SELECT 'exploded_rows' AS check_name,

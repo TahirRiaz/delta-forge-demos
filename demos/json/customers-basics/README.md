@@ -17,7 +17,7 @@ and proper types (timestamps, not strings) for reporting.
 | **JSON array format** | Single file containing a `[{...}, {...}]` array |
 | **include_paths** | Select only the 7 needed fields from each object |
 | **column_mappings** | `$.first` → `first_name`, `$.last` → `last_name`, `$.created_at` → `signup_date` |
-| **type_hints** | `$.created_at` → Timestamp (enables MIN/MAX date operations) |
+| **infer_types** | Automatic type detection (timestamps, integers, strings) |
 | **max_depth** | Set to 1 (flat data, no nested objects) |
 | **file_metadata** | `df_file_name` and `df_row_number` injected per row |
 
@@ -54,7 +54,7 @@ and proper types (timestamps, not strings) for reporting.
 | Row count | 200 | JSON array length |
 | first_name populated | 200 non-NULL | column_mappings applied |
 | last_name populated | 200 non-NULL | column_mappings applied |
-| signup_date populated | 200 non-NULL | column_mappings + type_hints |
+| signup_date populated | 200 non-NULL | column_mappings + infer_types |
 | Customer 1 | Torrey Veum, Switzerland | Data file spot-check |
 | File metadata | All rows have df_file_name | file_metadata config |
 

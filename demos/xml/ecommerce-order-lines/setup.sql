@@ -3,7 +3,7 @@
 -- ============================================================================
 -- Creates two external tables from 2 daily order batch XML files:
 --   1. order_lines   — exploded: one row per line item (11 rows)
---   2. order_summary — one row per order with item count and customer JSON (5 rows)
+--   2. order_summary — one row per order with item count (5 rows)
 --
 -- Demonstrates:
 --   - Deep nesting (3+ levels): order/items/item/variant/color
@@ -11,8 +11,6 @@
 --   - CDATA sections: HTML-embedded product descriptions
 --   - exclude_paths: internal_audit block hidden from analytics
 --   - column_mappings: deep XPaths → friendly column names
---   - xml_paths: customer subtree kept as JSON blob (not flattened)
---   - nested_output_format: JSON for kept subtrees
 --   - default_repeat_handling: count (items per order in summary)
 --   - Self-closing elements: <gift_wrap/> and <express/> flags
 -- ============================================================================
@@ -89,8 +87,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.xml.order_lines TO USER {{current_user}};
 -- TABLE 2: order_summary — One row per order (5 total)
 -- ============================================================================
 -- Non-exploded view: one row per <order>. Repeating <item> elements are
--- counted (not flattened). The customer subtree is kept as a JSON string
--- blob via xml_paths. Internal audit is excluded.
+-- counted (not flattened). Customer fields are flattened normally.
+-- Internal audit is excluded.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.order_summary
 USING XML
@@ -101,7 +99,9 @@ OPTIONS (
         "include_paths": [
             "/orders/order/@id",
             "/orders/order/@status",
-            "/orders/order/customer",
+            "/orders/order/customer/name",
+            "/orders/order/customer/email",
+            "/orders/order/customer/tier",
             "/orders/order/order_date",
             "/orders/order/items/item",
             "/orders/order/gift_wrap",
@@ -109,14 +109,15 @@ OPTIONS (
             "/orders/order/shipping_total"
         ],
         "exclude_paths": ["/orders/order/internal_audit"],
-        "xml_paths": ["/orders/order/customer"],
         "default_repeat_handling": "count",
         "column_mappings": {
             "/orders/order/@id": "order_id",
             "/orders/order/@status": "order_status",
-            "/orders/order/customer": "customer",
+            "/orders/order/customer/name": "customer_name",
+            "/orders/order/customer/email": "customer_email",
+            "/orders/order/customer/tier": "customer_tier",
             "/orders/order/order_date": "order_date",
-            "/orders/order/items/item": "item",
+            "/orders/order/items/item": "item_count",
             "/orders/order/gift_wrap": "gift_wrap",
             "/orders/order/express": "express",
             "/orders/order/shipping_total": "shipping_total"
@@ -124,7 +125,6 @@ OPTIONS (
         "include_attributes": true,
         "separator": "_",
         "max_depth": 10,
-        "nested_output_format": "json",
         "strip_namespace_prefixes": true
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'

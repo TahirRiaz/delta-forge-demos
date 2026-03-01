@@ -5,12 +5,12 @@ version = "1.0.0"
 author = "Delta Forge Team"
 description = """\
 Demonstrates JSON fundamentals: creating an external table from a JSON array \
-file, applying column mappings for clean names, and using type hints for \
+file, applying column mappings for clean names, and using type inference for \
 proper timestamp handling. A CRM customer export with 200 records shows \
 include_paths, column_mappings, and file_metadata features.
 """
 categories = ["json"]
-tags = ["json", "beginner", "column-mappings", "type-hints", "basics"]
+tags = ["json", "beginner", "column-mappings", "type-inference", "basics"]
 difficulty = "beginner"
 estimated_time_minutes = 5
 
