@@ -93,8 +93,8 @@ WHERE df_file_name IS NOT NULL;
 
 SELECT status_code,
        COUNT(*) AS request_count,
-       ROUND(AVG(response_time_ms), 0) AS avg_response_ms,
-       ROUND(AVG(response_bytes), 0) AS avg_response_bytes
+       ROUND(AVG(CAST(response_time_ms AS DOUBLE)), 0) AS avg_response_ms,
+       ROUND(AVG(CAST(response_bytes AS DOUBLE)), 0) AS avg_response_bytes
 FROM {{zone_name}}.orc.all_requests
 GROUP BY status_code
 ORDER BY request_count DESC;
@@ -107,7 +107,7 @@ ORDER BY request_count DESC;
 SELECT endpoint,
        COUNT(*) AS request_count,
        SUM(CASE WHEN status_code >= 400 THEN 1 ELSE 0 END) AS error_count,
-       ROUND(AVG(response_time_ms), 0) AS avg_response_ms
+       ROUND(AVG(CAST(response_time_ms AS DOUBLE)), 0) AS avg_response_ms
 FROM {{zone_name}}.orc.all_requests
 GROUP BY endpoint
 ORDER BY request_count DESC

@@ -100,9 +100,9 @@ WHERE df_file_name IS NOT NULL;
 -- ============================================================================
 
 SELECT floor, zone,
-       ROUND(AVG(temperature_c), 1) AS avg_temp_c,
-       ROUND(AVG(humidity_pct), 1) AS avg_humidity,
-       ROUND(AVG(co2_ppm), 0) AS avg_co2
+       ROUND(AVG(CAST(temperature_c AS DOUBLE)), 1) AS avg_temp_c,
+       ROUND(AVG(CAST(humidity_pct AS DOUBLE)), 1) AS avg_humidity,
+       ROUND(AVG(CAST(co2_ppm AS DOUBLE)), 0) AS avg_co2
 FROM {{zone_name}}.avro.all_readings
 GROUP BY floor, zone
 ORDER BY floor, zone;
@@ -114,8 +114,8 @@ ORDER BY floor, zone;
 
 SELECT floor,
        COUNT(*) AS total_readings,
-       SUM(CASE WHEN occupancy THEN 1 ELSE 0 END) AS occupied_readings,
-       ROUND(SUM(CASE WHEN occupancy THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) AS occupancy_pct
+       SUM(CASE WHEN CAST(occupancy AS BOOLEAN) THEN 1 ELSE 0 END) AS occupied_readings,
+       ROUND(SUM(CASE WHEN CAST(occupancy AS BOOLEAN) THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) AS occupancy_pct
 FROM {{zone_name}}.avro.all_readings
 GROUP BY floor
 ORDER BY floor;

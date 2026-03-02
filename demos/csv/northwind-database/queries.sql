@@ -28,7 +28,7 @@
 SELECT
     c."companyName",
     COUNT(DISTINCT o."orderID") AS order_count,
-    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_value
+    ROUND(SUM(CAST(od."unitPrice" AS DOUBLE) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS DOUBLE))), 2) AS total_value
 FROM {{zone_name}}.csv.nw_customers c
 JOIN {{zone_name}}.csv.nw_orders o ON c."customerID" = o."customerID"
 JOIN {{zone_name}}.csv.nw_order_details od ON o."orderID" = od."orderID"
@@ -55,7 +55,7 @@ LIMIT 10;
 SELECT
     cat."categoryName",
     COUNT(DISTINCT p."productID") AS product_count,
-    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_revenue
+    ROUND(SUM(CAST(od."unitPrice" AS DOUBLE) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS DOUBLE))), 2) AS total_revenue
 FROM {{zone_name}}.csv.nw_order_details od
 JOIN {{zone_name}}.csv.nw_products p ON od."productID" = p."productID"
 JOIN {{zone_name}}.csv.nw_categories cat ON p."categoryID" = cat."categoryID"
@@ -83,7 +83,7 @@ SELECT
     e."firstName" || ' ' || e."lastName" AS employee_name,
     e.title,
     COUNT(DISTINCT o."orderID") AS orders_handled,
-    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_sales
+    ROUND(SUM(CAST(od."unitPrice" AS DOUBLE) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS DOUBLE))), 2) AS total_sales
 FROM {{zone_name}}.csv.nw_employees e
 JOIN {{zone_name}}.csv.nw_orders o ON e."employeeID" = o."employeeID"
 JOIN {{zone_name}}.csv.nw_order_details od ON o."orderID" = od."orderID"
@@ -110,7 +110,7 @@ SELECT
     EXTRACT(YEAR FROM o."orderDate") AS year,
     EXTRACT(MONTH FROM o."orderDate") AS month,
     COUNT(*) AS order_count,
-    ROUND(SUM(o.freight), 2) AS total_freight
+    ROUND(SUM(CAST(o.freight AS DOUBLE)), 2) AS total_freight
 FROM {{zone_name}}.csv.nw_orders o
 GROUP BY year, month
 ORDER BY year, month;
@@ -137,9 +137,9 @@ SELECT
 FROM {{zone_name}}.csv.nw_products p
 JOIN {{zone_name}}.csv.nw_categories cat ON p."categoryID" = cat."categoryID"
 JOIN {{zone_name}}.csv.nw_suppliers s ON p."supplierID" = s."supplierID"
-WHERE p."unitsInStock" < p."reorderLevel"
-  AND p.discontinued = 0
-ORDER BY (p."reorderLevel" - p."unitsInStock") DESC;
+WHERE CAST(p."unitsInStock" AS INT) < CAST(p."reorderLevel" AS INT)
+  AND CAST(p.discontinued AS INT) = 0
+ORDER BY (CAST(p."reorderLevel" AS INT) - CAST(p."unitsInStock" AS INT)) DESC;
 
 
 -- ============================================================================
@@ -155,8 +155,8 @@ ORDER BY (p."reorderLevel" - p."unitsInStock") DESC;
 SELECT
     sh."companyName" AS shipper,
     COUNT(DISTINCT o."orderID") AS shipments,
-    ROUND(AVG(o.freight), 2) AS avg_freight,
-    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_order_value
+    ROUND(AVG(CAST(o.freight AS DOUBLE)), 2) AS avg_freight,
+    ROUND(SUM(CAST(od."unitPrice" AS DOUBLE) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS DOUBLE))), 2) AS total_order_value
 FROM {{zone_name}}.csv.nw_orders o
 JOIN {{zone_name}}.csv.nw_shippers sh ON o."shipVia" = sh."shipperID"
 JOIN {{zone_name}}.csv.nw_order_details od ON o."orderID" = od."orderID"
@@ -180,7 +180,7 @@ SELECT
     c.country,
     COUNT(DISTINCT c."customerID") AS customer_count,
     COUNT(DISTINCT o."orderID") AS order_count,
-    ROUND(AVG(o.freight), 2) AS avg_freight
+    ROUND(AVG(CAST(o.freight AS DOUBLE)), 2) AS avg_freight
 FROM {{zone_name}}.csv.nw_customers c
 JOIN {{zone_name}}.csv.nw_orders o ON c."customerID" = o."customerID"
 GROUP BY c.country
@@ -231,7 +231,7 @@ SELECT
     s."companyName" AS supplier,
     s.country,
     COUNT(DISTINCT p."productID") AS products_supplied,
-    ROUND(SUM(od."unitPrice" * od.quantity * (1 - od.discount)), 2) AS total_revenue
+    ROUND(SUM(CAST(od."unitPrice" AS DOUBLE) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS DOUBLE))), 2) AS total_revenue
 FROM {{zone_name}}.csv.nw_suppliers s
 JOIN {{zone_name}}.csv.nw_products p ON s."supplierID" = p."supplierID"
 JOIN {{zone_name}}.csv.nw_order_details od ON p."productID" = od."productID"

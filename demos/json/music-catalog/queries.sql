@@ -109,9 +109,9 @@ LIMIT 10;
 -- ============================================================================
 
 SELECT track_name, album_name, vendor_name,
-       ROUND(duration_ms / 60000.0, 1) AS minutes
+       ROUND(CAST(duration_ms AS DOUBLE) / 60000.0, 1) AS minutes
 FROM {{zone_name}}.json.album_tracks
-ORDER BY duration_ms DESC
+ORDER BY CAST(duration_ms AS DOUBLE) DESC
 LIMIT 10;
 
 
@@ -121,7 +121,7 @@ LIMIT 10;
 
 SELECT album_name, vendor_name,
        COUNT(*) AS tracks,
-       ROUND(SUM(track_price), 2) AS total_revenue
+       ROUND(SUM(CAST(track_price AS DOUBLE)), 2) AS total_revenue
 FROM {{zone_name}}.json.album_tracks
 GROUP BY album_name, vendor_name
 ORDER BY total_revenue DESC
@@ -187,7 +187,7 @@ SELECT check_name, result FROM (
 
     -- Check 8: All tracks have positive duration
     SELECT 'positive_duration' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE duration_ms <= 0) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE CAST(duration_ms AS DOUBLE) <= 0) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

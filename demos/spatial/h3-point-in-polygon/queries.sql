@@ -234,7 +234,7 @@ SELECT
     z.zone_type,
     z.surcharge_pct,
     COUNT(*) AS drivers_affected,
-    ROUND(COUNT(*) * z.surcharge_pct / 100.0, 0) AS equivalent_surcharge_rides
+    ROUND(COUNT(*) * CAST(z.surcharge_pct AS DOUBLE) / 100.0, 0) AS equivalent_surcharge_rides
 FROM {{zone_name}}.spatial.driver_cells d
 INNER JOIN {{zone_name}}.spatial.zone_cells z ON d.h3_cell = z.h3_cell
 GROUP BY z.zone_type, z.surcharge_pct

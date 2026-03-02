@@ -44,8 +44,8 @@ ORDER BY df_file_name;
 
 SELECT df_file_name AS source_file,
        COUNT(*) AS orders,
-       ROUND(SUM("Sales"), 2) AS total_sales,
-       ROUND(SUM("Profit"), 2) AS total_profit
+       ROUND(SUM(CAST("Sales" AS DOUBLE)), 2) AS total_sales,
+       ROUND(SUM(CAST("Profit" AS DOUBLE)), 2) AS total_profit
 FROM {{zone_name}}.excel.all_orders
 GROUP BY df_file_name
 ORDER BY df_file_name;
@@ -123,9 +123,9 @@ ORDER BY df_file_name;
 
 SELECT "Region",
        COUNT(*) AS orders,
-       ROUND(SUM("Sales"), 2) AS total_sales,
-       ROUND(SUM("Profit"), 2) AS total_profit,
-       ROUND(AVG("Discount"), 3) AS avg_discount
+       ROUND(SUM(CAST("Sales" AS DOUBLE)), 2) AS total_sales,
+       ROUND(SUM(CAST("Profit" AS DOUBLE)), 2) AS total_profit,
+       ROUND(AVG(CAST("Discount" AS DOUBLE)), 3) AS avg_discount
 FROM {{zone_name}}.excel.all_orders
 GROUP BY "Region"
 ORDER BY total_sales DESC;
@@ -137,8 +137,8 @@ ORDER BY total_sales DESC;
 
 SELECT "Category", "Sub-Category",
        COUNT(*) AS orders,
-       ROUND(SUM("Sales"), 2) AS total_sales,
-       ROUND(SUM("Profit"), 2) AS total_profit
+       ROUND(SUM(CAST("Sales" AS DOUBLE)), 2) AS total_sales,
+       ROUND(SUM(CAST("Profit" AS DOUBLE)), 2) AS total_profit
 FROM {{zone_name}}.excel.all_orders
 GROUP BY "Category", "Sub-Category"
 ORDER BY total_profit DESC

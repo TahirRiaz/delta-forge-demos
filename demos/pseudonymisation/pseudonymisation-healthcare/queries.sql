@@ -174,8 +174,8 @@ WHERE st_1 = '837';
 SELECT
     st_1 AS transaction_type,
     COUNT(*) AS claim_count,
-    SUM(clm_2) AS total_charges,
-    AVG(bpr_2) AS avg_payment
+    SUM(CAST(clm_2 AS DOUBLE)) AS total_charges,
+    AVG(CAST(bpr_2 AS DOUBLE)) AS avg_payment
 FROM {{zone_name}}.pseudonymisation.edi_claims
 WHERE st_1 IN ('837', '835')
 GROUP BY st_1;

@@ -46,8 +46,8 @@ ORDER BY id;
 
 SELECT
     product_name,
-    SUM(quantity) AS total_quantity,
-    ROUND(SUM(quantity * unit_price), 2) AS total_revenue
+    SUM(CAST(quantity AS INT)) AS total_quantity,
+    ROUND(SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)), 2) AS total_revenue
 FROM {{zone_name}}.csv.sales
 GROUP BY product_name
 ORDER BY total_revenue DESC;
@@ -67,7 +67,7 @@ ORDER BY total_revenue DESC;
 SELECT
     sales_rep,
     COUNT(*) AS sale_count,
-    ROUND(SUM(quantity * unit_price), 2) AS total_revenue
+    ROUND(SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)), 2) AS total_revenue
 FROM {{zone_name}}.csv.sales
 GROUP BY sales_rep
 ORDER BY total_revenue DESC;
@@ -89,7 +89,7 @@ SELECT
     EXTRACT(YEAR FROM sale_date) AS year,
     EXTRACT(QUARTER FROM sale_date) AS quarter,
     COUNT(*) AS sale_count,
-    ROUND(SUM(quantity * unit_price), 2) AS total_revenue
+    ROUND(SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)), 2) AS total_revenue
 FROM {{zone_name}}.csv.sales
 GROUP BY year, quarter
 ORDER BY year, quarter;
