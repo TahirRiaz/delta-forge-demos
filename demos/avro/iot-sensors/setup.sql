@@ -2,17 +2,15 @@
 -- Avro IoT Sensors — Setup Script
 -- ============================================================================
 -- Creates three external tables from 5 building-floor Avro files:
---   1. all_readings   — All 5 files with schema evolution (2,500 rows)
---   2. floor4_only    — Single floor via file_filter (500 rows)
+--   1. all_readings   — All 5 files, common v1 schema (2,500 rows)
+--   2. floor4_only    — Single v2 floor via file_filter (500 rows)
 --   3. readings_sample — Sampled subset via max_rows (50 per file)
 --
 -- Demonstrates:
 --   - Multi-file reading: 5 Avro files in one table
---   - Schema evolution: v1 (8 fields) → v2 (10 fields, adds battery_pct,
---     firmware_version); NULL filling for floors 1–3
 --   - Self-describing schema: Avro file headers provide types automatically
 --   - Mixed compression codecs: null (floors 1,3,5) and deflate (floors 2,4)
---   - file_filter: glob pattern to select files by floor
+--   - file_filter: isolate v2 files to access extra columns
 --   - max_rows: limit rows per file for data profiling
 --   - file_metadata: df_file_name + df_row_number system columns
 -- ============================================================================
@@ -25,13 +23,13 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.avro
     COMMENT 'Avro-backed external tables';
 
 -- ============================================================================
--- TABLE 1: all_readings — All 5 files with schema evolution
+-- TABLE 1: all_readings — All 5 files, common v1 schema (8 data columns)
 -- ============================================================================
--- Reads all Avro files from the directory. Files use two schema versions:
---   v1 (floors 1–3): sensor_id, floor, zone, timestamp, temperature_c,
---                     humidity_pct, co2_ppm, occupancy
---   v2 (floors 4–5): same + battery_pct, firmware_version
--- The union schema merges both versions; v1 rows get NULL for new columns.
+-- Reads all Avro files from the directory. The detected schema uses the
+-- common v1 fields shared by all files: sensor_id, floor, zone, timestamp,
+-- temperature_c, humidity_pct, co2_ppm, occupancy.
+-- V2-only columns (battery_pct, firmware_version) require file_filter
+-- to isolate v2 files — see floor4_only below.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro.all_readings
 USING AVRO

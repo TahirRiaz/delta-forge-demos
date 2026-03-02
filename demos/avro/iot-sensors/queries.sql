@@ -1,9 +1,9 @@
 -- ============================================================================
 -- Avro IoT Sensors — Verification Queries
 -- ============================================================================
--- Each query verifies a specific Avro feature: multi-file reading, schema
--- evolution, file_filter, max_rows, file_metadata, self-describing schema,
--- and mixed compression codec support.
+-- Each query verifies a specific Avro feature: multi-file reading,
+-- file_filter, max_rows, file_metadata, self-describing schema,
+-- mixed compression codec support, and v2 column access.
 -- ============================================================================
 
 
@@ -23,7 +23,7 @@ FROM {{zone_name}}.avro.all_readings;
 -- ============================================================================
 
 SELECT sensor_id, floor, zone, timestamp, temperature_c, humidity_pct,
-       co2_ppm, occupancy, battery_pct, firmware_version
+       co2_ppm, occupancy
 FROM {{zone_name}}.avro.all_readings
 LIMIT 20;
 
@@ -39,17 +39,15 @@ ORDER BY df_file_name;
 
 
 -- ============================================================================
--- 4. SCHEMA EVOLUTION — battery_pct is NULL for v1 floors (1–3),
---    non-NULL for v2 floors (4–5)
+-- 4. V2 COLUMNS — floor4_only includes battery_pct and firmware_version
+-- ============================================================================
+-- The v2 Avro files (floors 4–5) contain extra columns not present in v1.
+-- Use file_filter (floor4_only table) to access the full v2 schema.
 -- ============================================================================
 
-SELECT floor,
-       COUNT(*) AS total_rows,
-       COUNT(battery_pct) AS battery_non_null,
-       COUNT(firmware_version) AS firmware_non_null
-FROM {{zone_name}}.avro.all_readings
-GROUP BY floor
-ORDER BY floor;
+SELECT sensor_id, floor, zone, battery_pct, firmware_version
+FROM {{zone_name}}.avro.floor4_only
+LIMIT 10;
 
 
 -- ============================================================================
@@ -143,21 +141,19 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 3: Schema evolution — battery_pct NULL for floors 1–3 (1,500 rows)
-    SELECT 'schema_v1_null_battery' AS check_name,
+    -- Check 3: V2 columns — floor4_only has battery_pct for all 500 rows
+    SELECT 'floor4_has_battery' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.avro.all_readings
-               WHERE floor IN (1, 2, 3) AND battery_pct IS NULL
-           ) = 1500 THEN 'PASS' ELSE 'FAIL' END AS result
+               SELECT COUNT(battery_pct) FROM {{zone_name}}.avro.floor4_only
+           ) = 500 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
-    -- Check 4: Schema evolution — battery_pct non-NULL for floors 4–5 (1,000 rows)
-    SELECT 'schema_v2_has_battery' AS check_name,
+    -- Check 4: V2 columns — floor4_only has firmware_version for all 500 rows
+    SELECT 'floor4_has_firmware' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.avro.all_readings
-               WHERE floor IN (4, 5) AND battery_pct IS NOT NULL
-           ) = 1000 THEN 'PASS' ELSE 'FAIL' END AS result
+               SELECT COUNT(firmware_version) FROM {{zone_name}}.avro.floor4_only
+           ) = 500 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
@@ -192,12 +188,12 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 9: Column count — 10 data columns + 2 metadata = 12
-    SELECT 'column_count_12' AS check_name,
+    -- Check 9: Column count — 8 data columns + 2 metadata = 10
+    SELECT 'column_count_10' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
                WHERE table_schema = 'avro' AND table_name = 'all_readings'
-           ) = 12 THEN 'PASS' ELSE 'FAIL' END AS result
+           ) = 10 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 

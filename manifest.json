@@ -268,7 +268,7 @@
       "tags": ["orc", "intermediate", "schema-evolution", "file-filter", "multi-file", "file-metadata"],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 6,
-      "dataSizeBytes": 261717,
+      "dataSizeBytes": 222482,
       "fileCount": 5,
       "author": "Delta Forge Team",
       "version": "1.0.0",
