@@ -2,8 +2,8 @@
 -- ORC Server Logs — Verification Queries
 -- ============================================================================
 -- Each query verifies a specific ORC feature: multi-file reading, schema
--- evolution, file_filter, max_rows, file_metadata, and self-describing schema
--- with automatic type detection from ORC file footers.
+-- evolution, LOCATION glob filtering, file_metadata, and self-describing
+-- schema with automatic type detection from ORC file footers.
 -- ============================================================================
 
 
@@ -54,10 +54,10 @@ ORDER BY server_name;
 
 
 -- ============================================================================
--- 5. FILE FILTER — api01_only has exactly 500 rows
+-- 5. LOCATION GLOB — api01_only has exactly 500 rows
 -- ============================================================================
 
-SELECT 'file_filter_api01' AS check_name,
+SELECT 'glob_filter_api01' AS check_name,
        COUNT(*) AS actual,
        500 AS expected,
        CASE WHEN COUNT(*) = 500 THEN 'PASS' ELSE 'FAIL' END AS result
@@ -65,7 +65,7 @@ FROM {{zone_name}}.orc.api01_only;
 
 
 -- ============================================================================
--- 6. FILE FILTER — api01_only has all v2 columns populated
+-- 6. LOCATION GLOB — api01_only has all v2 columns populated
 -- ============================================================================
 
 SELECT 'api01_v2_columns' AS check_name,
@@ -77,18 +77,7 @@ FROM {{zone_name}}.orc.api01_only;
 
 
 -- ============================================================================
--- 7. MAX ROWS — requests_sample is limited (50 rows per file × 5 files)
--- ============================================================================
-
-SELECT 'max_rows_sample' AS check_name,
-       COUNT(*) AS actual,
-       250 AS expected,
-       CASE WHEN COUNT(*) = 250 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.orc.requests_sample;
-
-
--- ============================================================================
--- 8. FILE METADATA — All rows have non-NULL df_file_name
+-- 7. FILE METADATA — All rows have non-NULL df_file_name
 -- ============================================================================
 
 SELECT 'file_metadata_populated' AS check_name,
@@ -99,7 +88,7 @@ WHERE df_file_name IS NOT NULL;
 
 
 -- ============================================================================
--- 9. ANALYTICS — HTTP status code distribution
+-- 8. ANALYTICS — HTTP status code distribution
 -- ============================================================================
 
 SELECT status_code,
@@ -112,7 +101,7 @@ ORDER BY request_count DESC;
 
 
 -- ============================================================================
--- 10. ANALYTICS — Top endpoints by request count
+-- 9. ANALYTICS — Top endpoints by request count
 -- ============================================================================
 
 SELECT endpoint,
@@ -126,7 +115,7 @@ LIMIT 10;
 
 
 -- ============================================================================
--- 11. SUMMARY — All checks in one query
+-- 10. SUMMARY — All checks in one query
 -- ============================================================================
 
 SELECT check_name, result FROM (
@@ -163,28 +152,21 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 5: File filter — api01_only has 500 rows
-    SELECT 'filter_api01_count' AS check_name,
+    -- Check 5: LOCATION glob — api01_only has 500 rows
+    SELECT 'glob_api01_count' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc.api01_only) = 500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
-    -- Check 6: Max rows — sample has 250 rows (50 × 5)
-    SELECT 'max_rows_250' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc.requests_sample) = 250
-                THEN 'PASS' ELSE 'FAIL' END AS result
-
-    UNION ALL
-
-    -- Check 7: File metadata populated for all rows
+    -- Check 6: File metadata populated for all rows
     SELECT 'file_metadata_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc.all_requests WHERE df_file_name IS NOT NULL) = 2500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
-    -- Check 8: Self-describing schema — request_id column exists
+    -- Check 7: Self-describing schema — request_id column exists
     SELECT 'schema_request_id_exists' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
@@ -194,19 +176,12 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 9: Column count — 13 data columns + 2 metadata = 15
+    -- Check 8: Column count — 13 data columns + 2 metadata = 15
     SELECT 'column_count_15' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
                WHERE table_schema = 'orc' AND table_name = 'all_requests'
            ) = 15 THEN 'PASS' ELSE 'FAIL' END AS result
-
-    UNION ALL
-
-    -- Check 10: Sample covers all 5 files
-    SELECT 'sample_all_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.orc.requests_sample) = 5
-                THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks
 ORDER BY check_name;

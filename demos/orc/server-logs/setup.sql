@@ -1,18 +1,16 @@
 -- ============================================================================
 -- ORC Server Logs — Setup Script
 -- ============================================================================
--- Creates three external tables from 5 server access log ORC files:
+-- Creates two external tables from 5 server access log ORC files:
 --   1. all_requests   — All 5 files with schema evolution (2,500 rows)
---   2. api01_only     — Single server via file_filter (500 rows)
---   3. requests_sample — Sampled subset via max_rows (50 per file)
+--   2. api01_only     — Single server via LOCATION glob (500 rows)
 --
 -- Demonstrates:
 --   - Multi-file reading: 5 ORC files in one table
 --   - Schema evolution: v1 (11 fields) → v2 (13 fields, adds
 --     request_body_bytes, cache_hit); NULL filling for web servers
 --   - Self-describing schema: ORC file footers provide types automatically
---   - file_filter: glob pattern to select files by server name
---   - max_rows: limit rows per file for data profiling
+--   - LOCATION glob: wildcard pattern to select files by name
 --   - file_metadata: df_file_name + df_row_number system columns
 -- ============================================================================
 
@@ -42,35 +40,16 @@ GRANT READ ON TABLE {{zone_name}}.orc.all_requests TO USER {{current_user}};
 
 
 -- ============================================================================
--- TABLE 2: api01_only — Single server via file_filter (500 rows)
+-- TABLE 2: api01_only — Single server via LOCATION glob (500 rows)
 -- ============================================================================
--- Uses file_filter to read only api-01_access.orc, which uses schema v2
--- (includes request_body_bytes and cache_hit).
+-- Uses a wildcard in LOCATION to read only api-01_access.orc, which uses
+-- schema v2 (includes request_body_bytes and cache_hit).
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc.api01_only
 USING ORC
-LOCATION '{{data_path}}'
+LOCATION '{{data_path}}/api-01*.orc'
 OPTIONS (
-    file_filter = 'api-01*',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.orc.api01_only;
 GRANT READ ON TABLE {{zone_name}}.orc.api01_only TO USER {{current_user}};
-
-
--- ============================================================================
--- TABLE 3: requests_sample — Data profiling via max_rows (50 per file)
--- ============================================================================
--- Limits to 50 rows per file for quick data profiling. With 5 files,
--- produces approximately 250 rows — enough to inspect data quality
--- without reading the full 2,500-row dataset.
--- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc.requests_sample
-USING ORC
-LOCATION '{{data_path}}'
-OPTIONS (
-    max_rows = '50',
-    file_metadata = '{"columns":["df_file_name","df_row_number"]}'
-);
-DETECT SCHEMA FOR TABLE {{zone_name}}.orc.requests_sample;
-GRANT READ ON TABLE {{zone_name}}.orc.requests_sample TO USER {{current_user}};

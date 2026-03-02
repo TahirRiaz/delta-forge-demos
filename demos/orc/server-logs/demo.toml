@@ -6,13 +6,13 @@ author = "Delta Forge Team"
 description = """\
 Demonstrates ORC reading features using 5 server access log files \
 (2,500 rows) with schema evolution and ORC's self-describing format. \
-Three tables exercise multi-file reading, schema evolution (v1→v2 adds \
-request_body_bytes and cache_hit), file_filter for single-server extraction, \
-max_rows for sampling, file_metadata for traceability, and ORC's automatic \
-type detection from file footers.
+Two tables exercise multi-file reading, schema evolution (v1→v2 adds \
+request_body_bytes and cache_hit), LOCATION glob for single-server \
+extraction, file_metadata for traceability, and ORC's automatic type \
+detection from file footers.
 """
 categories = ["orc", "server-logs"]
-tags = ["orc", "intermediate", "schema-evolution", "file-filter", "multi-file", "file-metadata"]
+tags = ["orc", "intermediate", "schema-evolution", "glob-filter", "multi-file", "file-metadata"]
 difficulty = "intermediate"
 estimated_time_minutes = 6
 

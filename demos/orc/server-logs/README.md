@@ -33,8 +33,7 @@ Rows from v1 files get `NULL` for `request_body_bytes` and `cache_hit`.
 | Table | Rows | Features |
 |-------|------|----------|
 | `all_requests` | 2,500 | Multi-file, schema evolution, file_metadata |
-| `api01_only` | 500 | file_filter, v2 schema with all columns |
-| `requests_sample` | 250 | max_rows (50 per file), data profiling |
+| `api01_only` | 500 | LOCATION glob, v2 schema with all columns |
 
 ## ORC Features Demonstrated
 
@@ -43,17 +42,15 @@ Rows from v1 files get `NULL` for `request_body_bytes` and `cache_hit`.
 | **Self-describing schema** | ORC file footers provide field names and types |
 | **Schema evolution** | v1→v2 adds `request_body_bytes` + `cache_hit`; NULL filling |
 | **Multi-file reading** | 5 files merged into one table |
-| **file_filter** | `api-01*` selects single server |
-| **max_rows** | 50 rows per file for sampling |
+| **LOCATION glob** | `api-01*.orc` selects single server |
 | **file_metadata** | `df_file_name`, `df_row_number` system columns |
 
 ## Queries
 
-11 queries with 10 automated PASS/FAIL checks covering:
+10 queries with 8 automated PASS/FAIL checks covering:
 - Total row count verification
 - Schema evolution NULL filling (web servers lack body_bytes/cache_hit)
-- File filter extraction (API server 01 only)
-- Max rows sampling
+- LOCATION glob extraction (API server 01 only)
 - File metadata population
 - Column count with union schema
 - HTTP status code distribution analytics
