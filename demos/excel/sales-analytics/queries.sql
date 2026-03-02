@@ -7,13 +7,13 @@
 
 
 -- ============================================================================
--- 1. TOTAL ROW COUNT — 16,676 orders across 4 files
+-- 1. TOTAL ROW COUNT — 9,994 orders across 4 files
 -- ============================================================================
 
 SELECT 'total_row_count' AS check_name,
        COUNT(*) AS actual,
-       16676 AS expected,
-       CASE WHEN COUNT(*) = 16676 THEN 'PASS' ELSE 'FAIL' END AS result
+       9994 AS expected,
+       CASE WHEN COUNT(*) = 9994 THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.excel.all_orders;
 
 
@@ -30,7 +30,7 @@ LIMIT 20;
 -- ============================================================================
 -- 3. ROWS PER FILE — Breakdown by source file
 -- ============================================================================
--- 2014: 1,993 | 2015: 2,102 | 2016: 2,587 | 2017: 9,994
+-- 2014: 1,993 | 2015: 2,102 | 2016: 2,587 | 2017: 3,312
 
 SELECT df_file_name, COUNT(*) AS row_count
 FROM {{zone_name}}.excel.all_orders
@@ -52,13 +52,13 @@ ORDER BY df_file_name;
 
 
 -- ============================================================================
--- 5. SINGLE FILE — orders_2017 has exactly 9,994 rows
+-- 5. SINGLE FILE — orders_2017 has exactly 3,312 rows
 -- ============================================================================
 
 SELECT 'single_file_2017' AS check_name,
        COUNT(*) AS actual,
-       9994 AS expected,
-       CASE WHEN COUNT(*) = 9994 THEN 'PASS' ELSE 'FAIL' END AS result
+       3312 AS expected,
+       CASE WHEN COUNT(*) = 3312 THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.excel.orders_2017;
 
 
@@ -91,8 +91,8 @@ LIMIT 10;
 
 SELECT 'trimmed_count' AS check_name,
        COUNT(*) AS actual,
-       16676 AS expected,
-       CASE WHEN COUNT(*) = 16676 THEN 'PASS' ELSE 'FAIL' END AS result
+       9994 AS expected,
+       CASE WHEN COUNT(*) = 9994 THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.excel.orders_trimmed;
 
 
@@ -151,9 +151,9 @@ LIMIT 10;
 
 SELECT check_name, result FROM (
 
-    -- Check 1: Total row count = 16,676
-    SELECT 'total_count_16676' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_orders) = 16676
+    -- Check 1: Total row count = 9,994
+    SELECT 'total_count_9994' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_orders) = 9994
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -165,9 +165,9 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 3: 2017 file has 9,994 rows
+    -- Check 3: 2017 file has 3,312 rows
     SELECT 'file_2017_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_2017) = 9994
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_2017) = 3312
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -184,7 +184,7 @@ SELECT check_name, result FROM (
 
     -- Check 5: Trimmed table has same count as all_orders
     SELECT 'trimmed_same_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_trimmed) = 16676
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_trimmed) = 9994
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -201,7 +201,7 @@ SELECT check_name, result FROM (
 
     -- Check 7: File metadata populated (all rows have df_file_name)
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_orders WHERE df_file_name IS NOT NULL) = 16676
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_orders WHERE df_file_name IS NOT NULL) = 9994
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

@@ -1,7 +1,7 @@
 # Excel Sales Analytics — Superstore Orders
 
 Demonstrates all Excel reading features using 4 years of Superstore sales data
-(2014–2017, 16,676 orders across 21 columns). Five tables exercise different
+(2014–2017, 9,994 orders across 21 columns). Five tables exercise different
 Excel options from the same underlying data.
 
 ## Data Story
@@ -34,10 +34,10 @@ using cell ranges, and handle data cleansing (whitespace trimming, null markers)
 
 | Object | Type | Rows | Purpose |
 |--------|------|------|---------|
-| `all_orders` | External Table | 16,676 | Unified view of all 4 files |
-| `orders_2017` | External Table | 9,994 | Single file via file_filter |
+| `all_orders` | External Table | 9,994 | Unified view of all 4 files |
+| `orders_2017` | External Table | 3,312 | Single file via file_filter |
 | `orders_range` | External Table | ~1,996 | Cell range A1:K500 (4 files × 499 rows) |
-| `orders_trimmed` | External Table | 16,676 | Whitespace trimming + custom null handling |
+| `orders_trimmed` | External Table | 9,994 | Whitespace trimming + custom null handling |
 | `orders_no_header` | External Table | 400 | Auto-generated column names (100/file × 4) |
 
 ## Schema
@@ -57,8 +57,8 @@ using cell ranges, and handle data cleansing (whitespace trimming, null markers)
 | `sales-data-2014.xlsx` | 2014 | 1,993 | 296 KB |
 | `sales-data-2015.xlsx` | 2015 | 2,102 | 311 KB |
 | `sales-data-2016.xlsx` | 2016 | 2,587 | 376 KB |
-| `sales-data-2017.xlsx` | 2017 | 9,994 | 574 KB |
-| **Total** | | **16,676** | **1.56 MB** |
+| `sales-data-2017.xlsx` | 2017 | 3,312 | 574 KB |
+| **Total** | | **9,994** | **1.56 MB** |
 
 21 columns per file: Row ID, Order ID, Order Date, Ship Date, Ship Mode,
 Customer ID, Customer Name, Segment, Country, City, State, Postal Code,
@@ -69,13 +69,13 @@ Discount, Profit.
 
 | Check | Expected | Source |
 |-------|----------|--------|
-| Total row count | 16,676 | Sum of all 4 files |
+| Total row count | 9,994 | Sum of all 4 files |
 | Source files | 4 distinct df_file_name | Multi-file reading |
-| 2017 file rows | 9,994 | file_filter single-file |
+| 2017 file rows | 3,312 | file_filter single-file |
 | Range columns | 11 (A–K) | range option |
-| Trimmed count | 16,676 | Same data, different options |
+| Trimmed count | 9,994 | Same data, different options |
 | No-header columns | column_0, column_1, ... | has_header=false |
-| File metadata | 16,676 non-NULL df_file_name | file_metadata config |
+| File metadata | 9,994 non-NULL df_file_name | file_metadata config |
 | Sales type | DOUBLE | Type inference |
 | Regions | 4 (Central, East, South, West) | Data spot-check |
 | No-header rows | 400 (100 × 4 files) | max_rows option |

@@ -2,8 +2,8 @@
 -- Excel Sales Analytics — Setup Script
 -- ============================================================================
 -- Creates five external tables from 4 Superstore sales XLSX files (2014–2017):
---   1. all_orders      — All 4 files unified (16,676 rows)
---   2. orders_2017     — Single file only (9,994 rows)
+--   1. all_orders      — All 4 files unified (9,994 rows)
+--   2. orders_2017     — Single file only (3,312 rows)
 --   3. orders_range    — Cell range A1:K500 (limited columns + rows)
 --   4. orders_trimmed  — Whitespace trimming + custom null values
 --   5. orders_no_header — No header row (auto-generated column names)
@@ -31,7 +31,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel
     COMMENT 'Excel-backed external tables';
 
 -- ============================================================================
--- TABLE 1: all_orders — All 4 files, full data (16,676 rows)
+-- TABLE 1: all_orders — All 4 files, full data (9,994 rows)
 -- ============================================================================
 -- Reads all 4 XLSX files from the directory. Selects the "Orders" sheet by
 -- name, enables file metadata for traceability, and samples 1000 rows for
@@ -51,7 +51,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.excel.all_orders TO USER {{current_user}};
 
 
 -- ============================================================================
--- TABLE 2: orders_2017 — Single file only (9,994 rows)
+-- TABLE 2: orders_2017 — Single file only (3,312 rows)
 -- ============================================================================
 -- Uses file_filter to read only the 2017 file from the same directory.
 -- Demonstrates single-file extraction from a multi-file location.
