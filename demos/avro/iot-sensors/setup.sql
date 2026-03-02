@@ -38,7 +38,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.avro.all_readings;
-GRANT READ ON TABLE {{zone_name}}.avro.all_readings TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.avro.all_readings TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -55,7 +55,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.avro.floor4_only;
-GRANT READ ON TABLE {{zone_name}}.avro.floor4_only TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.avro.floor4_only TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -73,4 +73,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.avro.readings_sample;
-GRANT READ ON TABLE {{zone_name}}.avro.readings_sample TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.avro.readings_sample TO USER {{current_user}};

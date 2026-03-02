@@ -36,7 +36,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.orc.all_requests;
-GRANT READ ON TABLE {{zone_name}}.orc.all_requests TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.orc.all_requests TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -52,4 +52,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 DETECT SCHEMA FOR TABLE {{zone_name}}.orc.api01_only;
-GRANT READ ON TABLE {{zone_name}}.orc.api01_only TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.orc.api01_only TO USER {{current_user}};
