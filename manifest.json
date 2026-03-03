@@ -513,6 +513,86 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "graph-flattened-mode",
+      "path": "demos/graph/graph-flattened-mode",
+      "iconPath": "icons/graph-flattened-mode.svg",
+      "name": "Graph Flattened Mode — Direct Column Access",
+      "summary": "Demonstrates the flattened property storage mode for graph tables. All vertex and edge properties stored as individual columns — fastest mode with full predicate pushdown. 5-person social graph with 6 directed friendships. Queries cover traversal, aggregation, 2-hop neighbors, reciprocal edges, and department connectivity.",
+      "categories": ["graph"],
+      "tags": ["graph", "delta-table", "flattened", "vertices", "edges", "traversal", "beginner"],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-json-mode",
+      "path": "demos/graph/graph-json-mode",
+      "iconPath": "icons/graph-json-mode.svg",
+      "name": "Graph JSON Mode — Schema-Free Properties",
+      "summary": "Demonstrates the JSON property storage mode for graph tables. All vertex and edge properties in a single JSON string column — most flexible mode for schema-free evolution. Same 5-person social graph with JSON extraction functions (json_get_str, json_get_int, json_get_float), dynamic property discovery, and array access.",
+      "categories": ["graph"],
+      "tags": ["graph", "delta-table", "json", "schema-free", "vertices", "edges", "intermediate"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-hybrid-mode",
+      "path": "demos/graph/graph-hybrid-mode",
+      "iconPath": "icons/graph-hybrid-mode.svg",
+      "name": "Graph Hybrid Mode — Columns + JSON Extras",
+      "summary": "Demonstrates the hybrid property storage mode for graph tables. Frequently queried properties as columns for fast access, optional/extensible properties in a JSON extras column. Same 5-person social graph showing mixed column + JSON access patterns and the balanced trade-off between performance and flexibility.",
+      "categories": ["graph"],
+      "tags": ["graph", "delta-table", "hybrid", "json", "vertices", "edges", "intermediate"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-social-network",
+      "path": "demos/graph/graph-social-network",
+      "iconPath": "icons/graph-social-network.svg",
+      "name": "Graph Social Network — 100-Node Company Graph",
+      "summary": "Large-scale graph analytics on a 100-employee company social network with 300+ directed connections across 8 departments and 5 cities. Deterministic generate_series() data generation. Queries cover degree centrality, department cross-pollination, influence scoring, 2-hop neighborhoods, team clustering, bridge detection, and mentor network analysis.",
+      "categories": ["graph"],
+      "tags": ["graph", "delta-table", "social-network", "analytics", "centrality", "generate-series", "advanced"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-cypher-queries",
+      "path": "demos/graph/graph-cypher-queries",
+      "iconPath": "icons/graph-cypher-queries.svg",
+      "name": "Graph Cypher Queries — Pattern Matching & Algorithms",
+      "summary": "Cypher query language demo on a 5-person social graph. Pattern matching (MATCH, WHERE, RETURN), variable-length paths, and 15+ graph algorithm procedures: PageRank, betweenness, closeness, degree centrality, connected components, Louvain community detection, triangle counting, shortest path, BFS/DFS, MST, and KNN similarity.",
+      "categories": ["graph"],
+      "tags": ["graph", "cypher", "pattern-matching", "algorithms", "pagerank", "pathfinding", "intermediate"],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
     }
   ],
   "categories": [
@@ -623,6 +703,12 @@
       "name": "Protocol Buffers",
       "icon": "file-binary",
       "description": "Protocol Buffers demos with proto3 binary deserialization, nested message flattening, repeated field handling, and enum decoding"
+    },
+    {
+      "id": "graph",
+      "name": "Graph",
+      "icon": "git-branch",
+      "description": "Graph property storage mode demos with flattened, JSON, and hybrid vertex/edge tables, traversal, centrality, and social network analytics"
     }
   ]
 }

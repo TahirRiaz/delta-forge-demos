@@ -1,0 +1,21 @@
+[demo]
+id = "graph-social-network"
+name = "Graph Social Network — 100-Node Company Graph"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Demonstrates large-scale graph analytics on a 100-employee company social \
+network with 300+ directed connections across 8 departments and 5 cities. \
+Uses deterministic generate_series() data generation. Queries cover degree \
+centrality, department cross-pollination, influence scoring, 2-hop \
+neighborhoods, team clustering, bridge detection, and comprehensive graph \
+statistics with PASS/FAIL verification.
+"""
+categories = ["graph"]
+tags = ["graph", "delta-table", "social-network", "analytics", "centrality", "generate-series", "advanced"]
+difficulty = "advanced"
+estimated_time_minutes = 8
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
