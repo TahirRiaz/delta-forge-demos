@@ -85,5 +85,5 @@ Run **Query #25 (Summary)** to see PASS/FAIL for all 10 checks. All should retur
 
 - **Cypher language** — declarative pattern matching instead of SQL JOINs
 - **15+ graph algorithms** — PageRank, betweenness, Louvain, shortest path, BFS/DFS, MST, KNN
-- **Explicit graph config** — `CONFIGURE GRAPH` defines vertex/edge column mappings
+- **Named graph definition** — `CREATE GRAPH` registers vertex/edge tables for Cypher and UI
 - **Same data, different lens** — compare SQL queries (flattened demo) vs Cypher queries (this demo)

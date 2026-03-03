@@ -81,15 +81,12 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user
 
 
 -- ============================================================================
--- STEP 3: Configure graph metadata
+-- STEP 3: Create named graph definition
 -- ============================================================================
--- Explicit graph configuration defines which columns are vertex IDs, edge
--- source/target. Weight lives inside JSON props, not as a dedicated column.
+-- Creates a graph definition coupling vertex and edge tables together.
+-- Weight lives inside JSON props, not as a dedicated column.
 -- ============================================================================
-CONFIGURE GRAPH {{zone_name}}.graph.friendships_json AS EDGE
-    SOURCE COLUMN src
-    TARGET COLUMN dst
+CREATE GRAPH IF NOT EXISTS json_demo
+    VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id
+    EDGE TABLE {{zone_name}}.graph.friendships_json SOURCE COLUMN src TARGET COLUMN dst
     DIRECTED;
-
-CONFIGURE GRAPH {{zone_name}}.graph.persons_json AS VERTEX
-    VERTEX ID COLUMN id;

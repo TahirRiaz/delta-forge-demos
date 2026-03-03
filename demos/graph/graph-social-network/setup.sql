@@ -226,19 +226,16 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.connections TO USER {{current_user}};
 -- and total degree for each employee. Higher degree = more connected.
 -- ============================================================================
 -- ============================================================================
--- STEP 3: Configure graph metadata
+-- STEP 3: Create named graph definition
 -- ============================================================================
--- Explicit graph configuration defines which columns are vertex IDs, edge
--- source/target, and weight. Avoids relying on auto-detection.
+-- Creates a graph definition coupling vertex and edge tables together.
+-- This appears in the Graph Tables page and enables graph algorithms.
 -- ============================================================================
-CONFIGURE GRAPH {{zone_name}}.graph.connections AS EDGE
-    SOURCE COLUMN src
-    TARGET COLUMN dst
+CREATE GRAPH IF NOT EXISTS social_network
+    VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id
+    EDGE TABLE {{zone_name}}.graph.connections SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     DIRECTED;
-
-CONFIGURE GRAPH {{zone_name}}.graph.employees AS VERTEX
-    VERTEX ID COLUMN id;
 
 
 -- ============================================================================

@@ -95,16 +95,13 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_flattened TO USER {{current
 
 
 -- ============================================================================
--- STEP 3: Configure graph metadata
+-- STEP 3: Create named graph definition
 -- ============================================================================
--- Explicit graph configuration defines which columns are vertex IDs, edge
--- source/target, and weight. Avoids relying on auto-detection.
+-- Creates a graph definition coupling vertex and edge tables together.
+-- This appears in the Graph Tables page and enables Cypher queries.
 -- ============================================================================
-CONFIGURE GRAPH {{zone_name}}.graph.friendships_flattened AS EDGE
-    SOURCE COLUMN src
-    TARGET COLUMN dst
+CREATE GRAPH IF NOT EXISTS flattened_demo
+    VERTEX TABLE {{zone_name}}.graph.persons_flattened ID COLUMN id
+    EDGE TABLE {{zone_name}}.graph.friendships_flattened SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     DIRECTED;
-
-CONFIGURE GRAPH {{zone_name}}.graph.persons_flattened AS VERTEX
-    VERTEX ID COLUMN id;

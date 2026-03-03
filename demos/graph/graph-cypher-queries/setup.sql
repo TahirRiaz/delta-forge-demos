@@ -96,17 +96,13 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_cypher TO USER {{current_us
 
 
 -- ============================================================================
--- STEP 3: Configure graph metadata for Cypher engine
+-- STEP 3: Create named graph definition
 -- ============================================================================
--- Explicit graph configuration tells the Cypher executor which columns are
--- source, target, weight, and vertex ID. While auto-detection works for
--- standard names (src/dst), explicit config is best practice for clarity.
+-- Creates a graph definition coupling vertex and edge tables together.
+-- This appears in the Graph Tables page and enables Cypher queries.
 -- ============================================================================
-CONFIGURE GRAPH {{zone_name}}.graph.friendships_cypher AS EDGE
-    SOURCE COLUMN src
-    TARGET COLUMN dst
+CREATE GRAPH IF NOT EXISTS cypher_demo
+    VERTEX TABLE {{zone_name}}.graph.persons_cypher ID COLUMN id
+    EDGE TABLE {{zone_name}}.graph.friendships_cypher SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     DIRECTED;
-
-CONFIGURE GRAPH {{zone_name}}.graph.persons_cypher AS VERTEX
-    VERTEX ID COLUMN id;

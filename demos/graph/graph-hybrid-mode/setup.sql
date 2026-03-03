@@ -85,16 +85,13 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_hybrid TO USER {{current_us
 
 
 -- ============================================================================
--- STEP 3: Configure graph metadata
+-- STEP 3: Create named graph definition
 -- ============================================================================
--- Explicit graph configuration defines which columns are vertex IDs, edge
--- source/target, and weight. Extra properties live in the JSON extras column.
+-- Creates a graph definition coupling vertex and edge tables together.
+-- Extra properties live in the JSON extras column (hybrid mode).
 -- ============================================================================
-CONFIGURE GRAPH {{zone_name}}.graph.friendships_hybrid AS EDGE
-    SOURCE COLUMN src
-    TARGET COLUMN dst
+CREATE GRAPH IF NOT EXISTS hybrid_demo
+    VERTEX TABLE {{zone_name}}.graph.persons_hybrid ID COLUMN id
+    EDGE TABLE {{zone_name}}.graph.friendships_hybrid SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     DIRECTED;
-
-CONFIGURE GRAPH {{zone_name}}.graph.persons_hybrid AS VERTEX
-    VERTEX ID COLUMN id;
