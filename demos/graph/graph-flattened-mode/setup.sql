@@ -101,7 +101,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_flattened TO USER {{current
 -- This appears in the Graph Tables page and enables Cypher queries.
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS flattened_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_flattened ID COLUMN id
+    VERTEX TABLE {{zone_name}}.graph.persons_flattened ID COLUMN id LABEL COLUMN department
     EDGE TABLE {{zone_name}}.graph.friendships_flattened SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
+    LABEL COLUMN relationship_type
     DIRECTED;

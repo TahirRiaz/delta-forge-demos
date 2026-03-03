@@ -42,15 +42,16 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.graph
 -- ============================================================================
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.persons_json (
     id      BIGINT,
+    label   STRING,
     props   STRING
 ) LOCATION '{{data_path}}/persons_json';
 
 INSERT INTO {{zone_name}}.graph.persons_json VALUES
-    (1, '{"name": "Alice", "age": 30, "department": "Engineering", "city": "NYC", "skills": ["rust", "python"], "level": "senior", "active": true}'),
-    (2, '{"name": "Bob", "age": 25, "department": "Marketing", "city": "LA", "skills": ["sales", "analytics"], "level": "junior", "active": true}'),
-    (3, '{"name": "Carol", "age": 35, "department": "HR", "city": "Chicago", "skills": ["recruiting", "training"], "level": "senior", "active": true}'),
-    (4, '{"name": "Dave", "age": 28, "department": "Engineering", "city": "SF", "skills": ["golang", "kubernetes"], "level": "mid", "active": false}'),
-    (5, '{"name": "Eve", "age": 32, "department": "Finance", "city": "NYC", "skills": ["accounting", "forecasting"], "level": "senior", "active": true}');
+    (1, 'Engineering', '{"name": "Alice", "age": 30, "department": "Engineering", "city": "NYC", "skills": ["rust", "python"], "level": "senior", "active": true}'),
+    (2, 'Marketing', '{"name": "Bob", "age": 25, "department": "Marketing", "city": "LA", "skills": ["sales", "analytics"], "level": "junior", "active": true}'),
+    (3, 'HR', '{"name": "Carol", "age": 35, "department": "HR", "city": "Chicago", "skills": ["recruiting", "training"], "level": "senior", "active": true}'),
+    (4, 'Engineering', '{"name": "Dave", "age": 28, "department": "Engineering", "city": "SF", "skills": ["golang", "kubernetes"], "level": "mid", "active": false}'),
+    (5, 'Finance', '{"name": "Eve", "age": 32, "department": "Finance", "city": "NYC", "skills": ["accounting", "forecasting"], "level": "senior", "active": true}');
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.persons_json;
 GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_json TO USER {{current_user}};
@@ -87,6 +88,6 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user
 -- Weight lives inside JSON props, not as a dedicated column.
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS json_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id
+    VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id LABEL COLUMN label
     EDGE TABLE {{zone_name}}.graph.friendships_json SOURCE COLUMN src TARGET COLUMN dst
     DIRECTED;

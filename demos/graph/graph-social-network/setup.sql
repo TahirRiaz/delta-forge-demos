@@ -232,9 +232,10 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.connections TO USER {{current_user}};
 -- This appears in the Graph Tables page and enables graph algorithms.
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS social_network
-    VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id
+    VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id LABEL COLUMN department
     EDGE TABLE {{zone_name}}.graph.connections SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
+    LABEL COLUMN relationship_type
     DIRECTED;
 
 

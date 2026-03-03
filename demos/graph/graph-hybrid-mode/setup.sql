@@ -44,15 +44,16 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.persons_hybrid (
     id          BIGINT,
     name        STRING,
     age         INT,
+    label       STRING,
     extras      STRING
 ) LOCATION '{{data_path}}/persons_hybrid';
 
 INSERT INTO {{zone_name}}.graph.persons_hybrid VALUES
-    (1, 'Alice', 30, '{"department": "Engineering", "city": "NYC", "skills": ["rust", "python"], "level": "senior", "active": true}'),
-    (2, 'Bob', 25, '{"department": "Marketing", "city": "LA", "skills": ["sales", "analytics"], "level": "junior", "active": true}'),
-    (3, 'Carol', 35, '{"department": "HR", "city": "Chicago", "skills": ["recruiting", "training"], "level": "senior", "active": true}'),
-    (4, 'Dave', 28, '{"department": "Engineering", "city": "SF", "skills": ["golang", "kubernetes"], "level": "mid", "active": false}'),
-    (5, 'Eve', 32, '{"department": "Finance", "city": "NYC", "skills": ["accounting", "forecasting"], "level": "senior", "active": true}');
+    (1, 'Alice', 30, 'Engineering', '{"department": "Engineering", "city": "NYC", "skills": ["rust", "python"], "level": "senior", "active": true}'),
+    (2, 'Bob', 25, 'Marketing', '{"department": "Marketing", "city": "LA", "skills": ["sales", "analytics"], "level": "junior", "active": true}'),
+    (3, 'Carol', 35, 'HR', '{"department": "HR", "city": "Chicago", "skills": ["recruiting", "training"], "level": "senior", "active": true}'),
+    (4, 'Dave', 28, 'Engineering', '{"department": "Engineering", "city": "SF", "skills": ["golang", "kubernetes"], "level": "mid", "active": false}'),
+    (5, 'Eve', 32, 'Finance', '{"department": "Finance", "city": "NYC", "skills": ["accounting", "forecasting"], "level": "senior", "active": true}');
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.persons_hybrid;
 GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_hybrid TO USER {{current_user}};
@@ -91,7 +92,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_hybrid TO USER {{current_us
 -- Extra properties live in the JSON extras column (hybrid mode).
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS hybrid_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_hybrid ID COLUMN id
+    VERTEX TABLE {{zone_name}}.graph.persons_hybrid ID COLUMN id LABEL COLUMN label
     EDGE TABLE {{zone_name}}.graph.friendships_hybrid SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
+    LABEL COLUMN relationship_type
     DIRECTED;
