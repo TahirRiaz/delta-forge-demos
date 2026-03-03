@@ -96,4 +96,6 @@ CREATE GRAPH IF NOT EXISTS hybrid_demo
     EDGE TABLE {{zone_name}}.graph.friendships_hybrid SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     LABEL COLUMN relationship_type
-    DIRECTED;
+    DIRECTED
+    VERTEX PROPERTIES HYBRID COLUMNS (name, age) JSON COLUMN extras
+    EDGE PROPERTIES HYBRID COLUMNS (weight, relationship_type) JSON COLUMN extras;

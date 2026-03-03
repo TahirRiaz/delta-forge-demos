@@ -90,4 +90,6 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user
 CREATE GRAPH IF NOT EXISTS json_demo
     VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id LABEL COLUMN label
     EDGE TABLE {{zone_name}}.graph.friendships_json SOURCE COLUMN src TARGET COLUMN dst
-    DIRECTED;
+    DIRECTED
+    VERTEX PROPERTIES JSON COLUMN props
+    EDGE PROPERTIES JSON COLUMN props;
