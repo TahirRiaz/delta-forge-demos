@@ -40,9 +40,12 @@ generated via `generate_series()` for full reproducibility.
 - **Batch 5 — City-local:** ~800K same-city social bonds (weight: 0.1-0.5)
 - **Batch 6 — Weak ties:** ~1M random long-range connections (weight: 0.05-0.3)
 
-## Queries: SQL (1–21) + Cypher (22–38)
+## Part 1: Raw Query Performance (Queries 1–38)
 
-### SQL Performance Queries
+Aggregation, analytics, and Cypher algorithm benchmarks. These return
+summary/tabular data — no graph visualization rendering.
+
+### SQL Queries (1–21)
 
 | # | Analysis | Description |
 |---|----------|-------------|
@@ -68,7 +71,7 @@ generated via `generate_series()` for full reproducibility.
 | 20 | Graph statistics | Full dataset summary |
 | 21 | Verification | PASS/FAIL checks |
 
-### Cypher Performance Queries
+### Cypher Algorithm Queries (22–38)
 
 | # | Algorithm | Description |
 |---|-----------|-------------|
@@ -89,6 +92,34 @@ generated via `generate_series()` for full reproducibility.
 | 36 | SCC | `algo.scc()` strongly connected components |
 | 37 | Closeness centrality | `algo.closeness()` central node detection |
 | 38 | Minimum spanning tree | `algo.mst()` on full graph |
+
+## Part 2: Graph Visualization Stress Test (Queries 39–50)
+
+These queries return **actual node + edge data** designed to be rendered in the
+graph visualizer. Run them progressively to find the breaking point where the
+renderer lags, freezes, or crashes.
+
+### Progressive Scale Ladder
+
+| # | Scale | Nodes | Edges (approx) | Expected Behavior |
+|---|-------|-------|-----------------|-------------------|
+| 39 | Warm-up | 100 | ~500 | Should render fine |
+| 40 | Small | 500 | ~2,500 | Should render fine |
+| 41 | Medium | 1,000 | ~5,000 | May start to lag |
+| 42 | Large | 5,000 | ~25,000 | Noticeable layout time |
+| 43 | Very large | 10,000 | ~50,000 | Significant lag expected |
+| 44 | Extreme | 50,000 | ~250,000 | May freeze or crash |
+| 45 | Survival | 100,000 | ~500,000 | Likely crash |
+| 46 | Full blast | 1,000,000 | 5,000,000+ | Almost certainly crash |
+
+### Cypher Visualization Tests
+
+| # | Scale | What it returns | Expected Behavior |
+|---|-------|-----------------|-------------------|
+| 47 | 100 nodes | Nodes only | Should render fine |
+| 48 | 1,000 nodes | Nodes only | May lag |
+| 49 | 10,000 nodes | Nodes only | Likely lag/crash |
+| 50 | 1,000,000 nodes | All nodes | Crash test |
 
 ## Known Verification Values
 

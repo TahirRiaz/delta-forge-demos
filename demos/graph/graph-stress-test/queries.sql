@@ -1,9 +1,31 @@
--- ============================================================================
--- Graph Stress Test — Performance Benchmark Queries
--- ============================================================================
--- Progressive queries on a 1,000,000-node / 5,000,000+ edge graph.
--- Designed to stress-test query execution, rendering, and memory at scale.
--- ============================================================================
+-- ############################################################################
+-- ############################################################################
+--
+--   GRAPH STRESS TEST — 1M NODES / 5M+ EDGES
+--   Performance Benchmark Queries
+--
+-- ############################################################################
+-- ############################################################################
+--
+-- PART 1: RAW QUERY PERFORMANCE (queries 1–38)
+--   Aggregation, analytics, and Cypher algorithm benchmarks.
+--   These return summary/tabular data — no graph visualization rendering.
+--
+-- PART 2: GRAPH VISUALIZATION STRESS TEST (queries 39–50)
+--   These return actual node + edge data designed to be rendered in the
+--   graph visualizer. Progressive scale from 100 nodes up to full 1M.
+--   Use these to test if the visualizer crashes, lags, or handles large
+--   graphs gracefully.
+--
+-- ############################################################################
+
+
+-- ############################################################################
+-- PART 1: RAW QUERY PERFORMANCE
+-- ############################################################################
+-- SQL and Cypher queries that return aggregated/tabular results.
+-- Tests query engine performance without stressing the graph renderer.
+-- ############################################################################
 
 
 -- ============================================================================
@@ -77,8 +99,6 @@ ORDER BY people_count DESC;
 -- ============================================================================
 -- 6. TOP 25 MOST CONNECTED — Heavy degree computation on 5M+ edges
 -- ============================================================================
--- This query forces full aggregation over the entire edge table twice
--- (in-degree + out-degree) then joins to the 1M node table.
 
 SELECT
     id,
@@ -183,8 +203,6 @@ LIMIT 25;
 -- ============================================================================
 -- 11. BRIDGE NODES — People connecting 10+ departments
 -- ============================================================================
--- At 1M scale, true bridge nodes connect to many departments.
--- This is a heavy aggregation query testing join + group + having.
 
 SELECT
     p.name,
@@ -206,7 +224,6 @@ LIMIT 25;
 -- ============================================================================
 -- 12. 2-HOP NEIGHBORHOOD SIZE — How many people can node #1 reach in 2 hops?
 -- ============================================================================
--- Tests multi-hop traversal performance at scale.
 
 SELECT
     '1-hop' AS reach,
@@ -266,7 +283,6 @@ WHERE src_p.project_team != dst_p.project_team;
 -- ============================================================================
 -- 15. RECIPROCAL CONNECTIONS — Bidirectional edges at scale
 -- ============================================================================
--- Finding mutual connections in 5M+ edges is a heavy self-join.
 
 SELECT
     COUNT(*) AS reciprocal_pairs
@@ -327,10 +343,8 @@ ORDER BY connections DESC;
 
 
 -- ============================================================================
--- 19. PAGERANK APPROXIMATION — 1-iteration simplified PageRank
+-- 19. PAGERANK APPROXIMATION — 1-iteration simplified PageRank (SQL)
 -- ============================================================================
--- Approximate PageRank using in-degree weighted by source out-degree.
--- A simplified single-iteration version suitable for SQL.
 
 SELECT
     p.id,
@@ -414,16 +428,8 @@ FROM {{zone_name}}.graph.st_edges WHERE src = dst
 ORDER BY check_name;
 
 
--- ############################################################################
--- CYPHER QUERIES — Performance Benchmarks on 1M-node graph
--- ############################################################################
--- These queries use the Cypher query language via the USE ... MATCH syntax.
--- They stress-test the Cypher engine at extreme scale.
--- ############################################################################
-
-
 -- ============================================================================
--- 22. CYPHER: ALL NODES COUNT — 1M node scan
+-- CYPHER: 22. ALL NODES COUNT — 1M node scan
 -- ============================================================================
 
 USE {{zone_name}}.graph.st_edges
@@ -432,7 +438,7 @@ RETURN count(n) AS node_count;
 
 
 -- ============================================================================
--- 23. CYPHER: ALL EDGES — Full edge scan at 5M+ scale
+-- CYPHER: 23. ALL EDGES — Full edge scan at 5M+ scale
 -- ============================================================================
 
 USE {{zone_name}}.graph.st_edges
@@ -441,9 +447,8 @@ RETURN count(r) AS edge_count;
 
 
 -- ============================================================================
--- 24. CYPHER: FILTERED NODES — Property filter on 1M nodes
+-- CYPHER: 24. FILTERED NODES — Property filter on 1M nodes
 -- ============================================================================
--- Find Engineering department people over age 50.
 
 USE {{zone_name}}.graph.st_edges
 MATCH (n)
@@ -454,9 +459,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 25. CYPHER: DIRECTED RELATIONSHIPS — Pattern match with properties
+-- CYPHER: 25. DIRECTED RELATIONSHIPS — Pattern match with properties
 -- ============================================================================
--- Find mentor relationships with weight > 0.8.
 
 USE {{zone_name}}.graph.st_edges
 MATCH (a)-[r]->(b)
@@ -467,9 +471,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 26. CYPHER: 2-HOP PATHS — Multi-hop traversal at scale
+-- CYPHER: 26. 2-HOP PATHS — Multi-hop traversal at scale
 -- ============================================================================
--- Find 2-hop paths from node 1. Tests join performance in Cypher engine.
 
 USE {{zone_name}}.graph.st_edges
 MATCH (a)-[]->(b)-[]->(c)
@@ -479,7 +482,7 @@ LIMIT 50;
 
 
 -- ============================================================================
--- 27. CYPHER: VARIABLE-LENGTH PATHS — Reachability within 2 hops
+-- CYPHER: 27. VARIABLE-LENGTH PATHS — Reachability within 2 hops
 -- ============================================================================
 
 USE {{zone_name}}.graph.st_edges
@@ -490,9 +493,8 @@ LIMIT 50;
 
 
 -- ============================================================================
--- 28. CYPHER: DEGREE CENTRALITY — On 1M nodes / 5M edges
+-- CYPHER: 28. DEGREE CENTRALITY — On 1M nodes / 5M edges
 -- ============================================================================
--- Heavy algorithm: computes in/out/total degree for every node.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.degree()
@@ -503,10 +505,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 29. CYPHER: PAGERANK — Link analysis on 5M+ edges
+-- CYPHER: 29. PAGERANK — Link analysis on 5M+ edges (5 iterations)
 -- ============================================================================
--- Full iterative PageRank at million-node scale.
--- This is the ultimate stress test for the graph algorithm engine.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
@@ -517,9 +517,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 30. CYPHER: CONNECTED COMPONENTS — Community detection at scale
+-- CYPHER: 30. CONNECTED COMPONENTS — Community detection at scale
 -- ============================================================================
--- Finds connected components across 1M nodes. Tests union-find performance.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.connectedComponents()
@@ -530,9 +529,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 31. CYPHER: LOUVAIN COMMUNITY DETECTION — Modularity clustering
+-- CYPHER: 31. LOUVAIN COMMUNITY DETECTION — Modularity clustering
 -- ============================================================================
--- Louvain algorithm on 1M nodes — tests iterative community merging.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.louvain({resolution: 1.0})
@@ -543,9 +541,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 32. CYPHER: BETWEENNESS CENTRALITY — Bridge detection at scale
+-- CYPHER: 32. BETWEENNESS CENTRALITY — Bridge detection at scale
 -- ============================================================================
--- Identifies the most critical bridge nodes in the 1M-node graph.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.betweenness()
@@ -556,9 +553,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 33. CYPHER: TRIANGLE COUNT — Clustering coefficient at scale
+-- CYPHER: 33. TRIANGLE COUNT — Clustering coefficient at scale
 -- ============================================================================
--- Counts triangles per node in the 5M+ edge graph.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.triangleCount()
@@ -569,9 +565,8 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 34. CYPHER: SHORTEST PATH — Dijkstra across 1M nodes
+-- CYPHER: 34. SHORTEST PATH — Dijkstra across 1M nodes
 -- ============================================================================
--- Finds shortest weighted path from node 1 to node 500000.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.shortestPath({source: 1, target: 500000})
@@ -581,9 +576,8 @@ ORDER BY step;
 
 
 -- ============================================================================
--- 35. CYPHER: BFS TRAVERSAL — Breadth-first from node 1
+-- CYPHER: 35. BFS TRAVERSAL — Breadth-first from node 1
 -- ============================================================================
--- BFS on a million-node graph. Tests queue-based traversal performance.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.bfs({source: 1})
@@ -594,9 +588,8 @@ LIMIT 20;
 
 
 -- ============================================================================
--- 36. CYPHER: STRONGLY CONNECTED COMPONENTS — Directed reachability
+-- CYPHER: 36. STRONGLY CONNECTED COMPONENTS — Directed reachability
 -- ============================================================================
--- SCC decomposition on the full directed graph.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.scc()
@@ -607,7 +600,7 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 37. CYPHER: CLOSENESS CENTRALITY — Central nodes at scale
+-- CYPHER: 37. CLOSENESS CENTRALITY — Central nodes at scale
 -- ============================================================================
 
 USE {{zone_name}}.graph.st_edges
@@ -619,11 +612,164 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 38. CYPHER: MINIMUM SPANNING TREE — Lightest edges connecting all nodes
+-- CYPHER: 38. MINIMUM SPANNING TREE — Lightest edges connecting all nodes
 -- ============================================================================
--- MST on 1M nodes. Tests Kruskal/Prim at extreme scale.
 
 USE {{zone_name}}.graph.st_edges
 CALL algo.mst()
 YIELD sourceId, targetId, weight
 RETURN count(*) AS mst_edge_count, sum(weight) AS total_weight;
+
+
+-- ############################################################################
+-- ############################################################################
+--
+-- PART 2: GRAPH VISUALIZATION STRESS TEST
+--
+-- ############################################################################
+-- ############################################################################
+-- These queries return actual node + edge rows designed to be rendered in
+-- the graph visualizer. Run them progressively to find the breaking point.
+--
+-- Scale ladder:
+--   39.  100 nodes  /  ~500 edges     (warm-up)
+--   40.  500 nodes  /  ~2,500 edges   (small graph)
+--   41.  1,000 nodes / ~5,000 edges   (medium graph)
+--   42.  5,000 nodes / ~25,000 edges  (large graph)
+--   43.  10,000 nodes / ~50,000 edges (very large)
+--   44.  50,000 nodes / ~250,000 edges (extreme)
+--   45.  100,000 nodes / ~500K edges  (will it survive?)
+--   46.  ALL 1M nodes / ALL 5M+ edges (full blast — expect crash)
+--
+-- Cypher visualization tests:
+--   47.  Cypher: 100 nodes with edges (warm-up)
+--   48.  Cypher: 1,000 nodes with edges (medium)
+--   49.  Cypher: 10,000 nodes with edges (large)
+--   50.  Cypher: ALL nodes + edges (full blast)
+-- ############################################################################
+
+
+-- ============================================================================
+-- 39. VIZ: 100 NODES + EDGES — Warm-up (should render fine)
+-- ============================================================================
+-- Returns first 100 people and all edges between them.
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 100 AND b.id <= 100
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 40. VIZ: 500 NODES + EDGES — Small graph
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 500 AND b.id <= 500
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 41. VIZ: 1,000 NODES + EDGES — Medium graph
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 1000 AND b.id <= 1000
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 42. VIZ: 5,000 NODES + EDGES — Large graph
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 5000 AND b.id <= 5000
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 43. VIZ: 10,000 NODES + EDGES — Very large graph
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 10000 AND b.id <= 10000
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 44. VIZ: 50,000 NODES + EDGES — Extreme rendering test
+-- ============================================================================
+-- WARNING: This will produce a very large result set. The graph visualizer
+-- may become unresponsive or crash. This is the intended test.
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 50000 AND b.id <= 50000
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 45. VIZ: 100,000 NODES + EDGES — Will it survive?
+-- ============================================================================
+-- WARNING: Expect significant lag or crash at this scale.
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+WHERE a.id <= 100000 AND b.id <= 100000
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 46. VIZ: FULL 1M NODES / 5M+ EDGES — Full blast
+-- ============================================================================
+-- WARNING: This returns ALL 1,000,000 nodes and ALL 5,000,000+ edges.
+-- The graph visualizer will almost certainly crash or freeze.
+-- This is the ultimate stress test.
+
+USE {{zone_name}}.graph.st_edges
+MATCH (a)-[r]->(b)
+RETURN a, r, b;
+
+
+-- ============================================================================
+-- 47. VIZ CYPHER: 100 NODES — Warm-up with node objects
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (n)
+WHERE n.id <= 100
+RETURN n;
+
+
+-- ============================================================================
+-- 48. VIZ CYPHER: 1,000 NODES — Medium node rendering
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (n)
+WHERE n.id <= 1000
+RETURN n;
+
+
+-- ============================================================================
+-- 49. VIZ CYPHER: 10,000 NODES — Large node rendering
+-- ============================================================================
+
+USE {{zone_name}}.graph.st_edges
+MATCH (n)
+WHERE n.id <= 10000
+RETURN n;
+
+
+-- ============================================================================
+-- 50. VIZ CYPHER: ALL 1M NODES — Full node dump
+-- ============================================================================
+-- WARNING: Returns 1,000,000 node objects. Ultimate renderer stress test.
+
+USE {{zone_name}}.graph.st_edges
+MATCH (n)
+RETURN n;
