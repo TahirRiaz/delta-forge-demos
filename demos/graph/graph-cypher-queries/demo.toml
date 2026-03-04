@@ -1,17 +1,18 @@
 [demo]
 id = "graph-cypher-queries"
 name = "Graph Cypher Queries — Pattern Matching & Algorithms"
-version = "1.0.0"
+version = "2.0.0"
 author = "Delta Forge Team"
 description = """
-Demonstrates Cypher query language support in Delta Forge. Uses the same 5-person \
-social graph as the flattened demo but queries it with Cypher pattern matching \
-(MATCH, WHERE, RETURN) and graph algorithm procedures (CALL algo.pageRank, \
-algo.betweenness, algo.shortestPath, algo.triangleCount, algo.louvain, etc.). \
-Shows the full power of Delta Forge's graph analytics engine.
+Demonstrates Cypher query language support in Delta Forge. Uses the same \
+50-employee startup graph as the flattened/hybrid/json demos but queries it \
+exclusively with Cypher pattern matching (MATCH, WHERE, RETURN) and graph \
+algorithm procedures (CALL algo.pageRank, algo.betweenness, algo.shortestPath, \
+algo.triangleCount, algo.louvain, etc.). Shows the full power of Delta Forge's \
+graph analytics engine with realistic community structure.
 """
 categories = ["graph"]
-tags = ["graph", "cypher", "pattern-matching", "algorithms", "pagerank", "pathfinding", "intermediate"]
+tags = ["graph", "cypher", "pattern-matching", "algorithms", "pagerank", "pathfinding", "generate-series", "intermediate"]
 difficulty = "intermediate"
 estimated_time_minutes = 8
 

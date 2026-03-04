@@ -1,17 +1,18 @@
 [demo]
 id = "graph-json-mode"
 name = "Graph JSON Mode — Schema-Free Properties"
-version = "1.0.0"
+version = "2.0.0"
 author = "Delta Forge Team"
 description = """
 Demonstrates the JSON property storage mode for graph tables. Vertex and edge \
 properties are stored in a single JSON string column — the most flexible mode \
-for schema-free, evolving data. Same 5-person social graph with 6 directed \
-friendships as flattened mode. Queries demonstrate JSON extraction functions, \
-dynamic property discovery, and filtering on nested JSON values.
+for schema-free, evolving data. Same 50-employee startup graph with ~150 \
+directed connections as flattened and hybrid modes. Queries demonstrate JSON \
+extraction functions (json_get_str, json_get_int, json_get_float), dynamic \
+property discovery, and filtering on nested JSON values.
 """
 categories = ["graph"]
-tags = ["graph", "delta-table", "json", "schema-free", "vertices", "edges", "intermediate"]
+tags = ["graph", "delta-table", "json", "schema-free", "vertices", "edges", "generate-series", "intermediate"]
 difficulty = "intermediate"
 estimated_time_minutes = 5
 

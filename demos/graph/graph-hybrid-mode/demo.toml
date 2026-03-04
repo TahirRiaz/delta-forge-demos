@@ -1,18 +1,18 @@
 [demo]
 id = "graph-hybrid-mode"
 name = "Graph Hybrid Mode — Columns + JSON Extras"
-version = "1.0.0"
+version = "2.0.0"
 author = "Delta Forge Team"
 description = """
 Demonstrates the HYBRID property storage mode for graph tables. Frequently \
 queried properties (name, age, weight, relationship_type) are stored as \
 columns for fast access, while optional/extensible properties live in a JSON \
-extras column. Same 5-person social graph with 6 directed friendships. \
-Queries show mixed column + JSON access patterns and the balanced trade-off \
-between performance and flexibility.
+extras column. Same 50-employee startup graph with ~150 directed connections \
+as the flattened mode demo. Queries show mixed column + JSON access patterns \
+and the balanced trade-off between performance and flexibility.
 """
 categories = ["graph"]
-tags = ["graph", "delta-table", "hybrid", "json", "vertices", "edges", "intermediate"]
+tags = ["graph", "delta-table", "hybrid", "json", "vertices", "edges", "generate-series", "intermediate"]
 difficulty = "intermediate"
 estimated_time_minutes = 5
 
