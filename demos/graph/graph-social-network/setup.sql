@@ -1,23 +1,23 @@
 -- ============================================================================
 -- Graph Social Network — Setup Script
 -- ============================================================================
--- Creates a 100-employee company social network with 300+ directed connections
--- across 8 departments and 5 cities. Uses deterministic generate_series()
--- for reproducible data generation.
+-- Creates a realistic 100-employee startup social network with ~300 directed
+-- connections across 8 departments and 5 cities. The graph has genuine
+-- community structure visible at human-readable scale:
 --
---   1. departments — 8 department lookup records
---   2. employees   — 100 employee vertex nodes (deterministic generation)
---   3. connections — 300 directed edges (deterministic pairing)
---   4. employee_stats (VIEW) — per-employee degree centrality metrics
---   5. dept_connections (VIEW) — cross-department connection matrix
+-- Topology features:
+--   • Dense intra-department clusters (stride-8 arithmetic)
+--   • Cross-department city communities (stride-5)
+--   • Hierarchical mentorship (Directors/Sr Managers → subordinates)
+--   • Bridge employees connecting departments
+--   • Weighted edges reflecting relationship strength
 --
--- Demonstrates:
---   - CREATE DELTA TABLE with deterministic data generation
---   - INSERT INTO ... SELECT FROM generate_series() for graph data
---   - Degree centrality (in-degree, out-degree, total)
---   - Cross-department connectivity analysis
---   - 2-hop neighborhood traversal
---   - Bridge node detection
+-- Tables and views:
+--   1. departments       — 8 department lookup records
+--   2. employees         — 100 employee vertex nodes
+--   3. connections       — ~300 directed edges (5 batches)
+--   4. employee_stats    (VIEW) — per-employee degree centrality
+--   5. dept_connections  (VIEW) — cross-department connection matrix
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
@@ -56,8 +56,9 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.departments TO USER {{current_user}};
 -- TABLE 2: employees — 100 employee vertex nodes
 -- ============================================================================
 -- Deterministic generation using modular arithmetic on generate_series IDs.
--- Each employee gets a name, department, city, title, hire year, and level
--- derived from their ID for full reproducibility.
+--   Department: id % 8  (8 depts, ~12-13 people each)
+--   City:       id % 5  (5 cities, 20 people each)
+--   Level:      id%10=0 → Director, id%5=0 → Sr Mgr, id%3=0 → Manager, else IC
 -- ============================================================================
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.employees (
     id          BIGINT,
@@ -74,7 +75,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.employees (
 INSERT INTO {{zone_name}}.graph.employees
 SELECT
     id,
-    -- First name from pool of 20
     CASE (id % 20)
         WHEN 0  THEN 'Alice'   WHEN 1  THEN 'Bob'     WHEN 2  THEN 'Carol'
         WHEN 3  THEN 'Dave'    WHEN 4  THEN 'Eve'     WHEN 5  THEN 'Frank'
@@ -84,7 +84,7 @@ SELECT
         WHEN 15 THEN 'Paul'   WHEN 16 THEN 'Quinn'   WHEN 17 THEN 'Rita'
         WHEN 18 THEN 'Sam'    WHEN 19 THEN 'Tina'
     END || '_' || CAST(id AS VARCHAR) AS name,
-    -- Age: 23–55 range, deterministic
+    -- Age: 23–55 range, deterministic via golden ratio
     23 + CAST(((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0) * 32.0 AS INT) AS age,
     -- Department: 8 departments
     CASE (id % 8)
@@ -124,13 +124,20 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.employees TO USER {{current_user}};
 
 
 -- ============================================================================
--- TABLE 3: connections — 300 directed edges
+-- TABLE 3: connections — ~300 directed edges (5 batches)
 -- ============================================================================
--- Deterministic edge generation using golden-ratio-based pairing.
--- Three types of connections with different generation patterns:
---   - Intra-department (same dept): ~100 edges, higher weight
---   - Cross-department: ~100 edges, medium weight
---   - Mentorship (senior -> junior): ~100 edges, based on level/age gap
+-- Realistic clustered edge generation using stride arithmetic.
+--
+-- Key insight: department = id%8, city = id%5.
+-- Adding multiples of the stride preserves group membership:
+--   Same department: dst = src + k*8
+--   Same city:       dst = src + k*5
+--
+--   Batch 1: Intra-department colleagues    — ~100 edges (stride 8)
+--   Batch 2: City cross-department social   — ~60 edges  (stride 5)
+--   Batch 3: Hierarchical mentorship        — ~60 edges  (Directors/Sr Mgrs → dept)
+--   Batch 4: Bridge node connections        — ~40 edges  (cross-dept connectors)
+--   Batch 5: Weak ties (pseudo-random)      — ~40 edges  (long-range acquaintances)
 -- ============================================================================
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.connections (
     id                  BIGINT,
@@ -141,95 +148,191 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.connections (
     since_year          INT
 ) LOCATION '{{data_path}}/connections';
 
--- Batch 1: Intra-department connections (~100 edges)
--- Pairs employees within the same department modular group
+
+-- ============================================================================
+-- Batch 1: Intra-department colleagues (~100 edges)
+-- ============================================================================
+-- Each employee connects to 1 same-department colleague at +8 stride.
+-- Creates dense clusters within each of the 8 departments.
+-- ============================================================================
 INSERT INTO {{zone_name}}.graph.connections
 SELECT
     ROW_NUMBER() OVER (ORDER BY src, dst) AS id,
     src,
     dst,
-    -- Weight: 0.5–1.0 range for same-department connections
-    ROUND(0.5 + 0.5 * ((CAST(src * 7 + dst AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
-    CASE (CAST((src + dst) AS BIGINT) % 3)
+    ROUND(0.6 + 0.4 * ((CAST(src * 7 + dst * 13 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
+    CASE (CAST(src + dst AS BIGINT) % 3)
         WHEN 0 THEN 'colleague'
-        WHEN 1 THEN 'teammate'
-        WHEN 2 THEN 'collaborator'
+        WHEN 1 THEN 'desk-neighbor'
+        WHEN 2 THEN 'teammate'
     END AS relationship_type,
     2018 + CAST((src + dst) % 7 AS INT) AS since_year
 FROM (
     SELECT
-        ((i * 7 + 3) % 100) + 1 AS src,
-        CASE
-            WHEN ((i * 7 + 3) % 100) + 1 + (((i * 13 + 5) % 7) + 1) * 8 > 100
-            THEN ((i * 7 + 3) % 100) + 1 + (((i * 13 + 5) % 7) + 1) * 8 - 100
-            ELSE ((i * 7 + 3) % 100) + 1 + (((i * 13 + 5) % 7) + 1) * 8
-        END AS dst
-    FROM generate_series(1, 120) AS t(i)
+        gs AS src,
+        ((gs - 1 + 8) % 100) + 1 AS dst
+    FROM generate_series(1, 100) AS t(gs)
 ) sub
-WHERE src != dst
-  AND src BETWEEN 1 AND 100
-  AND dst BETWEEN 1 AND 100;
+WHERE src != dst;
 
--- Batch 2: Cross-department connections (~100 edges)
--- Pairs employees from different department groups
+
+-- ============================================================================
+-- Batch 2: City cross-department social (~60 edges)
+-- ============================================================================
+-- Employees in the same city but different departments form social bonds.
+-- Offset +5 preserves city (id%5) but shifts department (5%8 = 5 ≠ 0).
+-- Offset +10 also preserves city (10%5=0) and shifts dept (10%8 = 2 ≠ 0).
+-- Only first 60 people get these to avoid duplicating the whole graph.
+-- ============================================================================
 INSERT INTO {{zone_name}}.graph.connections
 SELECT
     1000 + ROW_NUMBER() OVER (ORDER BY src, dst) AS id,
     src,
     dst,
-    -- Weight: 0.2–0.7 range for cross-department connections
-    ROUND(0.2 + 0.5 * ((CAST(src * 11 + dst AS DOUBLE) * 0.381966011250105) % 1.0), 2) AS weight,
-    CASE (CAST((src * 3 + dst) AS BIGINT) % 4)
-        WHEN 0 THEN 'cross-team'
-        WHEN 1 THEN 'project'
-        WHEN 2 THEN 'social'
-        WHEN 3 THEN 'advisory'
+    ROUND(0.2 + 0.3 * ((CAST(src * 11 + dst * 17 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
+    CASE (CAST(src + dst * 2 AS BIGINT) % 3)
+        WHEN 0 THEN 'city-social'
+        WHEN 1 THEN 'lunch-buddy'
+        WHEN 2 THEN 'gym-partner'
     END AS relationship_type,
-    2019 + CAST((src * 2 + dst) % 6 AS INT) AS since_year
+    2020 + CAST((src + dst) % 5 AS INT) AS since_year
 FROM (
+    -- Sub-batch 2a: offset +5 — ~40 edges
     SELECT
-        ((i * 11 + 1) % 100) + 1 AS src,
-        ((i * 17 + 7) % 100) + 1 AS dst
-    FROM generate_series(1, 130) AS t(i)
+        gs AS src,
+        ((gs - 1 + 5) % 100) + 1 AS dst
+    FROM generate_series(1, 40) AS t(gs)
+    UNION ALL
+    -- Sub-batch 2b: offset +10 — ~20 edges
+    SELECT
+        gs AS src,
+        ((gs - 1 + 10) % 100) + 1 AS dst
+    FROM generate_series(1, 20) AS t(gs)
 ) sub
 WHERE src != dst
   AND (src % 8) != (dst % 8);
 
--- Batch 3: Mentorship connections (~80 edges)
--- Senior employees mentoring more junior ones
+
+-- ============================================================================
+-- Batch 3: Hierarchical mentorship (~60 edges)
+-- ============================================================================
+-- Directors (id%10=0, 10 people) and Senior Managers (id%5=0, 10 more)
+-- mentor subordinates in their department via stride-8 connections.
+-- Directors get 4 mentees each, Sr Managers get 2, creating a visible
+-- hierarchical spine within each department.
+-- ============================================================================
 INSERT INTO {{zone_name}}.graph.connections
 SELECT
     2000 + ROW_NUMBER() OVER (ORDER BY src, dst) AS id,
     src,
     dst,
-    -- Weight: 0.6–1.0 for mentorship (high value)
-    ROUND(0.6 + 0.4 * ((CAST(src * 3 + dst AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
+    ROUND(0.7 + 0.3 * ((CAST(src * 3 + dst * 7 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
     'mentor' AS relationship_type,
-    2020 + CAST((src + dst) % 5 AS INT) AS since_year
+    2019 + CAST((src + dst) % 6 AS INT) AS since_year
 FROM (
     SELECT
-        ((i * 5 + 2) % 100) + 1 AS src,
-        ((i * 19 + 11) % 100) + 1 AS dst
-    FROM generate_series(1, 100) AS t(i)
+        mentor_id AS src,
+        ((mentor_id - 1 + k * 8) % 100) + 1 AS dst
+    FROM (
+        SELECT
+            m.mentor_id,
+            o.k
+        FROM (
+            -- Directors (id%10=0): 10 people
+            SELECT gs * 10 AS mentor_id
+            FROM generate_series(1, 10) AS t(gs)
+            UNION ALL
+            -- Senior Managers (id%5=0, id%10!=0): 10 people
+            SELECT gs * 5 AS mentor_id
+            FROM generate_series(1, 20) AS t(gs)
+            WHERE (gs * 5) % 10 != 0
+        ) m
+        CROSS JOIN (
+            SELECT gs AS k FROM generate_series(1, 4) AS t(gs)
+        ) o
+        WHERE
+            (m.mentor_id % 10 = 0 AND o.k <= 4)    -- Directors: 4 mentees
+            OR (m.mentor_id % 10 != 0 AND o.k <= 2) -- Sr Managers: 2 mentees
+    ) pairs
 ) sub
 WHERE src != dst
-  AND (src % 3 = 0 OR src % 5 = 0);
+  AND dst BETWEEN 1 AND 100;
+
+
+-- ============================================================================
+-- Batch 4: Bridge node connections (~40 edges)
+-- ============================================================================
+-- Bridge employees (id%25=0: employees 25, 50, 75, 100) are cross-functional
+-- connectors. Each bridge connects to ~10 employees in other departments
+-- via small offsets (1..12 excluding multiples of 8).
+-- ============================================================================
+INSERT INTO {{zone_name}}.graph.connections
+SELECT
+    3000 + ROW_NUMBER() OVER (ORDER BY src, dst) AS id,
+    src,
+    dst,
+    ROUND(0.3 + 0.3 * ((CAST(src * 19 + dst * 23 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
+    CASE (CAST(src + dst AS BIGINT) % 3)
+        WHEN 0 THEN 'liaison'
+        WHEN 1 THEN 'cross-dept-bridge'
+        WHEN 2 THEN 'inter-team-link'
+    END AS relationship_type,
+    2021 + CAST((src + dst) % 4 AS INT) AS since_year
+FROM (
+    SELECT
+        bridge_id AS src,
+        ((bridge_id - 1 + offset) % 100) + 1 AS dst
+    FROM (
+        SELECT gs * 25 AS bridge_id
+        FROM generate_series(1, 4) AS t(gs)
+    ) bridges
+    CROSS JOIN (
+        -- 10 offsets that change department (exclude multiples of 8)
+        SELECT gs AS offset
+        FROM generate_series(1, 12) AS t(gs)
+        WHERE gs % 8 != 0
+    ) offsets
+) sub
+WHERE src != dst
+  AND dst BETWEEN 1 AND 100;
+
+
+-- ============================================================================
+-- Batch 5: Weak ties — pseudo-random long-range connections (~40 edges)
+-- ============================================================================
+-- A handful of random acquaintances: conference contacts, alumni connections.
+-- Uses prime multipliers for deterministic scattering.
+-- ============================================================================
+INSERT INTO {{zone_name}}.graph.connections
+SELECT
+    4000 + ROW_NUMBER() OVER (ORDER BY src, dst) AS id,
+    src,
+    dst,
+    ROUND(0.1 + 0.15 * ((CAST(src * 43 + dst * 47 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
+    CASE (CAST(src * 7 + dst * 3 AS BIGINT) % 4)
+        WHEN 0 THEN 'acquaintance'
+        WHEN 1 THEN 'conference-contact'
+        WHEN 2 THEN 'alumni'
+        WHEN 3 THEN 'referral'
+    END AS relationship_type,
+    2022 + CAST((src + dst) % 3 AS INT) AS since_year
+FROM (
+    SELECT
+        ((i * 37 + 11) % 100) + 1 AS src,
+        ((i * 53 + 29) % 100) + 1 AS dst
+    FROM generate_series(1, 50) AS t(i)
+) sub
+WHERE src != dst;
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.connections;
 GRANT ADMIN ON TABLE {{zone_name}}.graph.connections TO USER {{current_user}};
 
 
 -- ============================================================================
--- VIEW 4: employee_stats — per-employee degree centrality
+-- GRAPH DEFINITION
 -- ============================================================================
--- Computes in-degree (incoming connections), out-degree (outgoing connections),
--- and total degree for each employee. Higher degree = more connected.
--- ============================================================================
--- ============================================================================
--- STEP 3: Create named graph definition
--- ============================================================================
--- Creates a graph definition coupling vertex and edge tables together.
--- This appears in the Graph Tables page and enables graph algorithms.
+-- Creates a named graph coupling vertex and edge tables together.
+-- Cypher queries reference this by name: USE social_network MATCH ...
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS social_network
     VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id LABEL COLUMN department
@@ -241,9 +344,6 @@ CREATE GRAPH IF NOT EXISTS social_network
 
 -- ============================================================================
 -- VIEW 4: employee_stats — per-employee degree centrality
--- ============================================================================
--- Computes in-degree (incoming connections), out-degree (outgoing connections),
--- and total degree for each employee. Higher degree = more connected.
 -- ============================================================================
 CREATE OR REPLACE VIEW {{zone_name}}.graph.employee_stats AS
 SELECT
@@ -266,9 +366,6 @@ LEFT JOIN (
 
 -- ============================================================================
 -- VIEW 5: dept_connections — cross-department connection matrix
--- ============================================================================
--- Shows how many connections exist between each pair of departments.
--- Helps identify well-connected vs siloed departments.
 -- ============================================================================
 CREATE OR REPLACE VIEW {{zone_name}}.graph.dept_connections AS
 SELECT

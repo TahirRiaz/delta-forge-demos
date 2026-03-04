@@ -1,15 +1,19 @@
 [demo]
 id = "graph-social-network"
-name = "Graph Social Network — 100-Node Company Graph"
-version = "1.0.0"
+name = "Graph Social Network — 100-Employee Startup Network"
+version = "2.0.0"
 author = "Delta Forge Team"
 description = """
-Demonstrates large-scale graph analytics on a 100-employee company social \
-network with 300+ directed connections across 8 departments and 5 cities. \
-Uses deterministic generate_series() data generation. Queries cover degree \
-centrality, department cross-pollination, influence scoring, 2-hop \
-neighborhoods, team clustering, bridge detection, and comprehensive graph \
-statistics with PASS/FAIL verification.
+Realistic 100-employee startup network with ~300 directed connections \
+across 8 departments and 5 cities. The graph has genuine community \
+structure: departments form tight clusters via stride-8 connections, \
+cities create cross-department social bonds, Directors and Senior \
+Managers mentor within their teams, and 4 bridge employees explicitly \
+connect departmental silos. Queries are framed as real-world startup \
+scenarios: finding key people, measuring team cohesion, identifying \
+cross-functional connectors, mapping mentorship, and using Cypher \
+graph algorithms (PageRank, Louvain, betweenness centrality) to \
+uncover informal influence and organizational bottlenecks.
 """
 categories = ["graph"]
 tags = ["graph", "delta-table", "social-network", "analytics", "centrality", "generate-series", "advanced"]
