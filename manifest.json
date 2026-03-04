@@ -593,6 +593,22 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-stress-test",
+      "path": "demos/graph/graph-stress-test",
+      "iconPath": "icons/graph-stress-test.svg",
+      "name": "Graph Stress Test — 1M-Node Performance Benchmark",
+      "summary": "Extreme-scale graph performance benchmark: 1,000,000 vertex nodes and 5,000,000+ directed edges across 20 departments, 15 cities, and 200 project teams. Stress-tests graph rendering, layout algorithms, Cypher engine algorithms (PageRank, Louvain, BFS, shortest path, MST), and memory handling at massive scale.",
+      "categories": ["graph"],
+      "tags": ["graph", "delta-table", "stress-test", "performance", "benchmark", "million-scale", "cypher", "algorithms", "advanced"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 30,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-04T12:00:00Z"
     }
   ],
   "categories": [
