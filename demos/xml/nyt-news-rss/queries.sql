@@ -23,9 +23,9 @@ FROM {{zone_name}}.xml.news_articles;
 -- 2. BROWSE ARTICLES — See the full schema with friendly column names
 -- ============================================================================
 
-SELECT title, author, pubDate, category, thumbnail_url, media_credit
+SELECT title, author, "pubDate", category, thumbnail_url, media_credit
 FROM {{zone_name}}.xml.news_articles
-ORDER BY pubDate DESC
+ORDER BY "pubDate" DESC
 LIMIT 10;
 
 

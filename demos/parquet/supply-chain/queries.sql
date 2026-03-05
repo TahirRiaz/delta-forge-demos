@@ -22,8 +22,8 @@ FROM {{zone_name}}.parquet.all_orders;
 -- 2. BROWSE ORDERS — See column types (self-describing Parquet schema)
 -- ============================================================================
 
-SELECT OrderID, CustomerID, SalespersonPersonID, OrderDate,
-       ExpectedDeliveryDate, IsUndersupplyBackordered
+SELECT "OrderID", "CustomerID", "SalespersonPersonID", "OrderDate",
+       "ExpectedDeliveryDate", "IsUndersupplyBackordered"
 FROM {{zone_name}}.parquet.all_orders
 LIMIT 20;
 
@@ -107,11 +107,11 @@ WHERE df_file_name IS NOT NULL;
 -- 10. ORDERS PER SALESPERSON — Analytics query
 -- ============================================================================
 
-SELECT SalespersonPersonID,
+SELECT "SalespersonPersonID",
        COUNT(*) AS total_orders,
-       COUNT(DISTINCT CustomerID) AS unique_customers
+       COUNT(DISTINCT "CustomerID") AS unique_customers
 FROM {{zone_name}}.parquet.all_orders
-GROUP BY SalespersonPersonID
+GROUP BY "SalespersonPersonID"
 ORDER BY total_orders DESC;
 
 
@@ -119,11 +119,11 @@ ORDER BY total_orders DESC;
 -- 11. BACKORDER ANALYSIS — IsUndersupplyBackordered breakdown
 -- ============================================================================
 
-SELECT IsUndersupplyBackordered,
+SELECT "IsUndersupplyBackordered",
        COUNT(*) AS order_count,
        ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM {{zone_name}}.parquet.all_orders), 1) AS pct
 FROM {{zone_name}}.parquet.all_orders
-GROUP BY IsUndersupplyBackordered;
+GROUP BY "IsUndersupplyBackordered";
 
 
 -- ============================================================================
