@@ -48,3 +48,7 @@ path = "data/sales_2025_q1.csv"
 format = "csv"
 description = "Q1 2025 — retires discount_pct, adds channel (3 records)"
 size_bytes = 175
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.sales"

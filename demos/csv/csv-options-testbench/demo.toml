@@ -67,3 +67,35 @@ path = "data/08_combined.csv"
 format = "csv"
 description = "Tests multiple options together: pipe delimiter, comments, null markers, whitespace (5 records)"
 size_bytes = 280
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_delimiter"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_null_value"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_comment"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_skip_rows"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_max_rows"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_trim"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_quoted"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.opt_combined"

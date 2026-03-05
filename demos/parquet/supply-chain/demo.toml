@@ -102,3 +102,19 @@ path = "data/orders/2016/Orders_2016-03-01-2016-05-24.parquet"
 format = "parquet"
 description = "Q1 2016 — 5,616 orders"
 size_bytes = 99358
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.parquet.all_orders"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.parquet.orders_2015"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.parquet.orders_sample"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.parquet.orders_q1_2014"

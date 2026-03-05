@@ -93,3 +93,11 @@ path = "data/x12_990_load_tender_response.edi"
 format = "edi"
 description = "X12 990 — Load Tender Response: acceptance of load tender 75027674 by carrier SCAC (v00400, GS=GF)"
 size_bytes = 230
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.edi.logistics_messages"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.edi.logistics_materialized"

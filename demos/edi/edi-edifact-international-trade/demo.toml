@@ -159,3 +159,11 @@ path = "data/eancom_instruction.edi"
 format = "edi"
 description = "EANCOM IFTMIN — Transport instruction (D:96A:UN:EAN004), BGM/NAD/GID/TMP segments"
 size_bytes = 565
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.edi.edifact_messages"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.edi.edifact_materialized"

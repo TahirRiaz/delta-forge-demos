@@ -68,3 +68,11 @@ path = "data/hl7v2.6_adt_a01_azure.hl7"
 format = "hl7"
 description = "ADT^A01 — Modern admission (Contoso/Azure, v2.6): Z-segments, multiple ID systems, guarantor"
 size_bytes = 937
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.hl7.adt_messages"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.hl7.adt_materialized"

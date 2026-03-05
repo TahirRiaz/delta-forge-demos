@@ -118,3 +118,11 @@ path = "data/coverage-example-selfpay.json"
 format = "json"
 description = "Coverage — self-pay arrangement (no insurance)"
 size_bytes = 1800
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.prescriptions"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.coverage"

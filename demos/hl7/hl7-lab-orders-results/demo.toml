@@ -69,3 +69,11 @@ path = "data/hl7v2.4_oru_r01_glucose.hl7"
 format = "hl7"
 description = "ORU^R01 — Glucose post 12hr fasting (GHH LAB, v2.4): high result with flag"
 size_bytes = 504
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.hl7.lab_orders"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.hl7.lab_results"

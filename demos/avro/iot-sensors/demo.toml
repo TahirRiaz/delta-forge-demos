@@ -49,3 +49,15 @@ path = "data/floor5_sensors.avro"
 format = "avro"
 description = "Floor 5 — 500 readings, schema v2 (10 fields), null codec"
 size_bytes = 31792
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.avro.all_readings"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.avro.floor4_only"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.avro.readings_sample"

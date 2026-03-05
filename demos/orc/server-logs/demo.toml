@@ -49,3 +49,11 @@ path = "data/api-02_access.orc"
 format = "orc"
 description = "API server 02 — 500 requests, schema v2 (13 fields)"
 size_bytes = 44978
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.orc.all_requests"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.orc.api01_only"

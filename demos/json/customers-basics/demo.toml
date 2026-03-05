@@ -23,3 +23,7 @@ path = "data/customers.json"
 format = "json"
 description = "CRM customer export — 200 flat records with id, email, name, company, signup date, and country"
 size_bytes = 43694
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.json.customers"

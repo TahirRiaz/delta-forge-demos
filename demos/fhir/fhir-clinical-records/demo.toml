@@ -154,3 +154,15 @@ path = "data/allergyintolerance-nkla.json"
 format = "json"
 description = "AllergyIntolerance — No Known Latex Allergies (NKLA) assertion"
 size_bytes = 2100
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.conditions"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.procedures"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.allergies"

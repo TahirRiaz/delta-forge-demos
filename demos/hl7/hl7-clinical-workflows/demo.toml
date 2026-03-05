@@ -44,3 +44,11 @@ path = "data/edge_cases.hl7"
 format = "hl7"
 description = "ADT^A01 — Edge cases (v2.5.1): escape sequences (\\F\\, \\T\\, \\S\\, \\R\\, \\E\\, \\X0D\\), empty fields, special chars"
 size_bytes = 512
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.hl7.clinical_messages"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.hl7.clinical_materialized"

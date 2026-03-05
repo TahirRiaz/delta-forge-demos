@@ -87,3 +87,11 @@ path = "data/hipaa_837I_institutional_claim.edi"
 format = "edi"
 description = "837 — Healthcare claim institutional (GS=HC, guide=005010X223A2): BHT/NM1/CLM/SV2 facility claim with revenue codes"
 size_bytes = 1259
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.edi.hipaa_messages"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.edi.hipaa_materialized"

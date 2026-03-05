@@ -119,3 +119,11 @@ path = "data/observation-example-f003-co2(f003).xml"
 format = "xml"
 description = "Observation — CO2 lab result with reference range"
 size_bytes = 2841
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir_xml.patients_xml"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir_xml.observations_xml"

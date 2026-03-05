@@ -85,3 +85,47 @@ path = "data/employee_territories.csv"
 format = "csv"
 description = "Employee-to-territory assignments (49 records)"
 size_bytes = 800
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_employee_territories"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_territories"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_regions"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_shippers"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_suppliers"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_categories"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_products"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_order_details"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_orders"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_employees"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.csv.nw_customers"

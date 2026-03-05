@@ -68,3 +68,11 @@ path = "data/patient-example-f201-roel.json"
 format = "json"
 description = "FHIR R5 Patient — Dutch patient Roel Bor with detailed demographics"
 size_bytes = 5400
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.patients_bulk"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.patients_detailed"

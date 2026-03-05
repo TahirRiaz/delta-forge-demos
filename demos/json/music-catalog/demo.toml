@@ -37,3 +37,11 @@ path = "data/catalog_rock.json"
 format = "json"
 description = "Rock genre catalog — 180 albums with nested vendor and track arrays"
 size_bytes = 650379
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.json.album_tracks"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.json.album_summary"

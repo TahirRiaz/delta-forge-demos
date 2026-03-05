@@ -80,3 +80,11 @@ path = "data/sf.json"
 format = "json"
 description = "South Africa — CIA World Factbook country profile"
 size_bytes = 62584
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.json.countries"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.json.country_economy"

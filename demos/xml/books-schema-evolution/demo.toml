@@ -49,3 +49,7 @@ path = "data/05_catalog_2004.xml"
 format = "xml"
 description = "Year 2004 — adds @format attribute, series (3 books)"
 size_bytes = 920
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.xml.books_evolved"

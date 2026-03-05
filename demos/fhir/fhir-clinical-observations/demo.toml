@@ -111,3 +111,11 @@ path = "data/observation-example-glasgow.json"
 format = "json"
 description = "Glasgow Coma Scale — multi-component clinical assessment score"
 size_bytes = 5500
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.observations_bulk"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.fhir.observations_clinical"

@@ -40,3 +40,11 @@ path = "data/03_executives.pb"
 format = "protobuf"
 description = "Executives — 3 contacts, sparse data (missing email, empty phone list)"
 size_bytes = 212
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.protobuf.contacts"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.protobuf.contact_phones"

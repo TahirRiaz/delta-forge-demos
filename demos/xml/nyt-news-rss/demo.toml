@@ -63,3 +63,11 @@ path = "data/news.xml"
 format = "xml"
 description = "NYT World News snapshot — 57 news items (Feb 2025)"
 size_bytes = 116702
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.xml.news_articles"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.xml.news_categories"

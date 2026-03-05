@@ -32,3 +32,11 @@ path = "data/02_orders_afternoon.xml"
 format = "xml"
 description = "Afternoon batch — 2 orders, 4 line items (CDATA, gift_wrap + express combo)"
 size_bytes = 2287
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.xml.order_lines"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.xml.order_summary"

@@ -42,3 +42,23 @@ path = "data/sales-data-2017.xlsx"
 format = "excel"
 description = "Superstore orders 2017 — 9,994 orders"
 size_bytes = 587173
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.excel.all_orders"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.excel.orders_2017"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.excel.orders_range"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.excel.orders_trimmed"
+
+[[demo.target_objects]]
+type = "external_table"
+name = "{{zone_name}}.excel.orders_no_header"
