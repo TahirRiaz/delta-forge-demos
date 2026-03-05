@@ -101,9 +101,11 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_json TO USER {{current_user}};
 -- Same 5-batch edge generation as flattened and hybrid modes.
 -- ============================================================================
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.friendships_json (
-    src     BIGINT,
-    dst     BIGINT,
-    props   STRING
+    src                BIGINT,
+    dst                BIGINT,
+    weight             DOUBLE,
+    relationship_type  VARCHAR,
+    props              STRING
 ) LOCATION '{{data_path}}/friendships_json';
 
 
@@ -112,13 +114,11 @@ INSERT INTO {{zone_name}}.graph.friendships_json
 SELECT
     src,
     dst,
-    '{"weight": ' ||
-    CAST(ROUND(0.6 + 0.4 * ((CAST(src * 7 + dst * 13 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS VARCHAR) ||
-    ', "relationship_type": "' ||
+    ROUND(0.6 + 0.4 * ((CAST(src * 7 + dst * 13 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
     CASE (CAST(src + dst AS BIGINT) % 3)
         WHEN 0 THEN 'colleague' WHEN 1 THEN 'teammate' WHEN 2 THEN 'desk-neighbor'
-    END ||
-    '", "since_year": ' || CAST(2018 + CAST((src + dst) % 7 AS INT) AS VARCHAR) ||
+    END AS relationship_type,
+    '{"since_year": ' || CAST(2018 + CAST((src + dst) % 7 AS INT) AS VARCHAR) ||
     ', "frequency": "' ||
     CASE (CAST(src + dst AS BIGINT) % 3)
         WHEN 0 THEN 'daily' WHEN 1 THEN 'weekly' WHEN 2 THEN 'daily'
@@ -140,13 +140,11 @@ INSERT INTO {{zone_name}}.graph.friendships_json
 SELECT
     src,
     dst,
-    '{"weight": ' ||
-    CAST(ROUND(0.2 + 0.3 * ((CAST(src * 11 + dst * 17 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS VARCHAR) ||
-    ', "relationship_type": "' ||
+    ROUND(0.2 + 0.3 * ((CAST(src * 11 + dst * 17 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
     CASE (CAST(src + dst * 2 AS BIGINT) % 3)
         WHEN 0 THEN 'city-social' WHEN 1 THEN 'lunch-buddy' WHEN 2 THEN 'gym-partner'
-    END ||
-    '", "since_year": ' || CAST(2020 + CAST((src + dst) % 5 AS INT) AS VARCHAR) ||
+    END AS relationship_type,
+    '{"since_year": ' || CAST(2020 + CAST((src + dst) % 5 AS INT) AS VARCHAR) ||
     ', "frequency": "' ||
     CASE (CAST(src + dst AS BIGINT) % 2)
         WHEN 0 THEN 'weekly' WHEN 1 THEN 'monthly'
@@ -169,9 +167,9 @@ INSERT INTO {{zone_name}}.graph.friendships_json
 SELECT
     src,
     dst,
-    '{"weight": ' ||
-    CAST(ROUND(0.7 + 0.3 * ((CAST(src * 3 + dst * 7 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS VARCHAR) ||
-    ', "relationship_type": "mentor", "since_year": ' ||
+    ROUND(0.7 + 0.3 * ((CAST(src * 3 + dst * 7 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
+    'mentor' AS relationship_type,
+    '{"since_year": ' ||
     CAST(2019 + CAST((src + dst) % 6 AS INT) AS VARCHAR) ||
     ', "frequency": "weekly", "context": "work", "rating": ' ||
     CAST(4 + CAST((src + dst) % 2 AS INT) AS VARCHAR) || '}' AS props
@@ -203,13 +201,11 @@ INSERT INTO {{zone_name}}.graph.friendships_json
 SELECT
     src,
     dst,
-    '{"weight": ' ||
-    CAST(ROUND(0.3 + 0.3 * ((CAST(src * 19 + dst * 23 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS VARCHAR) ||
-    ', "relationship_type": "' ||
+    ROUND(0.3 + 0.3 * ((CAST(src * 19 + dst * 23 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
     CASE (CAST(src + dst AS BIGINT) % 3)
         WHEN 0 THEN 'liaison' WHEN 1 THEN 'cross-dept-bridge' WHEN 2 THEN 'inter-team-link'
-    END ||
-    '", "since_year": ' || CAST(2021 + CAST((src + dst) % 4 AS INT) AS VARCHAR) ||
+    END AS relationship_type,
+    '{"since_year": ' || CAST(2021 + CAST((src + dst) % 4 AS INT) AS VARCHAR) ||
     ', "frequency": "monthly", "context": "work", "rating": ' ||
     CAST(3 + CAST((src + dst) % 2 AS INT) AS VARCHAR) || '}' AS props
 FROM (
@@ -232,14 +228,12 @@ INSERT INTO {{zone_name}}.graph.friendships_json
 SELECT
     src,
     dst,
-    '{"weight": ' ||
-    CAST(ROUND(0.1 + 0.15 * ((CAST(src * 43 + dst * 47 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS VARCHAR) ||
-    ', "relationship_type": "' ||
+    ROUND(0.1 + 0.15 * ((CAST(src * 43 + dst * 47 AS DOUBLE) * 0.618033988749895) % 1.0), 2) AS weight,
     CASE (CAST(src * 7 + dst * 3 AS BIGINT) % 4)
         WHEN 0 THEN 'acquaintance' WHEN 1 THEN 'conference-contact'
         WHEN 2 THEN 'alumni' WHEN 3 THEN 'referral'
-    END ||
-    '", "since_year": ' || CAST(2022 + CAST((src + dst) % 3 AS INT) AS VARCHAR) ||
+    END AS relationship_type,
+    '{"since_year": ' || CAST(2022 + CAST((src + dst) % 3 AS INT) AS VARCHAR) ||
     ', "frequency": "rarely", "context": "social", "rating": ' ||
     CAST(1 + CAST((src + dst) % 3 AS INT) AS VARCHAR) || '}' AS props
 FROM (
@@ -260,6 +254,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user
 CREATE GRAPH IF NOT EXISTS json_demo
     VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id LABEL COLUMN label
     EDGE TABLE {{zone_name}}.graph.friendships_json SOURCE COLUMN src TARGET COLUMN dst
+    WEIGHT COLUMN weight
+    EDGE TYPE COLUMN relationship_type
     DIRECTED
     VERTEX PROPERTIES JSON COLUMN props
     EDGE PROPERTIES JSON COLUMN props;

@@ -10,10 +10,10 @@
 DROP VIEW IF EXISTS {{zone_name}}.spatial.region_cells;
 DROP VIEW IF EXISTS {{zone_name}}.spatial.points_h3;
 
--- STEP 2: Drop Delta tables
-DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.gps_points;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.regions;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.landmarks;
+-- STEP 2: Drop Delta tables (WITH FILES removes physical data too)
+DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.gps_points WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.regions WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.landmarks WITH FILES;
 
 -- STEP 3: Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.spatial;

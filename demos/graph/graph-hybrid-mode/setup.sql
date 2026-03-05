@@ -269,7 +269,7 @@ CREATE GRAPH IF NOT EXISTS hybrid_demo
     VERTEX TABLE {{zone_name}}.graph.persons_hybrid ID COLUMN id LABEL COLUMN label
     EDGE TABLE {{zone_name}}.graph.friendships_hybrid SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
-    LABEL COLUMN relationship_type
+    EDGE TYPE COLUMN relationship_type
     DIRECTED
     VERTEX PROPERTIES HYBRID COLUMNS (name, age) JSON COLUMN extras
     EDGE PROPERTIES HYBRID COLUMNS (weight, relationship_type) JSON COLUMN extras;

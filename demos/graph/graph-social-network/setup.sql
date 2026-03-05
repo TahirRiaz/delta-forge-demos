@@ -338,7 +338,7 @@ CREATE GRAPH IF NOT EXISTS social_network
     VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id LABEL COLUMN department
     EDGE TABLE {{zone_name}}.graph.connections SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
-    LABEL COLUMN relationship_type
+    EDGE TYPE COLUMN relationship_type
     DIRECTED;
 
 

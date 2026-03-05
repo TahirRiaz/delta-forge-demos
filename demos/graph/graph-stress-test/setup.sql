@@ -511,7 +511,7 @@ CREATE GRAPH IF NOT EXISTS stress_test_network
     VERTEX TABLE {{zone_name}}.graph.st_people ID COLUMN id LABEL COLUMN department
     EDGE TABLE {{zone_name}}.graph.st_edges SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
-    LABEL COLUMN relationship_type
+    EDGE TYPE COLUMN relationship_type
     DIRECTED;
 
 

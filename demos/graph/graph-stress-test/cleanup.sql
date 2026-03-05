@@ -16,10 +16,10 @@ DROP GRAPH CONFIG {{zone_name}}.graph.st_people;
 DROP VIEW IF EXISTS {{zone_name}}.graph.st_dept_matrix;
 DROP VIEW IF EXISTS {{zone_name}}.graph.st_people_stats;
 
--- STEP 4: Drop Delta tables
-DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.st_edges;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.st_people;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.st_departments;
+-- STEP 4: Drop Delta tables (WITH FILES removes physical data too)
+DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.st_edges WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.st_people WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.st_departments WITH FILES;
 
 -- STEP 5: Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.graph;

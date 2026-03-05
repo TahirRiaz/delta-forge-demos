@@ -11,9 +11,9 @@ DROP GRAPH IF EXISTS cypher_demo;
 DROP GRAPH CONFIG {{zone_name}}.graph.friendships_cypher;
 DROP GRAPH CONFIG {{zone_name}}.graph.persons_cypher;
 
--- STEP 3: Drop Delta tables
-DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.friendships_cypher;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.persons_cypher;
+-- STEP 3: Drop Delta tables (WITH FILES removes physical data too)
+DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.friendships_cypher WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.graph.persons_cypher WITH FILES;
 
 -- STEP 4: Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.graph;

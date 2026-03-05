@@ -236,5 +236,5 @@ CREATE GRAPH IF NOT EXISTS cypher_demo
     VERTEX TABLE {{zone_name}}.graph.persons_cypher ID COLUMN id LABEL COLUMN department
     EDGE TABLE {{zone_name}}.graph.friendships_cypher SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
-    LABEL COLUMN relationship_type
+    EDGE TYPE COLUMN relationship_type
     DIRECTED;
