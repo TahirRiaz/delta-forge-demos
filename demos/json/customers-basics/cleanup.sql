@@ -5,7 +5,7 @@
 -- ============================================================================
 
 -- STEP 1: Drop external table
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.json.customers;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.json.customers WITH FILES;
 
 -- STEP 2: Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.json;

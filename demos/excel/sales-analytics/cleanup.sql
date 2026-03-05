@@ -5,11 +5,11 @@
 -- ============================================================================
 
 -- STEP 1: Drop external tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.all_orders;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_2017;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_range;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_trimmed;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_no_header;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.all_orders WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_2017 WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_range WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_trimmed WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.excel.orders_no_header WITH FILES;
 
 -- STEP 2: Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.excel;

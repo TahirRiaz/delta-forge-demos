@@ -5,8 +5,8 @@
 -- ============================================================================
 
 -- Drop external tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.news_articles;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.news_categories;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.news_articles WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.news_categories WITH FILES;
 
 -- Shared resources (safe — will warn if other demos still use them)
 DROP SCHEMA IF EXISTS {{zone_name}}.xml;

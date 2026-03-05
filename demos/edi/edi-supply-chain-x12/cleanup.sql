@@ -10,8 +10,8 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.supply_chain_messages;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.supply_chain_materialized;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.supply_chain_messages WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.supply_chain_materialized WITH FILES;
 
 -- STEP 2: Drop Schema
 DROP SCHEMA IF EXISTS {{zone_name}}.edi;

@@ -10,8 +10,8 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.lab_orders;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.lab_results;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.lab_orders WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.lab_results WITH FILES;
 
 -- STEP 2: Drop Schema
 DROP SCHEMA IF EXISTS {{zone_name}}.hl7;
