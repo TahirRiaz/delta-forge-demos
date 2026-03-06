@@ -15,7 +15,7 @@ generated via `generate_series()` for full reproducibility.
 ## Tables & Views
 
 | Object | Type | Rows | Purpose |
-|--------|------|------|---------|
+| ------ | ---- | ---- | ------- |
 | `st_departments` | Delta Table | 20 | Department lookup (name, floor, budget, region) |
 | `st_people` | Delta Table | 1,000,000 | Vertex nodes (deterministic generation) |
 | `st_edges` | Delta Table | 5,000,000+ | Directed edges with weight and type (6 batches) |
@@ -48,7 +48,7 @@ summary/tabular data — no graph visualization rendering.
 ### SQL Queries (1–21)
 
 | # | Analysis | Description |
-|---|----------|-------------|
+| --- | -------- | ----------- |
 | 1 | Node count | Verify 1M nodes |
 | 2 | Edge count | Verify 5M+ edges |
 | 3 | Department distribution | 20-department breakdown |
@@ -74,7 +74,7 @@ summary/tabular data — no graph visualization rendering.
 ### Cypher Algorithm Queries (22–38)
 
 | # | Algorithm | Description |
-|---|-----------|-------------|
+| --- | --------- | ----------- |
 | 22 | Node count | Full scan of 1M nodes |
 | 23 | Edge count | Full scan of 5M+ edges |
 | 24 | Filtered nodes | Property filter on 1M nodes |
@@ -102,7 +102,7 @@ renderer lags, freezes, or crashes.
 ### Progressive Scale Ladder
 
 | # | Scale | Nodes | Edges (approx) | Expected Behavior |
-|---|-------|-------|-----------------|-------------------|
+| --- | ----- | ----- | --------------- | ----------------- |
 | 39 | Warm-up | 100 | ~500 | Should render fine |
 | 40 | Small | 500 | ~2,500 | Should render fine |
 | 41 | Medium | 1,000 | ~5,000 | May start to lag |
@@ -115,7 +115,7 @@ renderer lags, freezes, or crashes.
 ### Cypher Visualization Tests
 
 | # | Scale | What it returns | Expected Behavior |
-|---|-------|-----------------|-------------------|
+| --- | ----- | --------------- | ----------------- |
 | 47 | 100 nodes | Nodes only | Should render fine |
 | 48 | 1,000 nodes | Nodes only | May lag |
 | 49 | 10,000 nodes | Nodes only | Likely lag/crash |
@@ -124,7 +124,7 @@ renderer lags, freezes, or crashes.
 ## Known Verification Values
 
 | Check | Expected | Source |
-|-------|----------|--------|
+| ----- | -------- | ------ |
 | Node count | 1,000,000 | generate_series(1, 1000000) |
 | Department count | 20 | Static insert |
 | Edge count | >= 4,000,000 | Deterministic generation (6 batches) |

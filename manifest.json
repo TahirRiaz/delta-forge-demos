@@ -609,6 +609,22 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-04T12:00:00Z"
+    },
+    {
+      "id": "graph-ldbc-snb",
+      "path": "demos/graph/graph-ldbc-snb",
+      "iconPath": "icons/graph-ldbc-snb.svg",
+      "name": "LDBC Social Network Benchmark — Full Model Graph Verification",
+      "summary": "Full LDBC Social Network Benchmark (SF0.1) with 8 entity types, 23 relationship types, and ~1.2M rows. Verifies graph algorithms (PageRank, shortest path, Louvain, centrality, BFS) and Cypher/SQL queries against official LDBC golden values. Demonstrates mixed SQL + Cypher queries joining graph algorithm results with Delta tables.",
+      "categories": ["graph"],
+      "tags": ["graph", "ldbc", "benchmark", "verification", "cypher", "pagerank", "shortest-path", "community-detection", "centrality", "advanced"],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 15,
+      "dataSizeBytes": 65011712,
+      "fileCount": 33,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-06T12:00:00Z"
     }
   ],
   "categories": [
