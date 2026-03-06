@@ -2,7 +2,7 @@
 -- ############################################################################
 --
 --   STARTUP SOCIAL NETWORK — 100 EMPLOYEES / ~300 CONNECTIONS
---   Organizational Network Analytics & Graph Insights
+--   Organizational Network Analytics via Cypher
 --
 -- ############################################################################
 -- ############################################################################
@@ -12,400 +12,53 @@
 -- clusters, cities create cross-department bonds, and a few bridge
 -- employees connect the organizational silos.
 --
--- PART 1: SQL ANALYTICS (queries 1–17)
---   Workforce insights, team health, and network analysis.
+-- PART 1: EXPLORE & ANALYZE (queries 1–14)
+--   Pattern matching, property filtering, relationship analysis.
 --
--- PART 2: CYPHER GRAPH QUERIES (queries 18–27)
---   Pattern matching, graph algorithms, and path analysis.
+-- PART 2: GRAPH ALGORITHMS (queries 15–24)
+--   Influence ranking, community detection, path analysis.
 --
--- PART 3: GRAPH VISUALIZATION (queries 28–30)
+-- PART 3: GRAPH VISUALIZATION (queries 25–27)
 --   Visual exploration of the company network.
 --
 -- ############################################################################
 
 
 -- ############################################################################
--- PART 1: SQL ANALYTICS — Workforce & Network Health
+-- PART 1: EXPLORE & ANALYZE
 -- ############################################################################
 
 
 -- ============================================================================
--- 1. DATA INTEGRITY — Verify the company dataset loaded correctly
+-- 1. MEET THE TEAM — All 100 employees with their roles
 -- ============================================================================
--- Quick check: do we have all 100 employees? This should always return PASS.
+-- The CEO wants a quick overview of who works here. Department, title,
+-- city, and seniority level give a complete picture.
 
-SELECT 'employee_count' AS check_name,
-       COUNT(*) AS actual,
-       100 AS expected,
-       CASE WHEN COUNT(*) = 100 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.graph.employees;
+USE social_network
+MATCH (n)
+RETURN n.name AS name, n.department AS dept, n.title AS title,
+       n.city AS city, n.level AS level, n.age AS age
+ORDER BY n.department, n.name;
 
 
 -- ============================================================================
--- 2. TEAM SNAPSHOT — Headcount and demographics by department
+-- 2. HEADCOUNT BY DEPARTMENT — Workforce distribution
 -- ============================================================================
--- The CEO wants a quick overview: how large is each team, what's the
--- average age, and are there any departments with low active headcount?
--- Departments with fewer active employees may need hiring attention.
+-- How large is each team? Which departments may need hiring?
 
-SELECT
-    department,
-    COUNT(*) AS headcount,
-    ROUND(AVG(age), 1) AS avg_age,
-    COUNT(*) FILTER (WHERE active) AS active_count
-FROM {{zone_name}}.graph.employees
-GROUP BY department
+USE social_network
+MATCH (n)
+RETURN n.department AS department, count(n) AS headcount,
+       avg(n.age) AS avg_age
 ORDER BY headcount DESC;
 
 
 -- ============================================================================
 -- 3. NETWORK SIZE — How connected is this startup?
 -- ============================================================================
--- A healthy 100-person company should have at least 200 connections
--- (2+ per person on average). Fewer suggests siloed teams.
-
-SELECT 'connection_count' AS check_name,
-       COUNT(*) AS actual,
-       CASE WHEN COUNT(*) >= 200 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.graph.connections;
-
-
--- ============================================================================
--- 4. RELATIONSHIP MIX — What types of bonds hold the company together?
--- ============================================================================
--- Understanding the mix of relationship types reveals organizational health.
--- A startup that's all "colleagues" with no "mentors" or "cross-dept-bridges"
--- may lack knowledge transfer and cross-pollination.
-
-SELECT
-    relationship_type,
-    COUNT(*) AS count,
-    ROUND(AVG(weight), 2) AS avg_strength,
-    MIN(since_year) AS earliest,
-    MAX(since_year) AS latest
-FROM {{zone_name}}.graph.connections
-GROUP BY relationship_type
-ORDER BY count DESC;
-
-
--- ============================================================================
--- 5. KEY PEOPLE — Who are the most connected employees?
--- ============================================================================
--- These are the informal hubs of the organization. If any of them leave,
--- information flow breaks down. The CEO should know who these people are
--- and ensure they're engaged and retained.
-
-SELECT
-    id,
-    name,
-    department,
-    level,
-    out_degree,
-    in_degree,
-    total_degree
-FROM {{zone_name}}.graph.employee_stats
-ORDER BY total_degree DESC
-LIMIT 10;
-
-
--- ============================================================================
--- 6. CROSS-TEAM COLLABORATION — Which departments talk to each other?
--- ============================================================================
--- Before a reorg, leadership needs to know which teams are already
--- collaborating. High connection counts between departments suggest
--- natural alignment. Low counts may indicate missed opportunities.
-
-SELECT
-    src_dept,
-    dst_dept,
-    connection_count,
-    avg_weight
-FROM {{zone_name}}.graph.dept_connections
-WHERE src_dept != dst_dept
-ORDER BY connection_count DESC
-LIMIT 15;
-
-
--- ============================================================================
--- 7. TEAM COHESION — How tightly connected is each department internally?
--- ============================================================================
--- Departments with high internal connections and strong average weight
--- are well-bonded teams. Low numbers suggest the team may need more
--- face-to-face time or team-building activities.
-
-SELECT
-    src_dept AS department,
-    connection_count AS internal_connections,
-    avg_weight AS avg_strength
-FROM {{zone_name}}.graph.dept_connections
-WHERE src_dept = dst_dept
-ORDER BY connection_count DESC;
-
-
--- ============================================================================
--- 8. OFFICE NETWORK — How well do our 5 offices collaborate?
--- ============================================================================
--- With employees in NYC, SF, Chicago, London, and Berlin, the company
--- needs to ensure remote offices aren't isolated. This shows which
--- city pairs have the strongest connections — and which are disconnected.
-
-SELECT
-    src_e.city AS from_city,
-    dst_e.city AS to_city,
-    COUNT(*) AS connections,
-    ROUND(AVG(c.weight), 2) AS avg_strength
-FROM {{zone_name}}.graph.connections c
-JOIN {{zone_name}}.graph.employees src_e ON c.src = src_e.id
-JOIN {{zone_name}}.graph.employees dst_e ON c.dst = dst_e.id
-GROUP BY src_e.city, dst_e.city
-ORDER BY connections DESC
-LIMIT 15;
-
-
--- ============================================================================
--- 9. GO-TO PEOPLE — Who does everyone reach out to?
--- ============================================================================
--- High in-degree means many people actively connect TO this person.
--- These are the go-to experts, the people others seek out for help,
--- advice, or decisions. They may be bottlenecks if overloaded.
-
-SELECT
-    name,
-    department,
-    city,
-    in_degree AS sought_by_count,
-    level
-FROM {{zone_name}}.graph.employee_stats
-WHERE in_degree > 0
-ORDER BY in_degree DESC
-LIMIT 10;
-
-
--- ============================================================================
--- 10. DISENGAGED EMPLOYEES — Who has zero connections?
--- ============================================================================
--- Employees with no connections at all are either brand new, remote
--- without onboarding, or disengaged. HR should check on these people.
--- In a 100-person startup, even one isolated employee is a red flag.
-
-SELECT
-    id,
-    name,
-    department,
-    city,
-    level
-FROM {{zone_name}}.graph.employee_stats
-WHERE total_degree = 0
-ORDER BY id;
-
-
--- ============================================================================
--- 11. INFORMATION FLOW — How far can employee #1 spread a message?
--- ============================================================================
--- If employee #1 shares important news, who hears it directly (1 hop),
--- and who hears it through the grapevine (2 hops)? This reveals how
--- quickly information propagates through the company.
-
-SELECT
-    'direct (1-hop)' AS reach,
-    e.name,
-    e.department
-FROM {{zone_name}}.graph.connections c
-JOIN {{zone_name}}.graph.employees e ON c.dst = e.id
-WHERE c.src = 1
-UNION ALL
-SELECT DISTINCT
-    'grapevine (2-hop)' AS reach,
-    e2.name,
-    e2.department
-FROM {{zone_name}}.graph.connections c1
-JOIN {{zone_name}}.graph.connections c2 ON c1.dst = c2.src
-JOIN {{zone_name}}.graph.employees e2 ON c2.dst = e2.id
-WHERE c1.src = 1
-  AND c2.dst != 1
-  AND c2.dst NOT IN (SELECT dst FROM {{zone_name}}.graph.connections WHERE src = 1)
-ORDER BY reach, name;
-
-
--- ============================================================================
--- 12. DEPARTMENT HEALTH SCORE — Internal bond strength per team
--- ============================================================================
--- A high average internal weight with many active connectors means the
--- team is healthy and collaborative. Low weight or few connectors
--- suggests surface-level relationships — people work near each other
--- but don't truly collaborate.
-
-SELECT
-    src_e.department,
-    COUNT(*) AS internal_bonds,
-    ROUND(AVG(c.weight), 2) AS avg_bond_strength,
-    COUNT(DISTINCT c.src) AS people_connecting
-FROM {{zone_name}}.graph.connections c
-JOIN {{zone_name}}.graph.employees src_e ON c.src = src_e.id
-JOIN {{zone_name}}.graph.employees dst_e ON c.dst = dst_e.id
-WHERE src_e.department = dst_e.department
-GROUP BY src_e.department
-ORDER BY internal_bonds DESC;
-
-
--- ============================================================================
--- 13. CROSS-FUNCTIONAL CONNECTORS — Who bridges the departmental silos?
--- ============================================================================
--- These employees connect to people in 3+ different departments.
--- In a startup, these bridge people are critical for preventing silos.
--- Without them, Engineering and Sales might never talk to each other.
-
-SELECT
-    e.name,
-    e.department AS home_dept,
-    e.level,
-    COUNT(DISTINCT dst_e.department) AS departments_reached,
-    COUNT(*) AS cross_dept_connections
-FROM {{zone_name}}.graph.connections c
-JOIN {{zone_name}}.graph.employees e ON c.src = e.id
-JOIN {{zone_name}}.graph.employees dst_e ON c.dst = dst_e.id
-WHERE e.department != dst_e.department
-GROUP BY e.name, e.department, e.level
-HAVING COUNT(DISTINCT dst_e.department) >= 3
-ORDER BY departments_reached DESC, cross_dept_connections DESC;
-
-
--- ============================================================================
--- 14. MENTORSHIP MAP — Who is mentoring whom?
--- ============================================================================
--- Are Directors actually mentoring their teams, or is mentorship happening
--- informally? This shows every mentor-mentee pair, their levels, and
--- how strong the mentorship bond is. Cross-level mentorship (L6→L2)
--- is more valuable than peer mentoring (L4→L4).
-
-SELECT
-    src_e.name AS mentor,
-    src_e.level AS mentor_level,
-    dst_e.name AS mentee,
-    dst_e.level AS mentee_level,
-    c.weight AS bond_strength,
-    c.since_year AS since
-FROM {{zone_name}}.graph.connections c
-JOIN {{zone_name}}.graph.employees src_e ON c.src = src_e.id
-JOIN {{zone_name}}.graph.employees dst_e ON c.dst = dst_e.id
-WHERE c.relationship_type = 'mentor'
-ORDER BY c.weight DESC
-LIMIT 15;
-
-
--- ============================================================================
--- 15. MUTUAL RELATIONSHIPS — Where do two people connect both ways?
--- ============================================================================
--- Reciprocal connections (A→B and B→A) are the strongest relationships.
--- These pairs genuinely collaborate — it's not one person reaching out
--- while the other ignores them. High mutual count = healthy culture.
-
-SELECT
-    e1.name AS person_a,
-    e1.department AS dept_a,
-    e2.name AS person_b,
-    e2.department AS dept_b,
-    c1.relationship_type AS a_to_b_type,
-    c2.relationship_type AS b_to_a_type
-FROM {{zone_name}}.graph.connections c1
-JOIN {{zone_name}}.graph.connections c2
-    ON c1.src = c2.dst AND c1.dst = c2.src
-JOIN {{zone_name}}.graph.employees e1 ON c1.src = e1.id
-JOIN {{zone_name}}.graph.employees e2 ON c1.dst = e2.id
-WHERE c1.src < c1.dst
-ORDER BY e1.name
-LIMIT 15;
-
-
--- ============================================================================
--- 16. COMPANY DASHBOARD — All key metrics at a glance
--- ============================================================================
--- One-row executive summary. Use this as a health check dashboard.
-
-SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.graph.employees) AS total_employees,
-    (SELECT COUNT(*) FROM {{zone_name}}.graph.connections) AS total_connections,
-    (SELECT COUNT(DISTINCT department) FROM {{zone_name}}.graph.employees) AS departments,
-    (SELECT COUNT(DISTINCT city) FROM {{zone_name}}.graph.employees) AS offices,
-    (SELECT COUNT(DISTINCT relationship_type) FROM {{zone_name}}.graph.connections) AS relationship_types,
-    (SELECT ROUND(AVG(weight), 2) FROM {{zone_name}}.graph.connections) AS avg_bond_strength;
-
-
--- ============================================================================
--- 17. FULL HEALTH CHECK — All validation rules in one query
--- ============================================================================
--- Every check should return PASS. Any FAIL means the dataset was
--- corrupted or partially loaded.
-
-SELECT 'employee_count' AS check_name,
-       CASE WHEN COUNT(*) = 100 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.graph.employees
-UNION ALL
-SELECT 'department_count',
-       CASE WHEN COUNT(*) = 8 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.departments
-UNION ALL
-SELECT 'connection_min_200',
-       CASE WHEN COUNT(*) >= 200 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.connections
-UNION ALL
-SELECT 'has_mentor_edges',
-       CASE WHEN COUNT(*) > 0 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.connections WHERE relationship_type = 'mentor'
-UNION ALL
-SELECT 'has_colleague_edges',
-       CASE WHEN COUNT(*) > 0 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.connections WHERE relationship_type = 'colleague'
-UNION ALL
-SELECT 'five_cities',
-       CASE WHEN COUNT(DISTINCT city) = 5 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.employees
-UNION ALL
-SELECT 'eight_departments',
-       CASE WHEN COUNT(DISTINCT department) = 8 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.employees
-UNION ALL
-SELECT 'active_employees_gt_80',
-       CASE WHEN COUNT(*) FILTER (WHERE active) >= 80 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.employees
-UNION ALL
-SELECT 'weight_range_valid',
-       CASE WHEN MIN(weight) >= 0.0 AND MAX(weight) <= 1.0 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.connections
-UNION ALL
-SELECT 'no_self_loops',
-       CASE WHEN COUNT(*) = 0 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.graph.connections WHERE src = dst
-ORDER BY check_name;
-
-
--- ############################################################################
--- ############################################################################
---
--- PART 2: CYPHER GRAPH QUERIES — Patterns, Algorithms & Paths
---
--- ############################################################################
--- ############################################################################
--- These queries use Cypher pattern matching and built-in graph algorithms
--- to uncover insights invisible to SQL: influence ranking, community
--- structure, shortest paths, and centrality metrics.
--- ############################################################################
-
-
--- ============================================================================
--- CYPHER 18. THE FULL PICTURE — How many people and connections?
--- ============================================================================
--- Quick graph-level sanity check via Cypher.
-
-USE social_network
-MATCH (n)
-RETURN count(n) AS total_employees;
-
-
--- ============================================================================
--- CYPHER 19. ALL CONNECTIONS — Full relationship scan
--- ============================================================================
--- Count every directed connection in the graph.
+-- A healthy 100-person company should have 200+ connections (2+ per
+-- person on average). Fewer suggests siloed teams.
 
 USE social_network
 MATCH (a)-[r]->(b)
@@ -413,10 +66,21 @@ RETURN count(r) AS total_connections;
 
 
 -- ============================================================================
--- CYPHER 20. ENGINEERING TEAM — Find all engineers and their roles
+-- 4. RELATIONSHIP MIX — What types of bonds hold the company together?
 -- ============================================================================
--- The VP of Engineering wants to see everyone on the team. Cypher makes
--- property-based filtering natural and readable.
+-- Understanding the mix reveals organizational health. All "colleagues"
+-- with no "mentors" means weak knowledge transfer.
+
+USE social_network
+MATCH (a)-[r]->(b)
+RETURN r.relationship_type AS type, count(r) AS count,
+       avg(r.weight) AS avg_strength
+ORDER BY count DESC;
+
+
+-- ============================================================================
+-- 5. ENGINEERING ROSTER — VP of Engineering's team review
+-- ============================================================================
 
 USE social_network
 MATCH (n)
@@ -426,10 +90,10 @@ ORDER BY n.level DESC;
 
 
 -- ============================================================================
--- CYPHER 21. STRONGEST MENTORSHIPS — High-impact mentor bonds
+-- 6. MENTORSHIP NETWORK — Who is coaching whom?
 -- ============================================================================
--- Which mentor-mentee pairs have the strongest connection (weight > 0.8)?
--- These are the mentorships worth studying and replicating across teams.
+-- Which mentor-mentee pairs have the strongest bonds? These are the
+-- mentorships worth studying and replicating across teams.
 
 USE social_network
 MATCH (mentor)-[r]->(mentee)
@@ -441,7 +105,48 @@ LIMIT 10;
 
 
 -- ============================================================================
--- CYPHER 22. KNOWLEDGE PATHS — 2-hop information flow from employee #1
+-- 7. CROSS-DEPARTMENT BRIDGES — Who prevents organizational silos?
+-- ============================================================================
+-- Show connections between different departments. These bridge employees
+-- are critical for cross-team collaboration.
+
+USE social_network
+MATCH (a)-[r]->(b)
+WHERE a.department <> b.department
+RETURN a.name AS from_person, a.department AS from_dept,
+       b.name AS to_person, b.department AS to_dept,
+       r.relationship_type AS type, r.weight AS strength
+ORDER BY r.weight DESC
+LIMIT 20;
+
+
+-- ============================================================================
+-- 8. DEPARTMENT CONNECTIVITY — Which teams talk to each other?
+-- ============================================================================
+
+USE social_network
+MATCH (a)-[r]->(b)
+WHERE a.department <> b.department
+RETURN a.department AS from_dept, b.department AS to_dept,
+       count(r) AS connections, avg(r.weight) AS avg_strength
+ORDER BY connections DESC;
+
+
+-- ============================================================================
+-- 9. OFFICE COLLABORATION — How well do our 5 offices work together?
+-- ============================================================================
+-- With employees in NYC, SF, Chicago, London, and Berlin, the company
+-- needs to ensure remote offices aren't isolated.
+
+USE social_network
+MATCH (a)-[r]->(b)
+RETURN a.city AS from_city, b.city AS to_city,
+       count(r) AS connections, avg(r.weight) AS avg_strength
+ORDER BY connections DESC;
+
+
+-- ============================================================================
+-- 10. KNOWLEDGE PATHS — 2-hop information flow from employee #1
 -- ============================================================================
 -- If employee #1 knows something important, this traces how it spreads:
 -- who they tell directly, and who those people then tell.
@@ -455,12 +160,76 @@ LIMIT 25;
 
 
 -- ============================================================================
--- CYPHER 23. PAGERANK — Who has the most organizational influence?
+-- 11. REACHABILITY — Who can employee #1 reach within 3 hops?
+-- ============================================================================
+
+USE social_network
+MATCH (a)-[*1..3]->(b)
+WHERE a.id = 1 AND a <> b
+RETURN DISTINCT b.name AS reachable, b.department AS dept
+ORDER BY b.name;
+
+
+-- ============================================================================
+-- 12. RECIPROCAL RELATIONSHIPS — Where are mutual bonds?
+-- ============================================================================
+-- Reciprocal connections (A→B and B→A) are the strongest relationships.
+-- High mutual count = healthy collaborative culture.
+
+USE social_network
+MATCH (a)-[r1]->(b)-[r2]->(a)
+WHERE a.id < b.id
+RETURN a.name AS person_a, a.department AS dept_a,
+       b.name AS person_b, b.department AS dept_b,
+       r1.relationship_type AS a_to_b, r2.relationship_type AS b_to_a
+ORDER BY a.name
+LIMIT 15;
+
+
+-- ============================================================================
+-- 13. DISENGAGED EMPLOYEES — Who has zero outgoing connections?
+-- ============================================================================
+-- Employees with no outgoing connections may be disengaged, brand new,
+-- or remote without onboarding. HR should check on these people.
+
+USE social_network
+MATCH (n)
+WHERE NOT (n)-->()
+RETURN n.name AS name, n.department AS dept, n.city AS city,
+       n.level AS level
+ORDER BY n.name;
+
+
+-- ============================================================================
+-- 14. STRONGEST MENTORSHIPS — High-impact coaching bonds
+-- ============================================================================
+
+USE social_network
+MATCH (mentor)-[r]->(mentee)
+WHERE r.relationship_type = 'mentor'
+RETURN mentor.name AS mentor, mentor.level AS mentor_level,
+       mentee.name AS mentee, mentee.level AS mentee_level,
+       r.weight AS bond_strength
+ORDER BY r.weight DESC
+LIMIT 15;
+
+
+-- ############################################################################
+-- ############################################################################
+--
+-- PART 2: GRAPH ALGORITHMS — Influence, Communities & Paths
+--
+-- ############################################################################
+-- ############################################################################
+
+
+-- ============================================================================
+-- 15. PAGERANK — Who has the most organizational influence?
 -- ============================================================================
 -- PageRank reveals the truly influential people — not just those with
 -- the most connections, but those connected to by other well-connected
--- people. In a startup, these are the informal leaders whose opinions
--- shape company culture and technical direction.
+-- people. These are the informal leaders whose opinions shape company
+-- culture and technical direction.
 
 USE social_network
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 20})
@@ -471,12 +240,22 @@ LIMIT 10;
 
 
 -- ============================================================================
--- CYPHER 24. NATURAL COMMUNITIES — Do teams match the org chart?
+-- 16. DEGREE CENTRALITY — Raw connection counts
 -- ============================================================================
--- Louvain community detection finds groups that naturally cluster together
--- based on actual connections — not the org chart. If communities match
--- departments, the org structure reflects reality. If not, people are
--- self-organizing differently than management expects.
+
+USE social_network
+CALL algo.degree()
+YIELD nodeId, inDegree, outDegree, totalDegree
+RETURN nodeId, inDegree, outDegree, totalDegree
+ORDER BY totalDegree DESC
+LIMIT 10;
+
+
+-- ============================================================================
+-- 17. NATURAL COMMUNITIES — Do teams match the org chart?
+-- ============================================================================
+-- Louvain finds groups based on actual connections, not the org chart.
+-- If communities match departments, the structure reflects reality.
 
 USE social_network
 CALL algo.louvain({resolution: 1.0})
@@ -486,10 +265,9 @@ ORDER BY size DESC;
 
 
 -- ============================================================================
--- CYPHER 25. GATEKEEPERS — Who controls information flow?
+-- 18. GATEKEEPERS — Who controls information flow?
 -- ============================================================================
--- Betweenness centrality finds people who sit on many shortest paths.
--- If these "gatekeepers" leave, communication between groups breaks down.
+-- If these people leave, communication between groups breaks down.
 -- In a 100-person startup, even one key gatekeeper leaving is a crisis.
 
 USE social_network
@@ -501,11 +279,33 @@ LIMIT 10;
 
 
 -- ============================================================================
--- CYPHER 26. SIX DEGREES — How many hops apart are people?
+-- 19. IS THE ORG FULLY CONNECTED? — Connected components
 -- ============================================================================
--- BFS from employee #1: at each hop distance, how many people can be
--- reached? In a well-connected startup, everyone should be reachable
--- within 3-4 hops. More than that suggests organizational fragmentation.
+
+USE social_network
+CALL algo.connectedComponents()
+YIELD nodeId, componentId
+RETURN componentId, count(*) AS size
+ORDER BY size DESC;
+
+
+-- ============================================================================
+-- 20. TIGHT-KNIT GROUPS — Triangle count
+-- ============================================================================
+
+USE social_network
+CALL algo.triangleCount()
+YIELD nodeId, triangleCount
+RETURN nodeId, triangleCount
+ORDER BY triangleCount DESC
+LIMIT 10;
+
+
+-- ============================================================================
+-- 21. SIX DEGREES — How many hops apart are people?
+-- ============================================================================
+-- In a well-connected startup, everyone should be reachable within 3-4
+-- hops. More than that suggests organizational fragmentation.
 
 USE social_network
 CALL algo.bfs({source: 1})
@@ -515,17 +315,40 @@ ORDER BY depth;
 
 
 -- ============================================================================
--- CYPHER 27. SHORTEST PATH — How does a message travel across the company?
+-- 22. SHORTEST PATH — How does a message travel across the company?
 -- ============================================================================
 -- If employee #1 needs to reach employee #50 (likely in a different
 -- department and city), what's the fastest path through the network?
--- Each hop represents a real person passing information along.
 
 USE social_network
 CALL algo.shortestPath({source: 1, target: 50})
 YIELD nodeId, step, distance
 RETURN nodeId, step, distance
 ORDER BY step;
+
+
+-- ============================================================================
+-- 23. ACCESSIBILITY — Who can reach everyone fastest?
+-- ============================================================================
+
+USE social_network
+CALL algo.closeness()
+YIELD nodeId, closeness, rank
+RETURN nodeId, closeness, rank
+ORDER BY closeness DESC
+LIMIT 10;
+
+
+-- ============================================================================
+-- 24. BACKBONE NETWORK — Minimum connections to stay linked
+-- ============================================================================
+
+USE social_network
+CALL algo.mst()
+YIELD sourceId, targetId, weight
+RETURN sourceId, targetId, weight
+ORDER BY weight
+LIMIT 25;
 
 
 -- ############################################################################
@@ -535,18 +358,13 @@ ORDER BY step;
 --
 -- ############################################################################
 -- ############################################################################
--- These queries return node + edge data designed for the graph visualizer.
--- At 100 nodes and ~300 edges, the full company graph should render
--- smoothly with visible department clusters and bridge nodes.
--- ############################################################################
 
 
 -- ============================================================================
--- 28. VIZ: FULL COMPANY GRAPH — All 100 employees with all connections
+-- 25. FULL COMPANY GRAPH — All 100 employees with all connections
 -- ============================================================================
--- Visualize the entire startup network. Department clusters should be
--- visible as dense groups, with bridge employees spanning between them.
--- This is the complete organizational map.
+-- Department clusters should be visible as dense groups, with bridge
+-- employees spanning between them.
 
 USE social_network
 MATCH (a)-[r]->(b)
@@ -554,10 +372,9 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 29. VIZ: MENTORSHIP NETWORK — Only mentor relationships
+-- 26. MENTORSHIP NETWORK — Only mentor relationships
 -- ============================================================================
--- Visualize just the mentorship graph. This reveals the hierarchical
--- skeleton of the organization — who mentors whom. Directors should
+-- Reveals the hierarchical skeleton: who mentors whom. Directors should
 -- appear as high-degree hub nodes connecting to multiple mentees.
 
 USE social_network
@@ -567,12 +384,11 @@ RETURN mentor, r, mentee;
 
 
 -- ============================================================================
--- 30. VIZ: CROSS-DEPARTMENT BRIDGES — Only inter-department connections
+-- 27. CROSS-DEPARTMENT BRIDGES — Only inter-department connections
 -- ============================================================================
--- Strip away all intra-department edges to see only the connections
--- that cross departmental boundaries. The bridge employees and city-based
--- social bonds become the dominant structure. Isolated departments
--- (clusters with no outgoing edges) are organizational blind spots.
+-- Strips away intra-department edges to see only the connections that
+-- cross departmental boundaries. Isolated departments with no outgoing
+-- edges are organizational blind spots.
 
 USE social_network
 MATCH (a)-[r]->(b)
