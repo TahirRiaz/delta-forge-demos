@@ -24,7 +24,7 @@
       <pubDate>Wed, 19 Mar 2025 00:41:39 +0000</pubDate>
       <nyt:sentiment>negative</nyt:sentiment>
       <nyt:urgency>breaking</nyt:urgency>
-      <source url=”https://www.nytimes.com”>The New York Times</source>
+      <nyt:word_count>1842</nyt:word_count>
       <category domain=”http://www.nytimes.com/namespaces/keywords/des”>Israel-Gaza War (2023- )</category>
       <category domain=”http://www.nytimes.com/namespaces/keywords/des”>Civilian Casualties</category>
       <category domain=”http://www.nytimes.com/namespaces/keywords/des”>International Relations</category>
@@ -53,7 +53,7 @@
       <pubDate>Tue, 18 Mar 2025 17:23:29 +0000</pubDate>
       <nyt:sentiment>neutral</nyt:sentiment>
       <nyt:urgency>developing</nyt:urgency>
-      <source url="https://www.nytimes.com">The New York Times</source>
+      <nyt:word_count>956</nyt:word_count>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Israel-Gaza War (2023- )</category>
       <category domain="http://www.nytimes.com/namespaces/keywords/nyt_org">Hamas</category>
       <category domain="http://www.nytimes.com/namespaces/keywords/nyt_geo">Gaza Strip</category>
@@ -71,7 +71,7 @@
       <pubDate>Tue, 18 Mar 2025 20:27:20 +0000</pubDate>
       <nyt:sentiment>negative</nyt:sentiment>
       <nyt:urgency>standard</nyt:urgency>
-      <source url="https://www.nytimes.com">The New York Times</source>
+      <nyt:word_count>1205</nyt:word_count>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Israel-Gaza War (2023- )</category>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Palestinians</category>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Deaths (Fatalities)</category>
@@ -93,7 +93,7 @@
       <pubDate>Wed, 19 Mar 2025 00:31:54 +0000</pubDate>
       <nyt:sentiment>negative</nyt:sentiment>
       <nyt:urgency>breaking</nyt:urgency>
-      <source url="https://www.nytimes.com">The New York Times</source>
+      <nyt:word_count>2103</nyt:word_count>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Israel-Gaza War (2023- )</category>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Terrorism</category>
       <category domain="http://www.nytimes.com/namespaces/keywords/des">Defense and Military Forces</category>
