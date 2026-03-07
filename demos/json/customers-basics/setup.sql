@@ -46,6 +46,10 @@ OPTIONS (
         "max_depth": 1,
         "separator": "_",
         "default_array_handling": "to_json",
+        "column_mappings": {
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
+        },
         "infer_types": true
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

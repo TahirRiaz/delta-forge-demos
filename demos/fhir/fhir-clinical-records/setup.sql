@@ -74,7 +74,9 @@ OPTIONS (
             "$.bodySite": "body_site",
             "$.onsetDateTime": "onset_date",
             "$.abatementDateTime": "abatement_date",
-            "$.recordedDate": "recorded_date"
+            "$.recordedDate": "recorded_date",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 4,
         "separator": "_",
@@ -134,7 +136,9 @@ OPTIONS (
             "$.occurrencePeriod": "occurrence_period",
             "$.bodySite": "body_site",
             "$.reportedReference": "reported_by",
-            "$.focalDevice": "focal_device"
+            "$.focalDevice": "focal_device",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 4,
         "separator": "_",
@@ -195,7 +199,9 @@ OPTIONS (
             "$.verificationStatus": "verification_status",
             "$.onsetDateTime": "onset_date",
             "$.recordedDate": "recorded_date",
-            "$.lastOccurrence": "last_occurrence"
+            "$.lastOccurrence": "last_occurrence",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 4,
         "separator": "_",

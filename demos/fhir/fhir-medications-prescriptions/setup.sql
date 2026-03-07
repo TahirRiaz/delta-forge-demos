@@ -67,7 +67,9 @@ OPTIONS (
             "$.id": "prescription_id",
             "$.authoredOn": "authored_date",
             "$.dosageInstruction": "dosage_instructions",
-            "$.dispenseRequest": "dispense_request"
+            "$.dispenseRequest": "dispense_request",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 4,
         "separator": "_",
@@ -116,7 +118,9 @@ OPTIONS (
         ],
         "json_paths": ["$.class", "$.type", "$.subscriber", "$.beneficiary", "$.period", "$.insurer", "$.policyHolder", "$.identifier"],
         "column_mappings": {
-            "$.id": "coverage_id"
+            "$.id": "coverage_id",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 3,
         "separator": "_",

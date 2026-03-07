@@ -67,7 +67,11 @@ OPTIONS (
             "/catalog/book/rating": "catalog_book_rating",
             "/catalog/book/edition": "catalog_book_edition",
             "/catalog/book/pages": "catalog_book_pages",
-            "/catalog/book/series": "catalog_book_series"
+            "/catalog/book/series": "catalog_book_series",
+            "df_file_name": "df_file_name",
+            "df_file_modified": "df_file_modified",
+            "df_dataset": "df_dataset",
+            "df_row_number": "df_row_number"
         },
         "include_attributes": true,
         "separator": "_",

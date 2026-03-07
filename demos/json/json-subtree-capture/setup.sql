@@ -56,7 +56,9 @@ OPTIONS (
             "$.type": "type",
             "$.year_built": "year_built",
             "$.location": "location",
-            "$.pricing": "pricing"
+            "$.pricing": "pricing",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 10,
         "separator": "_",
@@ -123,7 +125,9 @@ OPTIONS (
             "$.pricing.price_per_sqft": "pricing_price_per_sqft",
             "$.pricing.hoa_monthly": "pricing_hoa_monthly",
             "$.pricing.tax_annual": "pricing_tax_annual",
-            "$.pricing.mortgage_estimate.monthly_payment": "pricing_mortgage_estimate_monthly_payment"
+            "$.pricing.mortgage_estimate.monthly_payment": "pricing_mortgage_estimate_monthly_payment",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 10,
         "separator": "_",

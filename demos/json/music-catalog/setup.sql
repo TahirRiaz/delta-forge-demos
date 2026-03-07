@@ -63,7 +63,9 @@ OPTIONS (
             "$.details.genre_id": "details_genre_id",
             "$.details.milliseconds": "details_milliseconds",
             "$.details.bytes": "details_bytes",
-            "$.details.unit_price": "details_unit_price"
+            "$.details.unit_price": "details_unit_price",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 10,
         "separator": "_",
@@ -102,7 +104,9 @@ OPTIONS (
         "json_paths": ["$.vendor"],
         "column_mappings": {
             "$.id": "id",
-            "$.name": "name"
+            "$.name": "name",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "default_array_handling": "count",
         "max_depth": 10,

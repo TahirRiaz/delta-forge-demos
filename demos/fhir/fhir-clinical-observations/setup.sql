@@ -50,7 +50,9 @@ OPTIONS (
         "column_mappings": {
             "$.id": "observation_id",
             "$.effectiveDateTime": "effective_date",
-            "$.valueQuantity": "value_quantity"
+            "$.valueQuantity": "value_quantity",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 4,
         "separator": "_",
@@ -105,7 +107,9 @@ OPTIONS (
             "$.effectivePeriod": "effective_period",
             "$.valueQuantity": "value_quantity",
             "$.valueString": "value_string",
-            "$.referenceRange": "reference_range"
+            "$.referenceRange": "reference_range",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "max_depth": 4,
         "separator": "_",

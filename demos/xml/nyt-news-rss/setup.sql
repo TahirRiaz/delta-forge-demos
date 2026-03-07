@@ -65,7 +65,11 @@ OPTIONS (
             "/rss/channel/item/content/@url": "rss_channel_item_content_attr_url",
             "/rss/channel/item/content/@height": "rss_channel_item_content_attr_height",
             "/rss/channel/item/content/@width": "rss_channel_item_content_attr_width",
-            "/rss/channel/item/content/@medium": "rss_channel_item_content_attr_medium"
+            "/rss/channel/item/content/@medium": "rss_channel_item_content_attr_medium",
+            "df_file_name": "df_file_name",
+            "df_file_modified": "df_file_modified",
+            "df_dataset": "df_dataset",
+            "df_row_number": "df_row_number"
         },
         "include_attributes": true,
         "separator": "_",
@@ -117,7 +121,11 @@ OPTIONS (
             "/rss/channel/item/creator": "rss_channel_item_creator",
             "/rss/channel/item/pubDate": "rss_channel_item_pub_date",
             "/rss/channel/item/category": "rss_channel_item_category",
-            "/rss/channel/item/category/@domain": "rss_channel_item_category_attr_domain"
+            "/rss/channel/item/category/@domain": "rss_channel_item_category_attr_domain",
+            "df_file_name": "df_file_name",
+            "df_file_modified": "df_file_modified",
+            "df_dataset": "df_dataset",
+            "df_row_number": "df_row_number"
         },
         "include_attributes": true,
         "separator": "_",

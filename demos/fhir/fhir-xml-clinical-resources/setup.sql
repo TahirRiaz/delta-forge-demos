@@ -108,7 +108,9 @@ OPTIONS (
             "/Patient/identifier/system/@value": "identifier_system",
             "/Patient/identifier/value/@value": "identifier_value",
             "/Patient/contact": "contact",
-            "/Patient/communication": "communication"
+            "/Patient/communication": "communication",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "include_attributes": true,
         "separator": "_",
@@ -205,7 +207,9 @@ OPTIONS (
             "/Observation/referenceRange": "reference_range",
             "/Observation/component": "component",
             "/Observation/performer/reference/@value": "performer_ref",
-            "/Observation/performer/display/@value": "performer_display"
+            "/Observation/performer/display/@value": "performer_display",
+            "df_file_name": "df_file_name",
+            "df_row_number": "df_row_number"
         },
         "include_attributes": true,
         "separator": "_",

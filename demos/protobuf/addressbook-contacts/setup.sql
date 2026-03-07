@@ -54,7 +54,11 @@ OPTIONS (
             "people.email": "email",
             "people.phones.number": "phone_numbers",
             "people.phones.type": "phone_types",
-            "people.last_updated": "last_updated"
+            "people.last_updated": "last_updated",
+            "df_file_name": "df_file_name",
+            "df_file_modified": "df_file_modified",
+            "df_dataset": "df_dataset",
+            "df_row_number": "df_row_number"
         },
         "decode_enums": true,
         "timestamp_format": "iso8601",
@@ -97,7 +101,11 @@ OPTIONS (
             "people.email": "email",
             "people.phones.number": "phone_number",
             "people.phones.type": "phone_type",
-            "people.last_updated": "last_updated"
+            "people.last_updated": "last_updated",
+            "df_file_name": "df_file_name",
+            "df_file_modified": "df_file_modified",
+            "df_dataset": "df_dataset",
+            "df_row_number": "df_row_number"
         },
         "decode_enums": true,
         "timestamp_format": "iso8601",
