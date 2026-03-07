@@ -76,7 +76,7 @@ SELECT patient_id,
        CASE WHEN is_deceased IS NOT NULL THEN 'Y' ELSE '-' END AS has_deceased,
        CASE WHEN telecom IS NOT NULL THEN 'Y' ELSE '-' END AS has_telecom,
        CASE WHEN address IS NOT NULL THEN 'Y' ELSE '-' END AS has_address,
-       CASE WHEN maritalStatus IS NOT NULL THEN 'Y' ELSE '-' END AS has_marital,
+       CASE WHEN marital_status IS NOT NULL THEN 'Y' ELSE '-' END AS has_marital,
        CASE WHEN managing_org IS NOT NULL THEN 'Y' ELSE '-' END AS has_org,
        df_file_name
 FROM {{zone_name}}.fhir.patients_detailed

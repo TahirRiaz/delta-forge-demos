@@ -96,9 +96,9 @@ OPTIONS (
     edi_config = '{
         "ediFormat": "tradacoms",
         "materialized_paths": [
-            "TYP_1", "TYP_2",
-            "SDT_1", "SDT_2",
-            "CDT_1", "CDT_2"
+            "typ_1", "typ_2",
+            "sdt_1", "sdt_2",
+            "cdt_1", "cdt_2"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

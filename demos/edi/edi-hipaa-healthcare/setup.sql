@@ -91,10 +91,10 @@ OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
         "materialized_paths": [
-            "BHT_1", "BHT_2", "BHT_6",
-            "NM1_1", "NM1_2", "NM1_3",
-            "CLM_1", "CLM_2",
-            "BPR_1", "BPR_2"
+            "bht_1", "bht_2", "bht_6",
+            "nm1_1", "nm1_2", "nm1_3",
+            "clm_1", "clm_2",
+            "bpr_1", "bpr_2"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

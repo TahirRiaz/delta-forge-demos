@@ -7,19 +7,19 @@
 -- Two tables are available:
 --   lab_orders   — Compact view: ORM messages only (via orm*.hl7 glob)
 --   lab_results  — Enriched view: All messages with materialized OBX fields
---                  (use "MSH_9" LIKE 'ORU%' to filter to results only)
+--                  (use msh_9 LIKE 'ORU%' to filter to results only)
 --
 -- Column reference (always available — MSH header fields):
---   "MSH_3"  = Sending Application     "MSH_4"  = Sending Facility
---   "MSH_7"  = Message Date/Time       "MSH_9"  = Message Type
---   "MSH_10" = Message Control ID      "MSH_12" = Version ID
+--   msh_3  = Sending Application     msh_4  = Sending Facility
+--   msh_7  = Message Date/Time       msh_9  = Message Type
+--   msh_10 = Message Control ID      msh_12 = Version ID
 --
 -- Materialized columns (lab_results table only):
---   "PID_3"  = Patient ID              "PID_5"  = Patient Name
---   "OBR_4"  = Universal Service ID    "OBX_2"  = Value Type (NM/ST/TX/SN/HD)
---   "OBX_3"  = Observation Identifier  "OBX_5"  = Observation Value
---   "OBX_6"  = Units                   "OBX_7"  = Reference Range
---   "OBX_8"  = Abnormal Flags (H/L/N)
+--   pid_3  = Patient ID              pid_5  = Patient Name
+--   obr_4  = Universal Service ID    obx_2  = Value Type (NM/ST/TX/SN/HD)
+--   obx_3  = Observation Identifier  obx_5  = Observation Value
+--   obx_6  = Units                   obx_7  = Reference Range
+--   obx_8  = Abnormal Flags (H/L/N)
 -- ============================================================================
 
 
@@ -40,10 +40,10 @@
 
 SELECT
     df_file_name,
-    "MSH_3" AS sending_app,
-    "MSH_4" AS sending_facility,
-    "MSH_9" AS message_type,
-    "MSH_12" AS hl7_version
+    msh_3 AS sending_app,
+    msh_4 AS sending_facility,
+    msh_9 AS message_type,
+    msh_12 AS hl7_version
 FROM {{zone_name}}.hl7.lab_orders
 ORDER BY df_file_name;
 
@@ -73,17 +73,17 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    "MSH_3" AS sending_app,
-    "MSH_12" AS hl7_version,
-    "PID_5" AS patient_name,
-    "OBR_4" AS test_ordered,
-    "OBX_3" AS first_obs_id,
-    "OBX_5" AS first_obs_value,
-    "OBX_6" AS units,
-    "OBX_7" AS reference_range,
-    "OBX_8" AS abnormal_flag
+    msh_3 AS sending_app,
+    msh_12 AS hl7_version,
+    pid_5 AS patient_name,
+    obr_4 AS test_ordered,
+    obx_3 AS first_obs_id,
+    obx_5 AS first_obs_value,
+    obx_6 AS units,
+    obx_7 AS reference_range,
+    obx_8 AS abnormal_flag
 FROM {{zone_name}}.hl7.lab_results
-WHERE "MSH_9" LIKE 'ORU%'
+WHERE msh_9 LIKE 'ORU%'
 ORDER BY df_file_name;
 
 
@@ -106,11 +106,11 @@ ORDER BY df_file_name;
 -- the value type of each message's primary observation.
 
 SELECT
-    "OBX_2" AS value_type,
+    obx_2 AS value_type,
     COUNT(*) AS result_count
 FROM {{zone_name}}.hl7.lab_results
-WHERE "OBX_2" IS NOT NULL AND "OBX_2" <> ''
-GROUP BY "OBX_2"
+WHERE obx_2 IS NOT NULL AND obx_2 <> ''
+GROUP BY obx_2
 ORDER BY result_count DESC;
 
 
@@ -136,14 +136,14 @@ ORDER BY result_count DESC;
 
 SELECT
     df_file_name,
-    "PID_5" AS patient_name,
-    "OBX_3" AS test_id,
-    "OBX_5" AS value,
-    "OBX_6" AS units,
-    "OBX_7" AS reference_range,
-    "OBX_8" AS abnormal_flag
+    pid_5 AS patient_name,
+    obx_3 AS test_id,
+    obx_5 AS value,
+    obx_6 AS units,
+    obx_7 AS reference_range,
+    obx_8 AS abnormal_flag
 FROM {{zone_name}}.hl7.lab_results
-WHERE "OBX_8" IS NOT NULL AND "OBX_8" <> '' AND "OBX_8" <> 'N';
+WHERE obx_8 IS NOT NULL AND obx_8 <> '' AND obx_8 <> 'N';
 
 
 -- ============================================================================
@@ -151,7 +151,7 @@ WHERE "OBX_8" IS NOT NULL AND "OBX_8" <> '' AND "OBX_8" <> 'N';
 -- ============================================================================
 -- Verifies the expected number of messages in each table and category.
 -- lab_orders only loads ORM files (via orm*.hl7 glob pattern).
--- lab_results loads all 8 files (via *.hl7 glob) — filter by "MSH_9"
+-- lab_results loads all 8 files (via *.hl7 glob) — filter by msh_9
 -- to separate ORM orders from ORU results.
 --
 -- What you'll see:
@@ -167,7 +167,7 @@ FROM {{zone_name}}.hl7.lab_results
 UNION ALL
 SELECT 'lab_results_oru_only' AS table_name, COUNT(*) AS row_count
 FROM {{zone_name}}.hl7.lab_results
-WHERE "MSH_9" LIKE 'ORU%';
+WHERE msh_9 LIKE 'ORU%';
 
 
 -- ============================================================================
@@ -186,7 +186,7 @@ WHERE "MSH_9" LIKE 'ORU%';
 
 SELECT
     df_file_name,
-    "MSH_9" AS message_type,
+    msh_9 AS message_type,
     df_message_json
 FROM {{zone_name}}.hl7.lab_orders
 WHERE df_file_name LIKE '%orm_o01_order%';
@@ -208,9 +208,9 @@ WHERE df_file_name LIKE '%orm_o01_order%';
 
 SELECT
     df_file_name,
-    "PID_5" AS patient_name,
-    "OBX_3" AS first_obs,
-    "OBX_5" AS first_value,
+    pid_5 AS patient_name,
+    obx_3 AS first_obs,
+    obx_5 AS first_value,
     df_message_json
 FROM {{zone_name}}.hl7.lab_results
 WHERE df_file_name LIKE '%lab_result%';
@@ -220,7 +220,7 @@ WHERE df_file_name LIKE '%lab_result%';
 -- 8. Source Systems — LIS/EHR Analysis
 -- ============================================================================
 -- Shows which lab and EHR systems generated all messages in the
--- lab_results table. "MSH_9" distinguishes ORM orders from ORU results,
+-- lab_results table. msh_9 distinguishes ORM orders from ORU results,
 -- letting you see the full picture of order-to-result workflow.
 --
 -- What you'll see:
@@ -234,12 +234,12 @@ WHERE df_file_name LIKE '%lab_result%';
 
 SELECT
     df_file_name,
-    "MSH_3" AS sending_app,
-    "MSH_4" AS sending_facility,
-    "MSH_9" AS message_type,
-    "MSH_12" AS hl7_version
+    msh_3 AS sending_app,
+    msh_4 AS sending_facility,
+    msh_9 AS message_type,
+    msh_12 AS hl7_version
 FROM {{zone_name}}.hl7.lab_results
-ORDER BY "MSH_9", df_file_name;
+ORDER BY msh_9, df_file_name;
 
 
 -- ============================================================================
@@ -267,14 +267,14 @@ SELECT check_name, result FROM (
     -- Check 3: 5 ORU messages when filtered by message type
     SELECT 'results_oru_5' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_results
-                       WHERE "MSH_9" LIKE 'ORU%') = 5
+                       WHERE msh_9 LIKE 'ORU%') = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: At least 3 distinct HL7 versions (actual: 4)
     SELECT 'multi_version' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT "MSH_12") FROM {{zone_name}}.hl7.lab_results) >= 3
+           CASE WHEN (SELECT COUNT(DISTINCT msh_12) FROM {{zone_name}}.hl7.lab_results) >= 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -290,7 +290,7 @@ SELECT check_name, result FROM (
     -- Check 6: PID_5 populated in at least one ORU result
     SELECT 'results_pid5_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_results
-                       WHERE "MSH_9" LIKE 'ORU%' AND "PID_5" IS NOT NULL AND "PID_5" <> '') > 0
+                       WHERE msh_9 LIKE 'ORU%' AND pid_5 IS NOT NULL AND pid_5 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

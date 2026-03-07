@@ -68,11 +68,11 @@ LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
     hl7_config = '{
         "materialized_paths": [
-            "PID_3", "PID_5", "PID_7", "PID_8",
-            "PV1_2", "PV1_3",
-            "TXA_2", "TXA_12", "TXA_14",
-            "SCH_1", "SCH_7", "SCH_10", "SCH_25",
-            "OBX_2", "OBX_3", "OBX_5"
+            "pid_3", "pid_5", "pid_7", "pid_8",
+            "pv1_2", "pv1_3",
+            "txa_2", "txa_12", "txa_14",
+            "sch_1", "sch_7", "sch_10", "sch_25",
+            "obx_2", "obx_3", "obx_5"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

@@ -94,11 +94,11 @@ OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
         "materialized_paths": [
-            "B2_2", "B2_4",
-            "B3_2", "B3_3",
-            "B10_1", "B10_2",
-            "N1_1", "N1_2",
-            "L3_1", "L3_5"
+            "b2_2", "b2_4",
+            "b3_2", "b3_3",
+            "b10_1", "b10_2",
+            "n1_1", "n1_2",
+            "l3_1", "l3_5"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

@@ -45,11 +45,11 @@
 
 SELECT
     df_file_name,
-    "ISA_6" AS sender,
-    "ISA_8" AS receiver,
-    "ST_1"  AS transaction,
-    "GS_1"  AS func_group,
-    "GS_8"  AS version
+    isa_6 AS sender,
+    isa_8 AS receiver,
+    st_1  AS transaction,
+    gs_1  AS func_group,
+    gs_8  AS version
 FROM {{zone_name}}.edi.logistics_messages
 ORDER BY df_file_name;
 
@@ -71,11 +71,11 @@ ORDER BY df_file_name;
 --           832=2, 945=1, 990=1 (total 12)
 
 SELECT
-    "ST_1"  AS transaction_type,
+    st_1  AS transaction_type,
     COUNT(*) AS doc_count
 FROM {{zone_name}}.edi.logistics_messages
-GROUP BY "ST_1"
-ORDER BY "ST_1";
+GROUP BY st_1
+ORDER BY st_1;
 
 
 -- ============================================================================
@@ -96,11 +96,11 @@ ORDER BY "ST_1";
 --           (total 12)
 
 SELECT
-    "GS_1"  AS func_group,
+    gs_1  AS func_group,
     COUNT(*) AS doc_count
 FROM {{zone_name}}.edi.logistics_messages
-GROUP BY "GS_1"
-ORDER BY "GS_1";
+GROUP BY gs_1
+ORDER BY gs_1;
 
 
 -- ============================================================================
@@ -123,11 +123,11 @@ ORDER BY "GS_1";
 --   Total = 12
 
 SELECT
-    "ISA_12" AS x12_version,
+    isa_12 AS x12_version,
     COUNT(*) AS doc_count
 FROM {{zone_name}}.edi.logistics_messages
-GROUP BY "ISA_12"
-ORDER BY "ISA_12";
+GROUP BY isa_12
+ORDER BY isa_12;
 
 
 -- ============================================================================
@@ -149,12 +149,12 @@ ORDER BY "ISA_12";
 
 SELECT
     df_file_name,
-    "ISA_6"  AS sender,
-    "ISA_8"  AS receiver,
-    "ST_2"   AS control_num,
-    "GS_8"   AS version
+    isa_6  AS sender,
+    isa_8  AS receiver,
+    st_2   AS control_num,
+    gs_8   AS version
 FROM {{zone_name}}.edi.logistics_messages
-WHERE "ST_1" = '214'
+WHERE st_1 = '214'
 ORDER BY df_file_name;
 
 
@@ -178,11 +178,11 @@ ORDER BY df_file_name;
 --   999999999 -> 6309246701 (1: 832 sales)
 
 SELECT
-    "ISA_6"  AS sender,
-    "ISA_8"  AS receiver,
+    isa_6  AS sender,
+    isa_8  AS receiver,
     COUNT(*) AS doc_count
 FROM {{zone_name}}.edi.logistics_messages
-GROUP BY "ISA_6", "ISA_8"
+GROUP BY isa_6, isa_8
 ORDER BY doc_count DESC;
 
 
@@ -206,12 +206,12 @@ ORDER BY doc_count DESC;
 
 SELECT
     df_file_name,
-    "B10_1" AS shipment_id,
-    "B10_2" AS bol_number,
-    "N1_1"  AS party_code,
-    "N1_2"  AS party_name
+    b10_1 AS shipment_id,
+    b10_2 AS bol_number,
+    n1_1  AS party_code,
+    n1_2  AS party_name
 FROM {{zone_name}}.edi.logistics_materialized
-WHERE "B10_1" IS NOT NULL
+WHERE b10_1 IS NOT NULL
 ORDER BY df_file_name;
 
 
@@ -233,7 +233,7 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    "ST_1" AS transaction,
+    st_1 AS transaction,
     df_transaction_json
 FROM {{zone_name}}.edi.logistics_messages
 ORDER BY df_file_name
@@ -264,7 +264,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: At least 6 distinct transaction types (actual: 8 -- 204,210,214,404,820,832,945,990)
     SELECT 'transaction_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT "ST_1") FROM {{zone_name}}.edi.logistics_messages) >= 6
+           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi.logistics_messages) >= 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -279,7 +279,7 @@ SELECT check_name, result FROM (
     -- Check 5: B10_1 (shipment reference ID) is populated in at least some rows
     SELECT 'b10_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.logistics_materialized
-                       WHERE "B10_1" IS NOT NULL AND "B10_1" <> '') > 0
+                       WHERE b10_1 IS NOT NULL AND b10_1 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

@@ -79,9 +79,9 @@ LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
     hl7_config = '{
         "materialized_paths": [
-            "PID_3", "PID_5",
-            "OBR_4",
-            "OBX_2", "OBX_3", "OBX_5", "OBX_6", "OBX_7", "OBX_8"
+            "pid_3", "pid_5",
+            "obr_4",
+            "obx_2", "obx_3", "obx_5", "obx_6", "obx_7", "obx_8"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

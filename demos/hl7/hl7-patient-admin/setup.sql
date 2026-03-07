@@ -80,9 +80,9 @@ LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
     hl7_config = '{
         "materialized_paths": [
-            "PID_3", "PID_5", "PID_7", "PID_8", "PID_11",
-            "PV1_2", "PV1_3", "PV1_7",
-            "EVN_1", "EVN_2"
+            "pid_3", "pid_5", "pid_7", "pid_8", "pid_11",
+            "pv1_2", "pv1_3", "pv1_7",
+            "evn_1", "evn_2"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

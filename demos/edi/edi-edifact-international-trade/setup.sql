@@ -113,10 +113,10 @@ OPTIONS (
     edi_config = '{
         "ediFormat": "edifact",
         "materialized_paths": [
-            "BGM_1", "BGM_2",
-            "NAD_1", "NAD_2",
-            "DTM_1", "DTM_2",
-            "LIN_1", "LIN_3"
+            "bgm_1", "bgm_2",
+            "nad_1", "nad_2",
+            "dtm_1", "dtm_2",
+            "lin_1", "lin_3"
         ]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'

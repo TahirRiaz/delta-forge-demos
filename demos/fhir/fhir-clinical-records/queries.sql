@@ -75,7 +75,7 @@ ORDER BY procedure_id;
 -- for full clinical fidelity.
 
 SELECT procedure_id, status,
-       performer, reason, followUp, note
+       performer, reason, follow_up, note
 FROM {{zone_name}}.fhir.procedures
 ORDER BY procedure_id;
 
@@ -262,10 +262,10 @@ SELECT check_name, result FROM (
 
     -- Check 10: Three distinct resource types from one directory
     SELECT 'multi_resource_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT resourceType) FROM (
-               SELECT resourceType FROM {{zone_name}}.fhir.conditions
-               UNION ALL SELECT resourceType FROM {{zone_name}}.fhir.procedures
-               UNION ALL SELECT resourceType FROM {{zone_name}}.fhir.allergies
+           CASE WHEN (SELECT COUNT(DISTINCT resource_type) FROM (
+               SELECT resource_type FROM {{zone_name}}.fhir.conditions
+               UNION ALL SELECT resource_type FROM {{zone_name}}.fhir.procedures
+               UNION ALL SELECT resource_type FROM {{zone_name}}.fhir.allergies
            ) combined) = 3 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks
