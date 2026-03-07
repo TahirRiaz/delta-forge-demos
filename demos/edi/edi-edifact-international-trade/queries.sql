@@ -46,10 +46,10 @@
 
 SELECT
     df_file_name,
-    UNB_1 AS syntax_id,
-    UNH_2 AS msg_type,
-    UNH_1 AS msg_ref,
-    UNB_2 AS sender
+    "UNB_1" AS syntax_id,
+    "UNH_2" AS msg_type,
+    "UNH_1" AS msg_ref,
+    "UNB_2" AS sender
 FROM {{zone_name}}.edi.edifact_messages
 ORDER BY df_file_name;
 
@@ -71,11 +71,11 @@ ORDER BY df_file_name;
 -- QUOTES, PAORES, DESADV, IFTSTA, PRICAT, IFTMIN
 
 SELECT
-    UNH_2 AS msg_type,
+    "UNH_2" AS msg_type,
     COUNT(*) AS msg_count
 FROM {{zone_name}}.edi.edifact_messages
-GROUP BY UNH_2
-ORDER BY msg_count DESC, UNH_2;
+GROUP BY "UNH_2"
+ORDER BY msg_count DESC, "UNH_2";
 
 
 -- ============================================================================
@@ -91,19 +91,19 @@ ORDER BY msg_count DESC, UNH_2;
 -- single table without any version-specific configuration.
 
 SELECT
-    UNB_1 AS syntax_id,
-    CASE UNB_1
+    "UNB_1" AS syntax_id,
+    CASE "UNB_1"
         WHEN 'UNOA' THEN 'Basic Latin (Level A)'
         WHEN 'UNOB' THEN 'Latin with lowercase (Level B)'
         WHEN 'UNOC' THEN 'Latin-1 extended (Level C)'
         WHEN 'UNOL' THEN 'Latin-2 extended (Level L)'
         WHEN 'IATB' THEN 'IATA variant B'
         WHEN 'IATA' THEN 'IATA variant A'
-        ELSE UNB_1
+        ELSE "UNB_1"
     END AS syntax_name,
     COUNT(*) AS msg_count
 FROM {{zone_name}}.edi.edifact_messages
-GROUP BY UNB_1
+GROUP BY "UNB_1"
 ORDER BY msg_count DESC;
 
 
@@ -123,36 +123,36 @@ ORDER BY msg_count DESC;
 
 SELECT
     CASE
-        WHEN UNH_2 LIKE 'ORDERS%' OR UNH_2 LIKE 'ORDRSP%' OR UNH_2 LIKE 'INVOIC%'
-             OR UNH_2 LIKE 'PRICAT%' OR UNH_2 LIKE 'QUOTES%'
+        WHEN "UNH_2" LIKE 'ORDERS%' OR "UNH_2" LIKE 'ORDRSP%' OR "UNH_2" LIKE 'INVOIC%'
+             OR "UNH_2" LIKE 'PRICAT%' OR "UNH_2" LIKE 'QUOTES%'
             THEN 'Commerce'
-        WHEN UNH_2 LIKE 'IFCSUM%' OR UNH_2 LIKE 'IFTSTA%' OR UNH_2 LIKE 'IFTMIN%'
-             OR UNH_2 LIKE 'BAPLIE%' OR UNH_2 LIKE 'DESADV%'
+        WHEN "UNH_2" LIKE 'IFCSUM%' OR "UNH_2" LIKE 'IFTSTA%' OR "UNH_2" LIKE 'IFTMIN%'
+             OR "UNH_2" LIKE 'BAPLIE%' OR "UNH_2" LIKE 'DESADV%'
             THEN 'Transport'
-        WHEN UNH_2 LIKE 'CUSCAR%' OR UNH_2 LIKE 'PAXLST%' OR UNH_2 LIKE 'PNRGOV%'
+        WHEN "UNH_2" LIKE 'CUSCAR%' OR "UNH_2" LIKE 'PAXLST%' OR "UNH_2" LIKE 'PNRGOV%'
             THEN 'Border'
-        WHEN UNH_2 LIKE 'APERAK%' OR UNH_2 LIKE 'CONTRL%'
+        WHEN "UNH_2" LIKE 'APERAK%' OR "UNH_2" LIKE 'CONTRL%'
             THEN 'Acknowledgment'
         ELSE 'Other'
     END AS domain,
-    UNH_2 AS msg_type,
+    "UNH_2" AS msg_type,
     COUNT(*) AS msg_count
 FROM {{zone_name}}.edi.edifact_messages
 GROUP BY
     CASE
-        WHEN UNH_2 LIKE 'ORDERS%' OR UNH_2 LIKE 'ORDRSP%' OR UNH_2 LIKE 'INVOIC%'
-             OR UNH_2 LIKE 'PRICAT%' OR UNH_2 LIKE 'QUOTES%'
+        WHEN "UNH_2" LIKE 'ORDERS%' OR "UNH_2" LIKE 'ORDRSP%' OR "UNH_2" LIKE 'INVOIC%'
+             OR "UNH_2" LIKE 'PRICAT%' OR "UNH_2" LIKE 'QUOTES%'
             THEN 'Commerce'
-        WHEN UNH_2 LIKE 'IFCSUM%' OR UNH_2 LIKE 'IFTSTA%' OR UNH_2 LIKE 'IFTMIN%'
-             OR UNH_2 LIKE 'BAPLIE%' OR UNH_2 LIKE 'DESADV%'
+        WHEN "UNH_2" LIKE 'IFCSUM%' OR "UNH_2" LIKE 'IFTSTA%' OR "UNH_2" LIKE 'IFTMIN%'
+             OR "UNH_2" LIKE 'BAPLIE%' OR "UNH_2" LIKE 'DESADV%'
             THEN 'Transport'
-        WHEN UNH_2 LIKE 'CUSCAR%' OR UNH_2 LIKE 'PAXLST%' OR UNH_2 LIKE 'PNRGOV%'
+        WHEN "UNH_2" LIKE 'CUSCAR%' OR "UNH_2" LIKE 'PAXLST%' OR "UNH_2" LIKE 'PNRGOV%'
             THEN 'Border'
-        WHEN UNH_2 LIKE 'APERAK%' OR UNH_2 LIKE 'CONTRL%'
+        WHEN "UNH_2" LIKE 'APERAK%' OR "UNH_2" LIKE 'CONTRL%'
             THEN 'Acknowledgment'
         ELSE 'Other'
     END,
-    UNH_2
+    "UNH_2"
 ORDER BY domain, msg_type;
 
 
@@ -175,11 +175,11 @@ ORDER BY domain, msg_type;
 
 SELECT
     df_file_name,
-    UNH_2 AS msg_type,
-    BGM_1 AS doc_code,
-    BGM_2 AS doc_number
+    "UNH_2" AS msg_type,
+    "BGM_1" AS doc_code,
+    "BGM_2" AS doc_number
 FROM {{zone_name}}.edi.edifact_materialized
-WHERE BGM_1 IS NOT NULL
+WHERE "BGM_1" IS NOT NULL
 ORDER BY df_file_name;
 
 
@@ -200,11 +200,11 @@ ORDER BY df_file_name;
 -- industries (retail, shipping, customs, airlines)
 
 SELECT
-    UNB_2 AS sender,
-    UNB_3 AS receiver,
+    "UNB_2" AS sender,
+    "UNB_3" AS receiver,
     COUNT(*) AS msg_count
 FROM {{zone_name}}.edi.edifact_messages
-GROUP BY UNB_2, UNB_3
+GROUP BY "UNB_2", "UNB_3"
 ORDER BY msg_count DESC;
 
 
@@ -261,7 +261,7 @@ ORDER BY standard;
 
 SELECT
     df_file_name,
-    UNH_2 AS msg_type,
+    "UNH_2" AS msg_type,
     df_transaction_json
 FROM {{zone_name}}.edi.edifact_messages
 ORDER BY df_file_name
@@ -296,7 +296,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: At least 10 distinct message types (actual: ~17 distinct UNH_2 values)
     SELECT 'multi_message_type' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT UNH_2) FROM {{zone_name}}.edi.edifact_messages) >= 10
+           CASE WHEN (SELECT COUNT(DISTINCT "UNH_2") FROM {{zone_name}}.edi.edifact_messages) >= 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -311,7 +311,7 @@ SELECT check_name, result FROM (
     -- Check 5: BGM_1 (document code) is populated for at least some rows
     SELECT 'bgm_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.edifact_materialized
-                       WHERE BGM_1 IS NOT NULL AND BGM_1 <> '') > 0
+                       WHERE "BGM_1" IS NOT NULL AND "BGM_1" <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

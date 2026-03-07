@@ -40,11 +40,11 @@
 
 SELECT
     df_file_name,
-    MSH_3 AS sending_app,
-    MSH_4 AS sending_facility,
-    MSH_9 AS message_type,
-    MSH_12 AS hl7_version,
-    MSH_10 AS message_control_id
+    "MSH_3" AS sending_app,
+    "MSH_4" AS sending_facility,
+    "MSH_9" AS message_type,
+    "MSH_12" AS hl7_version,
+    "MSH_10" AS message_control_id
 FROM {{zone_name}}.hl7.adt_messages
 ORDER BY df_file_name;
 
@@ -67,13 +67,13 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    PID_5 AS patient_name,
-    PID_7 AS date_of_birth,
-    PID_8 AS gender,
-    PID_11 AS address,
-    PV1_2 AS patient_class
+    "PID_5" AS patient_name,
+    "PID_7" AS date_of_birth,
+    "PID_8" AS gender,
+    "PID_11" AS address,
+    "PV1_2" AS patient_class
 FROM {{zone_name}}.hl7.adt_materialized
-ORDER BY PID_5;
+ORDER BY "PID_5";
 
 
 -- ============================================================================
@@ -90,11 +90,11 @@ ORDER BY PID_5;
 -- Expected: 5 distinct versions — 2.3, 2.3.1, 2.5, 2.5.1, 2.6
 
 SELECT
-    MSH_12 AS hl7_version,
+    "MSH_12" AS hl7_version,
     COUNT(*) AS message_count
 FROM {{zone_name}}.hl7.adt_messages
-GROUP BY MSH_12
-ORDER BY MSH_12;
+GROUP BY "MSH_12"
+ORDER BY "MSH_12";
 
 
 -- ============================================================================
@@ -114,10 +114,10 @@ ORDER BY MSH_12;
 -- A08 (demographics update)
 
 SELECT
-    MSH_9 AS message_type,
+    "MSH_9" AS message_type,
     COUNT(*) AS message_count
 FROM {{zone_name}}.hl7.adt_messages
-GROUP BY MSH_9
+GROUP BY "MSH_9"
 ORDER BY message_count DESC;
 
 
@@ -138,12 +138,12 @@ ORDER BY message_count DESC;
 
 SELECT
     df_file_name,
-    PID_5 AS patient_name,
-    PV1_2 AS patient_class,
-    PV1_3 AS assigned_location,
-    PV1_7 AS attending_physician
+    "PID_5" AS patient_name,
+    "PV1_2" AS patient_class,
+    "PV1_3" AS assigned_location,
+    "PV1_7" AS attending_physician
 FROM {{zone_name}}.hl7.adt_materialized
-ORDER BY PV1_2;
+ORDER BY "PV1_2";
 
 
 -- ============================================================================
@@ -162,13 +162,13 @@ ORDER BY PV1_2;
 -- Expected: 8 rows — each message comes from a unique system/facility pair
 
 SELECT
-    MSH_3 AS sending_application,
-    MSH_4 AS sending_facility,
-    MSH_12 AS hl7_version,
+    "MSH_3" AS sending_application,
+    "MSH_4" AS sending_facility,
+    "MSH_12" AS hl7_version,
     COUNT(*) AS messages
 FROM {{zone_name}}.hl7.adt_messages
-GROUP BY MSH_3, MSH_4, MSH_12
-ORDER BY MSH_3;
+GROUP BY "MSH_3", "MSH_4", "MSH_12"
+ORDER BY "MSH_3";
 
 
 -- ============================================================================
@@ -189,7 +189,7 @@ ORDER BY MSH_3;
 
 SELECT
     df_file_name,
-    MSH_9 AS message_type,
+    "MSH_9" AS message_type,
     df_message_json
 FROM {{zone_name}}.hl7.adt_messages
 ORDER BY df_file_name
@@ -237,7 +237,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: At least 3 distinct HL7 versions (actual: 5)
     SELECT 'multi_version' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT MSH_12) FROM {{zone_name}}.hl7.adt_messages) >= 3
+           CASE WHEN (SELECT COUNT(DISTINCT "MSH_12") FROM {{zone_name}}.hl7.adt_messages) >= 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -252,7 +252,7 @@ SELECT check_name, result FROM (
     -- Check 5: PID_5 (patient name) is populated in at least some rows
     SELECT 'pid5_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.adt_materialized
-                       WHERE PID_5 IS NOT NULL AND PID_5 <> '') > 0
+                       WHERE "PID_5" IS NOT NULL AND "PID_5" <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

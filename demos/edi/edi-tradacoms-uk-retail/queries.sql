@@ -52,13 +52,13 @@
 
 SELECT
     df_file_name,
-    STX_1 AS syntax_id,
-    STX_2 AS sender,
-    STX_4 AS tx_date,
-    MHD_1 AS msg_ref,
-    MHD_2 AS msg_type
+    "STX_1" AS syntax_id,
+    "STX_2" AS sender,
+    "STX_4" AS tx_date,
+    "MHD_1" AS msg_ref,
+    "MHD_2" AS msg_type
 FROM {{zone_name}}.edi.tradacoms_messages
-ORDER BY df_file_name, MHD_1;
+ORDER BY df_file_name, "MHD_1";
 
 
 -- ============================================================================
@@ -75,11 +75,11 @@ ORDER BY df_file_name, MHD_1;
 -- PPRDET:2, PPRTLR:2, UTLHDR:3, UTLBIL:3, UVATLR:3, UTLTLR:3
 
 SELECT
-    MHD_2 AS message_type,
+    "MHD_2" AS message_type,
     COUNT(*) AS message_count
 FROM {{zone_name}}.edi.tradacoms_messages
-GROUP BY MHD_2
-ORDER BY MHD_2;
+GROUP BY "MHD_2"
+ORDER BY "MHD_2";
 
 
 -- ============================================================================
@@ -117,11 +117,11 @@ ORDER BY df_file_name;
 -- Expected: 3 distinct partner pairs (order, planning, utility)
 
 SELECT
-    STX_2 AS sender,
-    STX_3 AS receiver,
+    "STX_2" AS sender,
+    "STX_3" AS receiver,
     COUNT(*) AS tx_count
 FROM {{zone_name}}.edi.tradacoms_messages
-GROUP BY STX_2, STX_3
+GROUP BY "STX_2", "STX_3"
 ORDER BY tx_count DESC;
 
 
@@ -144,12 +144,12 @@ ORDER BY tx_count DESC;
 
 SELECT
     df_file_name AS source_file,
-    MHD_2 AS msg_type,
-    TYP_1 AS typ_code,
-    TYP_2 AS typ_version,
-    SDT_2 AS supplier_name
+    "MHD_2" AS msg_type,
+    "TYP_1" AS typ_code,
+    "TYP_2" AS typ_version,
+    "SDT_2" AS supplier_name
 FROM {{zone_name}}.edi.tradacoms_materialized
-ORDER BY df_file_name, MHD_1;
+ORDER BY df_file_name, "MHD_1";
 
 
 -- ============================================================================
@@ -168,10 +168,10 @@ ORDER BY df_file_name, MHD_1;
 
 SELECT DISTINCT
     df_file_name AS source_file,
-    STX_4 AS tx_date,
-    STX_5 AS tx_reference
+    "STX_4" AS tx_date,
+    "STX_5" AS tx_reference
 FROM {{zone_name}}.edi.tradacoms_messages
-ORDER BY STX_4;
+ORDER BY "STX_4";
 
 
 -- ============================================================================
@@ -190,12 +190,12 @@ ORDER BY STX_4;
 -- Expected: 4 rows from the escape file, CDT_2 showing correctly decoded text
 
 SELECT
-    MHD_2 AS msg_type,
-    CDT_2 AS customer_name,
-    SDT_2 AS supplier_name
+    "MHD_2" AS msg_type,
+    "CDT_2" AS customer_name,
+    "SDT_2" AS supplier_name
 FROM {{zone_name}}.edi.tradacoms_materialized
 WHERE df_file_name LIKE '%escape%'
-ORDER BY MHD_1;
+ORDER BY "MHD_1";
 
 
 -- ============================================================================
@@ -216,10 +216,10 @@ ORDER BY MHD_1;
 
 SELECT
     df_file_name,
-    MHD_2 AS msg_type,
+    "MHD_2" AS msg_type,
     df_transaction_json
 FROM {{zone_name}}.edi.tradacoms_messages
-ORDER BY df_file_name, MHD_1
+ORDER BY df_file_name, "MHD_1"
 LIMIT 3;
 
 
@@ -251,7 +251,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: At least 3 distinct message types in MHD_2
     SELECT 'message_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT MHD_2) FROM {{zone_name}}.edi.tradacoms_messages) >= 3
+           CASE WHEN (SELECT COUNT(DISTINCT "MHD_2") FROM {{zone_name}}.edi.tradacoms_messages) >= 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

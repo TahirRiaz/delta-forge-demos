@@ -52,10 +52,10 @@
 
 SELECT
     df_file_name,
-    ISA_6 AS sender_id,
-    ST_1 AS transaction_type,
-    GS_8 AS impl_guide,
-    ISA_12 AS edi_version
+    "ISA_6" AS sender_id,
+    "ST_1" AS transaction_type,
+    "GS_8" AS impl_guide,
+    "ISA_12" AS edi_version
 FROM {{zone_name}}.edi.hipaa_messages
 ORDER BY df_file_name;
 
@@ -76,8 +76,8 @@ ORDER BY df_file_name;
 -- appears 3 times (professional, dental, institutional claims).
 
 SELECT
-    ST_1 AS transaction_type,
-    CASE ST_1
+    "ST_1" AS transaction_type,
+    CASE "ST_1"
         WHEN '270' THEN 'Eligibility Inquiry'
         WHEN '271' THEN 'Eligibility Response'
         WHEN '276' THEN 'Claim Status Request'
@@ -91,8 +91,8 @@ SELECT
     END AS type_name,
     COUNT(*) AS transaction_count
 FROM {{zone_name}}.edi.hipaa_messages
-GROUP BY ST_1
-ORDER BY ST_1;
+GROUP BY "ST_1"
+ORDER BY "ST_1";
 
 
 -- ============================================================================
@@ -119,11 +119,11 @@ ORDER BY ST_1;
 --   005010X224A2 (837D dental)             = 1 transaction
 
 SELECT
-    GS_8 AS impl_guide,
+    "GS_8" AS impl_guide,
     COUNT(*) AS transaction_count
 FROM {{zone_name}}.edi.hipaa_messages
-GROUP BY GS_8
-ORDER BY GS_8;
+GROUP BY "GS_8"
+ORDER BY "GS_8";
 
 
 -- ============================================================================
@@ -146,12 +146,12 @@ ORDER BY GS_8;
 
 SELECT
     CASE
-        WHEN ST_1 IN ('270', '271') THEN 'Eligibility'
-        WHEN ST_1 IN ('276', '277') THEN 'Claim Status'
-        WHEN ST_1 = '837'           THEN 'Claims'
-        WHEN ST_1 IN ('835', '820') THEN 'Payment'
-        WHEN ST_1 = '834'           THEN 'Enrollment'
-        WHEN ST_1 = '278'           THEN 'Authorization'
+        WHEN "ST_1" IN ('270', '271') THEN 'Eligibility'
+        WHEN "ST_1" IN ('276', '277') THEN 'Claim Status'
+        WHEN "ST_1" = '837'           THEN 'Claims'
+        WHEN "ST_1" IN ('835', '820') THEN 'Payment'
+        WHEN "ST_1" = '834'           THEN 'Enrollment'
+        WHEN "ST_1" = '278'           THEN 'Authorization'
         ELSE 'Other'
     END AS category,
     COUNT(*) AS transaction_count
@@ -179,12 +179,12 @@ ORDER BY transaction_count DESC;
 
 SELECT
     df_file_name,
-    CLM_1 AS claim_id,
-    CLM_2 AS claim_amount,
-    NM1_3 AS patient_name,
-    ST_1 AS transaction_type
+    "CLM_1" AS claim_id,
+    "CLM_2" AS claim_amount,
+    "NM1_3" AS patient_name,
+    "ST_1" AS transaction_type
 FROM {{zone_name}}.edi.hipaa_materialized
-WHERE CLM_1 IS NOT NULL
+WHERE "CLM_1" IS NOT NULL
 ORDER BY df_file_name;
 
 
@@ -205,11 +205,11 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    BPR_1 AS handling_code,
-    BPR_2 AS payment_amount,
-    ST_1 AS transaction_type
+    "BPR_1" AS handling_code,
+    "BPR_2" AS payment_amount,
+    "ST_1" AS transaction_type
 FROM {{zone_name}}.edi.hipaa_materialized
-WHERE BPR_1 IS NOT NULL
+WHERE "BPR_1" IS NOT NULL
 ORDER BY df_file_name;
 
 
@@ -228,15 +228,15 @@ ORDER BY df_file_name;
 -- Expected: HC = 10 transactions, BE = 1 transaction (834 enrollment)
 
 SELECT
-    GS_1 AS functional_group,
-    CASE GS_1
+    "GS_1" AS functional_group,
+    CASE "GS_1"
         WHEN 'HC' THEN 'Health Care'
         WHEN 'BE' THEN 'Benefit Enrollment and Maintenance'
         ELSE 'Other'
     END AS group_name,
     COUNT(*) AS transaction_count
 FROM {{zone_name}}.edi.hipaa_messages
-GROUP BY GS_1
+GROUP BY "GS_1"
 ORDER BY transaction_count DESC;
 
 
@@ -258,7 +258,7 @@ ORDER BY transaction_count DESC;
 
 SELECT
     df_file_name,
-    ST_1 AS transaction_type,
+    "ST_1" AS transaction_type,
     df_transaction_json
 FROM {{zone_name}}.edi.hipaa_messages
 ORDER BY df_file_name
@@ -289,7 +289,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: At least 7 distinct transaction types (actual: 9)
     SELECT 'transaction_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT ST_1) FROM {{zone_name}}.edi.hipaa_messages) >= 7
+           CASE WHEN (SELECT COUNT(DISTINCT "ST_1") FROM {{zone_name}}.edi.hipaa_messages) >= 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -304,7 +304,7 @@ SELECT check_name, result FROM (
     -- Check 5: BHT_2 (transaction purpose code) is populated in at least some rows
     SELECT 'bht_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.hipaa_materialized
-                       WHERE BHT_2 IS NOT NULL AND BHT_2 <> '') > 0
+                       WHERE "BHT_2" IS NOT NULL AND "BHT_2" <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

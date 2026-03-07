@@ -39,9 +39,9 @@
 
 SELECT
     df_file_name,
-    MSH_3 AS sending_app,
-    MSH_9 AS message_type,
-    MSH_12 AS hl7_version
+    "MSH_3" AS sending_app,
+    "MSH_9" AS message_type,
+    "MSH_12" AS hl7_version
 FROM {{zone_name}}.hl7.clinical_messages
 ORDER BY df_file_name;
 
@@ -69,15 +69,15 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    MSH_9 AS message_type,
-    PID_5 AS patient_name,
-    TXA_2 AS document_type,
-    TXA_12 AS document_id,
-    TXA_14 AS document_status,
-    OBX_3 AS first_section_id,
-    OBX_5 AS first_section_text
+    "MSH_9" AS message_type,
+    "PID_5" AS patient_name,
+    "TXA_2" AS document_type,
+    "TXA_12" AS document_id,
+    "TXA_14" AS document_status,
+    "OBX_3" AS first_section_id,
+    "OBX_5" AS first_section_text
 FROM {{zone_name}}.hl7.clinical_materialized
-WHERE MSH_9 LIKE 'MDM%';
+WHERE "MSH_9" LIKE 'MDM%';
 
 
 -- ============================================================================
@@ -99,7 +99,7 @@ WHERE MSH_9 LIKE 'MDM%';
 
 SELECT
     df_file_name,
-    MSH_9 AS message_type,
+    "MSH_9" AS message_type,
     df_message_json
 FROM {{zone_name}}.hl7.clinical_messages
 WHERE df_file_name LIKE '%mdm%';
@@ -130,15 +130,15 @@ WHERE df_file_name LIKE '%mdm%';
 
 SELECT
     df_file_name,
-    MSH_3 AS scheduling_system,
-    MSH_12 AS hl7_version,
-    PID_5 AS patient_name,
-    SCH_1 AS appointment_id,
-    SCH_7 AS appointment_reason,
-    SCH_10 AS duration,
-    SCH_25 AS status
+    "MSH_3" AS scheduling_system,
+    "MSH_12" AS hl7_version,
+    "PID_5" AS patient_name,
+    "SCH_1" AS appointment_id,
+    "SCH_7" AS appointment_reason,
+    "SCH_10" AS duration,
+    "SCH_25" AS status
 FROM {{zone_name}}.hl7.clinical_materialized
-WHERE MSH_9 LIKE 'SIU%'
+WHERE "MSH_9" LIKE 'SIU%'
 ORDER BY df_file_name;
 
 
@@ -160,10 +160,10 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    MSH_3 AS system,
+    "MSH_3" AS system,
     df_message_json
 FROM {{zone_name}}.hl7.clinical_messages
-WHERE MSH_9 LIKE 'SIU%'
+WHERE "MSH_9" LIKE 'SIU%'
 ORDER BY df_file_name;
 
 
@@ -185,9 +185,9 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    PID_5 AS patient_name_decoded,
-    OBX_3 AS first_obs_id,
-    OBX_5 AS first_obs_value
+    "PID_5" AS patient_name_decoded,
+    "OBX_3" AS first_obs_id,
+    "OBX_5" AS first_obs_value
 FROM {{zone_name}}.hl7.clinical_materialized
 WHERE df_file_name LIKE '%edge%';
 
@@ -208,7 +208,7 @@ WHERE df_file_name LIKE '%edge%';
 
 SELECT
     df_file_name,
-    MSH_9 AS message_type,
+    "MSH_9" AS message_type,
     df_message_json
 FROM {{zone_name}}.hl7.clinical_messages
 WHERE df_file_name LIKE '%edge%';
@@ -227,10 +227,10 @@ WHERE df_file_name LIKE '%edge%';
 -- Expected: 3-4 groups totaling 4 messages
 
 SELECT
-    MSH_9 AS message_type,
+    "MSH_9" AS message_type,
     COUNT(*) AS message_count
 FROM {{zone_name}}.hl7.clinical_messages
-GROUP BY MSH_9
+GROUP BY "MSH_9"
 ORDER BY message_count DESC;
 
 
@@ -252,7 +252,7 @@ SELECT check_name, result FROM (
     -- Check 2: Exactly 1 MDM document message
     SELECT 'mdm_count_1' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages
-                       WHERE MSH_9 LIKE 'MDM%') = 1
+                       WHERE "MSH_9" LIKE 'MDM%') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -260,7 +260,7 @@ SELECT check_name, result FROM (
     -- Check 3: Exactly 2 SIU scheduling messages
     SELECT 'siu_count_2' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages
-                       WHERE MSH_9 LIKE 'SIU%') = 2
+                       WHERE "MSH_9" LIKE 'SIU%') = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

@@ -51,10 +51,10 @@
 
 SELECT
     df_file_name,
-    ISA_6 AS sender_id,
-    ISA_8 AS receiver_id,
-    ST_1 AS txn_type,
-    GS_8 AS x12_version
+    "ISA_6" AS sender_id,
+    "ISA_8" AS receiver_id,
+    "ST_1" AS txn_type,
+    "GS_8" AS x12_version
 FROM {{zone_name}}.edi.supply_chain_messages
 ORDER BY df_file_name;
 
@@ -79,8 +79,8 @@ ORDER BY df_file_name;
 -- 861(1), 997(1), 824(1)
 
 SELECT
-    ST_1 AS txn_type,
-    CASE ST_1
+    "ST_1" AS txn_type,
+    CASE "ST_1"
         WHEN '850' THEN 'Purchase Order'
         WHEN '810' THEN 'Invoice'
         WHEN '855' THEN 'PO Acknowledgment'
@@ -93,8 +93,8 @@ SELECT
     END AS txn_name,
     COUNT(*) AS txn_count
 FROM {{zone_name}}.edi.supply_chain_messages
-GROUP BY ST_1
-ORDER BY txn_count DESC, ST_1;
+GROUP BY "ST_1"
+ORDER BY txn_count DESC, "ST_1";
 
 
 -- ============================================================================
@@ -119,13 +119,13 @@ ORDER BY txn_count DESC, ST_1;
 
 SELECT
     df_file_name,
-    ST_1 AS txn_type,
-    BEG_3 AS po_number,
-    BEG_5 AS po_date,
-    N1_2 AS party_name,
-    CTT_1 AS line_items
+    "ST_1" AS txn_type,
+    "BEG_3" AS po_number,
+    "BEG_5" AS po_date,
+    "N1_2" AS party_name,
+    "CTT_1" AS line_items
 FROM {{zone_name}}.edi.supply_chain_materialized
-WHERE BEG_3 IS NOT NULL
+WHERE "BEG_3" IS NOT NULL
 ORDER BY df_file_name;
 
 
@@ -150,12 +150,12 @@ ORDER BY df_file_name;
 
 SELECT
     df_file_name,
-    BIG_1 AS invoice_date,
-    BIG_2 AS invoice_number,
-    N1_2 AS party_name,
-    CTT_1 AS line_items
+    "BIG_1" AS invoice_date,
+    "BIG_2" AS invoice_number,
+    "N1_2" AS party_name,
+    "CTT_1" AS line_items
 FROM {{zone_name}}.edi.supply_chain_materialized
-WHERE BIG_1 IS NOT NULL
+WHERE "BIG_1" IS NOT NULL
 ORDER BY df_file_name;
 
 
@@ -179,11 +179,11 @@ ORDER BY df_file_name;
 --   TO -> FROM (1 txn: 997)
 
 SELECT
-    ISA_6 AS sender_id,
-    ISA_8 AS receiver_id,
+    "ISA_6" AS sender_id,
+    "ISA_8" AS receiver_id,
     COUNT(*) AS txn_count
 FROM {{zone_name}}.edi.supply_chain_messages
-GROUP BY ISA_6, ISA_8
+GROUP BY "ISA_6", "ISA_8"
 ORDER BY txn_count DESC;
 
 
@@ -204,11 +204,11 @@ ORDER BY txn_count DESC;
 --   00204 — X12 version 2040 (7 transactions: the SENDER1 files)
 
 SELECT
-    ISA_12 AS isa_version,
+    "ISA_12" AS isa_version,
     COUNT(*) AS txn_count
 FROM {{zone_name}}.edi.supply_chain_messages
-GROUP BY ISA_12
-ORDER BY ISA_12;
+GROUP BY "ISA_12"
+ORDER BY "ISA_12";
 
 
 -- ============================================================================
@@ -228,16 +228,16 @@ ORDER BY ISA_12;
 -- Expected: 3 groups — PO(2), IN(11), FA(1)
 
 SELECT
-    GS_1 AS group_code,
-    CASE GS_1
+    "GS_1" AS group_code,
+    CASE "GS_1"
         WHEN 'PO' THEN 'Purchase Order'
         WHEN 'IN' THEN 'Invoice / General'
         WHEN 'FA' THEN 'Functional Acknowledgment'
-        ELSE GS_1
+        ELSE "GS_1"
     END AS group_name,
     COUNT(*) AS txn_count
 FROM {{zone_name}}.edi.supply_chain_messages
-GROUP BY GS_1
+GROUP BY "GS_1"
 ORDER BY txn_count DESC;
 
 
@@ -259,7 +259,7 @@ ORDER BY txn_count DESC;
 
 SELECT
     df_file_name,
-    ST_1 AS txn_type,
+    "ST_1" AS txn_type,
     df_transaction_json
 FROM {{zone_name}}.edi.supply_chain_messages
 ORDER BY df_file_name
@@ -290,7 +290,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: At least 5 distinct transaction types (actual: 8)
     SELECT 'transaction_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT ST_1) FROM {{zone_name}}.edi.supply_chain_messages) >= 5
+           CASE WHEN (SELECT COUNT(DISTINCT "ST_1") FROM {{zone_name}}.edi.supply_chain_messages) >= 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -305,7 +305,7 @@ SELECT check_name, result FROM (
     -- Check 5: BEG_3 (PO number) is populated for at least some rows (the 850s)
     SELECT 'beg_populated' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.supply_chain_materialized
-                       WHERE BEG_3 IS NOT NULL AND BEG_3 <> '') > 0
+                       WHERE "BEG_3" IS NOT NULL AND "BEG_3" <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
