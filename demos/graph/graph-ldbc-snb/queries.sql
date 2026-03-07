@@ -52,30 +52,30 @@ ORDER BY entity;
 -- ============================================================================
 
 SELECT 'person_knows_person' AS edge, COUNT(*) AS row_count FROM {{zone_name}}.ldbc.person_knows_person
-UNION ALL SELECT 'comment_hasCreator_person', COUNT(*) FROM {{zone_name}}.ldbc.comment_hasCreator_person
-UNION ALL SELECT 'comment_hasTag_tag', COUNT(*) FROM {{zone_name}}.ldbc.comment_hasTag_tag
-UNION ALL SELECT 'comment_isLocatedIn_place', COUNT(*) FROM {{zone_name}}.ldbc.comment_isLocatedIn_place
-UNION ALL SELECT 'comment_replyOf_comment', COUNT(*) FROM {{zone_name}}.ldbc.comment_replyOf_comment
-UNION ALL SELECT 'comment_replyOf_post', COUNT(*) FROM {{zone_name}}.ldbc.comment_replyOf_post
-UNION ALL SELECT 'forum_containerOf_post', COUNT(*) FROM {{zone_name}}.ldbc.forum_containerOf_post
-UNION ALL SELECT 'forum_hasMember_person', COUNT(*) FROM {{zone_name}}.ldbc.forum_hasMember_person
-UNION ALL SELECT 'forum_hasModerator_person', COUNT(*) FROM {{zone_name}}.ldbc.forum_hasModerator_person
-UNION ALL SELECT 'forum_hasTag_tag', COUNT(*) FROM {{zone_name}}.ldbc.forum_hasTag_tag
+UNION ALL SELECT 'comment_has_creator_person', COUNT(*) FROM {{zone_name}}.ldbc.comment_has_creator_person
+UNION ALL SELECT 'comment_has_tag_tag', COUNT(*) FROM {{zone_name}}.ldbc.comment_has_tag_tag
+UNION ALL SELECT 'comment_is_located_in_place', COUNT(*) FROM {{zone_name}}.ldbc.comment_is_located_in_place
+UNION ALL SELECT 'comment_reply_of_comment', COUNT(*) FROM {{zone_name}}.ldbc.comment_reply_of_comment
+UNION ALL SELECT 'comment_reply_of_post', COUNT(*) FROM {{zone_name}}.ldbc.comment_reply_of_post
+UNION ALL SELECT 'forum_container_of_post', COUNT(*) FROM {{zone_name}}.ldbc.forum_container_of_post
+UNION ALL SELECT 'forum_has_member_person', COUNT(*) FROM {{zone_name}}.ldbc.forum_has_member_person
+UNION ALL SELECT 'forum_has_moderator_person', COUNT(*) FROM {{zone_name}}.ldbc.forum_has_moderator_person
+UNION ALL SELECT 'forum_has_tag_tag', COUNT(*) FROM {{zone_name}}.ldbc.forum_has_tag_tag
 UNION ALL SELECT 'person_email', COUNT(*) FROM {{zone_name}}.ldbc.person_email
-UNION ALL SELECT 'person_hasInterest_tag', COUNT(*) FROM {{zone_name}}.ldbc.person_hasInterest_tag
-UNION ALL SELECT 'person_isLocatedIn_place', COUNT(*) FROM {{zone_name}}.ldbc.person_isLocatedIn_place
+UNION ALL SELECT 'person_has_interest_tag', COUNT(*) FROM {{zone_name}}.ldbc.person_has_interest_tag
+UNION ALL SELECT 'person_is_located_in_place', COUNT(*) FROM {{zone_name}}.ldbc.person_is_located_in_place
 UNION ALL SELECT 'person_likes_comment', COUNT(*) FROM {{zone_name}}.ldbc.person_likes_comment
 UNION ALL SELECT 'person_likes_post', COUNT(*) FROM {{zone_name}}.ldbc.person_likes_post
 UNION ALL SELECT 'person_speaks_language', COUNT(*) FROM {{zone_name}}.ldbc.person_speaks_language
-UNION ALL SELECT 'person_studyAt_organisation', COUNT(*) FROM {{zone_name}}.ldbc.person_studyAt_organisation
-UNION ALL SELECT 'person_workAt_organisation', COUNT(*) FROM {{zone_name}}.ldbc.person_workAt_organisation
-UNION ALL SELECT 'post_hasCreator_person', COUNT(*) FROM {{zone_name}}.ldbc.post_hasCreator_person
-UNION ALL SELECT 'post_hasTag_tag', COUNT(*) FROM {{zone_name}}.ldbc.post_hasTag_tag
-UNION ALL SELECT 'post_isLocatedIn_place', COUNT(*) FROM {{zone_name}}.ldbc.post_isLocatedIn_place
-UNION ALL SELECT 'organisation_isLocatedIn_place', COUNT(*) FROM {{zone_name}}.ldbc.organisation_isLocatedIn_place
-UNION ALL SELECT 'place_isPartOf_place', COUNT(*) FROM {{zone_name}}.ldbc.place_isPartOf_place
-UNION ALL SELECT 'tag_hasType_tagclass', COUNT(*) FROM {{zone_name}}.ldbc.tag_hasType_tagclass
-UNION ALL SELECT 'tagclass_isSubclassOf_tagclass', COUNT(*) FROM {{zone_name}}.ldbc.tagclass_isSubclassOf_tagclass
+UNION ALL SELECT 'person_study_at_organisation', COUNT(*) FROM {{zone_name}}.ldbc.person_study_at_organisation
+UNION ALL SELECT 'person_work_at_organisation', COUNT(*) FROM {{zone_name}}.ldbc.person_work_at_organisation
+UNION ALL SELECT 'post_has_creator_person', COUNT(*) FROM {{zone_name}}.ldbc.post_has_creator_person
+UNION ALL SELECT 'post_has_tag_tag', COUNT(*) FROM {{zone_name}}.ldbc.post_has_tag_tag
+UNION ALL SELECT 'post_is_located_in_place', COUNT(*) FROM {{zone_name}}.ldbc.post_is_located_in_place
+UNION ALL SELECT 'organisation_is_located_in_place', COUNT(*) FROM {{zone_name}}.ldbc.organisation_is_located_in_place
+UNION ALL SELECT 'place_is_part_of_place', COUNT(*) FROM {{zone_name}}.ldbc.place_is_part_of_place
+UNION ALL SELECT 'tag_has_type_tagclass', COUNT(*) FROM {{zone_name}}.ldbc.tag_has_type_tagclass
+UNION ALL SELECT 'tagclass_is_subclass_of_tagclass', COUNT(*) FROM {{zone_name}}.ldbc.tagclass_is_subclass_of_tagclass
 ORDER BY edge;
 
 
@@ -121,9 +121,9 @@ WHERE NOT EXISTS (SELECT 1 FROM {{zone_name}}.ldbc.person p WHERE p.id = k.src)
 
 USE ldbc_social_network
 MATCH (p)
-RETURN p.id AS id, p.firstName AS firstName, p.lastName AS lastName,
+RETURN p.id AS id, p.first_name AS first_name, p.last_name AS last_name,
        p.gender AS gender
-ORDER BY p.lastName, p.firstName
+ORDER BY p.last_name, p.first_name
 LIMIT 25;
 
 
@@ -136,8 +136,8 @@ LIMIT 25;
 USE ldbc_social_network
 MATCH (a)-[r]->(b)
 WHERE a.id = 933
-RETURN a.firstName AS person, a.lastName AS person_last,
-       b.firstName AS friend_first, b.lastName AS friend_last,
+RETURN a.first_name AS person, a.last_name AS person_last,
+       b.first_name AS friend_first, b.last_name AS friend_last,
        b.gender AS gender;
 
 
@@ -151,8 +151,8 @@ RETURN a.firstName AS person, a.lastName AS person_last,
 USE ldbc_social_network
 MATCH (a)-[]->(b)-[]->(c)
 WHERE a.id = 933 AND a <> c AND NOT (a)-->(c)
-RETURN DISTINCT c.firstName AS suggested_friend, c.lastName AS last_name
-ORDER BY c.firstName
+RETURN DISTINCT c.first_name AS suggested_friend, c.last_name AS last_name
+ORDER BY c.first_name
 LIMIT 20;
 
 
@@ -166,8 +166,8 @@ LIMIT 20;
 USE ldbc_social_network
 MATCH (a)-[*1..3]->(b)
 WHERE a.id = 933 AND a <> b
-RETURN DISTINCT b.id AS reachable_id, b.firstName AS name
-ORDER BY b.firstName
+RETURN DISTINCT b.id AS reachable_id, b.first_name AS name
+ORDER BY b.first_name
 LIMIT 30;
 
 
@@ -202,7 +202,7 @@ ORDER BY connections DESC;
 
 USE ldbc_social_network
 MATCH (a)-[r]->(b)
-RETURN a.id AS person_id, a.firstName AS firstName, a.lastName AS lastName,
+RETURN a.id AS person_id, a.first_name AS first_name, a.last_name AS last_name,
        count(r) AS out_degree
 ORDER BY out_degree DESC
 LIMIT 15;
@@ -216,9 +216,9 @@ LIMIT 15;
 USE ldbc_social_network
 MATCH (hub)-[r]->(friend)
 WHERE hub.id = 26388279067534
-RETURN friend.id AS friend_id, friend.firstName AS firstName,
-       friend.lastName AS lastName, friend.gender AS gender
-ORDER BY friend.firstName
+RETURN friend.id AS friend_id, friend.first_name AS first_name,
+       friend.last_name AS last_name, friend.gender AS gender
+ORDER BY friend.first_name
 LIMIT 20;
 
 
@@ -399,23 +399,23 @@ ORDER BY depth;
 -- 26. FRIENDS WITH LOCATIONS — Cypher traversal + Delta table enrichment
 -- ============================================================================
 -- Step 1 (Cypher): Find direct friends of Jun Wang via KNOWS graph
--- Step 2 (SQL): Join with person_isLocatedIn_place + place to get cities/countries
+-- Step 2 (SQL): Join with person_is_located_in_place + place to get cities/countries
 -- This demonstrates the core mixed pattern: graph traversal + relational enrichment.
 
 WITH friends AS (
     SELECT * FROM cypher('ldbc_social_network', $$
         MATCH (a)-[]->(b)
         WHERE a.id = 26388279068220
-        RETURN b.id AS friend_id, b.firstName AS first_name, b.lastName AS last_name
+        RETURN b.id AS friend_id, b.first_name AS first_name, b.last_name AS last_name
     $$) AS (friend_id BIGINT, first_name VARCHAR, last_name VARCHAR)
 )
 SELECT
     f.first_name, f.last_name,
     city.name AS city, country.name AS country
 FROM friends f
-JOIN {{zone_name}}.ldbc.person_isLocatedIn_place pip ON f.friend_id = pip.person_id
+JOIN {{zone_name}}.ldbc.person_is_located_in_place pip ON f.friend_id = pip.person_id
 JOIN {{zone_name}}.ldbc.place city ON pip.place_id = city.id
-JOIN {{zone_name}}.ldbc.place_isPartOf_place pipp ON city.id = pipp.place_id
+JOIN {{zone_name}}.ldbc.place_is_part_of_place pipp ON city.id = pipp.place_id
 JOIN {{zone_name}}.ldbc.place country ON pipp.parent_place_id = country.id
 ORDER BY country.name, city.name, f.last_name;
 
@@ -424,7 +424,7 @@ ORDER BY country.name, city.name, f.last_name;
 -- 27. PAGERANK LEADERS WITH EMPLOYMENT — Algorithm results + relational context
 -- ============================================================================
 -- Step 1 (Cypher): Run PageRank on the KNOWS graph to find influential people
--- Step 2 (SQL): Join with person_workAt_organisation to show where leaders work
+-- Step 2 (SQL): Join with person_work_at_organisation to show where leaders work
 -- Shows how graph centrality metrics gain meaning when enriched with metadata.
 
 WITH ranked AS (
@@ -437,11 +437,11 @@ WITH ranked AS (
     $$) AS (person_id BIGINT, score DOUBLE)
 )
 SELECT
-    p.firstName, p.lastName, r.score AS pagerank_score,
-    o.name AS employer, w.workFrom AS work_since
+    p.first_name, p.last_name, r.score AS pagerank_score,
+    o.name AS employer, w.work_from AS work_since
 FROM ranked r
 JOIN {{zone_name}}.ldbc.person p ON r.person_id = p.id
-LEFT JOIN {{zone_name}}.ldbc.person_workAt_organisation w ON p.id = w.person_id
+LEFT JOIN {{zone_name}}.ldbc.person_work_at_organisation w ON p.id = w.person_id
 LEFT JOIN {{zone_name}}.ldbc.organisation o ON w.organisation_id = o.id
 ORDER BY r.score DESC;
 
@@ -462,13 +462,13 @@ WITH path_nodes AS (
 )
 SELECT
     pn.step, pn.distance,
-    p.firstName, p.lastName, p.gender,
+    p.first_name, p.last_name, p.gender,
     city.name AS city, country.name AS country
 FROM path_nodes pn
 JOIN {{zone_name}}.ldbc.person p ON pn.person_id = p.id
-JOIN {{zone_name}}.ldbc.person_isLocatedIn_place pip ON p.id = pip.person_id
+JOIN {{zone_name}}.ldbc.person_is_located_in_place pip ON p.id = pip.person_id
 JOIN {{zone_name}}.ldbc.place city ON pip.place_id = city.id
-JOIN {{zone_name}}.ldbc.place_isPartOf_place pipp ON city.id = pipp.place_id
+JOIN {{zone_name}}.ldbc.place_is_part_of_place pipp ON city.id = pipp.place_id
 JOIN {{zone_name}}.ldbc.place country ON pipp.parent_place_id = country.id
 ORDER BY pn.step;
 
@@ -477,7 +477,7 @@ ORDER BY pn.step;
 -- 29. COMMUNITY MEMBERS WITH INTERESTS — Louvain communities + tag enrichment
 -- ============================================================================
 -- Step 1 (Cypher): Run Louvain community detection on the KNOWS graph
--- Step 2 (SQL): For the largest community, find shared interests via person_hasInterest_tag
+-- Step 2 (SQL): For the largest community, find shared interests via person_has_interest_tag
 -- Reveals what topics bind a community together — graph structure meets content.
 
 WITH communities AS (
@@ -497,7 +497,7 @@ largest_community AS (
 SELECT t.name AS interest, COUNT(DISTINCT c.person_id) AS members_interested
 FROM communities c
 JOIN largest_community lc ON c.community_id = lc.community_id
-JOIN {{zone_name}}.ldbc.person_hasInterest_tag phi ON c.person_id = phi.person_id
+JOIN {{zone_name}}.ldbc.person_has_interest_tag phi ON c.person_id = phi.person_id
 JOIN {{zone_name}}.ldbc.tag t ON phi.tag_id = t.id
 GROUP BY t.name
 ORDER BY members_interested DESC
@@ -521,19 +521,19 @@ WITH hub_scores AS (
     $$) AS (person_id BIGINT, degree DOUBLE)
 )
 SELECT
-    p.firstName, p.lastName, h.degree,
+    p.first_name, p.last_name, h.degree,
     COALESCE(post_counts.post_count, 0) AS posts_authored,
     COALESCE(comment_counts.comment_count, 0) AS comments_authored
 FROM hub_scores h
 JOIN {{zone_name}}.ldbc.person p ON h.person_id = p.id
 LEFT JOIN (
     SELECT person_id, COUNT(*) AS post_count
-    FROM {{zone_name}}.ldbc.post_hasCreator_person
+    FROM {{zone_name}}.ldbc.post_has_creator_person
     GROUP BY person_id
 ) post_counts ON h.person_id = post_counts.person_id
 LEFT JOIN (
     SELECT person_id, COUNT(*) AS comment_count
-    FROM {{zone_name}}.ldbc.comment_hasCreator_person
+    FROM {{zone_name}}.ldbc.comment_has_creator_person
     GROUP BY person_id
 ) comment_counts ON h.person_id = comment_counts.person_id
 ORDER BY h.degree DESC;
@@ -551,20 +551,15 @@ ORDER BY h.degree DESC;
 -- ============================================================================
 -- 31. LDBC SHORT Q1 — Person Profile
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (n:Person {id:26388279068220})-[:IS_LOCATED_IN]-(p:Place)
---   RETURN n.firstName, n.lastName, n.birthday, n.locationIP,
---          n.browserUsed, n.gender, n.creationDate, p.id AS cityId
---
--- Golden: firstName=Jun, lastName=Wang, gender=female, browserUsed=Opera,
---         cityId=507
+-- Golden: first_name=Jun, last_name=Wang, gender=female, browser_used=Opera,
+--         city_id=507
 
 SELECT
-    p.firstName, p.lastName, p.birthday, p.locationIP,
-    p.browserUsed, p.gender, p.creationDate,
-    pl.id AS cityId
+    p.first_name, p.last_name, p.birthday, p.location_ip,
+    p.browser_used, p.gender, p.creation_date,
+    pl.id AS city_id
 FROM {{zone_name}}.ldbc.person p
-JOIN {{zone_name}}.ldbc.person_isLocatedIn_place pip ON p.id = pip.person_id
+JOIN {{zone_name}}.ldbc.person_is_located_in_place pip ON p.id = pip.person_id
 JOIN {{zone_name}}.ldbc.place pl ON pip.place_id = pl.id
 WHERE p.id = 26388279068220;
 
@@ -572,35 +567,25 @@ WHERE p.id = 26388279068220;
 -- ============================================================================
 -- 32. LDBC SHORT Q3 — Person's Friends
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (n:Person {id:26388279068220})-[r:KNOWS]-(friend)
---   RETURN friend.id, friend.firstName, friend.lastName,
---          r.creationDate AS friendshipCreationDate
---   ORDER BY friendshipCreationDate DESC, friend.id ASC
---
 -- Golden: friends include Jie Yang, Alexander Hleb, Otto Muller
 
 SELECT
-    p2.id AS personId, p2.firstName, p2.lastName,
-    k.creationDate AS friendshipCreationDate
+    p2.id AS person_id, p2.first_name, p2.last_name,
+    k.creation_date AS friendship_creation_date
 FROM {{zone_name}}.ldbc.person_knows_person k
 JOIN {{zone_name}}.ldbc.person p2 ON k.dst = p2.id
 WHERE k.src = 26388279068220
-ORDER BY k.creationDate DESC, p2.id ASC;
+ORDER BY k.creation_date DESC, p2.id ASC;
 
 
 -- ============================================================================
 -- 33. LDBC SHORT Q5 — Message Creator
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (m:Message {id:1099511997932})-[:HAS_CREATOR]->(p:Person)
---   RETURN p.id, p.firstName, p.lastName
---
--- Golden: personId=26388279068220, Jun Wang
+-- Golden: person_id=26388279068220, Jun Wang
 
-SELECT p.id AS personId, p.firstName, p.lastName
+SELECT p.id AS person_id, p.first_name, p.last_name
 FROM {{zone_name}}.ldbc.comment c
-JOIN {{zone_name}}.ldbc.comment_hasCreator_person chc ON c.id = chc.comment_id
+JOIN {{zone_name}}.ldbc.comment_has_creator_person chc ON c.id = chc.comment_id
 JOIN {{zone_name}}.ldbc.person p ON chc.person_id = p.id
 WHERE c.id = 1099511997932;
 
@@ -608,22 +593,17 @@ WHERE c.id = 1099511997932;
 -- ============================================================================
 -- 34. LDBC SHORT Q6 — Message Forum
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (m:Message {id:1099511997932})-[:REPLY_OF*0..]->(p:Post)
---         <-[:CONTAINER_OF]-(f:Forum)-[:HAS_MODERATOR]->(mod:Person)
---   RETURN f.id, f.title, mod.id, mod.firstName, mod.lastName
---
--- Golden: forumId=824633737506, title="Wall of Anh Pham",
+-- Golden: forum_id=824633737506, title="Wall of Anh Pham",
 --         moderator=Anh Pham
 
 SELECT
-    f.id AS forumId, f.title AS forumTitle,
-    mod_p.id AS moderatorId, mod_p.firstName, mod_p.lastName
+    f.id AS forum_id, f.title AS forum_title,
+    mod_p.id AS moderator_id, mod_p.first_name, mod_p.last_name
 FROM {{zone_name}}.ldbc.comment c
-JOIN {{zone_name}}.ldbc.comment_replyOf_post crp ON c.id = crp.comment_id
-JOIN {{zone_name}}.ldbc.forum_containerOf_post fcp ON crp.post_id = fcp.post_id
+JOIN {{zone_name}}.ldbc.comment_reply_of_post crp ON c.id = crp.comment_id
+JOIN {{zone_name}}.ldbc.forum_container_of_post fcp ON crp.post_id = fcp.post_id
 JOIN {{zone_name}}.ldbc.forum f ON fcp.forum_id = f.id
-JOIN {{zone_name}}.ldbc.forum_hasModerator_person fhm ON f.id = fhm.forum_id
+JOIN {{zone_name}}.ldbc.forum_has_moderator_person fhm ON f.id = fhm.forum_id
 JOIN {{zone_name}}.ldbc.person mod_p ON fhm.person_id = mod_p.id
 WHERE c.id = 1099511997932;
 
@@ -631,180 +611,134 @@ WHERE c.id = 1099511997932;
 -- ============================================================================
 -- 35. LDBC Q2 — Recent Messages by Friends
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (:Person {id:19791209300143})-[:KNOWS]-(friend:Person)
---         <-[:HAS_CREATOR]-(message)
---   WHERE message.creationDate <= 1354060800000
---   RETURN friend.id, friend.firstName, friend.lastName,
---          message.id, message.content, message.creationDate
---   ORDER BY message.creationDate DESC, message.id ASC LIMIT 20
---
--- Golden: first result = The Kunda, messageId=1099511875186
+-- Golden: first result = The Kunda, message_id=1099511875186
 
 SELECT
-    p2.id AS personId, p2.firstName, p2.lastName,
-    msg.id AS messageId,
-    COALESCE(msg.content, '') AS messageContent,
-    msg.creationDate AS messageCreationDate
+    p2.id AS person_id, p2.first_name, p2.last_name,
+    msg.id AS message_id,
+    COALESCE(msg.content, '') AS message_content,
+    msg.creation_date AS message_creation_date
 FROM {{zone_name}}.ldbc.person_knows_person k
 JOIN {{zone_name}}.ldbc.person p2 ON k.dst = p2.id
-JOIN {{zone_name}}.ldbc.post_hasCreator_person phc ON p2.id = phc.person_id
+JOIN {{zone_name}}.ldbc.post_has_creator_person phc ON p2.id = phc.person_id
 JOIN {{zone_name}}.ldbc.post msg ON phc.post_id = msg.id
 WHERE k.src = 19791209300143
-  AND msg.creationDate <= 1354060800000
-ORDER BY msg.creationDate DESC, msg.id ASC
+  AND msg.creation_date <= 1354060800000
+ORDER BY msg.creation_date DESC, msg.id ASC
 LIMIT 20;
 
 
 -- ============================================================================
 -- 36. LDBC Q4 — New Tags in Time Window
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (person:Person {id:10995116278874})-[:KNOWS]-(:Person)
---         <-[:HAS_CREATOR]-(post:Post)-[:HAS_TAG]->(tag:Tag)
---   WHERE post.creationDate >= startDate AND post.creationDate < endDate
---   ... (exclude tags used before startDate)
---   RETURN tag.name, count(post) ORDER BY count DESC, tag ASC LIMIT 10
---
 -- Golden: Norodom_Sihanouk (3), George_Clooney (1), Louis_Philippe_I (1)
 
-SELECT t.name AS tagName, COUNT(DISTINCT po.id) AS postCount
+SELECT t.name AS tag_name, COUNT(DISTINCT po.id) AS post_count
 FROM {{zone_name}}.ldbc.person_knows_person k
-JOIN {{zone_name}}.ldbc.post_hasCreator_person phc ON k.dst = phc.person_id
+JOIN {{zone_name}}.ldbc.post_has_creator_person phc ON k.dst = phc.person_id
 JOIN {{zone_name}}.ldbc.post po ON phc.post_id = po.id
-JOIN {{zone_name}}.ldbc.post_hasTag_tag pht ON po.id = pht.post_id
+JOIN {{zone_name}}.ldbc.post_has_tag_tag pht ON po.id = pht.post_id
 JOIN {{zone_name}}.ldbc.tag t ON pht.tag_id = t.id
 WHERE k.src = 10995116278874
-  AND po.creationDate >= 1338508800000
-  AND po.creationDate < 1338508800000 + CAST(28 AS BIGINT) * 86400000
+  AND po.creation_date >= 1338508800000
+  AND po.creation_date < 1338508800000 + CAST(28 AS BIGINT) * 86400000
   AND NOT EXISTS (
       SELECT 1
       FROM {{zone_name}}.ldbc.person_knows_person k2
-      JOIN {{zone_name}}.ldbc.post_hasCreator_person phc2 ON k2.dst = phc2.person_id
+      JOIN {{zone_name}}.ldbc.post_has_creator_person phc2 ON k2.dst = phc2.person_id
       JOIN {{zone_name}}.ldbc.post old ON phc2.post_id = old.id
-      JOIN {{zone_name}}.ldbc.post_hasTag_tag pht2 ON old.id = pht2.post_id
+      JOIN {{zone_name}}.ldbc.post_has_tag_tag pht2 ON old.id = pht2.post_id
       WHERE k2.src = 10995116278874
         AND pht2.tag_id = pht.tag_id
-        AND old.creationDate < 1338508800000
+        AND old.creation_date < 1338508800000
   )
 GROUP BY t.name
-ORDER BY postCount DESC, tagName ASC
+ORDER BY post_count DESC, tag_name ASC
 LIMIT 10;
 
 
 -- ============================================================================
 -- 37. LDBC Q6 — Tag Co-occurrence
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (person:Person {id:30786325579101})-[:KNOWS*1..2]-(friend:Person),
---         (friend)<-[:HAS_CREATOR]-(post:Post)-[:HAS_TAG]->(knownTag:Tag
---         {name:'Shakira'})
---   MATCH (post)-[:HAS_TAG]->(commonTag:Tag) WHERE commonTag <> knownTag
---   RETURN commonTag.name, count(post) ORDER BY count DESC, name ASC LIMIT 10
---
 -- Golden: David_Foster (4), Muammar_Gaddafi (2), Robert_John_Mutt_Lange (2)
 
-SELECT t2.name AS tagName, COUNT(DISTINCT po.id) AS postCount
+SELECT t2.name AS tag_name, COUNT(DISTINCT po.id) AS post_count
 FROM {{zone_name}}.ldbc.person_knows_person k1
 LEFT JOIN {{zone_name}}.ldbc.person_knows_person k2 ON k1.dst = k2.src
-JOIN {{zone_name}}.ldbc.post_hasCreator_person phc
+JOIN {{zone_name}}.ldbc.post_has_creator_person phc
     ON (k1.dst = phc.person_id OR k2.dst = phc.person_id)
 JOIN {{zone_name}}.ldbc.post po ON phc.post_id = po.id
-JOIN {{zone_name}}.ldbc.post_hasTag_tag pht1 ON po.id = pht1.post_id
+JOIN {{zone_name}}.ldbc.post_has_tag_tag pht1 ON po.id = pht1.post_id
 JOIN {{zone_name}}.ldbc.tag t1 ON pht1.tag_id = t1.id AND t1.name = 'Shakira'
-JOIN {{zone_name}}.ldbc.post_hasTag_tag pht2 ON po.id = pht2.post_id
+JOIN {{zone_name}}.ldbc.post_has_tag_tag pht2 ON po.id = pht2.post_id
 JOIN {{zone_name}}.ldbc.tag t2 ON pht2.tag_id = t2.id AND t2.name <> 'Shakira'
 WHERE k1.src = 30786325579101
 GROUP BY t2.name
-ORDER BY postCount DESC, tagName ASC
+ORDER BY post_count DESC, tag_name ASC
 LIMIT 10;
 
 
 -- ============================================================================
 -- 38. LDBC Q7 — Recent Likes
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (person:Person {id:26388279067534})<-[:HAS_CREATOR]-(message)
---         <-[like:LIKES]-(liker:Person)
---   RETURN liker.id, liker.firstName, liker.lastName,
---          like.creationDate, message.id
---   ORDER BY like.creationDate DESC, message.id ASC LIMIT 20
---
 -- Golden: first liker = Anh Nguyen (32985348834301),
---         likeDate=1347061110109, messageId=1030792374999
+--         like_date=1347061110109, message_id=1030792374999
 
 SELECT
-    p2.id AS personId, p2.firstName, p2.lastName,
-    lk.creationDate AS likeCreationDate,
-    po.id AS messageId,
-    COALESCE(po.content, po.imageFile) AS messageContent
-FROM {{zone_name}}.ldbc.post_hasCreator_person phc
+    p2.id AS person_id, p2.first_name, p2.last_name,
+    lk.creation_date AS like_creation_date,
+    po.id AS message_id,
+    COALESCE(po.content, po.image_file) AS message_content
+FROM {{zone_name}}.ldbc.post_has_creator_person phc
 JOIN {{zone_name}}.ldbc.post po ON phc.post_id = po.id
 JOIN {{zone_name}}.ldbc.person_likes_post lk ON po.id = lk.post_id
 JOIN {{zone_name}}.ldbc.person p2 ON lk.person_id = p2.id
 WHERE phc.person_id = 26388279067534
-ORDER BY lk.creationDate DESC, po.id ASC
+ORDER BY lk.creation_date DESC, po.id ASC
 LIMIT 20;
 
 
 -- ============================================================================
 -- 39. LDBC Q8 — Recent Replies
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (start:Person {id:2199023256816})<-[:HAS_CREATOR]-()
---         <-[:REPLY_OF]-(comment:Comment)-[:HAS_CREATOR]->(person:Person)
---   RETURN person.id, person.firstName, person.lastName,
---          comment.creationDate, comment.id, comment.content
---   ORDER BY comment.creationDate DESC, comment.id ASC LIMIT 20
---
--- Golden: first reply by Ana Paula Silva, commentId=1099511667820
+-- Golden: first reply by Ana Paula Silva, comment_id=1099511667820
 
 SELECT
-    p2.id AS personId, p2.firstName, p2.lastName,
-    c.creationDate AS commentCreationDate,
-    c.id AS commentId,
-    c.content AS commentContent
-FROM {{zone_name}}.ldbc.post_hasCreator_person phc
-JOIN {{zone_name}}.ldbc.comment_replyOf_post crp ON phc.post_id = crp.post_id
+    p2.id AS person_id, p2.first_name, p2.last_name,
+    c.creation_date AS comment_creation_date,
+    c.id AS comment_id,
+    c.content AS comment_content
+FROM {{zone_name}}.ldbc.post_has_creator_person phc
+JOIN {{zone_name}}.ldbc.comment_reply_of_post crp ON phc.post_id = crp.post_id
 JOIN {{zone_name}}.ldbc.comment c ON crp.comment_id = c.id
-JOIN {{zone_name}}.ldbc.comment_hasCreator_person chc ON c.id = chc.comment_id
+JOIN {{zone_name}}.ldbc.comment_has_creator_person chc ON c.id = chc.comment_id
 JOIN {{zone_name}}.ldbc.person p2 ON chc.person_id = p2.id
 WHERE phc.person_id = 2199023256816
-ORDER BY c.creationDate DESC, c.id ASC
+ORDER BY c.creation_date DESC, c.id ASC
 LIMIT 20;
 
 
 -- ============================================================================
 -- 40. LDBC Q12 — Expert Friends by TagClass
 -- ============================================================================
--- Cypher equivalent:
---   MATCH (:Person {id:19791209300143})-[:KNOWS]-(friend:Person)
---   OPTIONAL MATCH (friend)<-[:HAS_CREATOR]-(comment:Comment)
---                  -[:REPLY_OF]->(:Post)-[:HAS_TAG]->(tag:Tag),
---                  (tag)-[:HAS_TYPE]->(tc:TagClass)
---   WHERE tc.name = 'BasketballPlayer'
---   RETURN friend.id, friend.firstName, friend.lastName,
---          collect(DISTINCT tag.name), count(DISTINCT comment)
---   ORDER BY count DESC, friend.id ASC LIMIT 20
---
--- Golden: Peng Zhang (8796093023000), replyCount=4
+-- Golden: Peng Zhang (8796093023000), reply_count=4
 
 SELECT
-    p2.id AS personId, p2.firstName, p2.lastName,
-    COUNT(DISTINCT c.id) AS replyCount
+    p2.id AS person_id, p2.first_name, p2.last_name,
+    COUNT(DISTINCT c.id) AS reply_count
 FROM {{zone_name}}.ldbc.person_knows_person k
 JOIN {{zone_name}}.ldbc.person p2 ON k.dst = p2.id
-JOIN {{zone_name}}.ldbc.comment_hasCreator_person chc ON p2.id = chc.person_id
+JOIN {{zone_name}}.ldbc.comment_has_creator_person chc ON p2.id = chc.person_id
 JOIN {{zone_name}}.ldbc.comment c ON chc.comment_id = c.id
-JOIN {{zone_name}}.ldbc.comment_replyOf_post crp ON c.id = crp.comment_id
-JOIN {{zone_name}}.ldbc.post_hasTag_tag pht ON crp.post_id = pht.post_id
+JOIN {{zone_name}}.ldbc.comment_reply_of_post crp ON c.id = crp.comment_id
+JOIN {{zone_name}}.ldbc.post_has_tag_tag pht ON crp.post_id = pht.post_id
 JOIN {{zone_name}}.ldbc.tag t ON pht.tag_id = t.id
-JOIN {{zone_name}}.ldbc.tag_hasType_tagclass tht ON t.id = tht.tag_id
+JOIN {{zone_name}}.ldbc.tag_has_type_tagclass tht ON t.id = tht.tag_id
 JOIN {{zone_name}}.ldbc.tagclass tc ON tht.tagclass_id = tc.id
 WHERE k.src = 19791209300143
   AND tc.name = 'BasketballPlayer'
-GROUP BY p2.id, p2.firstName, p2.lastName
-ORDER BY replyCount DESC, p2.id ASC
+GROUP BY p2.id, p2.first_name, p2.last_name
+ORDER BY reply_count DESC, p2.id ASC
 LIMIT 20;
 
 
@@ -812,8 +746,8 @@ LIMIT 20;
 -- 41. CONTENT ANALYSIS — Most discussed tags
 -- ============================================================================
 
-SELECT t.name AS tagName, COUNT(*) AS comment_count
-FROM {{zone_name}}.ldbc.comment_hasTag_tag cht
+SELECT t.name AS tag_name, COUNT(*) AS comment_count
+FROM {{zone_name}}.ldbc.comment_has_tag_tag cht
 JOIN {{zone_name}}.ldbc.tag t ON cht.tag_id = t.id
 GROUP BY t.name
 ORDER BY comment_count DESC
@@ -903,14 +837,14 @@ SELECT 'SQ1: Jun Wang exists at person 26388279068220',
        CASE WHEN cnt = 1 THEN 'PASS' ELSE 'FAIL' END
 FROM (
     SELECT COUNT(*) AS cnt FROM {{zone_name}}.ldbc.person
-    WHERE id = 26388279068220 AND firstName = 'Jun' AND lastName = 'Wang'
+    WHERE id = 26388279068220 AND first_name = 'Jun' AND last_name = 'Wang'
 )
 
 UNION ALL
 SELECT 'SQ5: Comment 1099511997932 created by person 26388279068220',
        CASE WHEN cnt = 1 THEN 'PASS' ELSE 'FAIL' END
 FROM (
-    SELECT COUNT(*) AS cnt FROM {{zone_name}}.ldbc.comment_hasCreator_person
+    SELECT COUNT(*) AS cnt FROM {{zone_name}}.ldbc.comment_has_creator_person
     WHERE comment_id = 1099511997932 AND person_id = 26388279068220
 )
 
@@ -919,8 +853,8 @@ SELECT 'SQ6: Comment 1099511997932 in forum 824633737506',
        CASE WHEN cnt >= 1 THEN 'PASS' ELSE 'FAIL' END
 FROM (
     SELECT COUNT(*) AS cnt
-    FROM {{zone_name}}.ldbc.comment_replyOf_post crp
-    JOIN {{zone_name}}.ldbc.forum_containerOf_post fcp ON crp.post_id = fcp.post_id
+    FROM {{zone_name}}.ldbc.comment_reply_of_post crp
+    JOIN {{zone_name}}.ldbc.forum_container_of_post fcp ON crp.post_id = fcp.post_id
     WHERE crp.comment_id = 1099511997932 AND fcp.forum_id = 824633737506
 )
 
