@@ -58,9 +58,7 @@ OPTIONS (
             "/catalog/product/price/@currency": "catalog_product_price_attr_currency",
             "/catalog/product/specifications": "catalog_product_specifications",
             "/catalog/product/supplier": "catalog_product_supplier",
-            "/catalog/product/tags": "catalog_product_tags",
-            "df_file_name": "df_file_name",
-            "df_row_number": "df_row_number"
+            "/catalog/product/tags": "catalog_product_tags"
         },
         "include_attributes": true,
         "separator": "_",
@@ -111,9 +109,7 @@ OPTIONS (
             "/catalog/product/price/@currency": "catalog_product_price_attr_currency",
             "/catalog/product/specifications": "catalog_product_specifications",
             "/catalog/product/supplier": "catalog_product_supplier",
-            "/catalog/product/tags": "catalog_product_tags",
-            "df_file_name": "df_file_name",
-            "df_row_number": "df_row_number"
+            "/catalog/product/tags": "catalog_product_tags"
         },
         "include_attributes": true,
         "separator": "_",

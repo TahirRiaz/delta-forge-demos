@@ -71,9 +71,7 @@ OPTIONS (
             "$.People and Society.Religions.text": "people_and_society_religions_text",
             "$.Terrorism.Terrorist group(s).text": "terrorism_terrorist_group_s_text",
             "$.Space.Space agency/agencies.text": "space_space_agency_agencies_text",
-            "$.Space.Space program overview.text": "space_space_program_overview_text",
-            "df_file_name": "df_file_name",
-            "df_row_number": "df_row_number"
+            "$.Space.Space program overview.text": "space_space_program_overview_text"
         },
         "max_depth": 5,
         "separator": "_",
@@ -135,9 +133,7 @@ OPTIONS (
             "$.Economy.Industries.text": "economy_industries_text",
             "$.Economy.Unemployment rate.Unemployment rate 2023.text": "economy_unemployment_rate_unemployment_rate_2023_text",
             "$.Economy.Exports.Exports 2023.text": "economy_exports_exports_2023_text",
-            "$.Economy.Imports.Imports 2023.text": "economy_imports_imports_2023_text",
-            "df_file_name": "df_file_name",
-            "df_row_number": "df_row_number"
+            "$.Economy.Imports.Imports 2023.text": "economy_imports_imports_2023_text"
         },
         "max_depth": 5,
         "separator": "_",

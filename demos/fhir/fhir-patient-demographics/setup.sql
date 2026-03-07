@@ -45,9 +45,7 @@ OPTIONS (
         ],
         "column_mappings": {
             "$.id": "patient_id",
-            "$.birthDate": "birth_date",
-            "df_file_name": "df_file_name",
-            "df_row_number": "df_row_number"
+            "$.birthDate": "birth_date"
         },
         "max_depth": 3,
         "separator": "_",
@@ -95,9 +93,7 @@ OPTIONS (
             "$.id": "patient_id",
             "$.birthDate": "birth_date",
             "$.deceasedBoolean": "is_deceased",
-            "$.managingOrganization": "managing_org",
-            "df_file_name": "df_file_name",
-            "df_row_number": "df_row_number"
+            "$.managingOrganization": "managing_org"
         },
         "max_depth": 3,
         "separator": "_",

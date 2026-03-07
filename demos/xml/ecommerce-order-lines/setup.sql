@@ -70,11 +70,7 @@ OPTIONS (
             "/orders/order/items/item/variant/color": "orders_order_items_item_variant_color",
             "/orders/order/gift_wrap": "orders_order_gift_wrap",
             "/orders/order/express": "orders_order_express",
-            "/orders/order/shipping_total": "orders_order_shipping_total",
-            "df_file_name": "df_file_name",
-            "df_file_modified": "df_file_modified",
-            "df_dataset": "df_dataset",
-            "df_row_number": "df_row_number"
+            "/orders/order/shipping_total": "orders_order_shipping_total"
         },
         "include_attributes": true,
         "separator": "_",
@@ -124,11 +120,7 @@ OPTIONS (
             "/orders/order/items/item": "orders_order_items_item",
             "/orders/order/gift_wrap": "orders_order_gift_wrap",
             "/orders/order/express": "orders_order_express",
-            "/orders/order/shipping_total": "orders_order_shipping_total",
-            "df_file_name": "df_file_name",
-            "df_file_modified": "df_file_modified",
-            "df_dataset": "df_dataset",
-            "df_row_number": "df_row_number"
+            "/orders/order/shipping_total": "orders_order_shipping_total"
         },
         "include_attributes": true,
         "separator": "_",
