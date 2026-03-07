@@ -22,10 +22,10 @@ FROM {{zone_name}}.json.album_tracks;
 -- 2. BROWSE TRACKS — See the exploded data with friendly column names
 -- ============================================================================
 
-SELECT album_name, vendor_name, track_name, composer, genre_id,
-       duration_ms, track_price
+SELECT name, vendor_name, details_name, composer, details_genre_id,
+       details_milliseconds, details_unit_price
 FROM {{zone_name}}.json.album_tracks
-ORDER BY album_id, track_id
+ORDER BY id, details_track_id
 LIMIT 15;
 
 
@@ -44,9 +44,9 @@ FROM {{zone_name}}.json.album_summary;
 -- 4. BROWSE ALBUM SUMMARY — One row per album with track count
 -- ============================================================================
 
-SELECT album_id, album_name, sku, status, price, vendor, details
+SELECT id, name, sku, status, price, vendor, details
 FROM {{zone_name}}.json.album_summary
-ORDER BY album_id
+ORDER BY id
 LIMIT 10;
 
 
@@ -66,9 +66,9 @@ LIMIT 10;
 -- ============================================================================
 -- In album_summary, $.vendor is preserved as a JSON string, not flattened.
 
-SELECT album_name, vendor
+SELECT name, vendor
 FROM {{zone_name}}.json.album_summary
-WHERE album_id = 1;
+WHERE id = 1;
 
 
 -- ============================================================================
@@ -86,9 +86,9 @@ ORDER BY df_file_name;
 -- 8. GENRE DISTRIBUTION — Track count by genre across all catalogs
 -- ============================================================================
 
-SELECT genre_id, COUNT(*) AS track_count
+SELECT details_genre_id, COUNT(*) AS track_count
 FROM {{zone_name}}.json.album_tracks
-GROUP BY genre_id
+GROUP BY details_genre_id
 ORDER BY track_count DESC;
 
 
@@ -108,10 +108,10 @@ LIMIT 10;
 -- 10. LONGEST TRACKS — Top 10 tracks by duration
 -- ============================================================================
 
-SELECT track_name, album_name, vendor_name,
-       ROUND(CAST(duration_ms AS DOUBLE) / 60000.0, 1) AS minutes
+SELECT details_name, name, vendor_name,
+       ROUND(CAST(details_milliseconds AS DOUBLE) / 60000.0, 1) AS minutes
 FROM {{zone_name}}.json.album_tracks
-ORDER BY CAST(duration_ms AS DOUBLE) DESC
+ORDER BY CAST(details_milliseconds AS DOUBLE) DESC
 LIMIT 10;
 
 
@@ -119,11 +119,11 @@ LIMIT 10;
 -- 11. REVENUE BY ALBUM — Total track revenue per album
 -- ============================================================================
 
-SELECT album_name, vendor_name,
+SELECT name, vendor_name,
        COUNT(*) AS tracks,
-       ROUND(SUM(CAST(track_price AS DOUBLE)), 2) AS total_revenue
+       ROUND(SUM(CAST(details_unit_price AS DOUBLE)), 2) AS total_revenue
 FROM {{zone_name}}.json.album_tracks
-GROUP BY album_name, vendor_name
+GROUP BY name, vendor_name
 ORDER BY total_revenue DESC
 LIMIT 10;
 
@@ -162,9 +162,9 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 5: Column mappings — track_name exists with data
-    SELECT 'column_mapping_track_name' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE track_name IS NOT NULL) > 0
+    -- Check 5: Column mappings — details_name exists with data
+    SELECT 'column_mapping_details_name' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE details_name IS NOT NULL) > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -180,14 +180,14 @@ SELECT check_name, result FROM (
     SELECT 'spot_check_acdc' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks
-               WHERE album_name = 'For Those About To Rock We Salute You' AND vendor_name = 'AC/DC'
+               WHERE name = 'For Those About To Rock We Salute You' AND vendor_name = 'AC/DC'
            ) > 0 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 8: All tracks have positive duration
     SELECT 'positive_duration' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE CAST(duration_ms AS DOUBLE) <= 0) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE CAST(details_milliseconds AS DOUBLE) <= 0) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

@@ -25,9 +25,9 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
 --   include_attributes — true (extract @id and @format as columns)
 --   separator        — _ (nested paths join with underscore)
 --
--- Column naming convention (from XmlFlattenConfig.column_name):
---   /catalog/book/@id    →  attr_id      (@ → attr_)
---   /catalog/book/author →  author       (leaf element, no prefix)
+-- Column naming convention (from delta-forge-schema naming):
+--   /catalog/book/@id    →  catalog_book_attr_id
+--   /catalog/book/author →  catalog_book_author
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.books_evolved
 USING XML
@@ -53,21 +53,21 @@ OPTIONS (
             "/catalog/book/series"
         ],
         "column_mappings": {
-            "/catalog/book/@id": "attr_id",
-            "/catalog/book/@format": "attr_format",
-            "/catalog/book/author": "author",
-            "/catalog/book/title": "title",
-            "/catalog/book/genre": "genre",
-            "/catalog/book/price": "price",
-            "/catalog/book/publish_date": "publish_date",
-            "/catalog/book/description": "description",
-            "/catalog/book/isbn": "isbn",
-            "/catalog/book/language": "language",
-            "/catalog/book/publisher": "publisher",
-            "/catalog/book/rating": "rating",
-            "/catalog/book/edition": "edition",
-            "/catalog/book/pages": "pages",
-            "/catalog/book/series": "series"
+            "/catalog/book/@id": "catalog_book_attr_id",
+            "/catalog/book/@format": "catalog_book_attr_format",
+            "/catalog/book/author": "catalog_book_author",
+            "/catalog/book/title": "catalog_book_title",
+            "/catalog/book/genre": "catalog_book_genre",
+            "/catalog/book/price": "catalog_book_price",
+            "/catalog/book/publish_date": "catalog_book_publish_date",
+            "/catalog/book/description": "catalog_book_description",
+            "/catalog/book/isbn": "catalog_book_isbn",
+            "/catalog/book/language": "catalog_book_language",
+            "/catalog/book/publisher": "catalog_book_publisher",
+            "/catalog/book/rating": "catalog_book_rating",
+            "/catalog/book/edition": "catalog_book_edition",
+            "/catalog/book/pages": "catalog_book_pages",
+            "/catalog/book/series": "catalog_book_series"
         },
         "include_attributes": true,
         "separator": "_",

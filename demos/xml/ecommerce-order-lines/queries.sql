@@ -21,10 +21,10 @@ FROM {{zone_name}}.xml.order_lines;
 -- 2. BROWSE ORDER LINES — See the exploded data with friendly column names
 -- ============================================================================
 
-SELECT order_id, order_status, customer_name, sku, product,
-       quantity, unit_price, item_size, item_color
+SELECT orders_order_attr_id, orders_order_attr_status, orders_order_customer_name, orders_order_items_item_attr_sku, orders_order_items_item_product,
+       orders_order_items_item_quantity, orders_order_items_item_unit_price, orders_order_items_item_variant_size, orders_order_items_item_variant_color
 FROM {{zone_name}}.xml.order_lines
-ORDER BY order_id, sku;
+ORDER BY orders_order_attr_id, orders_order_items_item_attr_sku;
 
 
 -- ============================================================================
@@ -34,9 +34,9 @@ ORDER BY order_id, sku;
 -- All 11 items have variant info, so no NULLs expected.
 
 SELECT 'deep_nesting_color' AS check_name,
-       COUNT(*) FILTER (WHERE item_color IS NOT NULL) AS actual,
+       COUNT(*) FILTER (WHERE orders_order_items_item_variant_color IS NOT NULL) AS actual,
        11 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE item_color IS NOT NULL) = 11
+       CASE WHEN COUNT(*) FILTER (WHERE orders_order_items_item_variant_color IS NOT NULL) = 11
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.order_lines;
 
@@ -48,9 +48,9 @@ FROM {{zone_name}}.xml.order_lines;
 -- items/item/variant/color → item_color, etc.
 
 SELECT 'column_mapping' AS check_name,
-       COUNT(*) FILTER (WHERE customer_name IS NOT NULL AND item_color IS NOT NULL) AS actual,
+       COUNT(*) FILTER (WHERE orders_order_customer_name IS NOT NULL AND orders_order_items_item_variant_color IS NOT NULL) AS actual,
        11 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE customer_name IS NOT NULL AND item_color IS NOT NULL) = 11
+       CASE WHEN COUNT(*) FILTER (WHERE orders_order_customer_name IS NOT NULL AND orders_order_items_item_variant_color IS NOT NULL) = 11
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.order_lines;
 
@@ -62,8 +62,8 @@ FROM {{zone_name}}.xml.order_lines;
 -- The CDATA wrapper should be removed but HTML preserved as text.
 
 SELECT 'cdata_extraction' AS check_name,
-       COUNT(*) FILTER (WHERE description LIKE '%<b>%' OR description LIKE '%<em>%') AS actual,
-       CASE WHEN COUNT(*) FILTER (WHERE description LIKE '%<b>%' OR description LIKE '%<em>%') > 0
+       COUNT(*) FILTER (WHERE orders_order_items_item_description LIKE '%<b>%' OR orders_order_items_item_description LIKE '%<em>%') AS actual,
+       CASE WHEN COUNT(*) FILTER (WHERE orders_order_items_item_description LIKE '%<b>%' OR orders_order_items_item_description LIKE '%<em>%') > 0
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.order_lines;
 
@@ -72,11 +72,11 @@ FROM {{zone_name}}.xml.order_lines;
 -- 6. CDATA SPOT CHECK — verify specific CDATA content
 -- ============================================================================
 
-SELECT sku, description
+SELECT orders_order_items_item_attr_sku, orders_order_items_item_description
 FROM {{zone_name}}.xml.order_lines
-WHERE sku IN ('WDG-100', 'GDG-200')
-GROUP BY sku, description
-ORDER BY sku;
+WHERE orders_order_items_item_attr_sku IN ('WDG-100', 'GDG-200')
+GROUP BY orders_order_items_item_attr_sku, orders_order_items_item_description
+ORDER BY orders_order_items_item_attr_sku;
 
 
 -- ============================================================================
@@ -108,21 +108,21 @@ FROM {{zone_name}}.xml.order_summary;
 -- 9. BROWSE ORDER SUMMARY — see per-order view with flattened customer
 -- ============================================================================
 
-SELECT order_id, order_status, customer_name, customer_email, customer_tier,
-       order_date, item_count, shipping_total
+SELECT orders_order_attr_id, orders_order_attr_status, orders_order_customer_name, orders_order_customer_email, orders_order_customer_tier,
+       orders_order_order_date, orders_order_items_item, orders_order_shipping_total
 FROM {{zone_name}}.xml.order_summary
-ORDER BY order_id;
+ORDER BY orders_order_attr_id;
 
 
 -- ============================================================================
 -- 10. LINE ITEM ANALYTICS — total quantity ordered by product
 -- ============================================================================
 
-SELECT product,
-       SUM(CAST(quantity AS INT)) AS total_qty,
+SELECT orders_order_items_item_product,
+       SUM(CAST(orders_order_items_item_quantity AS INT)) AS total_qty,
        COUNT(*) AS order_count
 FROM {{zone_name}}.xml.order_lines
-GROUP BY product
+GROUP BY orders_order_items_item_product
 ORDER BY total_qty DESC;
 
 
@@ -130,11 +130,11 @@ ORDER BY total_qty DESC;
 -- 11. REVENUE BY ORDER — join quantity and price
 -- ============================================================================
 
-SELECT order_id, customer_name,
-       SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)) AS order_total,
-       MIN(shipping_total) AS shipping
+SELECT orders_order_attr_id, orders_order_customer_name,
+       SUM(CAST(orders_order_items_item_quantity AS INT) * CAST(orders_order_items_item_unit_price AS DOUBLE)) AS order_total,
+       MIN(orders_order_shipping_total) AS shipping
 FROM {{zone_name}}.xml.order_lines
-GROUP BY order_id, customer_name
+GROUP BY orders_order_attr_id, orders_order_customer_name
 ORDER BY order_total DESC;
 
 
@@ -147,17 +147,17 @@ SELECT 'exploded_rows' AS check_name,
 FROM {{zone_name}}.xml.order_lines
 UNION ALL
 SELECT 'deep_nesting_color',
-       CASE WHEN COUNT(*) FILTER (WHERE item_color IS NOT NULL) = 11
+       CASE WHEN COUNT(*) FILTER (WHERE orders_order_items_item_variant_color IS NOT NULL) = 11
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.order_lines
 UNION ALL
 SELECT 'column_mapping',
-       CASE WHEN COUNT(*) FILTER (WHERE customer_name IS NOT NULL AND item_color IS NOT NULL) = 11
+       CASE WHEN COUNT(*) FILTER (WHERE orders_order_customer_name IS NOT NULL AND orders_order_items_item_variant_color IS NOT NULL) = 11
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.order_lines
 UNION ALL
 SELECT 'cdata_extraction',
-       CASE WHEN COUNT(*) FILTER (WHERE description LIKE '%<b>%' OR description LIKE '%<em>%') > 0
+       CASE WHEN COUNT(*) FILTER (WHERE orders_order_items_item_description LIKE '%<b>%' OR orders_order_items_item_description LIKE '%<em>%') > 0
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.order_lines
 UNION ALL

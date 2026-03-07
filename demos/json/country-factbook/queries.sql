@@ -21,9 +21,9 @@ FROM {{zone_name}}.json.countries;
 -- 2. BROWSE COUNTRIES — See the flattened overview with friendly column names
 -- ============================================================================
 
-SELECT country_name, capital, government_type, area, population, climate
+SELECT government_country_name_conventional_short_form_text, government_capital_name_text, government_government_type_text, geography_area_total_text, people_and_society_population_total_text, geography_climate_text
 FROM {{zone_name}}.json.countries
-ORDER BY country_name;
+ORDER BY government_country_name_conventional_short_form_text;
 
 
 -- ============================================================================
@@ -35,7 +35,7 @@ ORDER BY country_name;
 SELECT 'deep_nesting_egypt' AS check_name,
        CASE WHEN COUNT(*) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.countries
-WHERE country_name = 'Egypt';
+WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 
 -- ============================================================================
@@ -44,10 +44,10 @@ WHERE country_name = 'Egypt';
 -- 8 of 10 countries have Terrorism section; Ghana and Rwanda do not.
 -- Their terrorist_groups column should be NULL.
 
-SELECT country_name,
-       CASE WHEN terrorist_groups IS NULL THEN 'NO DATA' ELSE 'HAS DATA' END AS terrorism_status
+SELECT government_country_name_conventional_short_form_text,
+       CASE WHEN terrorism_terrorist_group_s_text IS NULL THEN 'NO DATA' ELSE 'HAS DATA' END AS terrorism_status
 FROM {{zone_name}}.json.countries
-ORDER BY country_name;
+ORDER BY government_country_name_conventional_short_form_text;
 
 
 -- ============================================================================
@@ -55,10 +55,10 @@ ORDER BY country_name;
 -- ============================================================================
 -- 7 of 10 countries have Space section; Morocco, Djibouti, DRC do not.
 
-SELECT country_name,
-       CASE WHEN space_agencies IS NULL THEN 'NO DATA' ELSE 'HAS DATA' END AS space_status
+SELECT government_country_name_conventional_short_form_text,
+       CASE WHEN space_space_agency_agencies_text IS NULL THEN 'NO DATA' ELSE 'HAS DATA' END AS space_status
 FROM {{zone_name}}.json.countries
-ORDER BY country_name;
+ORDER BY government_country_name_conventional_short_form_text;
 
 
 -- ============================================================================
@@ -87,7 +87,7 @@ WHERE _json_source IS NOT NULL;
 -- 8. FILE METADATA — df_file_name reveals country code
 -- ============================================================================
 
-SELECT df_file_name, country_name
+SELECT df_file_name, government_country_name_conventional_short_form_text
 FROM {{zone_name}}.json.countries
 ORDER BY df_file_name;
 
@@ -107,10 +107,10 @@ FROM {{zone_name}}.json.country_economy;
 -- 10. BROWSE ECONOMY — GDP and sector composition
 -- ============================================================================
 
-SELECT country_name, gdp_ppp_2023, gdp_growth_2023, gdp_per_capita_2023,
-       sector_agriculture, sector_industry, sector_services
+SELECT government_country_name_conventional_short_form_text, economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text, economy_real_gdp_growth_rate_real_gdp_growth_rate_2023_text, economy_real_gdp_per_capita_real_gdp_per_capita_2023_text,
+       economy_gdp_composition_by_sector_of_origin_agriculture_text, economy_gdp_composition_by_sector_of_origin_industry_text, economy_gdp_composition_by_sector_of_origin_services_text
 FROM {{zone_name}}.json.country_economy
-ORDER BY country_name;
+ORDER BY government_country_name_conventional_short_form_text;
 
 
 -- ============================================================================
@@ -119,9 +119,9 @@ ORDER BY country_name;
 -- $.Economy.Real GDP (purchasing power parity).Real GDP... 2023.text
 -- is 4 levels deep with spaces and parentheses in key names.
 
-SELECT country_name, gdp_ppp_2023
+SELECT government_country_name_conventional_short_form_text, economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text
 FROM {{zone_name}}.json.country_economy
-WHERE country_name = 'Egypt';
+WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 
 -- ============================================================================
@@ -129,19 +129,19 @@ WHERE country_name = 'Egypt';
 -- ============================================================================
 -- Egypt: capital=Cairo, area starts with "1,001,450"
 
-SELECT country_name, capital, area
+SELECT government_country_name_conventional_short_form_text, government_capital_name_text, geography_area_total_text
 FROM {{zone_name}}.json.countries
-WHERE country_name = 'Egypt';
+WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 
 -- ============================================================================
 -- 13. COUNTRIES WITH SPACE PROGRAMS — Analytics query
 -- ============================================================================
 
-SELECT country_name, space_agencies
+SELECT government_country_name_conventional_short_form_text, space_space_agency_agencies_text
 FROM {{zone_name}}.json.countries
-WHERE space_agencies IS NOT NULL
-ORDER BY country_name;
+WHERE space_space_agency_agencies_text IS NOT NULL
+ORDER BY government_country_name_conventional_short_form_text;
 
 
 -- ============================================================================
@@ -166,7 +166,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: Deep nesting — Egypt found
     SELECT 'deep_nesting_egypt' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE country_name = 'Egypt') = 1
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE government_country_name_conventional_short_form_text = 'Egypt') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -175,7 +175,7 @@ SELECT check_name, result FROM (
     SELECT 'schema_evolution_terrorism_null' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.countries
-               WHERE country_name = 'Ghana' AND terrorist_groups IS NULL
+               WHERE government_country_name_conventional_short_form_text = 'Ghana' AND terrorism_terrorist_group_s_text IS NULL
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -184,14 +184,14 @@ SELECT check_name, result FROM (
     SELECT 'schema_evolution_terrorism_present' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.countries
-               WHERE country_name = 'Egypt' AND terrorist_groups IS NOT NULL
+               WHERE government_country_name_conventional_short_form_text = 'Egypt' AND terrorism_terrorist_group_s_text IS NOT NULL
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Schema evolution — Space: 7 with data, 3 without
     SELECT 'schema_evolution_space' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE space_agencies IS NOT NULL) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE space_space_agency_agencies_text IS NOT NULL) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -205,7 +205,7 @@ SELECT check_name, result FROM (
 
     -- Check 8: Column mappings — country_name populated for all
     SELECT 'column_mapping_country_name' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE country_name IS NOT NULL) = 10
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE government_country_name_conventional_short_form_text IS NOT NULL) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -221,7 +221,7 @@ SELECT check_name, result FROM (
     SELECT 'spot_check_egypt_cairo' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.countries
-               WHERE country_name = 'Egypt' AND capital = 'Cairo'
+               WHERE government_country_name_conventional_short_form_text = 'Egypt' AND government_capital_name_text = 'Cairo'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -230,7 +230,7 @@ SELECT check_name, result FROM (
     SELECT 'economy_gdp_populated' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.country_economy
-               WHERE country_name = 'Egypt' AND gdp_ppp_2023 IS NOT NULL
+               WHERE government_country_name_conventional_short_form_text = 'Egypt' AND economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text IS NOT NULL
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL

@@ -7,7 +7,7 @@
 -- Demonstrates:
 --   - JSON array format (single file, multi-line)
 --   - include_paths (selective field extraction)
---   - column_mappings (rename $.first → first_name, $.last → last_name, etc.)
+--   - column_mappings (optional rename — here we use auto-detected names)
 --   - infer_types (automatic type detection)
 --   - file_metadata (df_file_name, df_row_number)
 -- ============================================================================
@@ -24,8 +24,9 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- ============================================================================
 -- A CRM system exported its customer database as a JSON array. Each element
 -- is a flat object with id, email, first name, last name, company, signup
--- date, and country. Column mappings rename short field names to descriptive
--- column names. Type inference handles automatic timestamp detection.
+-- date, and country. Auto-detected column names follow delta-forge convention
+-- (strip $., split camelCase, lowercase). Type inference handles automatic
+-- timestamp detection.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.customers
 USING JSON
@@ -42,11 +43,6 @@ OPTIONS (
             "$.created_at",
             "$.country"
         ],
-        "column_mappings": {
-            "$.first": "first_name",
-            "$.last": "last_name",
-            "$.created_at": "signup_date"
-        },
         "max_depth": 1,
         "separator": "_",
         "default_array_handling": "to_json",

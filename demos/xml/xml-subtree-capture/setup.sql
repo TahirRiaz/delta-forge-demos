@@ -50,15 +50,15 @@ OPTIONS (
             "/catalog/product/supplier"
         ],
         "column_mappings": {
-            "/catalog/product/@id": "product_id",
-            "/catalog/product/@status": "status",
-            "/catalog/product/name": "product_name",
-            "/catalog/product/category": "category",
-            "/catalog/product/price": "price",
-            "/catalog/product/price/@currency": "currency",
-            "/catalog/product/specifications": "specs_json",
-            "/catalog/product/supplier": "supplier_json",
-            "/catalog/product/tags": "tags"
+            "/catalog/product/@id": "catalog_product_attr_id",
+            "/catalog/product/@status": "catalog_product_attr_status",
+            "/catalog/product/name": "catalog_product_name",
+            "/catalog/product/category": "catalog_product_category",
+            "/catalog/product/price": "catalog_product_price",
+            "/catalog/product/price/@currency": "catalog_product_price_attr_currency",
+            "/catalog/product/specifications": "catalog_product_specifications",
+            "/catalog/product/supplier": "catalog_product_supplier",
+            "/catalog/product/tags": "catalog_product_tags"
         },
         "include_attributes": true,
         "separator": "_",
@@ -101,15 +101,15 @@ OPTIONS (
             "/catalog/product/supplier"
         ],
         "column_mappings": {
-            "/catalog/product/@id": "product_id",
-            "/catalog/product/@status": "status",
-            "/catalog/product/name": "product_name",
-            "/catalog/product/category": "category",
-            "/catalog/product/price": "price",
-            "/catalog/product/price/@currency": "currency",
-            "/catalog/product/specifications": "specs_xml",
-            "/catalog/product/supplier": "supplier_xml",
-            "/catalog/product/tags": "tags"
+            "/catalog/product/@id": "catalog_product_attr_id",
+            "/catalog/product/@status": "catalog_product_attr_status",
+            "/catalog/product/name": "catalog_product_name",
+            "/catalog/product/category": "catalog_product_category",
+            "/catalog/product/price": "catalog_product_price",
+            "/catalog/product/price/@currency": "catalog_product_price_attr_currency",
+            "/catalog/product/specifications": "catalog_product_specifications",
+            "/catalog/product/supplier": "catalog_product_supplier",
+            "/catalog/product/tags": "catalog_product_tags"
         },
         "include_attributes": true,
         "separator": "_",

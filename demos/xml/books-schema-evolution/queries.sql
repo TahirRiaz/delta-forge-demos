@@ -5,7 +5,7 @@
 --   - All 15 books from 5 files are read
 --   - New columns added in later files appear as NULL in earlier files
 --   - Dropped columns appear as NULL in files that lack them
---   - Attributes (@id, @format) are extracted as attr_id, attr_format
+--   - Attributes (@id, @format) are extracted as catalog_book_attr_id, catalog_book_attr_format
 -- ============================================================================
 
 
@@ -28,7 +28,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 SELECT *
 FROM {{zone_name}}.xml.books_evolved
-ORDER BY attr_id;
+ORDER BY catalog_book_attr_id;
 
 
 -- ============================================================================
@@ -38,9 +38,9 @@ ORDER BY attr_id;
 -- Files 2-5 (bk104-bk115) have isbn → NOT NULL
 
 SELECT 'isbn_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE isbn IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_isbn IS NULL) AS actual,
        3 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE isbn IS NULL) = 3
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_isbn IS NULL) = 3
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -50,9 +50,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 
 SELECT 'language_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE language IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_language IS NULL) AS actual,
        3 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE language IS NULL) = 3
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_language IS NULL) = 3
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -62,9 +62,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 
 SELECT 'publisher_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE publisher IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_publisher IS NULL) AS actual,
        6 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE publisher IS NULL) = 6
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_publisher IS NULL) = 6
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -74,9 +74,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 
 SELECT 'rating_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE rating IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_rating IS NULL) AS actual,
        6 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE rating IS NULL) = 6
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_rating IS NULL) = 6
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -88,9 +88,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- Files 4-5 (bk110-bk115) dropped description → NULL
 
 SELECT 'description_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE description IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_description IS NULL) AS actual,
        6 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE description IS NULL) = 6
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_description IS NULL) = 6
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -100,9 +100,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 
 SELECT 'edition_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE edition IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_edition IS NULL) AS actual,
        9 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE edition IS NULL) = 9
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_edition IS NULL) = 9
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -112,9 +112,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 
 SELECT 'pages_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE pages IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_pages IS NULL) AS actual,
        9 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE pages IS NULL) = 9
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_pages IS NULL) = 9
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -124,9 +124,9 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 
 SELECT 'series_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE series IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_series IS NULL) AS actual,
        12 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE series IS NULL) = 12
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_series IS NULL) = 12
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -134,12 +134,12 @@ FROM {{zone_name}}.xml.books_evolved;
 -- ============================================================================
 -- 11. FORMAT ATTRIBUTE (added in file 5) — 12 NULLs from files 1-4
 -- ============================================================================
--- The @format attribute on <book> is extracted as column attr_format.
+-- The @format attribute on <book> is extracted as column catalog_book_attr_format.
 
 SELECT 'attr_format_nulls' AS check_name,
-       COUNT(*) FILTER (WHERE attr_format IS NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_book_attr_format IS NULL) AS actual,
        12 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_book_attr_format IS NULL) = 12
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.books_evolved;
 
@@ -148,19 +148,19 @@ FROM {{zone_name}}.xml.books_evolved;
 -- 12. VALUE SPOT-CHECK — Verify specific books have correct data
 -- ============================================================================
 
-SELECT attr_id, author, title, genre, price
+SELECT catalog_book_attr_id, catalog_book_author, catalog_book_title, catalog_book_genre, catalog_book_price
 FROM {{zone_name}}.xml.books_evolved
-WHERE attr_id IN ('bk101', 'bk108', 'bk113')
-ORDER BY attr_id;
+WHERE catalog_book_attr_id IN ('bk101', 'bk108', 'bk113')
+ORDER BY catalog_book_attr_id;
 
 
 -- ============================================================================
 -- 13. GENRE DISTRIBUTION — All 15 books should have a genre
 -- ============================================================================
 
-SELECT genre, COUNT(*) AS book_count
+SELECT catalog_book_genre, COUNT(*) AS book_count
 FROM {{zone_name}}.xml.books_evolved
-GROUP BY genre
+GROUP BY catalog_book_genre
 ORDER BY book_count DESC;
 
 
@@ -170,21 +170,21 @@ ORDER BY book_count DESC;
 
 SELECT 'total_rows' AS check_name, CASE WHEN COUNT(*) = 15 THEN 'PASS' ELSE 'FAIL' END AS result FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'isbn_nulls', CASE WHEN COUNT(*) FILTER (WHERE isbn IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'isbn_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_isbn IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'language_nulls', CASE WHEN COUNT(*) FILTER (WHERE language IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'language_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_language IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'publisher_nulls', CASE WHEN COUNT(*) FILTER (WHERE publisher IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'publisher_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_publisher IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'rating_nulls', CASE WHEN COUNT(*) FILTER (WHERE rating IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'rating_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_rating IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'description_nulls', CASE WHEN COUNT(*) FILTER (WHERE description IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'description_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_description IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'edition_nulls', CASE WHEN COUNT(*) FILTER (WHERE edition IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'edition_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_edition IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE pages IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_pages IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 UNION ALL
-SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
 ORDER BY check_name;

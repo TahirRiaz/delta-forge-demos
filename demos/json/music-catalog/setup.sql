@@ -6,7 +6,7 @@
 --   2. album_summary — one row per album, tracks counted, vendor as JSON (347 rows)
 --
 -- Demonstrates:
---   - Nested object flattening ($.vendor.id → vendor_id, $.vendor.name → vendor_name)
+--   - Nested object flattening ($.vendor.id → vendor_id, $.vendor.name → vendor_name, etc.)
 --   - explode_paths: $.details array → one row per track
 --   - json_paths: keep $.vendor as JSON blob (not flattened)
 --   - column_mappings: deep paths → friendly names
@@ -54,16 +54,16 @@ OPTIONS (
             "$.details.unit_price"
         ],
         "column_mappings": {
-            "$.id": "album_id",
-            "$.name": "album_name",
+            "$.id": "id",
+            "$.name": "name",
             "$.vendor.id": "vendor_id",
             "$.vendor.name": "vendor_name",
-            "$.details.track_id": "track_id",
-            "$.details.name": "track_name",
-            "$.details.genre_id": "genre_id",
-            "$.details.milliseconds": "duration_ms",
-            "$.details.bytes": "file_bytes",
-            "$.details.unit_price": "track_price"
+            "$.details.track_id": "details_track_id",
+            "$.details.name": "details_name",
+            "$.details.genre_id": "details_genre_id",
+            "$.details.milliseconds": "details_milliseconds",
+            "$.details.bytes": "details_bytes",
+            "$.details.unit_price": "details_unit_price"
         },
         "max_depth": 10,
         "separator": "_",
@@ -101,8 +101,8 @@ OPTIONS (
         ],
         "json_paths": ["$.vendor"],
         "column_mappings": {
-            "$.id": "album_id",
-            "$.name": "album_name"
+            "$.id": "id",
+            "$.name": "name"
         },
         "default_array_handling": "count",
         "max_depth": 10,

@@ -32,21 +32,21 @@ FROM {{zone_name}}.json.listings_flattened;
 -- 3. BROWSE CAPTURED — top-level fields + JSON blobs
 -- ============================================================================
 
-SELECT listing_id, title, property_type, bedrooms, sqft, status,
-       location_json, pricing_json
+SELECT id, title, type, bedrooms, sqft, status,
+       location, pricing
 FROM {{zone_name}}.json.listings_captured
-ORDER BY listing_id;
+ORDER BY id;
 
 
 -- ============================================================================
 -- 4. BROWSE FLATTENED — same data with individual columns
 -- ============================================================================
 
-SELECT listing_id, title, property_type, bedrooms, sqft, status,
-       street, city, state, neighborhood,
-       list_price, tax_annual, monthly_payment
+SELECT id, title, type, bedrooms, sqft, status,
+       location_address_street, location_address_city, location_address_state, location_neighborhood,
+       pricing_list_price, pricing_tax_annual, pricing_mortgage_estimate_monthly_payment
 FROM {{zone_name}}.json.listings_flattened
-ORDER BY listing_id;
+ORDER BY id;
 
 
 -- ============================================================================
@@ -55,9 +55,9 @@ ORDER BY listing_id;
 -- When json_paths captures a subtree, the result is a JSON string.
 
 SELECT 'location_is_json' AS check_name,
-       COUNT(*) FILTER (WHERE location_json LIKE '{%') AS actual,
+       COUNT(*) FILTER (WHERE location LIKE '{%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE location_json LIKE '{%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE location LIKE '{%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.listings_captured;
 
@@ -67,9 +67,9 @@ FROM {{zone_name}}.json.listings_captured;
 -- ============================================================================
 
 SELECT 'pricing_is_json' AS check_name,
-       COUNT(*) FILTER (WHERE pricing_json LIKE '{%') AS actual,
+       COUNT(*) FILTER (WHERE pricing LIKE '{%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE pricing_json LIKE '{%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE pricing LIKE '{%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.listings_captured;
 
@@ -79,17 +79,17 @@ FROM {{zone_name}}.json.listings_captured;
 -- ============================================================================
 
 SELECT 'location_has_city' AS check_name,
-       COUNT(*) FILTER (WHERE location_json LIKE '%San Francisco%'
-                           OR location_json LIKE '%Portland%'
-                           OR location_json LIKE '%Seattle%'
-                           OR location_json LIKE '%Austin%'
-                           OR location_json LIKE '%Boston%') AS actual,
+       COUNT(*) FILTER (WHERE location LIKE '%San Francisco%'
+                           OR location LIKE '%Portland%'
+                           OR location LIKE '%Seattle%'
+                           OR location LIKE '%Austin%'
+                           OR location LIKE '%Boston%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE location_json LIKE '%San Francisco%'
-                                    OR location_json LIKE '%Portland%'
-                                    OR location_json LIKE '%Seattle%'
-                                    OR location_json LIKE '%Austin%'
-                                    OR location_json LIKE '%Boston%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE location LIKE '%San Francisco%'
+                                    OR location LIKE '%Portland%'
+                                    OR location LIKE '%Seattle%'
+                                    OR location LIKE '%Austin%'
+                                    OR location LIKE '%Boston%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.listings_captured;
 
@@ -99,9 +99,9 @@ FROM {{zone_name}}.json.listings_captured;
 -- ============================================================================
 
 SELECT 'pricing_has_list_price' AS check_name,
-       COUNT(*) FILTER (WHERE pricing_json LIKE '%list_price%') AS actual,
+       COUNT(*) FILTER (WHERE pricing LIKE '%list_price%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE pricing_json LIKE '%list_price%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE pricing LIKE '%list_price%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.listings_captured;
 
@@ -124,9 +124,9 @@ FROM {{zone_name}}.json.listings_captured;
 -- ============================================================================
 
 SELECT 'flattened_has_city' AS check_name,
-       COUNT(*) FILTER (WHERE city IS NOT NULL) AS actual,
+       COUNT(*) FILTER (WHERE location_address_city IS NOT NULL) AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE city IS NOT NULL) = 5
+       CASE WHEN COUNT(*) FILTER (WHERE location_address_city IS NOT NULL) = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.listings_flattened;
 
@@ -135,26 +135,26 @@ FROM {{zone_name}}.json.listings_flattened;
 -- 11. SPOT CHECK LST-001 — verify captured JSON contains expected data
 -- ============================================================================
 
-SELECT listing_id, title, location_json, pricing_json
+SELECT id, title, location, pricing
 FROM {{zone_name}}.json.listings_captured
-WHERE listing_id = 'LST-001';
+WHERE id = 'LST-001';
 
 
 -- ============================================================================
 -- 12. COMPARE APPROACHES — side-by-side captured vs flattened
 -- ============================================================================
 
-SELECT c.listing_id,
+SELECT c.id,
        c.title,
-       c.location_json,
-       f.city,
-       f.state,
-       f.neighborhood,
-       f.list_price,
-       f.monthly_payment
+       c.location,
+       f.location_address_city,
+       f.location_address_state,
+       f.location_neighborhood,
+       f.pricing_list_price,
+       f.pricing_mortgage_estimate_monthly_payment
 FROM {{zone_name}}.json.listings_captured c
-JOIN {{zone_name}}.json.listings_flattened f ON c.listing_id = f.listing_id
-WHERE c.listing_id = 'LST-005';
+JOIN {{zone_name}}.json.listings_flattened f ON c.id = f.id
+WHERE c.id = 'LST-005';
 
 
 -- ============================================================================
@@ -176,30 +176,30 @@ SELECT check_name, result FROM (
     UNION ALL
 
     SELECT 'location_is_json',
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured WHERE location_json LIKE '{%') = 5
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured WHERE location LIKE '{%') = 5
                 THEN 'PASS' ELSE 'FAIL' END
 
     UNION ALL
 
     SELECT 'pricing_is_json',
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured WHERE pricing_json LIKE '{%') = 5
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured WHERE pricing LIKE '{%') = 5
                 THEN 'PASS' ELSE 'FAIL' END
 
     UNION ALL
 
     SELECT 'location_has_city',
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured
-                      WHERE location_json LIKE '%San Francisco%'
-                         OR location_json LIKE '%Portland%'
-                         OR location_json LIKE '%Seattle%'
-                         OR location_json LIKE '%Austin%'
-                         OR location_json LIKE '%Boston%') = 5
+                      WHERE location LIKE '%San Francisco%'
+                         OR location LIKE '%Portland%'
+                         OR location LIKE '%Seattle%'
+                         OR location LIKE '%Austin%'
+                         OR location LIKE '%Boston%') = 5
                 THEN 'PASS' ELSE 'FAIL' END
 
     UNION ALL
 
     SELECT 'pricing_has_list_price',
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured WHERE pricing_json LIKE '%list_price%') = 5
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_captured WHERE pricing LIKE '%list_price%') = 5
                 THEN 'PASS' ELSE 'FAIL' END
 
     UNION ALL
@@ -211,7 +211,7 @@ SELECT check_name, result FROM (
     UNION ALL
 
     SELECT 'flattened_has_city',
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_flattened WHERE city IS NOT NULL) = 5
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.listings_flattened WHERE location_address_city IS NOT NULL) = 5
                 THEN 'PASS' ELSE 'FAIL' END
 
 ) checks

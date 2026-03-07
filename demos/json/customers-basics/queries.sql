@@ -20,25 +20,24 @@ FROM {{zone_name}}.json.customers;
 -- ============================================================================
 -- 2. BROWSE CUSTOMERS — See the mapped column names
 -- ============================================================================
--- Verify that column_mappings applied:
---   $.first → first_name, $.last → last_name, $.created_at → signup_date
+-- Verify that auto-detected column names are correct:
+--   $.first → first, $.last → last, $.created_at → created_at
 
-SELECT id, email, first_name, last_name, company, signup_date, country
+SELECT id, email, first, last, company, created_at, country
 FROM {{zone_name}}.json.customers
 ORDER BY id
 LIMIT 10;
 
 
 -- ============================================================================
--- 3. COLUMN MAPPING VERIFICATION — Mapped names exist, originals do not
+-- 3. COLUMN NAME VERIFICATION — Auto-detected names exist with data
 -- ============================================================================
--- first_name should have non-NULL values (mapped from $.first).
--- If the mapping failed, the column would be named "first" instead.
+-- first should have non-NULL values (auto-detected from $.first).
 
-SELECT 'column_mappings' AS check_name,
+SELECT 'column_names' AS check_name,
        CASE WHEN COUNT(*) > 0 THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.customers
-WHERE first_name IS NOT NULL AND last_name IS NOT NULL;
+WHERE first IS NOT NULL AND last IS NOT NULL;
 
 
 -- ============================================================================
@@ -56,10 +55,10 @@ LIMIT 10;
 -- 5. SIGNUP DATE RANGE — Verify timestamps parsed correctly
 -- ============================================================================
 -- All records have created_at values from 2014–2015. With infer_types enabled,
--- signup_date should be a proper timestamp enabling MIN/MAX.
+-- created_at should be a proper timestamp enabling MIN/MAX.
 
-SELECT MIN(signup_date) AS earliest_signup,
-       MAX(signup_date) AS latest_signup
+SELECT MIN(created_at) AS earliest_signup,
+       MAX(created_at) AS latest_signup
 FROM {{zone_name}}.json.customers;
 
 
@@ -76,15 +75,15 @@ GROUP BY df_file_name;
 -- ============================================================================
 -- 7. NO NULLS IN REQUIRED FIELDS — All 200 rows fully populated
 -- ============================================================================
--- Every customer should have id, email, first_name, last_name, and country.
+-- Every customer should have id, email, first, last, and country.
 
 SELECT 'no_null_required' AS check_name,
        CASE WHEN COUNT(*) = 0 THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.json.customers
 WHERE id IS NULL
    OR email IS NULL
-   OR first_name IS NULL
-   OR last_name IS NULL
+   OR first IS NULL
+   OR last IS NULL
    OR country IS NULL;
 
 
@@ -93,7 +92,7 @@ WHERE id IS NULL
 -- ============================================================================
 -- First record: id=1, Torrey Veum, Switzerland
 
-SELECT id, first_name, last_name, company, country
+SELECT id, first, last, company, country
 FROM {{zone_name}}.json.customers
 WHERE id = 1;
 
@@ -122,23 +121,23 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 2: Column mappings applied (first_name exists with data)
-    SELECT 'column_mapping_first_name' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE first_name IS NOT NULL) = 200
+    -- Check 2: Auto-detected column name (first exists with data)
+    SELECT 'column_first' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE first IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
-    -- Check 3: Column mappings applied (last_name exists with data)
-    SELECT 'column_mapping_last_name' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE last_name IS NOT NULL) = 200
+    -- Check 3: Auto-detected column name (last exists with data)
+    SELECT 'column_last' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE last IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
-    -- Check 4: Column mappings applied (signup_date exists with data)
-    SELECT 'column_mapping_signup_date' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE signup_date IS NOT NULL) = 200
+    -- Check 4: Auto-detected column name (created_at exists with data)
+    SELECT 'column_created_at' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE created_at IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -161,7 +160,7 @@ SELECT check_name, result FROM (
     SELECT 'spot_check_customer_1' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.customers
-               WHERE id = 1 AND first_name = 'Torrey' AND last_name = 'Veum' AND country = 'Switzerland'
+               WHERE id = 1 AND first = 'Torrey' AND last = 'Veum' AND country = 'Switzerland'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

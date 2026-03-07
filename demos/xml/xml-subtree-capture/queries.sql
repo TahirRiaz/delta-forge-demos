@@ -31,20 +31,20 @@ FROM {{zone_name}}.xml.products_xml;
 -- 3. BROWSE JSON TABLE — top-level fields + captured subtrees
 -- ============================================================================
 
-SELECT product_id, status, product_name, category, price, currency,
-       specs_json, supplier_json, tags
+SELECT catalog_product_attr_id, catalog_product_attr_status, catalog_product_name, catalog_product_category, catalog_product_price, catalog_product_price_attr_currency,
+       catalog_product_specifications, catalog_product_supplier, catalog_product_tags
 FROM {{zone_name}}.xml.products_json
-ORDER BY product_id;
+ORDER BY catalog_product_attr_id;
 
 
 -- ============================================================================
 -- 4. BROWSE XML TABLE — same fields but subtrees as XML fragments
 -- ============================================================================
 
-SELECT product_id, status, product_name, category, price, currency,
-       specs_xml, supplier_xml, tags
+SELECT catalog_product_attr_id, catalog_product_attr_status, catalog_product_name, catalog_product_category, catalog_product_price, catalog_product_price_attr_currency,
+       catalog_product_specifications, catalog_product_supplier, catalog_product_tags
 FROM {{zone_name}}.xml.products_xml
-ORDER BY product_id;
+ORDER BY catalog_product_attr_id;
 
 
 -- ============================================================================
@@ -54,9 +54,9 @@ ORDER BY product_id;
 -- as JSON objects with underscore-joined keys.
 
 SELECT 'specs_is_json' AS check_name,
-       COUNT(*) FILTER (WHERE specs_json LIKE '{%') AS actual,
+       COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '{%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE specs_json LIKE '{%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '{%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.products_json;
 
@@ -68,9 +68,9 @@ FROM {{zone_name}}.xml.products_json;
 -- as raw XML fragment strings preserving original element structure.
 
 SELECT 'specs_is_xml' AS check_name,
-       COUNT(*) FILTER (WHERE specs_xml LIKE '<%') AS actual,
+       COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '<%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE specs_xml LIKE '<%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '<%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.products_xml;
 
@@ -82,13 +82,13 @@ FROM {{zone_name}}.xml.products_xml;
 -- captured as JSON, the company name should appear in the string.
 
 SELECT 'supplier_json_has_company' AS check_name,
-       COUNT(*) FILTER (WHERE supplier_json LIKE '%TechParts%'
-                           OR supplier_json LIKE '%NetCore%'
-                           OR supplier_json LIKE '%EuroPower%') AS actual,
+       COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
+                           OR catalog_product_supplier LIKE '%NetCore%'
+                           OR catalog_product_supplier LIKE '%EuroPower%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE supplier_json LIKE '%TechParts%'
-                                    OR supplier_json LIKE '%NetCore%'
-                                    OR supplier_json LIKE '%EuroPower%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
+                                    OR catalog_product_supplier LIKE '%NetCore%'
+                                    OR catalog_product_supplier LIKE '%EuroPower%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.products_json;
 
@@ -98,13 +98,13 @@ FROM {{zone_name}}.xml.products_json;
 -- ============================================================================
 
 SELECT 'supplier_xml_has_company' AS check_name,
-       COUNT(*) FILTER (WHERE supplier_xml LIKE '%TechParts%'
-                           OR supplier_xml LIKE '%NetCore%'
-                           OR supplier_xml LIKE '%EuroPower%') AS actual,
+       COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
+                           OR catalog_product_supplier LIKE '%NetCore%'
+                           OR catalog_product_supplier LIKE '%EuroPower%') AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE supplier_xml LIKE '%TechParts%'
-                                    OR supplier_xml LIKE '%NetCore%'
-                                    OR supplier_xml LIKE '%EuroPower%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
+                                    OR catalog_product_supplier LIKE '%NetCore%'
+                                    OR catalog_product_supplier LIKE '%EuroPower%') = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.products_xml;
 
@@ -116,9 +116,9 @@ FROM {{zone_name}}.xml.products_xml;
 -- still be flattened normally into their own columns.
 
 SELECT 'top_level_flattened' AS check_name,
-       COUNT(*) FILTER (WHERE product_name IS NOT NULL AND category IS NOT NULL) AS actual,
+       COUNT(*) FILTER (WHERE catalog_product_name IS NOT NULL AND catalog_product_category IS NOT NULL) AS actual,
        5 AS expected,
-       CASE WHEN COUNT(*) FILTER (WHERE product_name IS NOT NULL AND category IS NOT NULL) = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_name IS NOT NULL AND catalog_product_category IS NOT NULL) = 5
             THEN 'PASS' ELSE 'FAIL' END AS result
 FROM {{zone_name}}.xml.products_json;
 
@@ -127,31 +127,31 @@ FROM {{zone_name}}.xml.products_json;
 -- 10. SPOT CHECK PRD-001 JSON — verify specs contain expected keys
 -- ============================================================================
 
-SELECT product_id, product_name, specs_json
+SELECT catalog_product_attr_id, catalog_product_name, catalog_product_specifications
 FROM {{zone_name}}.xml.products_json
-WHERE product_id = 'PRD-001';
+WHERE catalog_product_attr_id = 'PRD-001';
 
 
 -- ============================================================================
 -- 11. SPOT CHECK PRD-001 XML — verify specs contain original XML elements
 -- ============================================================================
 
-SELECT product_id, product_name, specs_xml
+SELECT catalog_product_attr_id, catalog_product_name, catalog_product_specifications
 FROM {{zone_name}}.xml.products_xml
-WHERE product_id = 'PRD-001';
+WHERE catalog_product_attr_id = 'PRD-001';
 
 
 -- ============================================================================
 -- 12. COMPARE FORMATS — side-by-side JSON vs XML for same product
 -- ============================================================================
 
-SELECT j.product_id,
-       j.product_name,
-       j.specs_json,
-       x.specs_xml
+SELECT j.catalog_product_attr_id,
+       j.catalog_product_name,
+       j.catalog_product_specifications,
+       x.catalog_product_specifications
 FROM {{zone_name}}.xml.products_json j
-JOIN {{zone_name}}.xml.products_xml x ON j.product_id = x.product_id
-WHERE j.product_id = 'PRD-002';
+JOIN {{zone_name}}.xml.products_xml x ON j.catalog_product_attr_id = x.catalog_product_attr_id
+WHERE j.catalog_product_attr_id = 'PRD-002';
 
 
 -- ============================================================================
@@ -167,31 +167,31 @@ SELECT 'xml_row_count',
 FROM {{zone_name}}.xml.products_xml
 UNION ALL
 SELECT 'specs_is_json',
-       CASE WHEN COUNT(*) FILTER (WHERE specs_json LIKE '{%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '{%') = 5
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.products_json
 UNION ALL
 SELECT 'specs_is_xml',
-       CASE WHEN COUNT(*) FILTER (WHERE specs_xml LIKE '<%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '<%') = 5
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.products_xml
 UNION ALL
 SELECT 'supplier_json_has_company',
-       CASE WHEN COUNT(*) FILTER (WHERE supplier_json LIKE '%TechParts%'
-                                    OR supplier_json LIKE '%NetCore%'
-                                    OR supplier_json LIKE '%EuroPower%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
+                                    OR catalog_product_supplier LIKE '%NetCore%'
+                                    OR catalog_product_supplier LIKE '%EuroPower%') = 5
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.products_json
 UNION ALL
 SELECT 'supplier_xml_has_company',
-       CASE WHEN COUNT(*) FILTER (WHERE supplier_xml LIKE '%TechParts%'
-                                    OR supplier_xml LIKE '%NetCore%'
-                                    OR supplier_xml LIKE '%EuroPower%') = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
+                                    OR catalog_product_supplier LIKE '%NetCore%'
+                                    OR catalog_product_supplier LIKE '%EuroPower%') = 5
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.products_xml
 UNION ALL
 SELECT 'top_level_flattened',
-       CASE WHEN COUNT(*) FILTER (WHERE product_name IS NOT NULL AND category IS NOT NULL) = 5
+       CASE WHEN COUNT(*) FILTER (WHERE catalog_product_name IS NOT NULL AND catalog_product_category IS NOT NULL) = 5
             THEN 'PASS' ELSE 'FAIL' END
 FROM {{zone_name}}.xml.products_json
 ORDER BY check_name;
