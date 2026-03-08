@@ -63,144 +63,144 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.ldbc
 -- === Static Entities ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.place
-USING CSV LOCATION '{{data_path}}/place_0_0.csv'
+USING CSV LOCATION '{{data_path}}/place.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.organisation
-USING CSV LOCATION '{{data_path}}/organisation_0_0.csv'
+USING CSV LOCATION '{{data_path}}/organisation.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.tag
-USING CSV LOCATION '{{data_path}}/tag_0_0.csv'
+USING CSV LOCATION '{{data_path}}/tag.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.tagclass
-USING CSV LOCATION '{{data_path}}/tagclass_0_0.csv'
+USING CSV LOCATION '{{data_path}}/tagclass.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 -- === Static Edges ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.organisation_is_located_in_place
-USING CSV LOCATION '{{data_path}}/organisation_isLocatedIn_place_0_0.csv'
+USING CSV LOCATION '{{data_path}}/organisation_is_located_in_place.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.place_is_part_of_place
-USING CSV LOCATION '{{data_path}}/place_isPartOf_place_0_0.csv'
+USING CSV LOCATION '{{data_path}}/place_is_part_of_place.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.tag_has_type_tagclass
-USING CSV LOCATION '{{data_path}}/tag_hasType_tagclass_0_0.csv'
+USING CSV LOCATION '{{data_path}}/tag_has_type_tagclass.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.tagclass_is_subclass_of_tagclass
-USING CSV LOCATION '{{data_path}}/tagclass_isSubclassOf_tagclass_0_0.csv'
+USING CSV LOCATION '{{data_path}}/tagclass_is_subclass_of_tagclass.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 -- === Dynamic Entities ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person
-USING CSV LOCATION '{{data_path}}/person_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.comment
-USING CSV LOCATION '{{data_path}}/comment_0_0.csv'
+USING CSV LOCATION '{{data_path}}/comment.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.post
-USING CSV LOCATION '{{data_path}}/post_0_0.csv'
+USING CSV LOCATION '{{data_path}}/post.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.forum
-USING CSV LOCATION '{{data_path}}/forum_0_0.csv'
+USING CSV LOCATION '{{data_path}}/forum.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 -- === Dynamic Edges ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_knows_person
-USING CSV LOCATION '{{data_path}}/person_knows_person_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_knows_person.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.comment_has_creator_person
-USING CSV LOCATION '{{data_path}}/comment_hasCreator_person_0_0.csv'
+USING CSV LOCATION '{{data_path}}/comment_has_creator_person.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.comment_has_tag_tag
-USING CSV LOCATION '{{data_path}}/comment_hasTag_tag_0_0.csv'
+USING CSV LOCATION '{{data_path}}/comment_has_tag_tag.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.comment_is_located_in_place
-USING CSV LOCATION '{{data_path}}/comment_isLocatedIn_place_0_0.csv'
+USING CSV LOCATION '{{data_path}}/comment_is_located_in_place.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.comment_reply_of_comment
-USING CSV LOCATION '{{data_path}}/comment_replyOf_comment_0_0.csv'
+USING CSV LOCATION '{{data_path}}/comment_reply_of_comment.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.comment_reply_of_post
-USING CSV LOCATION '{{data_path}}/comment_replyOf_post_0_0.csv'
+USING CSV LOCATION '{{data_path}}/comment_reply_of_post.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.forum_container_of_post
-USING CSV LOCATION '{{data_path}}/forum_containerOf_post_0_0.csv'
+USING CSV LOCATION '{{data_path}}/forum_container_of_post.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.forum_has_member_person
-USING CSV LOCATION '{{data_path}}/forum_hasMember_person_0_0.csv'
+USING CSV LOCATION '{{data_path}}/forum_has_member_person.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.forum_has_moderator_person
-USING CSV LOCATION '{{data_path}}/forum_hasModerator_person_0_0.csv'
+USING CSV LOCATION '{{data_path}}/forum_has_moderator_person.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.forum_has_tag_tag
-USING CSV LOCATION '{{data_path}}/forum_hasTag_tag_0_0.csv'
+USING CSV LOCATION '{{data_path}}/forum_has_tag_tag.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_email
-USING CSV LOCATION '{{data_path}}/person_email_emailaddress_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_email_emailaddress.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_has_interest_tag
-USING CSV LOCATION '{{data_path}}/person_hasInterest_tag_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_has_interest_tag.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_is_located_in_place
-USING CSV LOCATION '{{data_path}}/person_isLocatedIn_place_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_is_located_in_place.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_likes_comment
-USING CSV LOCATION '{{data_path}}/person_likes_comment_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_likes_comment.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_likes_post
-USING CSV LOCATION '{{data_path}}/person_likes_post_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_likes_post.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_speaks_language
-USING CSV LOCATION '{{data_path}}/person_speaks_language_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_speaks_language.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_study_at_organisation
-USING CSV LOCATION '{{data_path}}/person_studyAt_organisation_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_study_at_organisation.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_work_at_organisation
-USING CSV LOCATION '{{data_path}}/person_workAt_organisation_0_0.csv'
+USING CSV LOCATION '{{data_path}}/person_work_at_organisation.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.post_has_creator_person
-USING CSV LOCATION '{{data_path}}/post_hasCreator_person_0_0.csv'
+USING CSV LOCATION '{{data_path}}/post_has_creator_person.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.post_has_tag_tag
-USING CSV LOCATION '{{data_path}}/post_hasTag_tag_0_0.csv'
+USING CSV LOCATION '{{data_path}}/post_has_tag_tag.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.post_is_located_in_place
-USING CSV LOCATION '{{data_path}}/post_isLocatedIn_place_0_0.csv'
+USING CSV LOCATION '{{data_path}}/post_is_located_in_place.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
