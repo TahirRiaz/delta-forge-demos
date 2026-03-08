@@ -205,6 +205,117 @@ OPTIONS (header = 'true', delimiter = '|');
 
 
 -- ############################################################################
+-- STEP 2b: Detect Schema & Permissions — External Tables
+-- ############################################################################
+-- Discovers column metadata from the CSV files and saves it to the catalog.
+-- Grants the current user admin access on each external table.
+-- ############################################################################
+
+-- Static entities
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.place;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.place TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.organisation;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.organisation TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tag;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.tag TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tagclass;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.tagclass TO USER {{current_user}};
+
+-- Static edges
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.organisation_is_located_in_place;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.organisation_is_located_in_place TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.place_is_part_of_place;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.place_is_part_of_place TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tag_has_type_tagclass;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.tag_has_type_tagclass TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tagclass_is_subclass_of_tagclass;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.tagclass_is_subclass_of_tagclass TO USER {{current_user}};
+
+-- Dynamic entities
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.comment TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.post TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.forum TO USER {{current_user}};
+
+-- Dynamic edges
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_knows_person;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_knows_person TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_has_creator_person;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_has_creator_person TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_has_tag_tag;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_has_tag_tag TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_is_located_in_place;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_is_located_in_place TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_reply_of_comment;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_reply_of_comment TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_reply_of_post;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_reply_of_post TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_container_of_post;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_container_of_post TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_has_member_person;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_has_member_person TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_has_moderator_person;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_has_moderator_person TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_has_tag_tag;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_has_tag_tag TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_email;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_email TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_has_interest_tag;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_has_interest_tag TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_is_located_in_place;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_is_located_in_place TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_likes_comment;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_likes_comment TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_likes_post;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_likes_post TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_speaks_language;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_speaks_language TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_study_at_organisation;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_study_at_organisation TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_work_at_organisation;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.person_work_at_organisation TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_has_creator_person;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.post_has_creator_person TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_has_tag_tag;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.post_has_tag_tag TO USER {{current_user}};
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_is_located_in_place;
+GRANT ADMIN ON TABLE {{zone_name}}.raw.post_is_located_in_place TO USER {{current_user}};
+
+
+-- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
 -- CTAS (CREATE TABLE AS SELECT) from external CSV tables into Delta format.
