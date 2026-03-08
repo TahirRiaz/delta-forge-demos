@@ -508,7 +508,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.st_edges TO USER {{current_user}};
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS stress_test_network
-    VERTEX TABLE {{zone_name}}.graph.st_people ID COLUMN id LABEL COLUMN department
+    VERTEX TABLE {{zone_name}}.graph.st_people ID COLUMN id NODE TYPE COLUMN department NODE NAME COLUMN name
     EDGE TABLE {{zone_name}}.graph.st_edges SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type

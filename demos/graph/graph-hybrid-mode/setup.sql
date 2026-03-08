@@ -266,7 +266,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_hybrid TO USER {{current_us
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS hybrid_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_hybrid ID COLUMN id LABEL COLUMN label
+    VERTEX TABLE {{zone_name}}.graph.persons_hybrid ID COLUMN id NODE TYPE COLUMN label NODE NAME COLUMN name
     EDGE TABLE {{zone_name}}.graph.friendships_hybrid SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type

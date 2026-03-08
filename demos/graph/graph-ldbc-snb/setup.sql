@@ -734,6 +734,6 @@ GRANT ADMIN ON TABLE {{zone_name}}.ldbc.post_is_located_in_place TO USER {{curre
 -- ############################################################################
 
 CREATE GRAPH IF NOT EXISTS ldbc_social_network
-    VERTEX TABLE {{zone_name}}.ldbc.person ID COLUMN id LABEL COLUMN gender
+    VERTEX TABLE {{zone_name}}.ldbc.person ID COLUMN id NODE TYPE COLUMN gender NODE NAME COLUMN first_name
     EDGE TABLE {{zone_name}}.ldbc.person_knows_person SOURCE COLUMN src TARGET COLUMN dst
     DIRECTED;

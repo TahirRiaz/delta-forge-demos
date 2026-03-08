@@ -252,7 +252,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS json_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id LABEL COLUMN label
+    VERTEX TABLE {{zone_name}}.graph.persons_json ID COLUMN id NODE TYPE COLUMN label
     EDGE TABLE {{zone_name}}.graph.friendships_json SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type

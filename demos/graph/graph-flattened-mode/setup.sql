@@ -315,7 +315,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_flattened TO USER {{current
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS flattened_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_flattened ID COLUMN id LABEL COLUMN department
+    VERTEX TABLE {{zone_name}}.graph.persons_flattened ID COLUMN id NODE TYPE COLUMN department NODE NAME COLUMN name
     EDGE TABLE {{zone_name}}.graph.friendships_flattened SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type

@@ -335,7 +335,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.connections TO USER {{current_user}};
 -- Cypher queries reference this by name: USE social_network MATCH ...
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS social_network
-    VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id LABEL COLUMN department
+    VERTEX TABLE {{zone_name}}.graph.employees ID COLUMN id NODE TYPE COLUMN department NODE NAME COLUMN name
     EDGE TABLE {{zone_name}}.graph.connections SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type

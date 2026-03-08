@@ -233,7 +233,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_cypher TO USER {{current_us
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS cypher_demo
-    VERTEX TABLE {{zone_name}}.graph.persons_cypher ID COLUMN id LABEL COLUMN department
+    VERTEX TABLE {{zone_name}}.graph.persons_cypher ID COLUMN id NODE TYPE COLUMN department NODE NAME COLUMN name
     EDGE TABLE {{zone_name}}.graph.friendships_cypher SOURCE COLUMN src TARGET COLUMN dst
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type
