@@ -27,48 +27,48 @@ parameters produced by the LDBC reference implementation.
 | Table | Rows | Description |
 |-------|------|-------------|
 | `person_knows_person` | 14,073 | Friendship edges |
-| `comment_hasCreator_person` | 151,043 | Comment authorship |
-| `post_hasCreator_person` | 135,701 | Post authorship |
-| `comment_isLocatedIn_place` | 151,043 | Comment geographic origin |
-| `post_isLocatedIn_place` | 135,701 | Post geographic origin |
-| `person_isLocatedIn_place` | 1,528 | Person residence |
-| `comment_replyOf_comment` | 76,787 | Comment reply chains |
-| `comment_replyOf_post` | 74,256 | Comments on posts |
-| `comment_hasTag_tag` | 191,303 | Comment tagging |
-| `post_hasTag_tag` | 51,118 | Post tagging |
-| `forum_hasTag_tag` | 47,697 | Forum topics |
-| `forum_containerOf_post` | 135,701 | Posts within forums |
-| `forum_hasMember_person` | 123,268 | Forum membership |
-| `forum_hasModerator_person` | 13,750 | Forum moderation |
-| `person_hasInterest_tag` | 35,475 | Person interests |
+| `comment_has_creator_person` | 151,043 | Comment authorship |
+| `post_has_creator_person` | 135,701 | Post authorship |
+| `comment_is_located_in_place` | 151,043 | Comment geographic origin |
+| `post_is_located_in_place` | 135,701 | Post geographic origin |
+| `person_is_located_in_place` | 1,528 | Person residence |
+| `comment_reply_of_comment` | 76,787 | Comment reply chains |
+| `comment_reply_of_post` | 74,256 | Comments on posts |
+| `comment_has_tag_tag` | 191,303 | Comment tagging |
+| `post_has_tag_tag` | 51,118 | Post tagging |
+| `forum_has_tag_tag` | 47,697 | Forum topics |
+| `forum_container_of_post` | 135,701 | Posts within forums |
+| `forum_has_member_person` | 123,268 | Forum membership |
+| `forum_has_moderator_person` | 13,750 | Forum moderation |
+| `person_has_interest_tag` | 35,475 | Person interests |
 | `person_likes_comment` | 62,225 | Comment likes |
 | `person_likes_post` | 47,215 | Post likes |
-| `person_studyAt_organisation` | 1,209 | Education history |
-| `person_workAt_organisation` | 3,313 | Employment history |
+| `person_study_at_organisation` | 1,209 | Education history |
+| `person_work_at_organisation` | 3,313 | Employment history |
 | `person_email` | 3,310 | Email addresses |
 | `person_speaks_language` | 3,385 | Spoken languages |
-| `organisation_isLocatedIn_place` | 7,955 | Organisation locations |
-| `place_isPartOf_place` | 1,454 | Place hierarchy |
-| `tag_hasType_tagclass` | 16,080 | Tag classification |
-| `tagclass_isSubclassOf_tagclass` | 70 | TagClass hierarchy |
+| `organisation_is_located_in_place` | 7,955 | Organisation locations |
+| `place_is_part_of_place` | 1,454 | Place hierarchy |
+| `tag_has_type_tagclass` | 16,080 | Tag classification |
+| `tagclass_is_subclass_of_tagclass` | 70 | TagClass hierarchy |
 
 ## Golden Validation Values
 
 ### LDBC Short Query 1 — Person Profile
-`personId=26388279068220` → Jun Wang, female, Opera browser, cityId=507
+`person_id=26388279068220` → Jun Wang, female, Opera browser, city_id=507
 
 ### LDBC Short Query 5 — Message Creator
-`messageId=1099511997932` → created by person 26388279068220 (Jun Wang)
+`message_id=1099511997932` → created by person 26388279068220 (Jun Wang)
 
 ### LDBC Short Query 6 — Message Forum
-`messageId=1099511997932` → forum 824633737506 "Wall of Anh Pham"
+`message_id=1099511997932` → forum 824633737506 "Wall of Anh Pham"
 
 ### LDBC Q4 — New Tags
-`personId=10995116278874, start=1338508800000, 28 days`
+`person_id=10995116278874, start=1338508800000, 28 days`
 → Norodom_Sihanouk (3), George_Clooney (1), Louis_Philippe_I (1)
 
 ### LDBC Q6 — Tag Co-occurrence
-`personId=30786325579101, tag=Shakira`
+`person_id=30786325579101, tag=Shakira`
 → David_Foster (4), Muammar_Gaddafi (2), Robert_John_Mutt_Lange (2)
 
 ### LDBC Q13 — Shortest Path
@@ -92,15 +92,15 @@ parameters produced by the LDBC reference implementation.
 
 | Algorithm | Queries | Golden Value Source |
 |-----------|---------|---------------------|
-| PageRank | #20 | High-degree nodes rank highest |
-| Degree centrality | #21 | Raw CSV degree counts |
-| Betweenness centrality | #22 | Bridge node identification |
-| Closeness centrality | #23 | Central positioning |
-| Connected components | #24 | Expected single component |
-| Louvain communities | #25 | Community structure |
-| Triangle count | #26 | Clustering coefficient |
-| Shortest path | #27, #28 | LDBC Q13 validation params |
-| BFS traversal | #29 | Distance distribution from hub |
+| PageRank | #15 | High-degree nodes rank highest |
+| Degree centrality | #16 | Raw CSV degree counts |
+| Betweenness centrality | #17 | Bridge node identification |
+| Closeness centrality | #18 | Central positioning |
+| Connected components | #19 | Expected single component |
+| Louvain communities | #20 | Community structure |
+| Triangle count | #21 | Clustering coefficient |
+| Shortest path | #23, #24 | LDBC Q13 validation params |
+| BFS traversal | #25 | Distance distribution from hub |
 
 ## Mixed SQL + Cypher Queries (queries 26–30)
 
@@ -143,6 +143,7 @@ Run **Query #42 (Verification Summary)** for automated PASS/FAIL checks:
 
 - All CSV files are pipe-delimited (`|`), not comma-delimited
 - Original LDBC headers with dots (`Person.id`) and duplicates have been renamed
+- Column names are sanitized to snake_case (`firstName` → `first_name`)
 - Timestamps are epoch milliseconds stored as BIGINT
 - Person IDs are large integers (up to ~35 trillion) — BIGINT required
 - Total data size: ~62MB across 34 CSV files
