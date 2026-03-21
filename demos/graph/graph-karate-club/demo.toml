@@ -1,0 +1,43 @@
+[demo]
+id = "graph-karate-club"
+name = "Zachary's Karate Club — Classic Graph Benchmark"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Zachary's Karate Club (1977): the most studied graph in network science. \
+34 members of a university karate club, 78 undirected edges representing \
+friendships. The club famously split into two factions around the instructor \
+(node 0) and president (node 33), providing ground-truth community structure. \
+\
+Verifies community detection, centrality, connected components, and degree \
+distribution against published reference values from decades of research. \
+\
+Data source: W. W. Zachary, "An information flow model for conflict and \
+fission in small groups," Journal of Anthropological Research, 1977.
+"""
+categories = ["graph"]
+tags = ["graph", "karate", "benchmark", "community-detection", "centrality", "classic", "beginner"]
+difficulty = "beginner"
+estimated_time_minutes = 5
+
+[demo.variables]
+data_path = { description = "Root path where demo data files are stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.data_files]]
+path = "data/edges.csv"
+format = "csv"
+description = "Edge list: 156 rows (78 undirected edges, both directions) with weight=1.0"
+size_bytes = 1449
+
+[[demo.target_objects]]
+type = "graph"
+name = "karate_club"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.karate.vertices"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.karate.edges"

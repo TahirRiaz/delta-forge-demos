@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <defs>
+    <linearGradient id="mc" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#c2410c"/>
+    </linearGradient>
+  </defs>
+  <!-- Source and target tables -->
+  <rect x="6" y="8" width="28" height="24" rx="3" stroke="url(#mc)" stroke-width="1.5" fill="url(#mc)" fill-opacity=".15"/>
+  <rect x="46" y="8" width="28" height="24" rx="3" stroke="url(#mc)" stroke-width="1.5" fill="url(#mc)" fill-opacity=".15"/>
+  <text x="20" y="18" text-anchor="middle" font-size="4" font-family="monospace" fill="url(#mc)" opacity=".7">SRC</text>
+  <text x="60" y="18" text-anchor="middle" font-size="4" font-family="monospace" fill="url(#mc)" opacity=".7">TGT</text>
+  <!-- Merge arrows -->
+  <path d="M34 20L46 20" stroke="url(#mc)" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M43 17L46 20L43 23" stroke="url(#mc)" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- All clause types -->
+  <rect x="6" y="38" width="68" height="10" rx="2" fill="url(#mc)" fill-opacity=".2" stroke="url(#mc)" stroke-width="1"/>
+  <text x="40" y="45" text-anchor="middle" font-size="3.5" font-family="monospace" fill="url(#mc)" opacity=".7">MATCHED → UPDATE</text>
+  <rect x="6" y="50" width="68" height="10" rx="2" fill="url(#mc)" fill-opacity=".15" stroke="url(#mc)" stroke-width="1"/>
+  <text x="40" y="57" text-anchor="middle" font-size="3.5" font-family="monospace" fill="url(#mc)" opacity=".7">MATCHED → DELETE</text>
+  <rect x="6" y="62" width="68" height="10" rx="2" fill="url(#mc)" fill-opacity=".1" stroke="url(#mc)" stroke-width="1"/>
+  <text x="40" y="69" text-anchor="middle" font-size="3.5" font-family="monospace" fill="url(#mc)" opacity=".7">NOT MATCHED → INSERT</text>
+  <!-- Label -->
+  <text x="40" y="80" text-anchor="middle" font-size="4.5" font-family="monospace" fill="url(#mc)" opacity=".6">MERGE ALL</text>
+</svg>

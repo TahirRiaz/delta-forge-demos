@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <defs>
+    <linearGradient id="tn" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+  <!-- Clock -->
+  <circle cx="32" cy="32" r="18" stroke="url(#tn)" stroke-width="2" fill="url(#tn)" fill-opacity=".08"/>
+  <line x1="32" y1="32" x2="32" y2="20" stroke="url(#tn)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="32" y1="32" x2="42" y2="28" stroke="url(#tn)" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="2" fill="url(#tn)"/>
+  <!-- No-timezone strike -->
+  <text x="54" y="22" font-size="5" font-family="monospace" fill="url(#tn)" opacity=".5">UTC</text>
+  <line x1="52" y1="20" x2="68" y2="18" stroke="url(#tn)" stroke-width="1.5" opacity=".6"/>
+  <!-- Timestamp display -->
+  <rect x="8" y="56" width="64" height="14" rx="3" stroke="url(#tn)" stroke-width="1" fill="url(#tn)" fill-opacity=".1"/>
+  <text x="40" y="66" text-anchor="middle" font-size="5" font-family="monospace" fill="url(#tn)" opacity=".7">2025-06-15 08:30</text>
+  <!-- NTZ label -->
+  <text x="60" y="46" font-size="6" font-family="monospace" fill="url(#tn)" opacity=".8">NTZ</text>
+</svg>

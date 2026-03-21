@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <defs>
+    <linearGradient id="gj" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <!-- Edges -->
+  <line x1="20" y1="25" x2="60" y2="25" stroke="url(#gj)" stroke-width="1.5" opacity=".4"/>
+  <line x1="20" y1="25" x2="20" y2="55" stroke="url(#gj)" stroke-width="1.5" opacity=".4"/>
+  <line x1="60" y1="25" x2="60" y2="55" stroke="url(#gj)" stroke-width="1.5" opacity=".4"/>
+  <line x1="20" y1="55" x2="60" y2="55" stroke="url(#gj)" stroke-width="1.5" opacity=".4"/>
+  <line x1="60" y1="25" x2="20" y2="55" stroke="url(#gj)" stroke-width="1.5" opacity=".3"/>
+  <!-- JSON brace nodes -->
+  <circle cx="20" cy="25" r="10" fill="url(#gj)" fill-opacity=".15" stroke="url(#gj)" stroke-width="1.5"/>
+  <text x="16" y="29" font-family="monospace" font-size="12" fill="url(#gj)" opacity=".9">{}</text>
+  <circle cx="60" cy="25" r="10" fill="url(#gj)" fill-opacity=".15" stroke="url(#gj)" stroke-width="1.5"/>
+  <text x="56" y="29" font-family="monospace" font-size="12" fill="url(#gj)" opacity=".9">{}</text>
+  <circle cx="20" cy="55" r="10" fill="url(#gj)" fill-opacity=".15" stroke="url(#gj)" stroke-width="1.5"/>
+  <text x="16" y="59" font-family="monospace" font-size="12" fill="url(#gj)" opacity=".9">{}</text>
+  <circle cx="60" cy="55" r="10" fill="url(#gj)" fill-opacity=".15" stroke="url(#gj)" stroke-width="1.5"/>
+  <text x="56" y="59" font-family="monospace" font-size="12" fill="url(#gj)" opacity=".9">{}</text>
+  <!-- Center accent -->
+  <circle cx="40" cy="40" r="7" fill="url(#gj)" fill-opacity=".25" stroke="url(#gj)" stroke-width="1"/>
+  <text x="36.5" y="43.5" font-family="monospace" font-size="9" fill="url(#gj)" opacity=".8">{}</text>
+</svg>

@@ -1,0 +1,28 @@
+[demo]
+id = "delta-generated-identity"
+name = "Delta Generated & Identity Columns"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Generated and identity columns let Delta tables derive values automatically \
+at write time, reducing application-side logic and ensuring consistency. \
+This is essential for computed financial fields (subtotal, tax, total) and \
+monotonically increasing sequence IDs. This demo shows CTE-based column \
+computation during INSERT and sequential ID generation for event tracking.
+"""
+categories = ["delta-table"]
+tags = ["delta-table", "advanced", "generated-columns", "identity", "computed", "cte", "sequential"]
+difficulty = "advanced"
+estimated_time_minutes = 10
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.delta_demos.order_items"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.delta_demos.event_sequence"

@@ -1,0 +1,25 @@
+[demo]
+id = "delta-schema-drop-columns"
+name = "Delta Schema Evolution — Drop Columns & GDPR Cleanup"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Delta Lake's schema evolution supports column-level changes that enable \
+GDPR "right to erasure" compliance without rebuilding tables. This matters \
+because privacy regulations require the ability to permanently remove \
+personal data while preserving non-sensitive analytics. This demo shows \
+how to NULL out PII columns for targeted users and create clean views \
+that project only non-PII fields.
+"""
+categories = ["delta-table"]
+tags = ["delta-table", "advanced", "schema-evolution", "gdpr", "privacy", "column-drop", "views"]
+difficulty = "advanced"
+estimated_time_minutes = 10
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.delta_demos.user_profiles"

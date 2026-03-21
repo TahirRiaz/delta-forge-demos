@@ -1,0 +1,26 @@
+[demo]
+id = "delta-type-widening"
+name = "Delta Type Widening — Numeric Precision & Ranges"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Type widening is a Delta protocol feature that allows a column's data type to \
+be safely promoted to a wider type (e.g., INT to BIGINT, FLOAT to DOUBLE) \
+without rewriting existing data files. \
+This solves the problem of schema rigidity -- as data grows, values may exceed \
+the range of their original type, and type widening avoids costly table rewrites. \
+This demo explores how INT, BIGINT, and DOUBLE columns coexist in a sensor \
+measurements table, showing precision preservation across arithmetic operations.
+"""
+categories = ["delta-table"]
+tags = ["delta-table", "intermediate", "type-widening", "numeric", "precision", "decimal", "bigint"]
+difficulty = "intermediate"
+estimated_time_minutes = 8
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.delta_demos.measurements"

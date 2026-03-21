@@ -1,0 +1,35 @@
+[demo]
+id = "graph-flattened-mode"
+name = "Graph Flattened Mode — Direct Column Access"
+version = "2.0.0"
+author = "Delta Forge Team"
+description = """
+Demonstrates the FLATTENED property storage mode for graph tables. All vertex \
+and edge properties are stored as individual columns — the fastest mode with \
+full predicate pushdown. Creates a 50-employee startup graph with ~150 directed \
+connections across 5 departments and 4 cities. The graph has genuine community \
+structure: departments form dense clusters, cities create cross-department \
+bonds, Directors/Managers mentor subordinates, and bridge employees connect \
+silos. Queries demonstrate SQL traversal, degree analysis, connectivity \
+patterns, and Cypher graph algorithms — all with direct column access.
+"""
+categories = ["graph"]
+tags = ["graph", "delta-table", "flattened", "vertices", "edges", "traversal", "generate-series", "beginner"]
+difficulty = "beginner"
+estimated_time_minutes = 5
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "graph"
+name = "flattened_demo"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.graph.friendships_flattened"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.graph.persons_flattened"

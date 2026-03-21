@@ -1,0 +1,2544 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-11T12:00:00Z",
+  "demos": [
+    {
+      "id": "northwind-database",
+      "path": "demos/csv/northwind-database",
+      "iconPath": "icons/northwind-database.svg",
+      "name": "Northwind Trading Company",
+      "summary": "Classic relational database with customers, orders, products, employees, and suppliers. 13 interconnected tables demonstrating joins, aggregations, and business analytics.",
+      "categories": [
+        "retail",
+        "csv"
+      ],
+      "tags": [
+        "csv",
+        "relational",
+        "joins",
+        "analytics",
+        "northwind",
+        "orders",
+        "products"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 512000,
+      "fileCount": 11,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-11T12:00:00Z"
+    },
+    {
+      "id": "sales-quickstart",
+      "path": "demos/csv/sales-quickstart",
+      "iconPath": "icons/sales-quickstart.svg",
+      "name": "Sales Data Quickstart",
+      "summary": "Minimal sales dataset to get started quickly. Two CSV files showing basic queries, filtering, and aggregations.",
+      "categories": [
+        "getting-started",
+        "csv"
+      ],
+      "tags": [
+        "csv",
+        "beginner",
+        "quickstart",
+        "sales"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 2,
+      "dataSizeBytes": 2048,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-11T12:00:00Z"
+    },
+    {
+      "id": "csv-options-testbench",
+      "path": "demos/csv/csv-options-testbench",
+      "iconPath": "icons/csv-options-testbench.svg",
+      "name": "CSV Advanced Options Testbench",
+      "summary": "Verifies that every CSV parsing option (delimiter, null_value, comment_char, skip_rows, max_rows, trim_whitespace, quote, escape) is correctly wired from the GUI to the backend. Each table exercises one option with data that exposes incorrect parsing.",
+      "categories": [
+        "csv"
+      ],
+      "tags": [
+        "csv",
+        "intermediate",
+        "options",
+        "parsing",
+        "testing",
+        "validation"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 3200,
+      "fileCount": 8,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-22T12:00:00Z"
+    },
+    {
+      "id": "xml-books-schema-evolution",
+      "path": "demos/xml/books-schema-evolution",
+      "iconPath": "icons/xml-books-schema-evolution.svg",
+      "name": "XML Books — Schema Evolution",
+      "summary": "Demonstrates XML schema evolution across 5 catalog export files spanning 2000–2004. Each year adds new elements (isbn, publisher, rating, edition, series) and one drops description. Verifies the union schema, NULL filling, and attribute extraction.",
+      "categories": [
+        "xml"
+      ],
+      "tags": [
+        "xml",
+        "intermediate",
+        "schema-evolution",
+        "flattening",
+        "books"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 4300,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-22T12:00:00Z"
+    },
+    {
+      "id": "xml-nyt-news-rss",
+      "path": "demos/xml/nyt-news-rss",
+      "iconPath": "icons/xml-nyt-news-rss.svg",
+      "name": "XML NYT News — RSS Feed Analysis",
+      "summary": "Demonstrates XML namespace handling (4 namespaces: dc, media, atom, nyt), repeating element modes (JoinComma and Explode), self-closing element attributes, column_mappings, exclude_paths, and multi-file reading across 7 NYT RSS feed exports with 231 news articles and 2023 category keywords.",
+      "categories": [
+        "xml"
+      ],
+      "tags": [
+        "xml",
+        "intermediate",
+        "namespaces",
+        "repeating-elements",
+        "explode",
+        "column-mappings",
+        "rss",
+        "news"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 492058,
+      "fileCount": 7,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "xml-ecommerce-order-lines",
+      "path": "demos/xml/ecommerce-order-lines",
+      "iconPath": "icons/xml-ecommerce-order-lines.svg",
+      "name": "XML E-Commerce — Order Line Explosion",
+      "summary": "Demonstrates deep XML nesting (3+ levels), explode_paths for one-row-per-line-item, CDATA sections, exclude_paths, column_mappings, and self-closing flag elements on e-commerce order batch data with 5 orders and 11 line items.",
+      "categories": [
+        "xml",
+        "retail"
+      ],
+      "tags": [
+        "xml",
+        "advanced",
+        "explode",
+        "cdata",
+        "deep-nesting",
+        "column-mappings",
+        "exclude-paths",
+        "ecommerce"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 6015,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "xml-subtree-capture",
+      "path": "demos/xml/xml-subtree-capture",
+      "iconPath": "icons/xml-subtree-capture.svg",
+      "name": "XML Subtree Capture — xml_paths & nested_output_format",
+      "summary": "Demonstrates xml_paths for capturing complex XML subtrees as serialized string columns instead of flattening. Two tables show the same product catalog with subtrees (specifications, supplier) captured as JSON objects or raw XML fragments via nested_output_format. Top-level fields are flattened normally alongside captured subtrees.",
+      "categories": [
+        "xml"
+      ],
+      "tags": [
+        "xml",
+        "intermediate",
+        "xml-paths",
+        "subtree-capture",
+        "nested-output-format",
+        "json-output",
+        "xml-output"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 5538,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-01T12:00:00Z"
+    },
+    {
+      "id": "h3-gps-fleet-tracker",
+      "path": "demos/spatial/h3-gps-fleet-tracker",
+      "iconPath": "icons/h3-gps-fleet-tracker.svg",
+      "name": "H3 GPS Fleet Tracker",
+      "summary": "Demonstrates H3 hexagonal spatial indexing with Delta tables for GPS fleet tracking. Creates 10,000 GPS pings across 5 world cities, defines region boundaries as WKT polygons, and performs O(1) spatial joins via H3 cell matching. Verifies 21 H3 functions with known values: coordinate conversion, grid topology (ring/disk counts), cell hierarchy, area/edge metrics, polyfill, and spatial join accuracy.",
+      "categories": [
+        "geospatial",
+        "iot"
+      ],
+      "tags": [
+        "h3",
+        "spatial",
+        "delta-table",
+        "gps",
+        "polyfill",
+        "geospatial",
+        "advanced",
+        "generate-series"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "h3-point-in-polygon",
+      "path": "demos/spatial/h3-point-in-polygon",
+      "iconPath": "icons/h3-point-in-polygon.svg",
+      "name": "H3 Point-in-Polygon — 1M Row Performance",
+      "summary": "Demonstrates blazing-fast point-in-polygon queries using H3 hexagonal spatial indexing. 1,000,000 ride-share driver GPS positions are checked against 12 pricing zones across 8 world cities using O(1) H3 cell matching instead of O(n×m) polygon intersection. Progressive queries build from 'what is H3' to million-row analytics with 10 automated PASS/FAIL checks.",
+      "categories": [
+        "geospatial",
+        "iot"
+      ],
+      "tags": [
+        "h3",
+        "spatial",
+        "delta-table",
+        "point-in-polygon",
+        "performance",
+        "geospatial",
+        "advanced",
+        "generate-series"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "json-customers-basics",
+      "path": "demos/json/customers-basics",
+      "iconPath": "icons/json-customers-basics.svg",
+      "name": "JSON Customers — Basics",
+      "summary": "Demonstrates JSON fundamentals: creating an external table from a JSON array file, applying column_mappings for clean names ($.first → first_name, $.last → last_name), and using type inference for proper timestamp handling. 200 CRM customer records with include_paths, max_depth, and file_metadata.",
+      "categories": [
+        "json"
+      ],
+      "tags": [
+        "json",
+        "beginner",
+        "column-mappings",
+        "type-inference",
+        "basics"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 43694,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "json-music-catalog",
+      "path": "demos/json/music-catalog",
+      "iconPath": "icons/json-music-catalog.svg",
+      "name": "JSON Music Catalog — Nested Arrays & Explode",
+      "summary": "Demonstrates nested JSON flattening with array explosion. 347 music albums with nested vendor objects and track detail arrays across 3 genre-based catalog files. Two tables: album_tracks (exploded, 3,503 rows) and album_summary (347 rows with vendor as JSON blob). Covers explode_paths, json_paths, column_mappings, default_array_handling, and multi-file reading.",
+      "categories": [
+        "json"
+      ],
+      "tags": [
+        "json",
+        "intermediate",
+        "explode",
+        "nested-arrays",
+        "column-mappings",
+        "json-paths",
+        "multi-file"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 1095591,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "json-subtree-capture",
+      "path": "demos/json/json-subtree-capture",
+      "iconPath": "icons/json-subtree-capture.svg",
+      "name": "JSON Subtree Capture — json_paths",
+      "summary": "Demonstrates json_paths for capturing complex JSON subtrees as serialized string columns instead of flattening. Two tables show the same property listing data: one with location and pricing subtrees captured as JSON blobs (json_paths), one fully flattened for comparison. Covers json_paths, column_mappings, include_paths, and multi-file reading.",
+      "categories": [
+        "json"
+      ],
+      "tags": [
+        "json",
+        "intermediate",
+        "json-paths",
+        "subtree-capture",
+        "column-mappings",
+        "nested-json"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 5112,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-01T12:00:00Z"
+    },
+    {
+      "id": "json-country-factbook",
+      "path": "demos/json/country-factbook",
+      "iconPath": "icons/json-country-factbook.svg",
+      "name": "JSON Country Factbook — Deep Nesting & Schema Evolution",
+      "summary": "Demonstrates deep JSON nesting (3+ levels), schema evolution with NULL filling, and selective path extraction using CIA World Factbook data for 10 African countries. One-object-per-file format with optional Terrorism/Space sections. Two tables: countries (flattened overview with preserve_original) and country_economy (GDP, sectors, trade). Covers exclude_paths, column_mappings, max_depth, and multi-file reading.",
+      "categories": [
+        "json"
+      ],
+      "tags": [
+        "json",
+        "advanced",
+        "deep-nesting",
+        "schema-evolution",
+        "column-mappings",
+        "exclude-paths",
+        "preserve-original",
+        "multi-file"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 560111,
+      "fileCount": 10,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "excel-sales-analytics",
+      "path": "demos/excel/sales-analytics",
+      "iconPath": "icons/excel-sales-analytics.svg",
+      "name": "Excel Sales Analytics — Superstore Orders",
+      "summary": "Demonstrates all Excel reading features using 4 years of Superstore sales data (2014–2017, 16,676 orders). Five tables exercise sheet_name, has_header, skip_rows, max_rows, range, trim_whitespace, null_values, empty_cell_handling, infer_schema_rows, file_filter, multi-file reading, file_metadata, and automatic type inference for dates, numbers, and strings.",
+      "categories": [
+        "excel",
+        "retail"
+      ],
+      "tags": [
+        "excel",
+        "intermediate",
+        "sheet-name",
+        "range",
+        "multi-file",
+        "type-inference",
+        "file-metadata"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 1592005,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-26T12:00:00Z"
+    },
+    {
+      "id": "parquet-supply-chain",
+      "path": "demos/parquet/supply-chain",
+      "iconPath": "icons/parquet-supply-chain.svg",
+      "name": "Parquet Supply Chain — Order Analytics",
+      "summary": "Demonstrates Parquet reading features using 14 quarterly order files (2012–2016, 73,089 rows) organized in year-based subdirectories. Four tables exercise recursive directory scanning, file_filter for year/quarter extraction, max_rows for sampling, row_group_filter for predicate pushdown, file_metadata for traceability, and Parquet's self-describing schema.",
+      "categories": [
+        "parquet",
+        "retail"
+      ],
+      "tags": [
+        "parquet",
+        "intermediate",
+        "recursive",
+        "file-filter",
+        "row-group-filter",
+        "multi-file",
+        "file-metadata"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 1288428,
+      "fileCount": 14,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "avro-iot-sensors",
+      "path": "demos/avro/iot-sensors",
+      "iconPath": "icons/avro-iot-sensors.svg",
+      "name": "Avro IoT Sensors — Smart Building Telemetry",
+      "summary": "Demonstrates Avro reading features using 5 building-floor sensor files (2,500 rows) with schema evolution (v1→v2 adds battery_pct, firmware_version) and mixed compression codecs (null, deflate). Three tables exercise multi-file reading, file_filter for single-floor extraction, max_rows for sampling, file_metadata, and Avro's self-describing schema with automatic type detection.",
+      "categories": [
+        "avro",
+        "iot"
+      ],
+      "tags": [
+        "avro",
+        "intermediate",
+        "schema-evolution",
+        "compression",
+        "file-filter",
+        "multi-file",
+        "file-metadata"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 102679,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "orc-server-logs",
+      "path": "demos/orc/server-logs",
+      "iconPath": "icons/orc-server-logs.svg",
+      "name": "ORC Server Logs — HTTP Access Analytics",
+      "summary": "Demonstrates ORC reading features using 5 server access log files (2,500 rows) with schema evolution (v1→v2 adds request_body_bytes, cache_hit). Three tables exercise multi-file reading, file_filter for single-server extraction, max_rows for sampling, file_metadata, and ORC's self-describing schema with automatic type detection from file footers.",
+      "categories": [
+        "orc",
+        "iot"
+      ],
+      "tags": [
+        "orc",
+        "intermediate",
+        "schema-evolution",
+        "file-filter",
+        "multi-file",
+        "file-metadata"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 222482,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-patient-demographics",
+      "path": "demos/fhir/fhir-patient-demographics",
+      "iconPath": "icons/fhir-patient-demographics.svg",
+      "name": "FHIR Patient Demographics — Basics",
+      "summary": "Demonstrates FHIR R5 Patient resource ingestion from both bulk NDJSON exports (50 patients) and individual JSON files (7 detailed patients). Two tables show flat bulk demographics vs rich nested FHIR data with names, telecom, addresses, and managing organizations. Covers NDJSON format, column_mappings, schema evolution, and file_metadata.",
+      "categories": [
+        "healthcare",
+        "fhir",
+        "json"
+      ],
+      "tags": [
+        "fhir",
+        "healthcare",
+        "json",
+        "beginner",
+        "patient",
+        "demographics",
+        "ndjson",
+        "column-mappings"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 265646,
+      "fileCount": 8,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-clinical-observations",
+      "path": "demos/fhir/fhir-clinical-observations",
+      "iconPath": "icons/fhir-clinical-observations.svg",
+      "name": "FHIR Clinical Observations — Vital Signs & Lab Results",
+      "summary": "Demonstrates FHIR R5 Observation resource ingestion across vital signs (body weight, height, BMI, blood pressure, temperature, SpO2), lab results (glucose, CO2, hemoglobin), and clinical assessments (Glasgow Coma Scale). 100 bulk heart rate readings plus 14 individual clinical observations. Covers deep nested JSON flattening, schema evolution across observation types, and multi-file reading.",
+      "categories": [
+        "healthcare",
+        "fhir",
+        "json"
+      ],
+      "tags": [
+        "fhir",
+        "healthcare",
+        "json",
+        "intermediate",
+        "observation",
+        "vital-signs",
+        "lab-results",
+        "ndjson",
+        "nested-json"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 104620,
+      "fileCount": 15,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-medications-prescriptions",
+      "path": "demos/fhir/fhir-medications-prescriptions",
+      "iconPath": "icons/fhir-medications-prescriptions.svg",
+      "name": "FHIR Medications — Prescriptions & Coverage",
+      "summary": "Demonstrates FHIR R5 MedicationRequest and Coverage resource ingestion. 12 prescriptions with contained Medication resources, dosage instructions, dispense requests, and substitution rules. 4 Coverage resources with insurance classes and beneficiary references. Covers json_paths for preserving complex subtrees, contained resources, and deep FHIR nesting.",
+      "categories": [
+        "healthcare",
+        "fhir",
+        "json"
+      ],
+      "tags": [
+        "fhir",
+        "healthcare",
+        "json",
+        "intermediate",
+        "medication",
+        "prescription",
+        "coverage",
+        "insurance",
+        "nested-json",
+        "contained-resources"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 128341,
+      "fileCount": 16,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-clinical-records",
+      "path": "demos/fhir/fhir-clinical-records",
+      "iconPath": "icons/fhir-clinical-records.svg",
+      "name": "FHIR Clinical Records — Conditions, Procedures & Allergies",
+      "summary": "Demonstrates advanced FHIR R5 resource ingestion across three clinical resource types: 8 Condition resources (diagnoses with SNOMED CT coding, severity, body site), 8 Procedure resources (surgeries with performers and outcomes), and 6 AllergyIntolerance resources (allergies with reaction history and criticality). Three tables showcase multi-resource-type directory scanning, deep nested arrays, and cross-resource references.",
+      "categories": [
+        "healthcare",
+        "fhir",
+        "json"
+      ],
+      "tags": [
+        "fhir",
+        "healthcare",
+        "json",
+        "advanced",
+        "condition",
+        "procedure",
+        "allergy",
+        "clinical",
+        "snomed",
+        "multi-resource",
+        "deep-nesting"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 103830,
+      "fileCount": 22,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "fhir-xml-clinical-resources",
+      "path": "demos/fhir/fhir-xml-clinical-resources",
+      "iconPath": "icons/fhir-xml-clinical-resources.svg",
+      "name": "FHIR XML — Clinical Patients & Observations",
+      "summary": "Demonstrates HL7 FHIR R4 clinical data in native XML format. FHIR XML stores all primitive values as @value attributes. 8 Patient and 8 Observation XML files showcase FHIR namespace handling, @value extraction, exclude_paths for narrative XHTML, xml_paths for component/referenceRange subtrees, repeating element join_comma, deep XPath column_mappings, and schema evolution.",
+      "categories": [
+        "healthcare",
+        "fhir",
+        "xml"
+      ],
+      "tags": [
+        "fhir",
+        "healthcare",
+        "xml",
+        "intermediate",
+        "patient",
+        "observation",
+        "namespace",
+        "attribute-extraction",
+        "xpath",
+        "schema-evolution"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 46658,
+      "fileCount": 16,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "pseudonymisation-healthcare",
+      "path": "demos/pseudonymisation/pseudonymisation-healthcare",
+      "iconPath": "icons/pseudonymisation-healthcare.svg",
+      "name": "Pseudonymisation — Healthcare HL7, FHIR & EDI",
+      "summary": "Demonstrates GDPR-compliant pseudonymisation across HL7 v2 ADT patients, FHIR R4 Patient resources, and EDI HIPAA X12 claims. All 7 transform types (keyed_hash, encrypt, redact, generalize, tokenize, mask, hash), wildcard column patterns (address_*, *_name), scoped linkability (person, relationship, transaction), APPLY for permanent de-identification, and HIPAA Safe Harbor compliance mapping.",
+      "categories": [
+        "healthcare",
+        "pseudonymisation"
+      ],
+      "tags": [
+        "pseudonymisation",
+        "healthcare",
+        "hl7",
+        "fhir",
+        "edi",
+        "hipaa",
+        "gdpr",
+        "data-protection",
+        "keyed-hash",
+        "encrypt",
+        "redact",
+        "tokenize",
+        "mask",
+        "generalize",
+        "compliance"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "edi-edifact-international-trade",
+      "path": "demos/edi/edi-edifact-international-trade",
+      "iconPath": "icons/edi-edifact-international-trade.svg",
+      "name": "EDI EDIFACT — International Trade & Logistics",
+      "summary": "Demonstrates UN/EDIFACT and EANCOM message parsing across 22 files covering international trade, logistics, customs clearance, and passenger data from 7 directory versions (D:96A through D:13B) and 6 syntax identifiers. 17 distinct message types (ORDERS, INVOIC, IFCSUM, CUSCAR, PAXLST, etc.) with materialized field extraction, multi-message files, and full JSON transaction access.",
+      "categories": [
+        "edi"
+      ],
+      "tags": [
+        "edi",
+        "edifact",
+        "eancom",
+        "advanced",
+        "international-trade",
+        "logistics",
+        "customs",
+        "multi-version",
+        "multi-format"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 66560,
+      "fileCount": 22,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "edi-hipaa-healthcare",
+      "path": "demos/edi/edi-hipaa-healthcare",
+      "iconPath": "icons/edi-hipaa-healthcare.svg",
+      "name": "EDI HIPAA Healthcare — Claims Lifecycle",
+      "summary": "Demonstrates X12 EDI transaction parsing for the healthcare claims lifecycle. 11 transactions spanning 9 HIPAA 5010 transaction types: eligibility verification (270/271), claim status (276/277), healthcare claims (837 Professional/Dental/Institutional), payment remittance (835), benefit enrollment (834), prior authorization (278), and payment order (820). Covers materialized path extraction and full JSON access.",
+      "categories": [
+        "edi",
+        "healthcare"
+      ],
+      "tags": [
+        "edi",
+        "x12",
+        "hipaa",
+        "intermediate",
+        "healthcare",
+        "claims",
+        "eligibility",
+        "remittance",
+        "enrollment"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 39936,
+      "fileCount": 11,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "edi-supply-chain-x12",
+      "path": "demos/edi/edi-supply-chain-x12",
+      "iconPath": "icons/edi-supply-chain-x12.svg",
+      "name": "EDI X12 Supply Chain — Order-to-Cash Lifecycle",
+      "summary": "Demonstrates X12 EDI transactions spanning the full supply chain order-to-cash lifecycle. 14 real-world transactions across 8 types: purchase orders (850), invoices (810), PO acknowledgments (855), ship notices (856), shipment & billing (857), receiving advice (861), functional acknowledgment (997), and application advice (824). Multi-version X12 (00204, 00401) with trading partner diversity.",
+      "categories": [
+        "edi",
+        "retail"
+      ],
+      "tags": [
+        "edi",
+        "x12",
+        "intermediate",
+        "supply-chain",
+        "order-to-cash",
+        "purchase-order",
+        "invoice",
+        "multi-version"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 36864,
+      "fileCount": 14,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "edi-tradacoms-uk-retail",
+      "path": "demos/edi/edi-tradacoms-uk-retail",
+      "iconPath": "icons/edi-tradacoms-uk-retail.svg",
+      "name": "EDI TRADACOMS — UK Retail Orders & Utilities",
+      "summary": "Demonstrates TRADACOMS — the UK-specific EDI standard used in retail and utilities. 4 files containing 15 total messages cover purchase orders, product planning forecasts, and utility bills. Features multi-message file parsing, STX envelope extraction, TRADACOMS escape character decoding (?' and ?+), and EAN-13 product codes.",
+      "categories": [
+        "edi",
+        "retail"
+      ],
+      "tags": [
+        "edi",
+        "tradacoms",
+        "intermediate",
+        "uk-retail",
+        "escape-characters",
+        "multi-message",
+        "ean",
+        "utilities"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 16384,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "edi-transportation-logistics",
+      "path": "demos/edi/edi-transportation-logistics",
+      "iconPath": "icons/edi-transportation-logistics.svg",
+      "name": "EDI X12 Transportation — Freight Lifecycle",
+      "summary": "Demonstrates X12 EDI transactions spanning the full freight lifecycle. 12 files across 8 types: load tendering (204), freight invoicing (210), shipment tracking (214), rail transport (404), warehouse operations (945), payment remittance (820), price catalogs (832), and load tender response (990). Multi-version X12 (00204 through 005010) with multi-modal transportation.",
+      "categories": [
+        "edi"
+      ],
+      "tags": [
+        "edi",
+        "x12",
+        "intermediate",
+        "transportation",
+        "logistics",
+        "freight",
+        "multi-version",
+        "multi-modal"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 37888,
+      "fileCount": 12,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "hl7-patient-admin",
+      "path": "demos/hl7/hl7-patient-admin",
+      "iconPath": "icons/hl7-patient-admin.svg",
+      "name": "HL7 Patient Administration — ADT Lifecycle",
+      "summary": "Demonstrates HL7 v2 ADT (Admit-Discharge-Transfer) messages from 6 EHR systems across 5 HL7 versions (2.3–2.6). 8 real-world messages cover admission (A01), demographics update (A08), and discharge (A03). Features MSH header extraction, materialized PID/PV1/EVN paths, escape sequence decoding, Z-segment preservation, and cross-EHR field mapping.",
+      "categories": [
+        "healthcare",
+        "hl7"
+      ],
+      "tags": [
+        "hl7",
+        "intermediate",
+        "patient-admin",
+        "adt",
+        "multi-version",
+        "multi-ehr",
+        "lifecycle",
+        "escape-sequences"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 21504,
+      "fileCount": 8,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "hl7-lab-orders-results",
+      "path": "demos/hl7/hl7-lab-orders-results",
+      "iconPath": "icons/hl7-lab-orders-results.svg",
+      "name": "HL7 Lab Orders & Results — ORM/ORU Workflow",
+      "summary": "Models the complete laboratory workflow using HL7 v2 ORM (Order) and ORU (Observation Result) messages. 3 ORM orders and 5 ORU results from 4+ LIS/EHR systems across HL7 versions 2.3–2.5.1. Covers materialized PID/OBR/OBX extraction, value type handling (NM, ST, TX, SN), abnormal flag detection, escape sequence decoding, and cross-system unification.",
+      "categories": [
+        "healthcare",
+        "hl7"
+      ],
+      "tags": [
+        "hl7",
+        "intermediate",
+        "laboratory",
+        "orders",
+        "results",
+        "orm",
+        "oru",
+        "abnormal-flags",
+        "multi-system"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 24576,
+      "fileCount": 8,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "hl7-clinical-workflows",
+      "path": "demos/hl7/hl7-clinical-workflows",
+      "iconPath": "icons/hl7-clinical-workflows.svg",
+      "name": "HL7 Clinical Workflows — Documents, Scheduling & Edge Cases",
+      "summary": "Demonstrates HL7 v2 clinical workflow messages beyond core ADT and lab types. MDM^T02 document management with full History & Physical narrative, SIU^S12 appointment scheduling from two systems, and comprehensive edge-case testing with escape sequences (\\F\\, \\T\\, \\S\\, \\R\\, \\E\\, \\X0D\\), empty fields, and multi-line text.",
+      "categories": [
+        "healthcare",
+        "hl7"
+      ],
+      "tags": [
+        "hl7",
+        "advanced",
+        "clinical",
+        "documents",
+        "scheduling",
+        "mdm",
+        "siu",
+        "escape-sequences",
+        "edge-cases"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 10240,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "protobuf-addressbook-contacts",
+      "path": "demos/protobuf/addressbook-contacts",
+      "iconPath": "icons/protobuf-addressbook-contacts.svg",
+      "name": "Protobuf Address Book — Contact Directory",
+      "summary": "Demonstrates Protocol Buffers (proto3) binary file reading using the classic Google addressbook schema. 3 team roster files (13 contacts, 22 phone numbers) read into flattened contacts and exploded phone-number tables. Covers nested message flattening, repeated field handling (join vs. explode), enum decoding (PhoneType), well-known types (Timestamp to ISO 8601), sparse data, and column mappings.",
+      "categories": [
+        "protobuf"
+      ],
+      "tags": [
+        "protobuf",
+        "advanced",
+        "proto3",
+        "binary",
+        "nested-messages",
+        "repeated-fields",
+        "enum-decoding",
+        "well-known-types"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 3072,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "graph-flattened-mode",
+      "path": "demos/graph/graph-flattened-mode",
+      "iconPath": "icons/graph-flattened-mode.svg",
+      "name": "Graph Flattened Mode — Direct Column Access",
+      "summary": "Demonstrates the flattened property storage mode for graph tables. All vertex and edge properties stored as individual columns — fastest mode with full predicate pushdown. 5-person social graph with 6 directed friendships. Queries cover traversal, aggregation, 2-hop neighbors, reciprocal edges, and department connectivity.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "delta-table",
+        "flattened",
+        "vertices",
+        "edges",
+        "traversal",
+        "beginner"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-json-mode",
+      "path": "demos/graph/graph-json-mode",
+      "iconPath": "icons/graph-json-mode.svg",
+      "name": "Graph JSON Mode — Schema-Free Properties",
+      "summary": "Demonstrates the JSON property storage mode for graph tables. All vertex and edge properties in a single JSON string column — most flexible mode for schema-free evolution. Same 5-person social graph with JSON extraction functions (json_get_str, json_get_int, json_get_float), dynamic property discovery, and array access.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "delta-table",
+        "json",
+        "schema-free",
+        "vertices",
+        "edges",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-hybrid-mode",
+      "path": "demos/graph/graph-hybrid-mode",
+      "iconPath": "icons/graph-hybrid-mode.svg",
+      "name": "Graph Hybrid Mode — Columns + JSON Extras",
+      "summary": "Demonstrates the hybrid property storage mode for graph tables. Frequently queried properties as columns for fast access, optional/extensible properties in a JSON extras column. Same 5-person social graph showing mixed column + JSON access patterns and the balanced trade-off between performance and flexibility.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "delta-table",
+        "hybrid",
+        "json",
+        "vertices",
+        "edges",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-social-network",
+      "path": "demos/graph/graph-social-network",
+      "iconPath": "icons/graph-social-network.svg",
+      "name": "Graph Social Network — 100-Node Company Graph",
+      "summary": "Large-scale graph analytics on a 100-employee company social network with 300+ directed connections across 8 departments and 5 cities. Deterministic generate_series() data generation. Queries cover degree centrality, department cross-pollination, influence scoring, 2-hop neighborhoods, team clustering, bridge detection, and mentor network analysis.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "delta-table",
+        "social-network",
+        "analytics",
+        "centrality",
+        "generate-series",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-cypher-queries",
+      "path": "demos/graph/graph-cypher-queries",
+      "iconPath": "icons/graph-cypher-queries.svg",
+      "name": "Graph Cypher Queries — Pattern Matching & Algorithms",
+      "summary": "Cypher query language demo on a 5-person social graph. Pattern matching (MATCH, WHERE, RETURN), variable-length paths, and 15+ graph algorithm procedures: PageRank, betweenness, closeness, degree centrality, connected components, Louvain community detection, triangle counting, shortest path, BFS/DFS, MST, and KNN similarity.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "cypher",
+        "pattern-matching",
+        "algorithms",
+        "pagerank",
+        "pathfinding",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "graph-stress-test",
+      "path": "demos/graph/graph-stress-test",
+      "iconPath": "icons/graph-stress-test.svg",
+      "name": "Graph Stress Test — 1M-Node Performance Benchmark",
+      "summary": "Extreme-scale graph performance benchmark: 1,000,000 vertex nodes and 5,000,000+ directed edges across 20 departments, 15 cities, and 200 project teams. Stress-tests graph rendering, layout algorithms, Cypher engine algorithms (PageRank, Louvain, BFS, shortest path, MST), and memory handling at massive scale.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "delta-table",
+        "stress-test",
+        "performance",
+        "benchmark",
+        "million-scale",
+        "cypher",
+        "algorithms",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 30,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-04T12:00:00Z"
+    },
+    {
+      "id": "graph-ldbc-snb",
+      "path": "demos/graph/graph-ldbc-snb",
+      "iconPath": "icons/graph-ldbc-snb.svg",
+      "name": "LDBC Social Network Benchmark — Full Model Graph Verification",
+      "summary": "Full LDBC Social Network Benchmark (SF0.1) with 8 entity types, 23 relationship types, and ~1.2M rows. Verifies graph algorithms (PageRank, shortest path, Louvain, centrality, BFS) and Cypher/SQL queries against official LDBC golden values. Demonstrates mixed SQL + Cypher queries joining graph algorithm results with Delta tables.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "ldbc",
+        "benchmark",
+        "verification",
+        "cypher",
+        "pagerank",
+        "shortest-path",
+        "community-detection",
+        "centrality",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 15,
+      "dataSizeBytes": 65011712,
+      "fileCount": 33,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-06T12:00:00Z"
+    },
+    {
+      "id": "graph-karate-club",
+      "path": "demos/graph/graph-karate-club",
+      "iconPath": "icons/graph-karate-club.svg",
+      "name": "Zachary's Karate Club — Classic Graph Benchmark",
+      "summary": "The most studied graph in network science (Zachary, 1977). 34 club members, 78 undirected edges. Ground-truth 2-faction split for community detection verification. Known centrality values, degree distribution, and connected component structure.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "karate",
+        "benchmark",
+        "community-detection",
+        "centrality",
+        "classic",
+        "beginner"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 1449,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-08T12:00:00Z"
+    },
+    {
+      "id": "graph-dolphins",
+      "path": "demos/graph/graph-dolphins",
+      "iconPath": "icons/graph-dolphins.svg",
+      "name": "Dolphins Social Network — Marine Biology Graph",
+      "summary": "Social associations between 62 bottlenose dolphins in Doubtful Sound, New Zealand (Lusseau et al., 2003). 159 undirected edges. Known community structure, triangle count (285), and max degree (12).",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "dolphins",
+        "benchmark",
+        "community-detection",
+        "social-network",
+        "beginner"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 3095,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-08T12:00:00Z"
+    },
+    {
+      "id": "graph-polbooks",
+      "path": "demos/graph/graph-polbooks",
+      "iconPath": "icons/graph-polbooks.svg",
+      "name": "Political Books — Partisan Co-Purchasing Network",
+      "summary": "105 US political books with 441 co-purchasing edges from Amazon (Krebs/Newman). Ground-truth 3-community partition (liberal/neutral/conservative). Max degree 25, avg clustering ~0.488.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "polbooks",
+        "benchmark",
+        "community-detection",
+        "political",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 8663,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-08T12:00:00Z"
+    },
+    {
+      "id": "graph-netscience",
+      "path": "demos/graph/graph-netscience",
+      "iconPath": "icons/graph-netscience.svg",
+      "name": "NetScience — Coauthorship Network",
+      "summary": "Coauthorship network of 1,461 network-science researchers with 2,742 weighted edges (Newman, 2006). Multiple disconnected components, non-uniform weights, and modularity ~0.95 reflecting clear research-group structure.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "netscience",
+        "benchmark",
+        "coauthorship",
+        "weighted",
+        "disconnected",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 82433,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-08T12:00:00Z"
+    },
+    {
+      "id": "graph-email-eu-core",
+      "path": "demos/graph/graph-email-eu-core",
+      "iconPath": "icons/graph-email-eu-core.svg",
+      "name": "Email-Eu-core — European Research Institution",
+      "summary": "Directed email communication network from a European research institution (SNAP). 1,005 persons, 25,571 directed edges. 42 ground-truth department communities. 10 weakly connected components, 105,461 triangles, diameter 7.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "email",
+        "benchmark",
+        "directed",
+        "community-detection",
+        "snap",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 294997,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-08T12:00:00Z"
+    },
+    {
+      "id": "delta-advanced-sql",
+      "path": "demos/delta/delta-advanced-sql",
+      "iconPath": "icons/delta-advanced-sql.svg",
+      "name": "Delta Advanced SQL — Windows, CTEs & Analytics",
+      "summary": "Delta tables support the full power of SQL analytics including window \\ functions, CTEs, and advanced aggregations, making them a drop-in \\ replacement for traditional data warehouses. This...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "window-functions",
+        "cte",
+        "analytics",
+        "rank",
+        "lag",
+        "running-total"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-auto-optimize",
+      "path": "demos/delta/delta-auto-optimize",
+      "iconPath": "icons/delta-auto-optimize.svg",
+      "name": "Delta Auto-Optimize — Automatic Compaction & Write Optimization",
+      "summary": "Delta Auto-Optimize uses the table properties 'delta.autoOptimize.optimizeWrite' \\ and 'delta.autoOptimize.autoCompact' to automatically coalesce small Parquet files \\ into larger ones during...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "auto-optimize",
+        "compaction",
+        "small-files",
+        "iot",
+        "performance"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-basics-crud",
+      "path": "demos/delta/delta-basics-crud",
+      "iconPath": "icons/delta-basics-crud.svg",
+      "name": "Delta Basics — Create, Insert, Update, Delete",
+      "summary": "Delta Lake extends Parquet with a transaction log that enables full CRUD \\ (Create, Read, Update, Delete) operations — something plain Parquet cannot do. \\ Each mutation (INSERT, UPDATE, DELETE)...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "beginner",
+        "crud",
+        "insert",
+        "update",
+        "delete",
+        "create"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-binary-geometry",
+      "path": "demos/delta/delta-binary-geometry",
+      "iconPath": "icons/delta-binary-geometry.svg",
+      "name": "Delta Binary & Spatial Data Types",
+      "summary": "Delta tables store binary-like data (hashes, checksums) and spatial geometry \\ as VARCHAR columns using conventions like SHA-256 hex strings and WKT \\ (Well-Known Text) notation. This is essential...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "binary",
+        "geometry",
+        "spatial",
+        "wkt",
+        "hash"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-bloom-filters",
+      "path": "demos/delta/delta-bloom-filters",
+      "iconPath": "icons/delta-bloom-filters.svg",
+      "name": "Delta Bloom Filters — Probabilistic Index for Fast Lookups",
+      "summary": "Bloom filters are probabilistic data structures stored alongside Delta \\ data files that enable data-skipping for point lookups on high-cardinality \\ columns like transaction IDs. When a query...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "bloom-filter",
+        "index",
+        "point-lookup",
+        "data-skipping",
+        "performance"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-change-data-feed",
+      "path": "demos/delta/delta-change-data-feed",
+      "iconPath": "icons/delta-change-data-feed.svg",
+      "name": "Delta Change Data Feed — Track Row-Level Changes",
+      "summary": "Delta Change Data Feed (CDF) tracks row-level changes (inserts, updates, \\ deletes) across table versions, enabling efficient incremental ETL pipelines. \\ Without CDF, downstream consumers must...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "cdf",
+        "change-data-feed",
+        "cdc",
+        "audit",
+        "versioning"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-collations",
+      "path": "demos/delta/delta-collations",
+      "iconPath": "icons/delta-collations.svg",
+      "name": "Delta Collations — Language-Aware Sorting & Comparison",
+      "summary": "Collation defines how strings are compared, sorted, and matched — critical for \\ multilingual data where naive byte-order sorting produces incorrect results \\ (e.g., placing umlauts after 'z')....",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "collation",
+        "unicode",
+        "multilingual",
+        "sorting"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-column-mapping",
+      "path": "demos/delta/delta-column-mapping",
+      "iconPath": "icons/delta-column-mapping.svg",
+      "name": "Delta Column Mapping — Physical & Logical Names",
+      "summary": "Delta Column Mapping (mode 'name') decouples logical column names in the \\ schema from physical column names in Parquet files, enabling ALTER TABLE \\ operations like column rename, drop, and add...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "column-mapping",
+        "tblproperties",
+        "alter-table",
+        "add-column",
+        "protocol",
+        "parquet"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-complex-types",
+      "path": "demos/delta/delta-complex-types",
+      "iconPath": "icons/delta-complex-types.svg",
+      "name": "Delta Complex Types — Structs, Arrays & Maps",
+      "summary": "Delta Lake supports complex data modelling through struct-like multi-column \\ patterns, array-like delimited strings, and map-like key=value pairs — \\ reflecting how real-world data often has...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "structs",
+        "arrays",
+        "maps",
+        "complex-types",
+        "data-modelling"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-computed-columns",
+      "path": "demos/delta/delta-computed-columns",
+      "iconPath": "icons/delta-computed-columns.svg",
+      "name": "Delta Computed Fields — Formulas, Defaults & Derived Values",
+      "summary": "Computed columns are derived values calculated from other columns using \\ SQL expressions, ensuring consistency without storing redundant data. \\ Without a disciplined approach, formulas like...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "computed-columns",
+        "generated",
+        "cte",
+        "formulas",
+        "defaults"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-constraint-enforcement",
+      "path": "demos/delta/delta-constraint-enforcement",
+      "iconPath": "icons/delta-constraint-enforcement.svg",
+      "name": "Delta Constraint Enforcement — NOT NULL & CHECK",
+      "summary": "Delta Lake CHECK constraints enforce data quality invariants at the protocol \\ level, rejecting any commit whose rows violate the declared expressions. \\ Without constraints, bad data silently...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "constraints",
+        "check",
+        "not-null",
+        "validation",
+        "data-quality"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-constraints-properties",
+      "path": "demos/delta/delta-constraints-properties",
+      "iconPath": "icons/delta-constraints-properties.svg",
+      "name": "Delta Constraints & Table Properties",
+      "summary": "Delta TBLPROPERTIES store table-level configuration in the transaction log, \\ including CHECK constraints and behavioral flags like delta.appendOnly. \\ CHECK constraints (stored as...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "constraints",
+        "check",
+        "tblproperties",
+        "append-only",
+        "data-quality"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-convert-to-delta",
+      "path": "demos/delta/delta-convert-to-delta",
+      "iconPath": "icons/delta-convert-to-delta.svg",
+      "name": "Delta Convert to Delta — Migrating from Raw Parquet",
+      "summary": "Converting Parquet files to Delta Lake adds a transaction log (_delta_log) \\ on top of existing data files, unlocking ACID transactions, schema \\ enforcement, and time travel that raw Parquet...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "migration",
+        "convert",
+        "parquet",
+        "update",
+        "delete",
+        "optimize"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-decimal-precision",
+      "path": "demos/delta/delta-decimal-precision",
+      "iconPath": "icons/delta-decimal-precision.svg",
+      "name": "Delta Decimal Precision & Arithmetic",
+      "summary": "Delta Lake stores DECIMAL types as fixed-point numbers in Parquet, preserving \\ exact precision without the rounding errors inherent in DOUBLE/FLOAT types. \\ This matters for financial data where...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "decimal",
+        "precision",
+        "arithmetic",
+        "finance"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-default-values",
+      "path": "demos/delta/delta-default-values",
+      "iconPath": "icons/delta-default-values.svg",
+      "name": "Delta Column Default Values",
+      "summary": "Column default values fill in missing fields automatically during INSERT, \\ reducing boilerplate and preventing NULL values from propagating through \\ analytics pipelines. When CREATE TABLE does...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "default-values",
+        "coalesce",
+        "cte",
+        "audit"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-deletion-vectors",
+      "path": "demos/delta/delta-deletion-vectors",
+      "iconPath": "icons/delta-deletion-vectors.svg",
+      "name": "Delta Deletion Vectors — Efficient Soft Deletes",
+      "summary": "Deletion vectors (DVs) are a Delta Lake protocol feature that marks individual \\ rows as deleted using lightweight bitmap files, avoiding the costly rewrite of \\ entire Parquet data files. Without...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "deletion-vectors",
+        "optimize",
+        "soft-deletes",
+        "compaction"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-dml-patterns",
+      "path": "demos/delta/delta-dml-patterns",
+      "iconPath": "icons/delta-dml-patterns.svg",
+      "name": "Delta DML Patterns — Complex DELETE & UPDATE",
+      "summary": "Delta Lake supports full DML (INSERT, UPDATE, DELETE) on top of immutable \\ Parquet files by recording add/remove file actions in the transaction log, \\ whereas traditional data lakes are...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "delete",
+        "update",
+        "dml",
+        "multi-predicate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-dynamic-partition-pruning",
+      "path": "demos/delta/delta-dynamic-partition-pruning",
+      "iconPath": "icons/delta-dynamic-partition-pruning.svg",
+      "name": "Delta Dynamic Partition Pruning — Smart Query Filtering",
+      "summary": "Dynamic partition pruning is a query optimization where the engine skips \\ entire partitions of a fact table based on filter values derived from a \\ joined dimension table, dramatically reducing...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "partitioning",
+        "partition-pruning",
+        "join",
+        "analytics",
+        "filtering"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-edge-cases",
+      "path": "demos/delta/delta-edge-cases",
+      "iconPath": "icons/delta-edge-cases.svg",
+      "name": "Delta Edge Cases — Empty, Wide & Minimal Tables",
+      "summary": "Delta tables gracefully handle boundary conditions that often trip up \\ traditional data systems, including single-row tables, wide schemas, \\ and empty tables. Understanding these edge cases is...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "edge-cases",
+        "singleton",
+        "wide-table",
+        "empty-table",
+        "schema"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-generated-identity",
+      "path": "demos/delta/delta-generated-identity",
+      "iconPath": "icons/delta-generated-identity.svg",
+      "name": "Delta Generated & Identity Columns",
+      "summary": "Generated and identity columns let Delta tables derive values automatically \\ at write time, reducing application-side logic and ensuring consistency. \\ This is essential for computed financial...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "generated-columns",
+        "identity",
+        "computed",
+        "cte",
+        "sequential"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-in-commit-timestamps",
+      "path": "demos/delta/delta-in-commit-timestamps",
+      "iconPath": "icons/delta-in-commit-timestamps.svg",
+      "name": "Delta In-Commit Timestamps — Reliable Version Timing",
+      "summary": "In-commit timestamps embed a reliable, monotonically increasing timestamp \\ directly into each Delta transaction log commit, solving the problem of \\ clock skew between distributed writers....",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "in-commit-timestamps",
+        "time-travel",
+        "versioning",
+        "deployment"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-merge-advanced",
+      "path": "demos/delta/delta-merge-advanced",
+      "iconPath": "icons/delta-merge-advanced.svg",
+      "name": "Delta MERGE — Advanced Patterns & Conditional Logic",
+      "summary": "Delta MERGE INTO supports multiple WHEN MATCHED clauses with conditional \\ predicates, enabling complex write patterns in a single atomic operation. \\ This solves the common ETL problem of needing...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "merge",
+        "upsert",
+        "conditional",
+        "etl",
+        "staging"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-merge-comprehensive",
+      "path": "demos/delta/delta-merge-comprehensive",
+      "iconPath": "icons/delta-merge-comprehensive.svg",
+      "name": "Delta MERGE Comprehensive — All Clause Patterns",
+      "summary": "Delta MERGE INTO combines update, delete, and insert logic into a single \\ atomic transaction, which is critical for maintaining consistency in CRM \\ and master data management systems. This demo...",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "merge",
+        "update",
+        "delete",
+        "insert",
+        "matched",
+        "not-matched",
+        "crm"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-merge-upsert",
+      "path": "demos/delta/delta-merge-upsert",
+      "iconPath": "icons/delta-merge-upsert.svg",
+      "name": "Delta MERGE — Upsert, Conditional Update & Delete",
+      "summary": "The MERGE INTO upsert pattern is the foundation of change data capture \\ (CDC) pipelines, atomically applying inserts, updates, and deletes from \\ a staging source to a target table. The WHEN NOT...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "merge",
+        "upsert",
+        "cdc",
+        "matched",
+        "not-matched"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-partitioning",
+      "path": "demos/delta/delta-partitioning",
+      "iconPath": "icons/delta-partitioning.svg",
+      "name": "Delta Partitioning — Organize & Query by Region",
+      "summary": "Delta table partitioning physically organizes data files into directories \\ by partition column values, enabling partition pruning that skips entire \\ file groups during queries. This dramatically...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "partitioning",
+        "partitioned-by",
+        "region",
+        "analytics"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-partitions-dv",
+      "path": "demos/delta/delta-partitions-dv",
+      "iconPath": "icons/delta-partitions-dv.svg",
+      "name": "Delta Partitions & Deletion Vectors",
+      "summary": "Deletion vectors (DVs) are a Delta protocol optimization that marks rows \\ as deleted in a lightweight sidecar file instead of rewriting entire \\ Parquet data files, making DELETE operations...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "partitions",
+        "deletion-vectors",
+        "optimize",
+        "compaction",
+        "pruning"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-advanced",
+      "path": "demos/delta/delta-restore-advanced",
+      "iconPath": "icons/delta-restore-advanced.svg",
+      "name": "Delta RESTORE — Advanced Recovery Scenarios",
+      "summary": "Delta RESTORE TO VERSION rolls an entire table back to a previous \\ transaction log version, undoing all intermediate commits in a single \\ atomic operation. This is a safety net for recovering...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "restore",
+        "recovery",
+        "version-history",
+        "rollback",
+        "configuration"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-rollback",
+      "path": "demos/delta/delta-restore-rollback",
+      "iconPath": "icons/delta-restore-rollback.svg",
+      "name": "Delta RESTORE — Rollback to Previous Versions",
+      "summary": "RESTORE is a Delta Lake operation that rewinds a table to any previous \\ version by writing a new commit that recreates the old snapshot. It solves \\ the problem of accidental data loss: a...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "restore",
+        "rollback",
+        "version-history",
+        "recovery",
+        "undo"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-row-tracking",
+      "path": "demos/delta/delta-row-tracking",
+      "iconPath": "icons/delta-row-tracking.svg",
+      "name": "Delta Row Tracking — Stable Row IDs & Audit Trail",
+      "summary": "Row tracking is a Delta Lake protocol feature that assigns stable, unique \\ identifiers to each row so that changes can be traced across versions. It \\ enables fine-grained change detection for...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "row-tracking",
+        "audit",
+        "compliance",
+        "versioning",
+        "lineage"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-schema-drop-columns",
+      "path": "demos/delta/delta-schema-drop-columns",
+      "iconPath": "icons/delta-schema-drop-columns.svg",
+      "name": "Delta Schema Evolution — Drop Columns & GDPR Cleanup",
+      "summary": "Delta Lake's schema evolution supports column-level changes that enable \\ GDPR \"right to erasure\" compliance without rebuilding tables. This matters \\ because privacy regulations require the...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "schema-evolution",
+        "gdpr",
+        "privacy",
+        "column-drop",
+        "views"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-schema-evolution",
+      "path": "demos/delta/delta-schema-evolution",
+      "iconPath": "icons/delta-schema-evolution.svg",
+      "name": "Delta Schema Evolution — Add Columns & NULL Filling",
+      "summary": "Schema evolution lets you add new columns to a Delta table without \\ rewriting existing data files. This solves the real-world problem of \\ evolving requirements: as your data model grows, old...",
+      "categories": [
+        "delta-table",
+        "delta-fundamentals"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "schema-evolution",
+        "alter-table",
+        "add-column",
+        "null-filling"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-schema-evolution-advanced",
+      "path": "demos/delta/delta-schema-evolution-advanced",
+      "iconPath": "icons/delta-schema-evolution-advanced.svg",
+      "name": "Delta Advanced Schema Evolution — Add, Widen & Restructure",
+      "summary": "Advanced schema evolution demonstrates multiple rounds of ALTER TABLE ADD \\ COLUMN on a single table, evolving from 5 to 8 columns across separate \\ phases. This mirrors real production systems...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "schema-evolution",
+        "alter-table",
+        "add-column",
+        "null-filling",
+        "backfill",
+        "update"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-statistics",
+      "path": "demos/delta/delta-statistics",
+      "iconPath": "icons/delta-statistics.svg",
+      "name": "Delta Statistics — Min/Max & Data Skipping",
+      "summary": "Delta Lake stores per-file column statistics (min, max, null count, row \\ count) in the transaction log, enabling data skipping that avoids reading \\ irrelevant Parquet files entirely. This is one...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "statistics",
+        "min-max",
+        "data-skipping",
+        "null",
+        "performance"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-table-features",
+      "path": "demos/delta/delta-table-features",
+      "iconPath": "icons/delta-table-features.svg",
+      "name": "Delta Protocol & Table Features",
+      "summary": "Delta Lake's table features are protocol-level capabilities enabled via \\ TBLPROPERTIES that control how reads and writes behave. They solve the \\ problem of forward compatibility: readers and...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "protocol",
+        "features",
+        "tblproperties",
+        "cdc",
+        "deletion-vectors"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-time-travel-deep",
+      "path": "demos/delta/delta-time-travel-deep",
+      "iconPath": "icons/delta-time-travel-deep.svg",
+      "name": "Delta Time Travel — Version History Deep Dive",
+      "summary": "Time travel is Delta Lake's ability to query any previous version of a \\ table using VERSION AS OF, giving you instant access to historical \\ snapshots without maintaining separate copies. It...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "time-travel",
+        "versioning",
+        "history",
+        "iot"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-time-travel-optimize",
+      "path": "demos/delta/delta-time-travel-optimize",
+      "iconPath": "icons/delta-time-travel-optimize.svg",
+      "name": "Delta Time Travel & OPTIMIZE — Version History",
+      "summary": "OPTIMIZE is a Delta Lake maintenance command that compacts many small \\ Parquet files into fewer, larger ones for dramatically faster read \\ performance. Frequent writes (inserts, updates,...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "time-travel",
+        "optimize",
+        "versioning",
+        "history"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-timestamp-ntz",
+      "path": "demos/delta/delta-timestamp-ntz",
+      "iconPath": "icons/delta-timestamp-ntz.svg",
+      "name": "Delta Timestamps — Timezone-Free & Precision Handling",
+      "summary": "Timestamp NTZ (No TimeZone) is a Delta protocol feature that stores timestamps \\ without embedded timezone information, preserving the literal date and time as written. \\ This matters because...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "timestamp",
+        "timezone",
+        "varchar",
+        "scheduling"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-type-widening",
+      "path": "demos/delta/delta-type-widening",
+      "iconPath": "icons/delta-type-widening.svg",
+      "name": "Delta Type Widening — Numeric Precision & Ranges",
+      "summary": "Type widening is a Delta protocol feature that allows a column's data type to \\ be safely promoted to a wider type (e.g., INT to BIGINT, FLOAT to DOUBLE) \\ without rewriting existing data files. \\...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "type-widening",
+        "numeric",
+        "precision",
+        "decimal",
+        "bigint"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-unicode-encoding",
+      "path": "demos/delta/delta-unicode-encoding",
+      "iconPath": "icons/delta-unicode-encoding.svg",
+      "name": "Delta Unicode & Encoding — International Data",
+      "summary": "Delta tables inherit Parquet's native UTF-8 encoding, which means full Unicode \\ support for strings including CJK, Arabic, Cyrillic, and Latin diacritics. \\ This is critical for any global...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "unicode",
+        "encoding",
+        "international",
+        "partitioning",
+        "i18n"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-vacuum-cdc-interaction",
+      "path": "demos/delta/delta-vacuum-cdc-interaction",
+      "iconPath": "icons/delta-vacuum-cdc-interaction.svg",
+      "name": "Delta VACUUM & CDC Interaction — Retention & Change Tracking",
+      "summary": "Change Data Feed (CDF) records row-level changes (inserts, updates, deletes) in \\ special _change_data files alongside the main Delta data, enabling downstream \\ consumers to replay incremental...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "vacuum",
+        "cdc",
+        "change-data-feed",
+        "retention",
+        "lifecycle"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-vacuum-cleanup",
+      "path": "demos/delta/delta-vacuum-cleanup",
+      "iconPath": "icons/delta-vacuum-cleanup.svg",
+      "name": "Delta VACUUM — Cleanup Orphaned Files",
+      "summary": "VACUUM is a Delta Lake maintenance command that removes data files no longer \\ referenced by the current table version, reclaiming storage after UPDATEs, \\ DELETEs, and OPTIMIZE operations...",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "vacuum",
+        "cleanup",
+        "maintenance",
+        "orphaned-files",
+        "storage"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-variant-type",
+      "path": "demos/delta/delta-variant-type",
+      "iconPath": "icons/delta-variant-type.svg",
+      "name": "Delta Variant Data Type — Semi-Structured Data",
+      "summary": "The VARIANT type (modeled here via VARCHAR with JSON strings) enables storing \\ semi-structured data with different shapes in the same column, avoiding the \\ need to define rigid schemas for every...",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "variant",
+        "semi-structured",
+        "json",
+        "api-events",
+        "flexible-schema"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-zorder-deep",
+      "path": "demos/delta/delta-zorder-deep",
+      "iconPath": "icons/delta-zorder-deep.svg",
+      "name": "Delta Z-ORDER — Multi-Column Data Layout Optimization",
+      "summary": "Z-ORDER is a Delta Lake optimization that reorganizes data files using a \\ space-filling curve to co-locate rows with similar values across multiple \\ columns, enabling efficient data skipping for...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "z-order",
+        "optimize",
+        "iot",
+        "telemetry",
+        "performance",
+        "multi-column"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-zorder-transactions",
+      "path": "demos/delta/delta-zorder-transactions",
+      "iconPath": "icons/delta-zorder-transactions.svg",
+      "name": "Delta Z-ORDER & Transaction Management",
+      "summary": "OPTIMIZE ZORDER is recorded as an atomic transaction in the Delta log, meaning \\ the entire file reorganization either completes fully or not at all -- readers \\ never see a partially optimized...",
+      "categories": [
+        "delta-table",
+        "delta-performance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "z-order",
+        "optimize",
+        "transactions",
+        "analytics",
+        "performance"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-09T12:00:00Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "getting-started",
+      "name": "Getting Started",
+      "icon": "rocket",
+      "description": "Quick introductory demos to learn Delta Forge basics"
+    },
+    {
+      "id": "retail",
+      "name": "Retail & E-Commerce",
+      "icon": "shopping-cart",
+      "description": "Retail analytics, order management, and supply chain demos"
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare",
+      "icon": "heart",
+      "description": "Healthcare data demos with FHIR, HL7, and clinical datasets"
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "icon": "dollar-sign",
+      "description": "Financial data, transactions, and reporting demos"
+    },
+    {
+      "id": "iot",
+      "name": "IoT & Sensors",
+      "icon": "cpu",
+      "description": "IoT telemetry, sensor data, and time-series demos"
+    },
+    {
+      "id": "csv",
+      "name": "CSV",
+      "icon": "database",
+      "description": "CSV format demos with parsing options, delimiters, and data validation"
+    },
+    {
+      "id": "xml",
+      "name": "XML",
+      "icon": "file-code",
+      "description": "XML format demos with flattening, schema evolution, and XPath-based extraction"
+    },
+    {
+      "id": "json",
+      "name": "JSON",
+      "icon": "braces",
+      "description": "JSON format demos with flattening, nested arrays, schema evolution, and path-based extraction"
+    },
+    {
+      "id": "excel",
+      "name": "Excel",
+      "icon": "file-spreadsheet",
+      "description": "Excel format demos with sheet selection, cell ranges, multi-file reading, and type inference"
+    },
+    {
+      "id": "parquet",
+      "name": "Parquet",
+      "icon": "layers",
+      "description": "Parquet format demos with columnar reading, recursive scanning, row group filtering, and multi-file analytics"
+    },
+    {
+      "id": "avro",
+      "name": "Avro",
+      "icon": "file-binary",
+      "description": "Avro format demos with self-describing schema, schema evolution, compression codecs, and multi-file reading"
+    },
+    {
+      "id": "orc",
+      "name": "ORC",
+      "icon": "file-binary",
+      "description": "ORC format demos with self-describing schema, schema evolution, and multi-file reading"
+    },
+    {
+      "id": "geospatial",
+      "name": "Geospatial",
+      "icon": "globe",
+      "description": "Geospatial and H3 spatial indexing demos with coordinate conversion, polyfill, and spatial joins"
+    },
+    {
+      "id": "fhir",
+      "name": "FHIR",
+      "icon": "flame",
+      "description": "FHIR healthcare resource demos in JSON, NDJSON, and XML formats with Patient, Observation, MedicationRequest, Condition, Procedure, AllergyIntolerance, and Coverage resources"
+    },
+    {
+      "id": "pseudonymisation",
+      "name": "Pseudonymisation",
+      "icon": "shield",
+      "description": "Data protection demos with GDPR-compliant pseudonymisation rules, HIPAA Safe Harbor de-identification, and compliance mapping"
+    },
+    {
+      "id": "edi",
+      "name": "EDI",
+      "icon": "file-text",
+      "description": "EDI format demos with X12, EDIFACT, EANCOM, and TRADACOMS parsing, envelope extraction, materialized fields, and multi-version support"
+    },
+    {
+      "id": "hl7",
+      "name": "HL7",
+      "icon": "activity",
+      "description": "HL7 v2 message demos with ADT, ORM, ORU, MDM, and SIU parsing, segment extraction, escape sequence decoding, and multi-EHR unification"
+    },
+    {
+      "id": "protobuf",
+      "name": "Protocol Buffers",
+      "icon": "file-binary",
+      "description": "Protocol Buffers demos with proto3 binary deserialization, nested message flattening, repeated field handling, and enum decoding"
+    },
+    {
+      "id": "graph",
+      "name": "Graph",
+      "icon": "git-branch",
+      "description": "Graph property storage mode demos with flattened, JSON, and hybrid vertex/edge tables, traversal, centrality, and social network analytics"
+    },
+    {
+      "id": "delta-table",
+      "name": "Delta Table",
+      "icon": "triangle",
+      "description": "Delta Lake table management demos covering CRUD, schema evolution, MERGE, partitioning, time travel, constraints, and advanced SQL analytics"
+    },
+    {
+      "id": "delta-fundamentals",
+      "name": "Delta Fundamentals",
+      "icon": "triangle",
+      "description": "Core Delta operations: CRUD, schema evolution, MERGE upsert, partitioning, computed columns, constraints, complex types, and decimal precision"
+    },
+    {
+      "id": "delta-dml-merge",
+      "name": "Delta DML & MERGE",
+      "icon": "triangle",
+      "description": "Advanced data manipulation: complex DELETE/UPDATE patterns, multi-clause MERGE, generated columns, constraint enforcement, and analytics SQL"
+    },
+    {
+      "id": "delta-schema-types",
+      "name": "Delta Schema & Data Types",
+      "icon": "triangle",
+      "description": "Schema evolution, column mapping, type widening, binary/spatial data, variant types, timestamps, collations, and Parquet-to-Delta conversion"
+    },
+    {
+      "id": "delta-versioning",
+      "name": "Delta Versioning & History",
+      "icon": "triangle",
+      "description": "Time travel, RESTORE rollback, Change Data Feed, VACUUM cleanup, row tracking, and in-commit timestamps for version management"
+    },
+    {
+      "id": "delta-performance",
+      "name": "Delta Performance & Layout",
+      "icon": "triangle",
+      "description": "Statistics, Z-ORDER optimization, bloom filters, auto-optimize, deletion vectors, partition pruning, and table feature management"
+    }
+  ]
+}

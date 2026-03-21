@@ -1,0 +1,25 @@
+[demo]
+id = "delta-timestamp-ntz"
+name = "Delta Timestamps — Timezone-Free & Precision Handling"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Timestamp NTZ (No TimeZone) is a Delta protocol feature that stores timestamps \
+without embedded timezone information, preserving the literal date and time as written. \
+This matters because global systems often need to record "wall clock" times (like flight \
+departure boards) independently of UTC conversion logic. \
+This demo uses an airline scheduling system to show how local and UTC timestamps \
+coexist in a Delta table, handling cross-timezone flights and overnight arrivals.
+"""
+categories = ["delta-table"]
+tags = ["delta-table", "intermediate", "timestamp", "timezone", "varchar", "scheduling"]
+difficulty = "intermediate"
+estimated_time_minutes = 10
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.delta_demos.flight_schedule"
