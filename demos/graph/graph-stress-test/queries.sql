@@ -316,10 +316,11 @@ LIMIT 25;
 -- Betweenness centrality at 1M nodes: finds people on many shortest paths.
 -- If they leave, communication between groups breaks down. Critical
 -- for succession planning and retention strategy.
+-- Uses samplingSize for approximate mode (exact is O(n·m), infeasible at 1M).
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.graph.stress_test_network
-CALL algo.betweenness()
+CALL algo.betweenness({samplingSize: 1000})
 YIELD node_id, centrality, rank
 RETURN node_id, centrality, rank
 ORDER BY centrality DESC
