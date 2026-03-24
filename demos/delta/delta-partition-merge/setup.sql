@@ -38,7 +38,8 @@ PARTITIONED BY (category);
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_catalog TO USER {{current_user}};
 
 -- Electronics: ids 1-15
-INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
+INSERT INTO {{zone_name}}.delta_demos.product_catalog
+SELECT * FROM (VALUES
     (1,  'SKU-E001', 'Wireless Mouse',       29.99,  150, 'TechCorp',   'Electronics'),
     (2,  'SKU-E002', 'USB-C Hub',            49.99,  80,  'TechCorp',   'Electronics'),
     (3,  'SKU-E003', 'Bluetooth Speaker',    79.99,  45,  'SoundMax',   'Electronics'),
@@ -53,10 +54,12 @@ INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
     (12, 'SKU-E012', 'Power Strip Smart',    44.99,  85,  'PowerUp',    'Electronics'),
     (13, 'SKU-E013', 'Ethernet Adapter',     19.99,  160, 'CableCo',    'Electronics'),
     (14, 'SKU-E014', 'Screen Protector',     9.99,   400, 'ShieldTech', 'Electronics'),
-    (15, 'SKU-E015', 'Portable SSD 1TB',    109.99,  40,  'DataSafe',   'Electronics');
+    (15, 'SKU-E015', 'Portable SSD 1TB',    109.99,  40,  'DataSafe',   'Electronics')
+) AS t(id, sku, name, price, stock, supplier, category);
 
 -- Clothing: ids 16-30
-INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
+INSERT INTO {{zone_name}}.delta_demos.product_catalog
+SELECT * FROM (VALUES
     (16, 'SKU-C001', 'Cotton T-Shirt',      19.99,  300, 'ThreadCo',    'Clothing'),
     (17, 'SKU-C002', 'Denim Jeans Slim',    59.99,  120, 'DenimHouse',  'Clothing'),
     (18, 'SKU-C003', 'Running Shoes',       89.99,  80,  'StrideFit',   'Clothing'),
@@ -71,10 +74,12 @@ INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
     (27, 'SKU-C012', 'Dress Shirt',         44.99,  110, 'FormalWear',  'Clothing'),
     (28, 'SKU-C013', 'Swim Trunks',         22.99,  160, 'AquaStyle',   'Clothing'),
     (29, 'SKU-C014', 'Hiking Boots',        119.99, 55,  'OutdoorGear', 'Clothing'),
-    (30, 'SKU-C015', 'Silk Scarf',          34.99,  70,  'ThreadCo',    'Clothing');
+    (30, 'SKU-C015', 'Silk Scarf',          34.99,  70,  'ThreadCo',    'Clothing')
+) AS t(id, sku, name, price, stock, supplier, category);
 
 -- Home: ids 31-45
-INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
+INSERT INTO {{zone_name}}.delta_demos.product_catalog
+SELECT * FROM (VALUES
     (31, 'SKU-H001', 'Scented Candle Set',  24.99,  200, 'HomeGlow',   'Home'),
     (32, 'SKU-H002', 'Throw Pillow 18in',   19.99,  150, 'CozyNest',   'Home'),
     (33, 'SKU-H003', 'Kitchen Timer Digital',14.99,  180, 'ChefTools',  'Home'),
@@ -89,10 +94,12 @@ INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
     (42, 'SKU-H012', 'Spice Rack Rotating', 27.99,  110, 'ChefTools',  'Home'),
     (43, 'SKU-H013', 'Photo Frame 8x10',   15.99,   130, 'FrameIt',    'Home'),
     (44, 'SKU-H014', 'Shower Curtain',      21.99,  85,  'SpaLux',     'Home'),
-    (45, 'SKU-H015', 'Bookend Set Metal',   32.99,  70,  'DeskPro',    'Home');
+    (45, 'SKU-H015', 'Bookend Set Metal',   32.99,  70,  'DeskPro',    'Home')
+) AS t(id, sku, name, price, stock, supplier, category);
 
 -- Sports: ids 46-60
-INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
+INSERT INTO {{zone_name}}.delta_demos.product_catalog
+SELECT * FROM (VALUES
     (46, 'SKU-S001', 'Yoga Mat Premium',     34.99,  100, 'FlexFit',    'Sports'),
     (47, 'SKU-S002', 'Resistance Bands Set', 24.99,  200, 'FlexFit',    'Sports'),
     (48, 'SKU-S003', 'Water Bottle 32oz',    18.99,  300, 'HydroGear',  'Sports'),
@@ -107,7 +114,8 @@ INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
     (57, 'SKU-S012', 'Compression Sleeve',   19.99,  170, 'FlexFit',    'Sports'),
     (58, 'SKU-S013', 'Climbing Chalk Bag',   12.99,  110, 'SummitGear', 'Sports'),
     (59, 'SKU-S014', 'Headband Sweat',       8.99,   350, 'CardioKing', 'Sports'),
-    (60, 'SKU-S015', 'Fitness Tracker Band', 49.99,  65,  'TechCorp',   'Sports');
+    (60, 'SKU-S015', 'Fitness Tracker Band', 49.99,  65,  'TechCorp',   'Sports')
+) AS t(id, sku, name, price, stock, supplier, category);
 
 
 -- ============================================================================
