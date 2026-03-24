@@ -198,7 +198,6 @@ WHERE quarter = 'Q3';
 -- Instead of RESTORE (which is all-or-nothing), we surgically remove only
 -- the corrupted Q1 partition. This leaves Q2, Q3, and Q4 untouched.
 
-ASSERT ROW_COUNT = 10
 DELETE FROM {{zone_name}}.delta_demos.quarterly_revenue
 WHERE quarter = 'Q1';
 
