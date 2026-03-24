@@ -160,14 +160,14 @@ ORDER BY year_month;
 -- Q8  LEARN: Partition-Scoped DELETE — Remove Anomalous Readings
 -- ============================================================================
 -- Three February readings from the furnace-proximity sensors (S04, S05)
--- spiked above 30 C — anomalous for that month. The DELETE targets only
+-- spiked above 35 C — anomalous for that month. The DELETE targets only
 -- the year_month='2024-02' partition, rewriting just that directory while
 -- leaving all other months intact.
 -- ============================================================================
 ASSERT ROW_COUNT = 3
 DELETE FROM {{zone_name}}.delta_demos.line_metrics
 WHERE year_month = '2024-02'
-  AND reading > 30;
+  AND reading > 35;
 
 
 -- ============================================================================
@@ -200,7 +200,7 @@ ORDER BY year_month;
 --   2. January partition untouched at 15 rows
 --   3. April recalibration applied (id=46 reading = 24.3)
 --   4. July backfill exists with 15 rows
---   5. No anomalous February readings remain (reading > 30)
+--   5. No anomalous February readings remain (reading > 35)
 -- ============================================================================
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_rows = 102
@@ -213,5 +213,5 @@ SELECT
     SUM(CASE WHEN year_month = '2024-01' THEN 1 ELSE 0 END)               AS jan_rows,
     SUM(CASE WHEN year_month = '2024-07' THEN 1 ELSE 0 END)               AS jul_rows,
     ROUND(MAX(CASE WHEN id = 46 THEN reading END), 1)                      AS apr_check_reading,
-    SUM(CASE WHEN year_month = '2024-02' AND reading > 30 THEN 1 ELSE 0 END) AS feb_anomalous_count
+    SUM(CASE WHEN year_month = '2024-02' AND reading > 35 THEN 1 ELSE 0 END) AS feb_anomalous_count
 FROM {{zone_name}}.delta_demos.line_metrics;
