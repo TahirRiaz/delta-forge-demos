@@ -1536,34 +1536,6 @@
       "updatedAt": "2026-03-24T12:00:00Z"
     },
     {
-      "id": "delta-restore-selective-recovery",
-      "path": "demos/delta/delta-restore-selective-recovery",
-      "iconPath": "icons/delta-restore-selective-recovery.svg",
-      "name": "Delta RESTORE \u2014 Selective Recovery with Cherry-Pick",
-      "summary": "RESTORE is all-or-nothing, but real incidents are messy. This demo teaches selective recovery: restore to the last clean version, then surgically re-apply only the wanted changes. Scenario: accidental mass DELETE wipes active projects, but a subsequent archive must be preserved through the recovery.",
-      "categories": [
-        "delta-table",
-        "delta-versioning"
-      ],
-      "tags": [
-        "delta-table",
-        "advanced",
-        "restore",
-        "selective-recovery",
-        "time-travel",
-        "cherry-pick",
-        "version-history",
-        "recovery"
-      ],
-      "difficulty": "advanced",
-      "estimatedTimeMinutes": 12,
-      "dataSizeBytes": 0,
-      "fileCount": 4,
-      "author": "Delta Forge Team",
-      "version": "1.0.0",
-      "updatedAt": "2026-03-24T12:00:00Z"
-    },
-    {
       "id": "delta-time-travel-deep",
       "path": "demos/delta/delta-time-travel-deep",
       "iconPath": "icons/delta-time-travel-deep.svg",
