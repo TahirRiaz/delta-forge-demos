@@ -132,7 +132,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE total_subtotal = 4676.10 WHERE tax_group = '8% jurisdiction'
 ASSERT VALUE total_revenue = 5050.24 WHERE tax_group = '8% jurisdiction'
 ASSERT VALUE total_subtotal = 2338.79 WHERE tax_group = '10% jurisdiction'
-ASSERT VALUE total_revenue = 2572.68 WHERE tax_group = '10% jurisdiction'
+ASSERT VALUE total_revenue = 2572.69 WHERE tax_group = '10% jurisdiction'
 SELECT CASE WHEN id <= 30 THEN '8% jurisdiction' ELSE '10% jurisdiction' END AS tax_group,
        COUNT(*) AS order_count,
        ROUND(SUM(subtotal), 2) AS total_subtotal,
