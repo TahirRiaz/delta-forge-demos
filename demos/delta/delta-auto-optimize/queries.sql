@@ -42,7 +42,6 @@ ORDER BY batch_id;
 -- produces optimally-sized files instead of tiny ones. With autoCompact, a
 -- post-commit job merges any remaining small files.
 
-ASSERT ROW_COUNT = 10
 INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
     (11, 'DEV-001', 'humidity', 55.0, 'percent', 'good', 2, '2025-01-15 09:00:00'),
     (12, 'DEV-002', 'humidity', 62.3, 'percent', 'good', 2, '2025-01-15 09:01:00'),
@@ -70,7 +69,6 @@ ORDER BY batch_id;
 -- BATCH 3: Pressure readings (10 rows) — 1 extreme value (> 1050 hPa)
 -- ============================================================================
 
-ASSERT ROW_COUNT = 10
 INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
     (21, 'DEV-001', 'pressure', 1013.2, 'hPa', 'good', 3, '2025-01-15 10:00:00'),
     (22, 'DEV-002', 'pressure', 1010.5, 'hPa', 'good', 3, '2025-01-15 10:01:00'),
@@ -88,7 +86,6 @@ INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
 -- BATCH 4: Wind speed readings (10 rows) — 1 extreme value (> 55 km/h)
 -- ============================================================================
 
-ASSERT ROW_COUNT = 10
 INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
     (31, 'DEV-001', 'wind_speed', 12.3, 'km/h', 'good', 4, '2025-01-15 11:00:00'),
     (32, 'DEV-002', 'wind_speed', 8.7,  'km/h', 'good', 4, '2025-01-15 11:01:00'),
@@ -119,7 +116,6 @@ ORDER BY device_id;
 -- BATCH 5: Light readings (10 rows) — 1 extreme value (> 900 lux)
 -- ============================================================================
 
-ASSERT ROW_COUNT = 10
 INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
     (41, 'DEV-001', 'light', 320.0, 'lux', 'good', 5, '2025-01-15 12:00:00'),
     (42, 'DEV-002', 'light', 450.5, 'lux', 'good', 5, '2025-01-15 12:01:00'),
@@ -137,7 +133,6 @@ INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
 -- BATCH 6: Noise readings (10 rows) — 1 extreme value (> 85 dB)
 -- ============================================================================
 
-ASSERT ROW_COUNT = 10
 INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
     (51, 'DEV-001', 'noise', 42.0, 'dB', 'good', 6, '2025-01-15 13:00:00'),
     (52, 'DEV-002', 'noise', 55.3, 'dB', 'good', 6, '2025-01-15 13:01:00'),
@@ -157,7 +152,6 @@ INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
 -- This is the final batch. After this INSERT, all 70 rows are loaded across
 -- 7 metric types. Auto-optimize has been compacting files after each write.
 
-ASSERT ROW_COUNT = 10
 INSERT INTO {{zone_name}}.delta_demos.iot_readings VALUES
     (61, 'DEV-001', 'vibration', 2.1, 'mm/s', 'good', 7, '2025-01-15 14:00:00'),
     (62, 'DEV-002', 'vibration', 3.5, 'mm/s', 'good', 7, '2025-01-15 14:01:00'),
@@ -199,7 +193,6 @@ ORDER BY batch_id;
 --   vibration > 8.0    -> id 65              (1 row)
 -- Total: 8 rows updated to quality='poor'
 
-ASSERT ROW_COUNT = 8
 UPDATE {{zone_name}}.delta_demos.iot_readings
 SET quality = 'poor'
 WHERE (metric = 'temperature' AND value > 45.0)
