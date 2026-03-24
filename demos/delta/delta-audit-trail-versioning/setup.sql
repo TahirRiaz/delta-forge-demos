@@ -115,11 +115,11 @@ INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
 -- MERGE ensures idempotent ingestion — only new event_ids are inserted.
 MERGE INTO {{zone_name}}.audit_demos.compliance_events AS target
 USING (VALUES
-    (38, 'ACCT-1001', 'Meridian Holdings LLC',    'deposit',    100000.00, 305000.00,  'j.chen',     'downtown',  '2024-04-01 09:00:00'),
-    (39, 'ACCT-1003', 'Cascade Financial Group',  'withdrawal', 75000.00,  350000.00,  's.williams', 'westside',  '2024-04-02 10:30:00'),
-    (40, 'ACCT-1006', 'Ironclad Securities',      'transfer',   100000.00, 400000.00,  's.williams', 'westside',  '2024-04-03 15:00:00'),
-    (41, 'ACCT-1007', 'BlueSky Investments',      'deposit',    200000.00, 700000.00,  'm.torres',   'eastpoint', '2024-04-05 11:15:00'),
-    (42, 'ACCT-1004', 'Pinnacle Trust Co',        'deposit',    60000.00,  300000.00,  'j.chen',     'downtown',  '2024-04-08 08:45:00')
+    (CAST(38 AS INT), 'ACCT-1001', 'Meridian Holdings LLC',    'deposit',    100000.00, 305000.00,  'j.chen',     'downtown',  '2024-04-01 09:00:00'),
+    (CAST(39 AS INT), 'ACCT-1003', 'Cascade Financial Group',  'withdrawal', 75000.00,  350000.00,  's.williams', 'westside',  '2024-04-02 10:30:00'),
+    (CAST(40 AS INT), 'ACCT-1006', 'Ironclad Securities',      'transfer',   100000.00, 400000.00,  's.williams', 'westside',  '2024-04-03 15:00:00'),
+    (CAST(41 AS INT), 'ACCT-1007', 'BlueSky Investments',      'deposit',    200000.00, 700000.00,  'm.torres',   'eastpoint', '2024-04-05 11:15:00'),
+    (CAST(42 AS INT), 'ACCT-1004', 'Pinnacle Trust Co',        'deposit',    60000.00,  300000.00,  'j.chen',     'downtown',  '2024-04-08 08:45:00')
 ) AS source(event_id, account_id, account_name, event_type, amount, balance, officer, branch, event_date)
 ON target.event_id = source.event_id
 WHEN NOT MATCHED THEN INSERT (event_id, account_id, account_name, event_type, amount, balance, officer, branch, event_date)
