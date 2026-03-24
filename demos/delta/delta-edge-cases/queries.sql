@@ -61,7 +61,14 @@ SET config_value = '{"max_connections":200,"timeout_ms":10000,"debug":true}',
     updated_at = '2025-02-01 14:30:00'
 WHERE version = 2;
 
--- Verify the optimistic lock worked — version is now 3:
+
+-- ============================================================================
+-- EVOLVE: Verify Optimistic Lock
+-- ============================================================================
+-- The UPDATE matched 1 row (version was indeed 2), so the lock succeeded.
+-- If version had already been bumped by another process, the UPDATE above
+-- would have returned ROW_COUNT = 0 — a signal to retry or abort.
+
 ASSERT ROW_COUNT = 1
 ASSERT VALUE version = 3
 ASSERT VALUE updated_by = 'dev-lead'
@@ -80,6 +87,15 @@ FROM {{zone_name}}.delta_demos.config_singleton;
 
 ASSERT ROW_COUNT = 1
 DELETE FROM {{zone_name}}.delta_demos.config_singleton;
+
+
+-- ============================================================================
+-- EVOLVE: Re-INSERT with New Config Schema
+-- ============================================================================
+-- Now insert a fresh row with a completely new configuration structure.
+-- The new config adds a "region" field that didn't exist before — this
+-- kind of schema migration is why DELETE + re-INSERT is sometimes
+-- preferred over UPDATE.
 
 ASSERT ROW_COUNT = 1
 INSERT INTO {{zone_name}}.delta_demos.config_singleton VALUES
@@ -268,45 +284,52 @@ ORDER BY w.id;
 
 
 -- ============================================================================
--- VERIFY: All Checks
+-- VERIFY: Singleton State
 -- ============================================================================
 
 -- Verify singleton_row_count: exactly 1 row after DELETE + re-INSERT
 ASSERT ROW_COUNT = 1
+ASSERT VALUE version = 1
+ASSERT VALUE updated_by = 'sre-team'
+ASSERT VALUE config_value = '{"max_connections":250,"timeout_ms":3000,"debug":true,"region":"us-east-1"}'
 SELECT * FROM {{zone_name}}.delta_demos.config_singleton;
 
--- Verify singleton_version: reset to 1 after full row replace
-ASSERT VALUE version = 1
-SELECT version FROM {{zone_name}}.delta_demos.config_singleton;
 
--- Verify singleton_updater: last inserted by sre-team
-ASSERT VALUE updated_by = 'sre-team'
-SELECT updated_by FROM {{zone_name}}.delta_demos.config_singleton;
+-- ============================================================================
+-- VERIFY: Wide Table State
+-- ============================================================================
 
--- Verify singleton_config: new config with region field
-ASSERT VALUE config_value = '{"max_connections":250,"timeout_ms":3000,"debug":true,"region":"us-east-1"}'
-SELECT config_value FROM {{zone_name}}.delta_demos.config_singleton;
-
--- Verify wide_row_count: 18 rows after deleting 2 provisional months
+-- Verify wide metrics after update + prune: 18 rows, corrected revenue
 ASSERT VALUE cnt = 18
 SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.wide_metrics;
 
--- Verify wide_updated_revenue: id=1 revenue corrected to 131000
-ASSERT VALUE m01_revenue = 131000.0
-SELECT m01_revenue FROM {{zone_name}}.delta_demos.wide_metrics WHERE id = 1;
 
--- Verify wide_max_revenue: peak is still 190000 (Jun-2025, id=18)
+-- ============================================================================
+-- VERIFY: Wide Table Values
+-- ============================================================================
+
+-- Verify key aggregations reflect all mutations
+ASSERT VALUE corrected_revenue = 131000.0
 ASSERT VALUE max_rev = 190000.0
-SELECT MAX(m01_revenue) AS max_rev FROM {{zone_name}}.delta_demos.wide_metrics;
+ASSERT VALUE total_profit = 1039000.0
+SELECT (SELECT m01_revenue FROM {{zone_name}}.delta_demos.wide_metrics WHERE id = 1) AS corrected_revenue,
+       (SELECT MAX(m01_revenue) FROM {{zone_name}}.delta_demos.wide_metrics) AS max_rev,
+       (SELECT SUM(m03_profit) FROM {{zone_name}}.delta_demos.wide_metrics) AS total_profit;
 
--- Verify wide_total_profit: sum reflects corrected id=1 profit
-ASSERT VALUE total = 1039000.0
-SELECT SUM(m03_profit) AS total FROM {{zone_name}}.delta_demos.wide_metrics;
 
--- Verify empty_row_count: staging is empty after full cycle
+-- ============================================================================
+-- VERIFY: Empty Table State
+-- ============================================================================
+
+-- Verify staging is empty after full lifecycle
 ASSERT ROW_COUNT = 0
 SELECT * FROM {{zone_name}}.delta_demos.empty_staging;
 
--- Verify empty_max_is_null: NULL aggregates on empty table
+
+-- ============================================================================
+-- VERIFY: Empty Table Aggregates
+-- ============================================================================
+
+-- Verify NULL aggregates on empty table
 ASSERT VALUE max_id IS NULL
 SELECT MAX(id) AS max_id FROM {{zone_name}}.delta_demos.empty_staging;
