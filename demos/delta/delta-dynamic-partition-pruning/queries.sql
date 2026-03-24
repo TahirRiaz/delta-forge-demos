@@ -10,6 +10,22 @@
 -- HOW:  The engine first evaluates the dimension-side filter to determine
 --       which partition values are needed, then only opens data files in
 --       those partition directories — skipping the rest entirely.
+--
+-- HOW TO OBSERVE PRUNING:
+--   The Delta Forge engine logs partition pruning activity at INFO level.
+--   After each query, the compute engine outputs a line like:
+--
+--     File filtering: 2 of 4 files skipped
+--       (partition pruning: 2, statistics: 0, 50.0% reduction)
+--
+--   The execution plan (DeltaScanExec) also shows skip counts:
+--
+--     DeltaScanExec: table=sales_facts, files=2/4
+--       (skipped: partition=2, stats=0), rows=28 (effective=28)
+--
+--   "partition=2" means 2 partition directories were never opened.
+--   "stats=0" means no additional files skipped by min/max statistics.
+--   Check the compute engine's log output to see these lines in action.
 -- ============================================================================
 
 
@@ -52,7 +68,7 @@ ORDER BY target_amount DESC;
 
 
 -- ============================================================================
--- LEARN: Dynamic Partition Pruning in Action
+-- LEARN: Dynamic Partition Pruning via JOIN
 -- ============================================================================
 -- When we JOIN sales_facts with region_targets and filter on
 -- target_amount > 50000, only us-east (75000) and us-west (60000) match.
@@ -64,6 +80,11 @@ ORDER BY target_amount DESC;
 --   4. Skips region=eu-west/ and region=ap-south/ entirely
 --
 -- This means only 28 rows are scanned instead of all 55 — a 49% reduction.
+--
+-- ENGINE LOG: For this query you should see:
+--   "File filtering: 2 of 4 files skipped (partition pruning: 2, ...)"
+-- The engine skips the eu-west and ap-south partition directories entirely —
+-- their Parquet files are never opened or read.
 
 -- Verify only us-east and us-west match target_amount > 50000
 ASSERT VALUE target_amount = 75000 WHERE region = 'us-east'
@@ -83,6 +104,63 @@ JOIN {{zone_name}}.delta_demos.region_targets t
 WHERE t.target_amount > 50000
 GROUP BY s.region, t.target_amount
 ORDER BY s.region;
+
+
+-- ============================================================================
+-- LEARN: Subquery-Based Dynamic Pruning
+-- ============================================================================
+-- The classic form of dynamic partition pruning uses an IN-subquery rather
+-- than a JOIN. The engine evaluates the subquery first to collect the set of
+-- matching partition values, then prunes fact-table partitions that are not
+-- in that set — identical to the JOIN approach but more explicit.
+--
+-- Here we select only regions whose target_qty >= 400 (us-east=500,
+-- us-west=400). The engine resolves the subquery to {'us-east','us-west'},
+-- then skips the eu-west and ap-south partition directories entirely.
+--
+-- ENGINE LOG: Same as the JOIN query — expect "partition pruning: 2".
+
+ASSERT VALUE total_sales = 18415.5 WHERE region = 'us-east'
+ASSERT VALUE total_sales = 21380.0 WHERE region = 'us-west'
+ASSERT ROW_COUNT = 2
+SELECT region,
+       COUNT(*) AS row_count,
+       ROUND(SUM(amount), 2) AS total_sales,
+       SUM(qty) AS total_qty
+FROM {{zone_name}}.delta_demos.sales_facts
+WHERE region IN (
+    SELECT region FROM {{zone_name}}.delta_demos.region_targets
+    WHERE target_qty >= 400
+)
+GROUP BY region
+ORDER BY region;
+
+
+-- ============================================================================
+-- CONTRAST: No Pruning Possible — Non-Partition Filter
+-- ============================================================================
+-- Filtering on a non-partition column (channel) cannot prune partitions.
+-- The engine must open ALL 4 partition directories to find 'online' rows
+-- because any partition could contain online sales.
+--
+-- ENGINE LOG: For this query you should see:
+--   "File filtering: 0 of 4 files skipped (partition pruning: 0, ...)"
+-- Compare this to the pruned queries above where 2 of 4 were skipped.
+-- This contrast shows why choosing the right partition column matters:
+-- partition by your most common filter dimension.
+
+ASSERT VALUE row_count = 5 WHERE region = 'us-east'
+ASSERT VALUE row_count = 5 WHERE region = 'us-west'
+ASSERT VALUE row_count = 5 WHERE region = 'eu-west'
+ASSERT VALUE row_count = 4 WHERE region = 'ap-south'
+ASSERT ROW_COUNT = 4
+SELECT region,
+       COUNT(*) AS row_count,
+       ROUND(SUM(amount), 2) AS total_sales
+FROM {{zone_name}}.delta_demos.sales_facts
+WHERE channel = 'online'
+GROUP BY region
+ORDER BY region;
 
 
 -- ============================================================================
@@ -111,11 +189,14 @@ ORDER BY id;
 
 
 -- ============================================================================
--- EXPLORE: Quarterly Performance by Channel
+-- EXPLORE: Quarterly Performance by Channel (Full Scan)
 -- ============================================================================
 -- Partitioning by region optimizes region-based queries, but queries on
 -- other dimensions (quarter, channel) still scan all partitions. Choosing
 -- the right partition column depends on your most common query patterns.
+--
+-- ENGINE LOG: No partition pruning here — all 4 partition directories are
+-- scanned because neither quarter nor channel is the partition column.
 
 ASSERT VALUE total_amount = 11060.0 WHERE quarter = 'Q1-2024' AND channel = 'wholesale'
 ASSERT VALUE total_amount = 5913.0 WHERE quarter = 'Q1-2024' AND channel = 'online'
@@ -193,3 +274,11 @@ SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts WHERE quarter 
 -- Verify joined_result: 28 rows when joining with high-target regions
 ASSERT VALUE cnt = 28
 SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts s JOIN {{zone_name}}.delta_demos.region_targets t ON s.region = t.region WHERE t.target_amount > 50000;
+
+-- Verify subquery_result: 28 rows via IN-subquery pruning path
+ASSERT VALUE cnt = 28
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts WHERE region IN (SELECT region FROM {{zone_name}}.delta_demos.region_targets WHERE target_qty >= 400);
+
+-- Verify online_sales: 19 online rows across all partitions
+ASSERT VALUE cnt = 19
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts WHERE channel = 'online';
