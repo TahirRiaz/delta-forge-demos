@@ -165,7 +165,7 @@ ORDER BY id;
 -- 8. COMBINED OPTIONS — delimiter + comment + null + trim together
 -- ============================================================================
 -- Tests all options working simultaneously.
--- Expected: 5 rows (comments skipped), 2 null scores, names trimmed
+-- 5 data rows (comments skipped), 2 null scores, names trimmed
 
 ASSERT VALUE total_rows = 5
 SELECT COUNT(*) AS total_rows
