@@ -10,6 +10,17 @@
 --       records which row indices are deleted. Readers skip those rows.
 --       UPDATE = DV on old row + write new row to a new file. OPTIMIZE
 --       later materializes DVs by rewriting files without the deleted rows.
+--       VACUUM then cleans up the orphaned files left behind.
+--
+-- This demo covers the full DV lifecycle:
+--   1. DELETE  — create DVs (two rounds)
+--   2. UPDATE  — create DVs for old rows + write new rows
+--   3. INSPECT — DESCRIBE DETAIL to see accumulated DVs
+--   4. OPTIMIZE — materialize DVs into compacted files
+--   5. INSPECT — DESCRIBE DETAIL to confirm DVs are gone
+--   6. HISTORY — DESCRIBE HISTORY to see every DV operation logged
+--   7. TIME TRAVEL — VERSION AS OF to access pre-DELETE data
+--   8. VACUUM  — purge orphaned files, completing the lifecycle
 -- ============================================================================
 
 
@@ -61,15 +72,16 @@ WHERE status = 'bounced';
 
 
 -- ============================================================================
--- STEP 2: DELETE — Remove 8 expired sessions older than 2024-02-01 (more DVs)
+-- STEP 2: DELETE — Remove expired sessions older than 2024-02-01 (more DVs)
 -- ============================================================================
 -- Expired sessions from January 2024 are stale data. This second DELETE
 -- accumulates additional deletion vectors on the same data files.
+-- Distribution: us-east 2 (ids 18,19), eu-west 3 (ids 36,37,38),
+-- ap-south 3 (ids 55,56,57) — totalling 8 rows.
 
 ASSERT ROW_COUNT = 8
 DELETE FROM {{zone_name}}.delta_demos.web_sessions
 WHERE status = 'expired' AND started_at < '2024-02-01';
--- Removes ids: 18,19 (us-east), 36,37,38 (eu-west), 55,56,57 (ap-south)
 -- 50 - 8 = 42 rows remaining
 
 
@@ -107,27 +119,33 @@ ORDER BY session_count DESC;
 
 
 -- ============================================================================
--- STEP 3: UPDATE — Upgrade 5 active sessions to completed (+5000ms duration)
+-- STEP 3: UPDATE — Upgrade long-running active sessions to completed
 -- ============================================================================
--- These sessions just finished. UPDATE in Delta with DVs works by marking the
--- old row as deleted (DV) and writing a new row with updated values.
--- Row count stays the same (42) but status and duration_ms change.
+-- Active sessions with duration >= 18 seconds have naturally completed — the
+-- user finished browsing. We mark them 'completed' and add 5000ms to account
+-- for session teardown overhead. UPDATE in Delta with DVs works by marking
+-- the old row as deleted (DV) and writing a new row with updated values.
+-- Row count stays 42 but status and duration_ms change for 5 rows.
 
 ASSERT ROW_COUNT = 5
 UPDATE {{zone_name}}.delta_demos.web_sessions
 SET status = 'completed', duration_ms = duration_ms + 5000
-WHERE id IN (1, 2, 3, 4, 5);
--- id=1: duration 12000 -> 17000, id=2: 9500 -> 14500, id=3: 25000 -> 30000
--- id=4: 6000 -> 11000, id=5: 18000 -> 23000
+WHERE status = 'active' AND duration_ms >= 18000;
+-- Matches across all 3 regions:
+--   id=3  (us-east):  25000 -> 30000
+--   id=5  (us-east):  18000 -> 23000
+--   id=8  (us-east):  20000 -> 25000
+--   id=24 (eu-west):  22000 -> 27000
+--   id=42 (ap-south): 21000 -> 26000
 -- active: 20 - 5 = 15, completed: 16 + 5 = 21
 
 
 -- ============================================================================
 -- OBSERVE: Verify the UPDATE created DVs for old rows + wrote new rows
 -- ============================================================================
--- Verify id=1 duration updated from 12000 to 17000
-ASSERT VALUE duration_ms = 17000
-SELECT duration_ms FROM {{zone_name}}.delta_demos.web_sessions WHERE id = 1;
+-- Verify id=8 duration updated from 20000 to 25000
+ASSERT VALUE duration_ms = 25000
+SELECT duration_ms FROM {{zone_name}}.delta_demos.web_sessions WHERE id = 8;
 
 -- Verify id=3 duration updated from 25000 to 30000
 ASSERT VALUE duration_ms = 30000
@@ -142,12 +160,24 @@ SELECT duration_ms FROM {{zone_name}}.delta_demos.web_sessions WHERE id = 3;
 ASSERT ROW_COUNT = 8
 SELECT id, session_id, status, duration_ms,
        CASE
-           WHEN id IN (1,2,3,4,5) THEN 'Updated (was active, +5000ms)'
+           WHEN id IN (3, 5, 8) THEN 'Updated (+5000ms, now completed)'
            ELSE 'Original'
        END AS update_status
 FROM {{zone_name}}.delta_demos.web_sessions
 WHERE id <= 8
 ORDER BY id;
+
+
+-- ============================================================================
+-- INSPECT: Table detail before OPTIMIZE — DVs are accumulated
+-- ============================================================================
+-- DESCRIBE DETAIL reveals the physical state of the Delta table. Before
+-- OPTIMIZE, the table has the original data files plus DV bitmap files
+-- accumulated from two DELETEs and one UPDATE. The UPDATE also wrote a
+-- new data file for the 5 updated rows.
+
+ASSERT ROW_COUNT = 1
+DESCRIBE DETAIL {{zone_name}}.delta_demos.web_sessions;
 
 
 -- ============================================================================
@@ -161,6 +191,17 @@ ORDER BY id;
 --   - Same logical data, better read performance
 
 OPTIMIZE {{zone_name}}.delta_demos.web_sessions;
+
+
+-- ============================================================================
+-- INSPECT: Table detail after OPTIMIZE — DVs are gone
+-- ============================================================================
+-- After OPTIMIZE, the table is fully compacted. Compare with the pre-OPTIMIZE
+-- detail above: fewer files, no deletion vectors, and the data is physically
+-- clean. The logical data is identical — only the storage layout changed.
+
+ASSERT ROW_COUNT = 1
+DESCRIBE DETAIL {{zone_name}}.delta_demos.web_sessions;
 
 
 -- ============================================================================
@@ -184,11 +225,35 @@ ORDER BY region;
 
 
 -- ============================================================================
+-- EXPLORE: Transaction History — every DV operation is logged
+-- ============================================================================
+-- DESCRIBE HISTORY reveals the full version log. Each DELETE, UPDATE, and
+-- OPTIMIZE is a separate transaction with its own version number:
+--   v0: CREATE TABLE  |  v1-3: INSERTs  |  v4-5: DELETEs (DVs created)
+--   v6: UPDATE (DVs created + new rows)  |  v7: OPTIMIZE (DVs materialized)
+
+ASSERT ROW_COUNT = 8
+DESCRIBE HISTORY {{zone_name}}.delta_demos.web_sessions;
+
+
+-- ============================================================================
+-- EXPLORE: Time Travel — access the original 60 rows before any DELETEs
+-- ============================================================================
+-- Even after DELETEs and OPTIMIZE, the original data is still accessible via
+-- time travel. Version 3 is the state after all three INSERTs completed but
+-- before any modifications — all 60 rows intact.
+
+ASSERT VALUE original_count = 60
+SELECT COUNT(*) AS original_count
+FROM {{zone_name}}.delta_demos.web_sessions VERSION AS OF 3;
+
+
+-- ============================================================================
 -- EXPLORE: Session Duration Distribution by Region
 -- ============================================================================
 -- After removing bounced sessions (very short) and old expired sessions,
 -- the remaining data represents genuine user engagement. The 5 updated
--- sessions (ids 1-5) had 5000ms added to their duration.
+-- sessions had 5000ms added to their duration.
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE total_page_views = 103 WHERE region = 'ap-south'
@@ -202,6 +267,17 @@ SELECT region,
 FROM {{zone_name}}.delta_demos.web_sessions
 GROUP BY region
 ORDER BY avg_duration DESC;
+
+
+-- ============================================================================
+-- STEP 5: VACUUM — Clean up orphaned files
+-- ============================================================================
+-- OPTIMIZE left behind the old data files and DV bitmaps as orphaned files.
+-- VACUUM removes files no longer referenced by any active transaction,
+-- reclaiming storage. This completes the full DV lifecycle:
+--   CREATE (DELETE/UPDATE) -> ACCUMULATE -> MATERIALIZE (OPTIMIZE) -> PURGE (VACUUM)
+
+VACUUM {{zone_name}}.delta_demos.web_sessions RETAIN 0 HOURS;
 
 
 -- ============================================================================
@@ -228,13 +304,13 @@ SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.web_sessions WHERE status 
 ASSERT VALUE cnt = 15
 SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.web_sessions WHERE status = 'active';
 
--- Verify region_distribution: us-east has 14 rows after deletions
+-- Verify region_distribution: each region has 14 rows after deletions
 ASSERT VALUE cnt = 14
 SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.web_sessions WHERE region = 'us-east';
 
--- Verify updated_duration: id=1 duration increased by 5000ms to 17000
-ASSERT VALUE duration_ms = 17000
-SELECT duration_ms FROM {{zone_name}}.delta_demos.web_sessions WHERE id = 1;
+-- Verify updated_duration: id=8 duration increased by 5000ms (20000 -> 25000)
+ASSERT VALUE duration_ms = 25000
+SELECT duration_ms FROM {{zone_name}}.delta_demos.web_sessions WHERE id = 8;
 
 -- Verify session_integrity: all 42 remaining rows have unique session_ids
 ASSERT VALUE cnt = 42

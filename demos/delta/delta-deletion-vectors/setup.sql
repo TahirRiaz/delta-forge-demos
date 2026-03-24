@@ -2,8 +2,8 @@
 -- Delta Deletion Vectors — Setup Script
 -- ============================================================================
 -- Creates the web_sessions table and inserts 60 baseline rows across 3 regions.
--- The queries.sql file then demonstrates DELETE, UPDATE, and OPTIMIZE operations
--- that create and materialize deletion vectors.
+-- The queries.sql file demonstrates the full DV lifecycle: DELETE, UPDATE,
+-- DESCRIBE DETAIL, OPTIMIZE, DESCRIBE HISTORY, VERSION AS OF, and VACUUM.
 --
 -- Tables created:
 --   1. web_sessions — 60 initial rows (20 per region)
