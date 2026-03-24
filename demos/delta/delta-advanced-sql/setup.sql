@@ -37,6 +37,9 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.stock_prices (
     volume      BIGINT
 ) LOCATION '{{data_path}}/stock_prices';
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.stock_prices;
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.stock_prices TO USER {{current_user}};
+
 -- AAPL: base=185, amplitude=5
 INSERT INTO {{zone_name}}.delta_demos.stock_prices VALUES
     ('AAPL', '2024-01-02', 185.00, 186.50, 187.20, 184.30, 52000000),
@@ -151,6 +154,3 @@ INSERT INTO {{zone_name}}.delta_demos.stock_prices VALUES
     ('TSLA', '2024-01-26', 269.00, 266.30, 269.60, 265.10, 89000000),
     ('TSLA', '2024-01-29', 266.30, 270.80, 272.50, 265.40, 111000000),
     ('TSLA', '2024-01-30', 270.80, 272.50, 274.20, 269.50, 100000000);
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.stock_prices;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.stock_prices TO USER {{current_user}};
