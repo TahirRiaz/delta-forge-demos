@@ -116,15 +116,15 @@ ORDER BY floor, zone;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 5
-ASSERT VALUE total_readings = 500 WHERE "floor" = 1
-ASSERT VALUE total_readings = 500 WHERE "floor" = 2
-ASSERT VALUE total_readings = 500 WHERE "floor" = 3
-ASSERT VALUE total_readings = 500 WHERE "floor" = 4
-ASSERT VALUE total_readings = 500 WHERE "floor" = 5
-ASSERT VALUE occupied_readings = 364 WHERE "floor" = 1
-ASSERT VALUE occupancy_pct = 72.8 WHERE "floor" = 1
-ASSERT VALUE occupied_readings = 333 WHERE "floor" = 4
-ASSERT VALUE occupancy_pct = 66.6 WHERE "floor" = 4
+ASSERT VALUE total_readings = 500 WHERE floor = 1
+ASSERT VALUE total_readings = 500 WHERE floor = 2
+ASSERT VALUE total_readings = 500 WHERE floor = 3
+ASSERT VALUE total_readings = 500 WHERE floor = 4
+ASSERT VALUE total_readings = 500 WHERE floor = 5
+ASSERT VALUE occupied_readings = 364 WHERE floor = 1
+ASSERT VALUE occupancy_pct = 72.8 WHERE floor = 1
+ASSERT VALUE occupied_readings = 333 WHERE floor = 4
+ASSERT VALUE occupancy_pct = 66.6 WHERE floor = 4
 SELECT floor,
        COUNT(*) AS total_readings,
        SUM(CASE WHEN CAST(occupancy AS BOOLEAN) THEN 1 ELSE 0 END) AS occupied_readings,
