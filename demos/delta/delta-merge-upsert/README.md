@@ -1,31 +1,28 @@
-# Delta MERGE — Upsert, Conditional Update & Delete
+# Delta MERGE — CDC Upsert with BY SOURCE
 
-Demonstrates the MERGE INTO statement for complex upsert operations with
-all three merge clauses.
+Full three-way CDC upsert using MERGE INTO with WHEN MATCHED, WHEN NOT MATCHED, and WHEN NOT MATCHED BY SOURCE to atomically update, insert, and delete in a single statement.
 
 ## Data Story
 
-A loyalty program merges daily customer updates into the master table.
-Existing customers get updated spending totals and tier recalculations,
-new customers are inserted, and stale bronze-tier customers not in the
-update batch are removed.
+A product catalog receives a daily supplier feed. The feed contains updated prices for existing products and new items entering the catalog. Products that disappear from the feed with low stock are discontinued and removed.
 
 ## Tables
 
 | Object | Type | Rows | Purpose |
 |--------|------|------|---------|
-| `customers` | Delta Table | 21 (final) | Master customer table (target) |
-| `customer_updates` | Delta Table | 15 | Staged updates (source) |
+| products | Delta | 15 | Current product catalog (target) |
+| product_feed | Delta | 12 | Daily supplier feed (source) |
 
-## MERGE Clauses
+## Operations Demonstrated
 
-| Clause | Action | Count |
-|--------|--------|-------|
-| WHEN MATCHED | Update spending + recalculate tier | 10 |
-| WHEN NOT MATCHED | Insert new customer | 5 |
-| WHEN NOT MATCHED BY SOURCE AND bronze | Delete stale record | 4 |
+1. **WHEN MATCHED** — Update price and stock from the feed (8 products)
+2. **WHEN NOT MATCHED** — Insert new products from the feed (4 products)
+3. **WHEN NOT MATCHED BY SOURCE** — Delete discontinued low-stock products (3 products)
+4. Conditional BY SOURCE predicate (`AND target.in_stock <= 5`) to protect well-stocked items
 
 ## Verification
 
-10 automated PASS/FAIL checks verify matched updates, new inserts,
-deleted records, tier promotions, and unchanged customers.
+- Final product count: 15 - 3 + 4 = 16
+- Discontinued products (ids 13-15) removed
+- Well-stocked non-feed products (ids 9-12) survive
+- Price and stock updates verified

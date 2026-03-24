@@ -823,11 +823,11 @@
       "id": "delta-merge-upsert",
       "path": "demos/delta/delta-merge-upsert",
       "iconPath": "icons/delta-merge-upsert.svg",
-      "name": "Delta MERGE \u2014 Upsert, Conditional Update & Delete",
-      "summary": "The MERGE INTO upsert pattern is the foundation of change data capture \\ (CDC) pipelines, atomically applying inserts, updates, and deletes from \\ a staging source to a target table. The WHEN NOT...",
+      "name": "Delta MERGE \u2014 CDC Upsert with BY SOURCE",
+      "summary": "The MERGE INTO upsert pattern is the foundation of change data capture (CDC) pipelines, atomically applying inserts, updates, and deletes from a staging source to a target table. The WHEN NOT MATCHED BY SOURCE clause detects and removes stale target rows absent from the source feed.",
       "categories": [
         "delta-table",
-        "delta-fundamentals"
+        "delta-dml-merge"
       ],
       "tags": [
         "delta-table",
@@ -836,7 +836,35 @@
         "upsert",
         "cdc",
         "matched",
-        "not-matched"
+        "not-matched",
+        "by-source"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "2.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-merge-computed-columns",
+      "path": "demos/delta/delta-merge-computed-columns",
+      "iconPath": "icons/delta-merge-computed-columns.svg",
+      "name": "Delta MERGE \u2014 Computed Columns & CASE Logic",
+      "summary": "Embed business logic directly in MERGE using CASE expressions, arithmetic, and conditional logic in UPDATE SET and INSERT VALUES clauses to compute derived columns (tier, discount, priority score) at merge time.",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "merge",
+        "case",
+        "computed",
+        "derived-columns",
+        "business-logic"
       ],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 10,
@@ -844,7 +872,63 @@
       "fileCount": 5,
       "author": "Delta Forge Team",
       "version": "1.0.0",
-      "updatedAt": "2026-03-09T12:00:00Z"
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-merge-soft-delete",
+      "path": "demos/delta/delta-merge-soft-delete",
+      "iconPath": "icons/delta-merge-soft-delete.svg",
+      "name": "Delta MERGE \u2014 Soft Delete with BY SOURCE",
+      "summary": "Production CDC pipelines rarely hard-delete records. This demo uses WHEN NOT MATCHED BY SOURCE with UPDATE (not DELETE) to flag stale records as inactive, with tiered rules: high-value records get flagged for review while low-value records are deactivated automatically.",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "merge",
+        "soft-delete",
+        "cdc",
+        "by-source",
+        "audit",
+        "deactivate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-merge-dedup",
+      "path": "demos/delta/delta-merge-dedup",
+      "iconPath": "icons/delta-merge-dedup.svg",
+      "name": "Delta MERGE \u2014 Deduplication (Keep Latest)",
+      "summary": "Deduplicate a table by merging against a subquery that selects the winning row per business key using ROW_NUMBER. The self-merge pattern is idempotent and handles at-least-once delivery, pipeline retries, and overlapping batch windows.",
+      "categories": [
+        "delta-table",
+        "delta-dml-merge"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "merge",
+        "dedup",
+        "deduplication",
+        "row-number",
+        "self-merge",
+        "at-least-once"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
     },
     {
       "id": "delta-merge-idempotent",

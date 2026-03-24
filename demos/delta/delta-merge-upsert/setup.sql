@@ -1,17 +1,17 @@
 -- ============================================================================
--- Delta MERGE — Upsert, Conditional Update & Delete — Setup Script
+-- Delta MERGE — CDC Upsert with BY SOURCE — Setup Script
 -- ============================================================================
--- Creates the target and source tables for the MERGE upsert demo.
+-- Creates the target and source tables for the MERGE CDC upsert demo.
 --
 -- Tables:
---   1. customers        — 20 existing customers (target)
---   2. customer_updates — 15 staged changes (source): 10 updates + 5 new
+--   1. products        — 15 products (target)
+--   2. product_feed    — 12 staged changes (source): 8 updates + 4 new
 --
 -- The MERGE in queries.sql will:
---   - Update 10 customers (ids 1-10) with new spending totals and tier logic
---   - Insert 5 new customers (ids 21-25)
---   - Delete 4 stale bronze customers not in source (ids 14, 17, 18, 20)
---   - Final count: 20 - 4 + 5 = 21
+--   - Update 8 products (ids 1-8) with new prices from the daily feed
+--   - Insert 4 new products (ids 16-19) from the feed
+--   - Delete 3 discontinued products not in feed (ids 13, 14, 15)
+--   - Final count: 15 - 3 + 4 = 16
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
@@ -23,75 +23,66 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
 
 
 -- ============================================================================
--- TABLE 1: customers — 20 existing customers (target)
+-- TABLE 1: products — 15 current products (target)
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customers (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.products (
     id          INT,
+    sku         VARCHAR,
     name        VARCHAR,
-    email       VARCHAR,
-    city        VARCHAR,
-    tier        VARCHAR,
-    total_spent DOUBLE
-) LOCATION '{{data_path}}/customers';
+    category    VARCHAR,
+    price       DOUBLE,
+    in_stock    INT
+) LOCATION '{{data_path}}/products';
 
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.products TO USER {{current_user}};
 
-INSERT INTO {{zone_name}}.delta_demos.customers VALUES
-    (1,  'Alice Johnson',   'alice@example.com',    'New York',     'gold',     2500.00),
-    (2,  'Bob Smith',       'bob@example.com',      'Los Angeles',  'silver',   1200.00),
-    (3,  'Carol Williams',  'carol@example.com',    'Chicago',      'gold',     3100.00),
-    (4,  'David Brown',     'david@example.com',    'Houston',      'bronze',   450.00),
-    (5,  'Eve Davis',       'eve@example.com',      'Phoenix',      'silver',   800.00),
-    (6,  'Frank Miller',    'frank@example.com',    'Philadelphia', 'gold',     5200.00),
-    (7,  'Grace Wilson',    'grace@example.com',    'San Antonio',  'bronze',   300.00),
-    (8,  'Henry Moore',     'henry@example.com',    'San Diego',    'silver',   1500.00),
-    (9,  'Irene Taylor',    'irene@example.com',    'Dallas',       'gold',     4000.00),
-    (10, 'Jack Anderson',   'jack@example.com',     'San Jose',     'bronze',   200.00),
-    (11, 'Karen Thomas',    'karen@example.com',    'Austin',       'silver',   900.00),
-    (12, 'Leo Jackson',     'leo@example.com',      'Jacksonville', 'gold',     2800.00),
-    (13, 'Maria White',     'maria@example.com',    'San Francisco','silver',   1100.00),
-    (14, 'Nathan Harris',   'nathan@example.com',   'Columbus',     'bronze',   350.00),
-    (15, 'Olivia Martin',   'olivia@example.com',   'Charlotte',    'gold',     3500.00),
-    (16, 'Paul Garcia',     'paul@example.com',     'Indianapolis', 'silver',   750.00),
-    (17, 'Quinn Martinez',  'quinn@example.com',    'Seattle',      'bronze',   400.00),
-    (18, 'Rachel Robinson', 'rachel@example.com',   'Denver',       'bronze',   180.00),
-    (19, 'Sam Clark',       'sam@example.com',      'Nashville',    'silver',   1300.00),
-    (20, 'Tina Lewis',      'tina@example.com',     'Portland',     'bronze',   220.00);
+INSERT INTO {{zone_name}}.delta_demos.products VALUES
+    (1,  'SKU-001', 'Wireless Mouse',       'electronics', 29.99,  150),
+    (2,  'SKU-002', 'USB-C Hub',            'electronics', 49.99,  80),
+    (3,  'SKU-003', 'Laptop Stand',         'accessories', 39.99,  200),
+    (4,  'SKU-004', 'Webcam HD',            'electronics', 79.99,  45),
+    (5,  'SKU-005', 'Desk Lamp',            'furniture',   34.99,  120),
+    (6,  'SKU-006', 'Keyboard Mechanical',  'electronics', 89.99,  60),
+    (7,  'SKU-007', 'Monitor Arm',          'accessories', 44.99,  90),
+    (8,  'SKU-008', 'Headset Pro',          'electronics', 129.99, 35),
+    (9,  'SKU-009', 'Cable Organizer',      'accessories', 14.99,  300),
+    (10, 'SKU-010', 'Mousepad XL',          'accessories', 19.99,  250),
+    (11, 'SKU-011', 'Docking Station',      'electronics', 199.99, 25),
+    (12, 'SKU-012', 'Ergonomic Chair',      'furniture',   349.99, 15),
+    (13, 'SKU-013', 'VGA Adapter',          'electronics', 12.99,  5),
+    (14, 'SKU-014', 'Parallel Port Cable',  'accessories', 8.99,   2),
+    (15, 'SKU-015', 'Floppy Drive USB',     'electronics', 24.99,  1);
 
 
 -- ============================================================================
--- TABLE 2: customer_updates — 15 staged changes (source)
+-- TABLE 2: product_feed — 12 items from daily supplier feed (source)
 -- ============================================================================
--- IDs 1-10: updates with increased spending
--- IDs 21-25: brand new customers
--- IDs 11-20: NOT in source → triggers NOT MATCHED BY SOURCE
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_updates (
+-- IDs 1-8: price/stock updates for active products
+-- IDs 16-19: brand new products entering the catalog
+-- IDs 9-15: NOT in feed → candidates for NOT MATCHED BY SOURCE
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_feed (
     id          INT,
+    sku         VARCHAR,
     name        VARCHAR,
-    email       VARCHAR,
-    city        VARCHAR,
-    tier        VARCHAR,
-    total_spent DOUBLE
-) LOCATION '{{data_path}}/customer_updates';
+    category    VARCHAR,
+    price       DOUBLE,
+    in_stock    INT
+) LOCATION '{{data_path}}/product_feed';
 
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_updates TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_feed TO USER {{current_user}};
 
-INSERT INTO {{zone_name}}.delta_demos.customer_updates VALUES
-    -- Updates for existing customers (increased spending)
-    (1,  'Alice Johnson',   'alice@example.com',    'New York',     'gold',     3200.00),
-    (2,  'Bob Smith',       'bob@example.com',      'Los Angeles',  'silver',   1800.00),
-    (3,  'Carol Williams',  'carol@example.com',    'Chicago',      'gold',     3500.00),
-    (4,  'David Brown',     'david@example.com',    'Houston',      'bronze',   700.00),
-    (5,  'Eve Davis',       'eve@example.com',      'Phoenix',      'silver',   1300.00),
-    (6,  'Frank Miller',    'frank@example.com',    'Philadelphia', 'gold',     5800.00),
-    (7,  'Grace Wilson',    'grace@example.com',    'San Antonio',  'bronze',   550.00),
-    (8,  'Henry Moore',     'henry@example.com',    'San Diego',    'silver',   2200.00),
-    (9,  'Irene Taylor',    'irene@example.com',    'Dallas',       'gold',     4500.00),
-    (10, 'Jack Anderson',   'jack@example.com',     'San Jose',     'bronze',   600.00),
-    -- New customers
-    (21, 'Uma Lee',         'uma@example.com',      'Miami',        'bronze',   150.00),
-    (22, 'Victor Walker',   'victor@example.com',   'Atlanta',      'silver',   950.00),
-    (23, 'Wendy Hall',      'wendy@example.com',    'Boston',       'gold',     2600.00),
-    (24, 'Xander Allen',    'xander@example.com',   'Detroit',      'bronze',   275.00),
-    (25, 'Yolanda Young',   'yolanda@example.com',  'Memphis',      'silver',   1050.00);
-
+INSERT INTO {{zone_name}}.delta_demos.product_feed VALUES
+    -- Updated products (price adjustments + restocking)
+    (1,  'SKU-001', 'Wireless Mouse',       'electronics', 24.99,  200),
+    (2,  'SKU-002', 'USB-C Hub',            'electronics', 44.99,  100),
+    (3,  'SKU-003', 'Laptop Stand',         'accessories', 39.99,  180),
+    (4,  'SKU-004', 'Webcam HD',            'electronics', 69.99,  70),
+    (5,  'SKU-005', 'Desk Lamp',            'furniture',   34.99,  120),
+    (6,  'SKU-006', 'Keyboard Mechanical',  'electronics', 84.99,  80),
+    (7,  'SKU-007', 'Monitor Arm',          'accessories', 42.99,  100),
+    (8,  'SKU-008', 'Headset Pro',          'electronics', 119.99, 50),
+    -- New products
+    (16, 'SKU-016', 'USB-C Monitor Cable',  'accessories', 19.99,  500),
+    (17, 'SKU-017', 'Noise Cancelling Mic', 'electronics', 59.99,  75),
+    (18, 'SKU-018', 'Standing Desk Mat',    'furniture',   49.99,  60),
+    (19, 'SKU-019', 'Thunderbolt Dock',     'electronics', 229.99, 30);
