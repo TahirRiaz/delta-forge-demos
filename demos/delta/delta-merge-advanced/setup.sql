@@ -28,6 +28,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_master (
     last_updated    VARCHAR
 ) LOCATION '{{data_path}}/inventory_master';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_master TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.inventory_master VALUES
     (1,  'ELEC-001', 'Wireless Mouse',       'Electronics',  29.99,  150, 'TechCorp',    '2024-01-01'),
     (2,  'ELEC-002', 'USB-C Hub',            'Electronics',  49.99,  80,  'TechCorp',    '2024-01-01'),
@@ -70,9 +72,6 @@ INSERT INTO {{zone_name}}.delta_demos.inventory_master VALUES
     (39, 'ELEC-013', 'Surge Protector',      'Electronics',  24.99,  120, 'PowerUp',     '2024-01-01'),
     (40, 'ELEC-014', 'Ethernet Cable',       'Electronics',  9.99,   350, 'TechCorp',    '2024-01-01');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.inventory_master;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_master TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE: inventory_updates — Staging table for MERGE operations
@@ -89,6 +88,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_updates (
     supplier        VARCHAR,
     last_updated    VARCHAR
 ) LOCATION '{{data_path}}/inventory_updates';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_updates TO USER {{current_user}};
 
 INSERT INTO {{zone_name}}.delta_demos.inventory_updates VALUES
     -- Existing SKU updates (qty > 0 → UPDATE price & qty)
@@ -125,5 +126,3 @@ INSERT INTO {{zone_name}}.delta_demos.inventory_updates VALUES
     (54, 'ELEC-019', 'LED Desk Strip',       'Electronics',  16.99,  170, 'LightCo',     '2024-06-01'),
     (55, 'ELEC-020', 'Portable SSD',         'Electronics',  79.99,  55,  'TechCorp',    '2024-06-01');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.inventory_updates;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_updates TO USER {{current_user}};

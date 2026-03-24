@@ -34,6 +34,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.orders (
 ) LOCATION '{{data_path}}/orders'
 PARTITIONED BY (region);
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.orders TO USER {{current_user}};
+
 -- North region: ids 1-20
 INSERT INTO {{zone_name}}.delta_demos.orders VALUES
     (1,  'Customer_01', 'Widget A',    120.00, '2024-01-05', 'North'),
@@ -126,5 +128,3 @@ INSERT INTO {{zone_name}}.delta_demos.orders VALUES
     (79, 'Customer_79', 'Gadget Y',    215.00, '2024-04-19', 'West'),
     (80, 'Customer_80', 'Tool Z',      24.00,  '2024-04-20', 'West');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.orders;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.orders TO USER {{current_user}};

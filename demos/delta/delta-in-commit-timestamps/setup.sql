@@ -13,7 +13,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE with TBLPROPERTIES ('delta.enableInCommitTimestamps'='true')
 --   3. INSERT 20 rows — production deployments
---   4. DETECT SCHEMA + GRANT ADMIN
 --   5. INSERT 10 rows — staging deployments
 --   6. INSERT 10 rows — development deployments
 --   7. UPDATE — 5 deployments status='rollback'
@@ -43,6 +42,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.deployment_log (
     commit_hash         VARCHAR
 ) LOCATION '{{data_path}}/deployment_log'
 TBLPROPERTIES ('delta.enableInCommitTimestamps' = 'true');
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.deployment_log TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -82,9 +83,6 @@ INSERT INTO {{zone_name}}.delta_demos.deployment_log VALUES
     (18, 'search-indexer',  'production', 'v2.0.1', 'charlie', 'success', 100, '2025-06-07 11:30:00', 'r8s9t0u1'),
     (19, 'search-indexer',  'production', 'v2.1.0', 'alice',   'success', 210, '2025-06-12 16:00:00', 's9t0u1v2'),
     (20, 'search-indexer',  'production', 'v2.1.1', 'bob',     'success', 115, '2025-06-15 14:30:00', 't0u1v2w3');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.deployment_log;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.deployment_log TO USER {{current_user}};
 
 
 -- ============================================================================

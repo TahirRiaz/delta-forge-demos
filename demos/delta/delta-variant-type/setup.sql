@@ -38,6 +38,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.api_events (
     created_at     VARCHAR
 ) LOCATION '{{data_path}}/api_events';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.api_events TO USER {{current_user}};
+
 -- STEP 2: Insert 20 login events
 INSERT INTO {{zone_name}}.delta_demos.api_events VALUES
     (1,  'login', 'web-app',     '{"user":"alice","ip":"10.0.0.1","method":"oauth"}',        '{"browser":"chrome","os":"windows"}',  'info',    '2024-01-15 08:30:00'),
@@ -60,9 +62,6 @@ INSERT INTO {{zone_name}}.delta_demos.api_events VALUES
     (18, 'login', 'api-gateway', '{"user":"rachel","ip":"10.0.2.3","method":"api-key"}',     '{"client":"insomnia","version":"8"}',  'info',    '2024-01-15 08:47:00'),
     (19, 'login', 'web-app',     '{"user":"sam","ip":"10.0.0.10","method":"sso"}',           '{"browser":"edge","os":"windows"}',    'info',    '2024-01-15 08:48:00'),
     (20, 'login', 'internal',    '{"user":"tina","ip":"192.168.1.2","method":"ldap"}',       '{"client":"admin-panel","version":"3"}','info',   '2024-01-15 08:49:00');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.api_events;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.api_events TO USER {{current_user}};
 
 
 -- ============================================================================

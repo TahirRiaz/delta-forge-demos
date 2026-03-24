@@ -34,6 +34,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customers (
     total_spent DOUBLE
 ) LOCATION '{{data_path}}/customers';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customers TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.customers VALUES
     (1,  'Alice Johnson',   'alice@example.com',    'New York',     'gold',     2500.00),
     (2,  'Bob Smith',       'bob@example.com',      'Los Angeles',  'silver',   1200.00),
@@ -56,9 +58,6 @@ INSERT INTO {{zone_name}}.delta_demos.customers VALUES
     (19, 'Sam Clark',       'sam@example.com',      'Nashville',    'silver',   1300.00),
     (20, 'Tina Lewis',      'tina@example.com',     'Portland',     'bronze',   220.00);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.customers;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customers TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 2: customer_updates — 15 staged changes (source)
@@ -74,6 +73,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_updates (
     tier        VARCHAR,
     total_spent DOUBLE
 ) LOCATION '{{data_path}}/customer_updates';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_updates TO USER {{current_user}};
 
 INSERT INTO {{zone_name}}.delta_demos.customer_updates VALUES
     -- Updates for existing customers (increased spending)
@@ -94,5 +95,3 @@ INSERT INTO {{zone_name}}.delta_demos.customer_updates VALUES
     (24, 'Xander Allen',    'xander@example.com',   'Detroit',      'bronze',   275.00),
     (25, 'Yolanda Young',   'yolanda@example.com',  'Memphis',      'silver',   1050.00);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.customer_updates;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_updates TO USER {{current_user}};

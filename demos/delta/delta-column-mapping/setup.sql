@@ -39,6 +39,8 @@ TBLPROPERTIES (
     'delta.minWriterVersion' = '5'
 );
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.employee_directory TO USER {{current_user}};
+
 
 -- ============================================================================
 -- Insert 30 employees — Engineering, Sales, Marketing, HR, Finance, Operations
@@ -91,5 +93,3 @@ INSERT INTO {{zone_name}}.delta_demos.employee_directory VALUES
     (39, 'Monica Dunn',        'Finance',     'Auditor',                'monica.dunn@acme.com',        '2024-04-15', 88000.00,  1),
     (40, 'Nolan Perry',        'Operations',  'Logistics Coordinator',  'nolan.perry@acme.com',        '2024-02-28', 75000.00,  1);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.employee_directory;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.employee_directory TO USER {{current_user}};

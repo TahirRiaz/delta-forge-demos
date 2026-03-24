@@ -38,7 +38,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.web_analytics (
     event_date      VARCHAR
 ) LOCATION '{{data_path}}/web_analytics';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.web_analytics;
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.web_analytics TO USER {{current_user}};
 
 

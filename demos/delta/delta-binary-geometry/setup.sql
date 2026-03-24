@@ -38,6 +38,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.document_store (
     created_at      VARCHAR
 ) LOCATION '{{data_path}}/document_store';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.document_store TO USER {{current_user}};
+
 -- STEP 2: Insert 25 documents
 INSERT INTO {{zone_name}}.delta_demos.document_store VALUES
     (1,  'annual_report_2024.pdf',       'application/pdf',                    'a1b2c3d4e5f67890a1b2c3d4e5f67890a1b2c3d4e5f67890a1b2c3d4e5f67890', 2458901, '2024-01-15'),
@@ -66,9 +68,6 @@ INSERT INTO {{zone_name}}.delta_demos.document_store VALUES
     (24, 'deprecated_schema_v1.json',    'application/json',                   'e56f78901a2b3c4d5e6f78901a2b3c4d5e6f78901a2b3c4d5e6f78901a2b3c4d', 45678,   '2023-06-15'),
     (25, 'old_migration_notes.csv',      'text/csv',                           'f6789a1b2c3d4e5f6789a1b2c3d4e5f6789a1b2c3d4e5f6789a1b2c3d4e5f678', 12345,   '2023-01-10');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.document_store;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.document_store TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 2: geo_locations — spatial data with WKT geometry
@@ -82,6 +81,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.geo_locations (
     longitude   DOUBLE,
     region      VARCHAR
 ) LOCATION '{{data_path}}/geo_locations';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.geo_locations TO USER {{current_user}};
 
 -- STEP 3: Insert 20 POINT locations (batch 1)
 INSERT INTO {{zone_name}}.delta_demos.geo_locations VALUES
@@ -106,8 +107,6 @@ INSERT INTO {{zone_name}}.delta_demos.geo_locations VALUES
     (19, 'Mount Kilimanjaro',         'POINT', 'POINT(37.3556 -3.0674)',        -3.0674,  37.3556,   'Africa'),
     (20, 'Victoria Falls',            'POINT', 'POINT(25.8572 -17.9243)',      -17.9243,  25.8572,   'Africa');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.geo_locations;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.geo_locations TO USER {{current_user}};
 
 -- STEP 4: Insert 10 POLYGON and LINESTRING locations (batch 2)
 INSERT INTO {{zone_name}}.delta_demos.geo_locations VALUES

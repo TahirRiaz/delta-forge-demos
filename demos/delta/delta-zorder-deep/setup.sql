@@ -12,7 +12,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE
 --   3. INSERT batch 1 — 30 temperature/humidity from us-east, eu-west
---   4. DETECT SCHEMA + GRANT ADMIN
 --   5. INSERT batch 2 — 25 pressure/wind from us-west, ap-south
 --   6. INSERT batch 3 — 25 mixed sensors from all regions
 --   7. UPDATE — flag 8 low-quality readings (quality_score < 50 → 0)
@@ -42,7 +41,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_telemetry (
     recorded_date   VARCHAR
 ) LOCATION '{{data_path}}/sensor_telemetry';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.sensor_telemetry;
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_telemetry TO USER {{current_user}};
 
 

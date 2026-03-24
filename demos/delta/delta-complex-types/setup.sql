@@ -44,6 +44,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.employees (
     level            VARCHAR
 ) LOCATION '{{data_path}}/employees';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.employees TO USER {{current_user}};
+
 -- STEP 2: Insert 30 employees across 5 departments
 INSERT INTO {{zone_name}}.delta_demos.employees VALUES
     (1,  'Alice Chen',       'Engineering', 125000.00, '100 Tech Blvd',      'San Jose',      'CA', '95110', 'python,java,sql',         'team=backend,role=senior',    '2020-03-15', true,  NULL, 'L5'),
@@ -76,9 +78,6 @@ INSERT INTO {{zone_name}}.delta_demos.employees VALUES
     (28, 'Beth Morgan',      'Finance',     110000.00, '2800 Capital Blvd',  'New York',      'NY', '10002', 'treasury,risk,bloomberg',  'dept=treasury,role=senior',   '2018-11-01', true,  NULL, 'L5'),
     (29, 'Chris Turner',     'Sales',       82000.00,  '2900 Close Ave',     'Philadelphia',  'PA', '19101', 'demos,presentations',      'region=east,role=se',         '2022-07-01', true,  7,    'L3'),
     (30, 'Diana Foster',     'Engineering', 140000.00, '3000 Arch Way',      'San Francisco', 'CA', '94107', 'system-design,mentoring',  'team=platform,role=principal','2017-06-01', true,  NULL, 'L7');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.employees;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.employees TO USER {{current_user}};
 
 
 -- ============================================================================

@@ -23,6 +23,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_catalog (
     stock    INT
 ) LOCATION '{{data_path}}/product_catalog';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_catalog TO USER {{current_user}};
+
 
 -- STEP 3: Insert 30 baseline products
 INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
@@ -57,5 +59,3 @@ INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
     (29, 'Surge Protector',       'Electronics',   31.99,  85),
     (30, 'Paper Shredder',        'Electronics',   79.99,  40);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.product_catalog;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_catalog TO USER {{current_user}};

@@ -31,6 +31,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_accounts (
 ) LOCATION '{{data_path}}/customer_accounts'
 TBLPROPERTIES ('delta.enableChangeDataFeed' = 'true');
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_accounts TO USER {{current_user}};
+
 -- V0: Insert 40 customer accounts
 INSERT INTO {{zone_name}}.delta_demos.customer_accounts VALUES
     (1,  'Alice Morgan',     'alice.morgan@mail.com',     'silver', 5200.00,  'active', '2023-01-05'),
@@ -74,5 +76,3 @@ INSERT INTO {{zone_name}}.delta_demos.customer_accounts VALUES
     (39, 'Marco Bianchi',    'marco.bianchi@mail.com',    'silver', 6800.00,  'active', '2024-01-15'),
     (40, 'Nadia Kozlov',     'nadia.kozlov@mail.com',     'bronze', 1300.00,  'active', '2024-02-01');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.customer_accounts;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_accounts TO USER {{current_user}};

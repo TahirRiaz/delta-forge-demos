@@ -13,7 +13,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE
 --   3. INSERT 20 rows — European names (German, French, Spanish, Scandinavian)
---   4. DETECT SCHEMA + GRANT ADMIN
 --   5. INSERT 10 rows — Asian names (Japanese, Chinese, Korean)
 --   6. INSERT 10 rows — mixed international (Arabic transliterated, Hindi transliterated, etc.)
 --   7. UPDATE — normalize sort_key for 5 entries
@@ -40,6 +39,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.global_contacts (
     sort_key        VARCHAR,
     email           VARCHAR
 ) LOCATION '{{data_path}}/global_contacts';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.global_contacts TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -76,9 +77,6 @@ INSERT INTO {{zone_name}}.delta_demos.global_contacts VALUES
     (18, 'Bjoern',    'Hansen',     'Oslo',         'Norway',   'no', 'hansen_bjoern',     'bjoern.hansen@example.no'),
     (19, 'Soeren',    'Nielsen',    'Copenhagen',   'Denmark',  'da', 'nielsen_soeren',    'soeren.nielsen@example.dk'),
     (20, 'Paivi',     'Maekinen',   'Helsinki',     'Finland',  'fi', 'maekinen_paivi',    'paivi.maekinen@example.fi');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.global_contacts;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.global_contacts TO USER {{current_user}};
 
 
 -- ============================================================================

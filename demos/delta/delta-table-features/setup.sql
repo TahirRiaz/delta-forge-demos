@@ -32,6 +32,8 @@ TBLPROPERTIES (
     'delta.enableChangeDataFeed' = 'true'
 );
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.feature_demo TO USER {{current_user}};
+
 -- Baseline data: 30 rows, all status = 'active' or 'trial'
 INSERT INTO {{zone_name}}.delta_demos.feature_demo VALUES
     (1,  'Alpha Widget',     'hardware',  150.00, 'active',       '2025-01-01'),
@@ -65,9 +67,6 @@ INSERT INTO {{zone_name}}.delta_demos.feature_demo VALUES
     (29, 'Epsilon-2 Pack',   'services',  780.00, 'active',       '2025-01-29'),
     (30, 'Zeta-2 Component', 'hardware',  55.00,  'trial',        '2025-01-30');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.feature_demo;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.feature_demo TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 2: audit_trail — append-only with CDC for compliance
@@ -84,6 +83,8 @@ TBLPROPERTIES (
     'delta.appendOnly' = 'true',
     'delta.enableChangeDataFeed' = 'true'
 );
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.audit_trail TO USER {{current_user}};
 
 -- 25 audit events
 INSERT INTO {{zone_name}}.delta_demos.audit_trail VALUES
@@ -113,5 +114,3 @@ INSERT INTO {{zone_name}}.delta_demos.audit_trail VALUES
     (24, 'ADMIN',   'carol@corp.com',   'backup-svc',      'BACKUP_COMPLETED',   '2025-01-01 23:00:00'),
     (25, 'SECURITY','system',           'siem',            'DAILY_REPORT',       '2025-01-01 23:59:00');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.audit_trail;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.audit_trail TO USER {{current_user}};

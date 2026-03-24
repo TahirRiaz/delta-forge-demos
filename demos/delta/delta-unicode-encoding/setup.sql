@@ -37,6 +37,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.global_products (
 ) PARTITIONED BY (region)
   LOCATION '{{data_path}}/global_products';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.global_products TO USER {{current_user}};
+
 -- STEP 2: Insert 50 products across 5 regions
 
 -- Asia (10 products)
@@ -104,5 +106,3 @@ INSERT INTO {{zone_name}}.delta_demos.global_products VALUES
     (49, 'Kuwaiti Cardamom Coffee', 'قهوة كويتية بالهيل',     'beverages',    12.00,  'KWD', 'Kuwait',       'MiddleEast'),
     (50, 'Istanbul Carpet Sample',  'İstanbul Halı Örneği',   'textiles',     65.00,  'TRY', 'Turkey',       'MiddleEast');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.global_products;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.global_products TO USER {{current_user}};

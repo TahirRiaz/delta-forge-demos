@@ -32,6 +32,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_lifecycle (
 ) LOCATION '{{data_path}}/order_lifecycle'
 TBLPROPERTIES ('delta.enableChangeDataFeed' = 'true');
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_lifecycle TO USER {{current_user}};
+
 -- V0: Insert 40 orders — all start as 'pending'
 INSERT INTO {{zone_name}}.delta_demos.order_lifecycle VALUES
     (1,  'ORD-1001', 'Acme Corp',          'Widget Pro',         149.99, 'pending', 'system',    '2025-01-15 09:00:00'),
@@ -75,5 +77,3 @@ INSERT INTO {{zone_name}}.delta_demos.order_lifecycle VALUES
     (39, 'ORD-1039', 'Sirius Cybernetics', 'Toggle Switch',       62.85, 'pending', 'system',    '2025-01-21 09:15:00'),
     (40, 'ORD-1040', 'Prestige Worldwide', 'Lock Washer',        331.25, 'pending', 'system',    '2025-01-21 09:20:00');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.order_lifecycle;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_lifecycle TO USER {{current_user}};

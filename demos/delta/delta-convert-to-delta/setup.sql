@@ -6,7 +6,6 @@
 --   2. CREATE DELTA TABLE (the "converted" table)
 --   3. INSERT 40 rows — "migrated" legacy data (migrated_flag=1)
 --   4. INSERT 10 rows — new data added post-migration (migrated_flag=0)
---   5. DETECT SCHEMA + GRANT ADMIN
 --
 -- The queries.sql script then performs Delta-exclusive DML operations
 -- (UPDATE, DELETE, OPTIMIZE) to demonstrate capabilities that raw
@@ -34,6 +33,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.legacy_data (
     created_date      VARCHAR,
     migrated_flag     INT
 ) LOCATION '{{data_path}}/legacy_data';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.legacy_data TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -102,5 +103,3 @@ INSERT INTO {{zone_name}}.delta_demos.legacy_data VALUES
     (49, 'Xena Warrior',    112.50, 'Sports',       'pp',            'completed', '2024-03-09', 0),
     (50, 'Yuri Gagarin',      37.99, 'Grocery',     'cash',          'completed', '2024-03-10', 0);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.legacy_data;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.legacy_data TO USER {{current_user}};

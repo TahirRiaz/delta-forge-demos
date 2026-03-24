@@ -31,6 +31,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.web_sessions (
     started_at  VARCHAR
 ) LOCATION '{{data_path}}/web_sessions';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.web_sessions TO USER {{current_user}};
+
 -- Region 1: us-east (20 sessions)
 INSERT INTO {{zone_name}}.delta_demos.web_sessions VALUES
     (1,  'sess-us-001', 'Mozilla/5.0 Chrome/120',    7,  12000,  'active',    'us-east', '2024-06-01 08:00:00'),
@@ -100,5 +102,3 @@ INSERT INTO {{zone_name}}.delta_demos.web_sessions VALUES
     (59, 'sess-ap-019', 'Mozilla/5.0 Chrome/120',    7,  19000,  'expired',   'ap-south', '2024-04-01 08:00:00'),
     (60, 'sess-ap-020', 'Mozilla/5.0 Firefox/121',   6,  16000,  'expired',   'ap-south', '2024-06-10 04:00:00');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.web_sessions;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.web_sessions TO USER {{current_user}};

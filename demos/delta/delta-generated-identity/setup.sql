@@ -30,7 +30,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_items (
     order_date  VARCHAR
 ) LOCATION '{{data_path}}/order_items';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.order_items;
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_items TO USER {{current_user}};
 
 
@@ -44,5 +43,5 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.event_sequence (
     created_at  VARCHAR
 ) LOCATION '{{data_path}}/event_sequence';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.event_sequence;
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.event_sequence TO USER {{current_user}};
+

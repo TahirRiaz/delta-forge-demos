@@ -31,12 +31,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.config_singleton (
     updated_at      VARCHAR
 ) LOCATION '{{data_path}}/config_singleton';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.config_singleton TO USER {{current_user}};
+
 -- Insert the single configuration row (version 1 — baseline)
 INSERT INTO {{zone_name}}.delta_demos.config_singleton VALUES
     ('app_settings', '{"max_connections":100,"timeout_ms":5000,"debug":false}', 1, 'admin', '2025-01-01 08:00:00');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.config_singleton;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.config_singleton TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -75,6 +74,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.wide_metrics (
     m28_engagement_rate DOUBLE
 ) LOCATION '{{data_path}}/wide_metrics';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.wide_metrics TO USER {{current_user}};
+
 -- Insert 20 rows of monthly KPI data
 INSERT INTO {{zone_name}}.delta_demos.wide_metrics VALUES
     (1,  'Jan-2024', 125000.00, 85000.00,  40000.00,  32.0,  2500, 125, 5.0,  50.00, 1800, 450, 75.0, 4.2,  42, 180, 4.5,  99.95, 45.2,  1200, 0.15, 85000,  35.5, 4.2,  3.5,  68.0, 22.5, 4.8,  25000,  3.2),
@@ -98,9 +99,6 @@ INSERT INTO {{zone_name}}.delta_demos.wide_metrics VALUES
     (19, 'Jul-2025', 178000.00, 109000.00, 69000.00,  38.8,  3450, 80,  2.32, 51.59, 2380, 710, 70.2, 4.6,  55, 133, 3.3,  99.99, 35.0,  1520, 0.06, 110000, 26.5, 5.5,  4.8,  57.5, 28.5, 5.9,  35500,  4.5),
     (20, 'Aug-2025', 172000.00, 106000.00, 66000.00,  38.4,  3350, 88,  2.63, 51.34, 2320, 695, 70.1, 4.5,  53, 136, 3.4,  99.98, 36.0,  1490, 0.07, 107000, 27.0, 5.3,  4.6,  59.0, 27.0, 5.6,  34000,  4.3);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.wide_metrics;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.wide_metrics TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 3: empty_staging — schema-only, zero rows
@@ -113,5 +111,5 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.empty_staging (
     received_at     VARCHAR
 ) LOCATION '{{data_path}}/empty_staging';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.empty_staging;
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.empty_staging TO USER {{current_user}};
+

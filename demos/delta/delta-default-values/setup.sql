@@ -37,6 +37,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.audit_log (
     notes        VARCHAR
 ) LOCATION '{{data_path}}/audit_log';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.audit_log TO USER {{current_user}};
+
 
 -- ============================================================================
 -- STEP 2: Insert 25 rows — all columns explicitly provided (baseline data)
@@ -70,5 +72,3 @@ SELECT * FROM (VALUES
     (25, 'session.cleanup',  'analyst', 'info',     0, 0, '2024-01-05 23:00:00', 'N/A')
 ) AS t(id, action, user_name, severity, retry_count, is_archived, created_at, notes);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.audit_log;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.audit_log TO USER {{current_user}};

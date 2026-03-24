@@ -41,6 +41,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.transaction_log (
 ) LOCATION '{{data_path}}/transaction_log'
 TBLPROPERTIES ('delta.dataSkippingNumIndexedCols'='8');
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.transaction_log TO USER {{current_user}};
+
 -- STEP 2: Batch 1 — 30 online purchases
 INSERT INTO {{zone_name}}.delta_demos.transaction_log VALUES
     (1,  'TXN-0001', 'USR-101', 'TechMart Online',      149.99, 'electronics',    'completed', '2025-03-01'),
@@ -73,9 +75,6 @@ INSERT INTO {{zone_name}}.delta_demos.transaction_log VALUES
     (28, 'TXN-0028', 'USR-128', 'WokMaster',             31.00,  'dining',         'completed', '2025-03-06'),
     (29, 'TXN-0029', 'USR-129', 'AirHopper Flights',    425.00,  'travel',         'completed', '2025-03-06'),
     (30, 'TXN-0030', 'USR-130', 'PodcastPro',             5.99,  'entertainment',  'completed', '2025-03-06');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.transaction_log;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.transaction_log TO USER {{current_user}};
 
 
 -- ============================================================================

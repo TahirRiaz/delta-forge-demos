@@ -13,7 +13,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE with VARCHAR timestamp columns
 --   3. INSERT 25 rows — domestic US flights (JFK, LAX, ORD, ATL, DFW)
---   4. DETECT SCHEMA + GRANT ADMIN
 --   5. INSERT 10 rows — international flights (LHR, NRT, CDG, SYD)
 --   6. INSERT 10 rows — red-eye/overnight flights (arrival date is next day)
 --   7. UPDATE — delay 5 flights (add 90 min, set status='delayed')
@@ -43,6 +42,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.flight_schedule (
     status              VARCHAR,
     gate                VARCHAR
 ) LOCATION '{{data_path}}/flight_schedule';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.flight_schedule TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -87,9 +88,6 @@ INSERT INTO {{zone_name}}.delta_demos.flight_schedule VALUES
     (23, 'DL-720',  'DFW', 'ORD', '2025-06-15 11:00:00', '2025-06-15 13:30:00', '2025-06-15 16:00:00', 150, 'on_time', 'B30'),
     (24, 'UA-730',  'DFW', 'ATL', '2025-06-15 13:45:00', '2025-06-15 17:00:00', '2025-06-15 18:45:00', 135, 'on_time', 'A28'),
     (25, 'AA-740',  'DFW', 'JFK', '2025-06-15 16:30:00', '2025-06-15 21:00:00', '2025-06-15 21:30:00', 215, 'on_time', 'A30');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.flight_schedule;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.flight_schedule TO USER {{current_user}};
 
 
 -- ============================================================================

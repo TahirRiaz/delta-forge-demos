@@ -12,9 +12,7 @@
 -- Operations:
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE sales_facts PARTITIONED BY (region) + INSERT 60 rows
---   3. DETECT SCHEMA + GRANT ADMIN
 --   4. CREATE region_targets + INSERT 4 rows
---   5. DETECT SCHEMA + GRANT ADMIN
 --   6. UPDATE — 10% discount on ap-south (amount * 0.90)
 --   7. DELETE — 5 cancelled orders (qty = 0)
 --
@@ -43,6 +41,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_facts (
     sale_date   VARCHAR
 ) LOCATION '{{data_path}}/sales_facts'
 PARTITIONED BY (region);
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_facts TO USER {{current_user}};
 
 -- us-east region: ids 1-15
 -- Quarters: 1-4=Q1, 5-8=Q2, 9-12=Q3, 13-15=Q4
@@ -122,9 +122,6 @@ INSERT INTO {{zone_name}}.delta_demos.sales_facts VALUES
     (59, 414, 'ap-south', 'Q4-2024', 1290.00, 10, 'retail',    '2024-10-18'),
     (60, 415, 'ap-south', 'Q4-2024', 810.00,  7,  'wholesale', '2024-10-25');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.sales_facts;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_facts TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE: region_targets — Dimension/lookup table (4 rows)
@@ -135,14 +132,13 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.region_targets (
     target_qty    INT
 ) LOCATION '{{data_path}}/region_targets';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.region_targets TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.region_targets VALUES
     ('us-east',  75000.00, 500),
     ('us-west',  60000.00, 400),
     ('eu-west',  45000.00, 350),
     ('ap-south', 30000.00, 250);
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.region_targets;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.region_targets TO USER {{current_user}};
 
 
 -- ============================================================================

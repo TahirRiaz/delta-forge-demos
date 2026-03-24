@@ -32,6 +32,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_readings (
     recorded_at VARCHAR
 ) LOCATION '{{data_path}}/sensor_readings';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_readings TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.sensor_readings VALUES
     -- lab-a sensors (10 rows) — S001 reading = 22.5
     (1,  'S001', 22.5,  'celsius', 'lab-a', '2025-01-15 08:00:00'),
@@ -77,9 +79,6 @@ INSERT INTO {{zone_name}}.delta_demos.sensor_readings VALUES
     (38, 'S038', -40.0, 'celsius', 'field', '2025-01-15 11:35:00'),
     (39, 'S039', 105.3, 'celsius', 'field', '2025-01-15 11:40:00'),
     (40, 'S040', -25.6, 'celsius', 'field', '2025-01-15 11:45:00');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.sensor_readings;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_readings TO USER {{current_user}};
 
 
 -- ============================================================================

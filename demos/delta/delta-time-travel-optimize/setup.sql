@@ -35,6 +35,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory (
     warehouse VARCHAR
 ) LOCATION '{{data_path}}/inventory';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.inventory VALUES
     (1,  'Laptop Pro 15',     'Electronics', 50,  1299.99, 'WH-East'),
     (2,  'Wireless Mouse',    'Electronics', 200, 29.99,   'WH-East'),
@@ -61,9 +63,6 @@ INSERT INTO {{zone_name}}.delta_demos.inventory VALUES
     (23, 'Whiteboard 4x3',    'Stationery',  15,  89.99,   'WH-Central'),
     (24, 'Cable Organizer',   'Electronics', 200, 12.99,   'WH-West'),
     (25, 'Desk Mat XL',       'Furniture',   110, 24.99,   'WH-East');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.inventory;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory TO USER {{current_user}};
 
 
 -- ============================================================================

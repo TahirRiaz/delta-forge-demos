@@ -34,6 +34,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.validated_employees (
     hire_date   VARCHAR
 ) LOCATION '{{data_path}}/validated_employees';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.validated_employees TO USER {{current_user}};
+
 -- INSERT 50 employees — all satisfying constraints:
 --   age: 18-70, salary > 0, rating: 0.0-5.0, id NOT NULL
 INSERT INTO {{zone_name}}.delta_demos.validated_employees VALUES
@@ -88,5 +90,3 @@ INSERT INTO {{zone_name}}.delta_demos.validated_employees VALUES
     (49, 'Xavier Reed',      'xavier.reed@corp.com',      31, 82000.00,  3.8, 'Marketing',    '2021-07-01'),
     (50, 'Yasmin Ali',       'yasmin.ali@corp.com',        20, 56000.00,  2.7, 'Finance',      '2024-01-01');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.validated_employees;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.validated_employees TO USER {{current_user}};

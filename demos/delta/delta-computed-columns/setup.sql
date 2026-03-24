@@ -30,5 +30,5 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_invoices (
     invoice_date VARCHAR
 ) LOCATION '{{data_path}}/sales_invoices';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.sales_invoices;
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_invoices TO USER {{current_user}};
+

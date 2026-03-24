@@ -29,6 +29,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.products (
     is_active  BOOLEAN
 ) LOCATION '{{data_path}}/products';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.products TO USER {{current_user}};
+
 -- Insert 20 known products as baseline data
 INSERT INTO {{zone_name}}.delta_demos.products VALUES
     (1,  'Laptop',            'Electronics', 999.99,  50,  true),
@@ -52,5 +54,3 @@ INSERT INTO {{zone_name}}.delta_demos.products VALUES
     (19, 'Earbuds',           'Audio',       59.99,   0,   true),
     (20, 'Sound Bar',         'Audio',       249.99,  25,  true);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.products;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.products TO USER {{current_user}};

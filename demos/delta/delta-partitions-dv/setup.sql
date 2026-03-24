@@ -35,6 +35,8 @@ TBLPROPERTIES (
     'delta.enableDeletionVectors' = 'true'
 );
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.cloud_events TO USER {{current_user}};
+
 -- Region 1: us-east (30 events)
 INSERT INTO {{zone_name}}.delta_demos.cloud_events VALUES
     (1,  'api-gateway',  'us-east', 'info',     'Request processed successfully',    45,  '2024-06-01 08:00:00'),
@@ -134,5 +136,3 @@ INSERT INTO {{zone_name}}.delta_demos.cloud_events VALUES
     (89, 'database',     'eu-west', 'info',     'Checkpoint completed',              40,  '2024-06-01 10:20:00'),
     (90, 'cache-layer',  'eu-west', 'info',     'Snapshot persisted',                60,  '2024-06-01 10:25:00');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.cloud_events;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.cloud_events TO USER {{current_user}};

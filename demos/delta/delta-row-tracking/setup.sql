@@ -13,7 +13,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE
 --   3. INSERT — 30 initial audit entries (action='create', version_tag=1)
---   4. DETECT SCHEMA + GRANT ADMIN
 --   5. INSERT — 10 update actions (action='update', version_tag=2)
 --   6. INSERT — 5 review actions (action='review', version_tag=1)
 --   7. INSERT — 5 delete actions (action='delete', version_tag=1)
@@ -43,6 +42,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.compliance_audit (
     version_tag       INT,
     audit_timestamp   VARCHAR
 ) LOCATION '{{data_path}}/compliance_audit';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.compliance_audit TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -81,9 +82,6 @@ INSERT INTO {{zone_name}}.delta_demos.compliance_audit VALUES
     (28, 'REC-028', 'customer',    'Aisha Patel',              'create', NULL, 'tier=premium',           'onboarding',   1, '2024-01-15 09:30:00'),
     (29, 'REC-029', 'policy',      'Whistleblower v1.0',       'create', NULL, 'status=active',          'compliance',   1, '2024-01-16 10:00:00'),
     (30, 'REC-030', 'transaction', 'FX Swap #3306',            'create', NULL, 'amount=88000.00',        'ops_clerk',    1, '2024-01-16 11:00:00');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.compliance_audit;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.compliance_audit TO USER {{current_user}};
 
 
 -- ============================================================================

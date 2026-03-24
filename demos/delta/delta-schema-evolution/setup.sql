@@ -22,6 +22,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.contacts (
     email      VARCHAR
 ) LOCATION '{{data_path}}/contacts';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.contacts TO USER {{current_user}};
+
 
 -- STEP 3: Insert 30 baseline contacts
 INSERT INTO {{zone_name}}.delta_demos.contacts VALUES
@@ -56,5 +58,3 @@ INSERT INTO {{zone_name}}.delta_demos.contacts VALUES
     (29, 'Cindy',    'Hill',      'cindy.hill@example.com'),
     (30, 'Derek',    'Scott',     'derek.scott@example.com');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.contacts;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.contacts TO USER {{current_user}};

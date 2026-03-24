@@ -30,6 +30,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.config_settings (
     updated_at  VARCHAR
 ) LOCATION '{{data_path}}/config_settings';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.config_settings TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.config_settings VALUES
     -- database (10 entries: ids 1-10)
     (1,  'db.host',               'prod-db-01.internal',  'database', 1, 'deploy_bot',  '2025-01-15'),
@@ -72,5 +74,3 @@ INSERT INTO {{zone_name}}.delta_demos.config_settings VALUES
     (34, 'api.version',           'v2',                   'api',      1, 'deploy_bot',  '2025-01-15'),
     (35, 'api.docs.enabled',      'true',                 'api',      1, 'deploy_bot',  '2025-01-15');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.config_settings;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.config_settings TO USER {{current_user}};

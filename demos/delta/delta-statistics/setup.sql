@@ -38,6 +38,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_readings (
     recorded_at     VARCHAR
 ) LOCATION '{{data_path}}/sensor_readings';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_readings TO USER {{current_user}};
+
 -- STEP 2: Batch 1 — values [10-100], short descriptions
 INSERT INTO {{zone_name}}.delta_demos.sensor_readings VALUES
     (1,  'DEVICE-A', 'temperature', 22.5,  95, 'Normal room temp',          '2025-01-01 08:00:00'),
@@ -60,9 +62,6 @@ INSERT INTO {{zone_name}}.delta_demos.sensor_readings VALUES
     (18, 'DEVICE-D', 'humidity',    47.1,  85, 'Comfortable levels',          '2025-01-01 11:00:00'),
     (19, 'DEVICE-E', 'pressure',    15.8,  91, 'Gradual increase',            '2025-01-01 10:00:00'),
     (20, 'DEVICE-E', 'pressure',    100.0, 79, 'Approaching high range',      '2025-01-01 11:00:00');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.sensor_readings;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_readings TO USER {{current_user}};
 
 
 -- ============================================================================

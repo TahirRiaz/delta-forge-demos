@@ -39,6 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.stock_prices (
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.stock_prices TO USER {{current_user}};
 
+
 -- AAPL: base=185, amplitude=5
 INSERT INTO {{zone_name}}.delta_demos.stock_prices VALUES
     ('AAPL', '2024-01-02', 185.00, 186.50, 187.20, 184.30, 52000000),

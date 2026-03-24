@@ -29,6 +29,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_inventory (
     status          VARCHAR
 ) LOCATION '{{data_path}}/product_inventory';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_inventory TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.product_inventory VALUES
     (1,  'Laptop Pro 15',       'Electronics', 1299.99, 50,  'active'),
     (2,  'Wireless Mouse',      'Electronics', 29.99,   200, 'active'),
@@ -61,5 +63,3 @@ INSERT INTO {{zone_name}}.delta_demos.product_inventory VALUES
     (29, 'Screen Cleaner',      'Accessories', 9.99,    350, 'active'),
     (30, 'USB Flash Drive',     'Accessories', 12.99,   280, 'active');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.product_inventory;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_inventory TO USER {{current_user}};

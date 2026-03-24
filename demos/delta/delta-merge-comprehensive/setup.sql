@@ -33,6 +33,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_master (
     last_contact  VARCHAR
 ) LOCATION '{{data_path}}/customer_master';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_master TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.delta_demos.customer_master VALUES
     (1,  'Alice Johnson',    'alice.johnson@crm.com',    'gold',     4500.00,  'active', '2025-01-15'),
     (2,  'Bob Smith',        'bob.smith@crm.com',        'silver',   1200.00,  'active', '2025-02-10'),
@@ -75,9 +77,6 @@ INSERT INTO {{zone_name}}.delta_demos.customer_master VALUES
     (39, 'Megan Phillips',   'megan.phillips@crm.com',   'silver',   1300.00,  'active', '2025-02-19'),
     (40, 'Noah Evans',       'noah.evans@crm.com',       'gold',     4000.00,  'active', '2025-01-14');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.customer_master;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_master TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 2: customer_updates — 25 staged changes (source)
@@ -94,6 +93,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_updates (
     status        VARCHAR,
     last_contact  VARCHAR
 ) LOCATION '{{data_path}}/customer_updates';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_updates TO USER {{current_user}};
 
 INSERT INTO {{zone_name}}.delta_demos.customer_updates VALUES
     -- Updates for existing customers (status='active') — refreshed data
@@ -125,5 +126,3 @@ INSERT INTO {{zone_name}}.delta_demos.customer_updates VALUES
     (49, 'Xavier Hughes',    'xavier.hughes@crm.com',    'gold',     4500.00,  'active', '2025-12-01'),
     (50, 'Yasmin Price',     'yasmin.price@crm.com',     'silver',   1150.00,  'active', '2025-12-01');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.customer_updates;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_updates TO USER {{current_user}};

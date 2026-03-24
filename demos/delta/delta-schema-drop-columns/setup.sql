@@ -32,6 +32,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.user_profiles (
     preferences     VARCHAR
 ) LOCATION '{{data_path}}/user_profiles';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.user_profiles TO USER {{current_user}};
+
 -- STEP 2: Insert 40 users with full PII
 INSERT INTO {{zone_name}}.delta_demos.user_profiles VALUES
     (1,  'alice_dev',      'alice@example.com',     '+1-555-0101', '123 Oak St',         'San Jose',      'US', '2023-01-15', '2025-03-01', 'theme=dark,lang=en'),
@@ -79,5 +81,3 @@ SELECT * FROM (VALUES
     (40, 'nina_product',   'nina@example.com',      '+31-20-0140',      '17 Keizersgr',  'Amsterdam',     'NL', '2024-11-01', '2025-03-03', 'theme=auto,lang=nl')
 ) AS t(id, username, email, phone, address, city, country, signup_date, last_login, preferences);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.user_profiles;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.user_profiles TO USER {{current_user}};

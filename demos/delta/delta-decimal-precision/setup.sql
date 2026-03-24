@@ -14,7 +14,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE with DECIMAL columns
 --   3. INSERT 30 rows batch 1 — USD, EUR, GBP transactions
---   4. DETECT SCHEMA + GRANT ADMIN
 --   5. INSERT 10 rows batch 2 — JPY, CHF edge-case decimals
 --   6. UPDATE — exchange rate conversion for 10 rows (EUR + GBP)
 --   7. UPDATE — negate amounts for 5 refund transactions
@@ -40,6 +39,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.financial_ledger (
     exchange_rate       DECIMAL(10,8),
     currency            VARCHAR
 ) LOCATION '{{data_path}}/financial_ledger';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.financial_ledger TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -87,9 +88,6 @@ INSERT INTO {{zone_name}}.delta_demos.financial_ledger VALUES
     (28, 'ACC-1010', 'Billing adjustment',           500.0000,      500.000000, 1.00000000, 'USD'),
     (29, 'ACC-1010', 'Duplicate charge reversal',   3100.7500,     3100.750000, 1.00000000, 'USD'),
     (30, 'ACC-1011', 'Warranty claim payout',        750.0000,      750.000000, 1.00000000, 'USD');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.financial_ledger;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.financial_ledger TO USER {{current_user}};
 
 
 -- ============================================================================

@@ -36,6 +36,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.hr_employees (
     hire_date       VARCHAR
 ) LOCATION '{{data_path}}/hr_employees';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.hr_employees TO USER {{current_user}};
+
 -- STEP 2: Insert 50 employees across 5 departments
 INSERT INTO {{zone_name}}.delta_demos.hr_employees VALUES
     (1,  'Alice Chen',       'Engineering',  125000.00, 'active', '2020-01-15'),
@@ -88,9 +90,6 @@ INSERT INTO {{zone_name}}.delta_demos.hr_employees VALUES
     (48, 'Wanda James',      'Marketing',     83000.00, 'active', '2022-08-01'),
     (49, 'Youssef Ali',      'HR',            85000.00, 'active', '2021-01-01'),
     (50, 'Zoe Mitchell',     'Finance',       90000.00, 'active', '2020-07-15');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.hr_employees;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.hr_employees TO USER {{current_user}};
 
 
 -- ============================================================================

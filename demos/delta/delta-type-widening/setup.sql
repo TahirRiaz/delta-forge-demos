@@ -39,6 +39,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.measurements (
     recorded_date   VARCHAR
 ) LOCATION '{{data_path}}/measurements';
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.measurements TO USER {{current_user}};
+
 -- STEP 2: Insert 25 small-range measurements (values within INT range)
 INSERT INTO {{zone_name}}.delta_demos.measurements VALUES
     (1,  'TEMP-001', 'temperature', 22,     72,          22.456,    19.99,   'celsius',  '2025-01-01'),
@@ -66,9 +68,6 @@ INSERT INTO {{zone_name}}.delta_demos.measurements VALUES
     (23, 'VOLT-003', 'voltage',     380,    38000,       380.75,    55.00,   'volts',    '2025-01-02'),
     (24, 'VOLT-004', 'voltage',     240,    24000,       240.00,    30.00,   'volts',    '2025-01-02'),
     (25, 'VOLT-005', 'voltage',     12,     1200,        12.60,     8.00,    'volts',    '2025-01-03');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.measurements;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.measurements TO USER {{current_user}};
 
 
 -- ============================================================================

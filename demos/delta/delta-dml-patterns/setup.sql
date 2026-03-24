@@ -11,7 +11,6 @@
 --   1. CREATE ZONE + SCHEMA
 --   2. CREATE DELTA TABLE with explicit schema
 --   3. INSERT 60 rows — baseline orders
---   4. DETECT SCHEMA + GRANT ADMIN
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
@@ -35,6 +34,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_history (
     region      VARCHAR,
     order_date  VARCHAR
 ) LOCATION '{{data_path}}/order_history';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_history TO USER {{current_user}};
 
 -- STEP 2: Insert 60 known orders
 INSERT INTO {{zone_name}}.delta_demos.order_history VALUES
@@ -104,5 +105,3 @@ INSERT INTO {{zone_name}}.delta_demos.order_history VALUES
     (59, 'Jade',   'Lamp',        2,  25.00,  'completed', 'us-west',  '2024-08-27'),
     (60, 'Kurt',   'Shelf',       4,  89.00,  'completed', 'eu-west',  '2024-06-10');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.order_history;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_history TO USER {{current_user}};

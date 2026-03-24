@@ -42,6 +42,8 @@ TBLPROPERTIES (
     'delta.constraints.total_positive' = 'total > 0'
 );
 
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.invoices TO USER {{current_user}};
+
 -- Insert 30 valid invoices (all satisfy constraints)
 INSERT INTO {{zone_name}}.delta_demos.invoices VALUES
     (1,  'Acme Corp',        100.00, 10.00,  110.00,  'paid',    '2024-01-05'),
@@ -75,9 +77,6 @@ INSERT INTO {{zone_name}}.delta_demos.invoices VALUES
     (29, 'Galaxy Ltd',       55.00,  5.50,   60.50,   'pending', '2024-02-02'),
     (30, 'Nebula Tech',      475.00, 47.50,  522.50,  'paid',    '2024-02-03');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.invoices;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.invoices TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 2: event_log — append-only immutable log
@@ -91,6 +90,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.event_log (
 TBLPROPERTIES (
     'delta.appendOnly' = 'true'
 );
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.event_log TO USER {{current_user}};
 
 -- Insert 50 events in 2 batches
 INSERT INTO {{zone_name}}.delta_demos.event_log VALUES
@@ -148,5 +149,3 @@ INSERT INTO {{zone_name}}.delta_demos.event_log VALUES
     (49, 'order.delivered',  '{"order_id":1008}',                    '2024-03-01 11:20:00'),
     (50, 'user.logout',     '{"user":"irene"}',                      '2024-03-01 11:25:00');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.event_log;
-GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.event_log TO USER {{current_user}};
