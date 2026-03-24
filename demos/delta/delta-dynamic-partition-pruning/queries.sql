@@ -164,6 +164,56 @@ ORDER BY region;
 
 
 -- ============================================================================
+-- LEARN: Static Partition Pruning
+-- ============================================================================
+-- Static partition pruning is the simplest form: a direct WHERE clause on
+-- the partition column. No JOIN or subquery needed — the engine sees
+-- WHERE region = 'us-east' and immediately opens only the region=us-east/
+-- directory, skipping the other 3 partitions entirely.
+--
+-- ENGINE LOG: Expect "partition pruning: 3" — 3 of 4 partitions skipped.
+-- This is the most aggressive pruning (75% reduction) because only one
+-- partition value is selected.
+
+ASSERT ROW_COUNT = 14
+ASSERT VALUE total_sales = 18415.5
+SELECT COUNT(*) AS row_count,
+       ROUND(SUM(amount), 2) AS total_sales,
+       ROUND(AVG(amount), 2) AS avg_sale,
+       SUM(qty) AS total_qty
+FROM {{zone_name}}.delta_demos.sales_facts
+WHERE region = 'us-east';
+
+
+-- ============================================================================
+-- LEARN: Anti-Join Pruning (Exclusion Pattern)
+-- ============================================================================
+-- Pruning also works by exclusion. Here we use NOT IN with a subquery to
+-- exclude regions with low targets (target_amount < 50000 → eu-west, ap-south).
+-- The engine resolves the exclusion set and prunes those 2 partitions,
+-- scanning only us-east and us-west — the same result as the inclusion
+-- approach (WHERE target_amount > 50000) but expressed as a negation.
+--
+-- ENGINE LOG: Same as the JOIN query — expect "partition pruning: 2".
+-- Anti-join pruning is useful when the exclusion list is shorter than
+-- the inclusion list.
+
+ASSERT VALUE total_sales = 18415.5 WHERE region = 'us-east'
+ASSERT VALUE total_sales = 21380.0 WHERE region = 'us-west'
+ASSERT ROW_COUNT = 2
+SELECT region,
+       COUNT(*) AS row_count,
+       ROUND(SUM(amount), 2) AS total_sales
+FROM {{zone_name}}.delta_demos.sales_facts
+WHERE region NOT IN (
+    SELECT region FROM {{zone_name}}.delta_demos.region_targets
+    WHERE target_amount < 50000
+)
+GROUP BY region
+ORDER BY region;
+
+
+-- ============================================================================
 -- LEARN: Partition-Scoped DML Operations
 -- ============================================================================
 -- The UPDATE that discounted ap-south amounts by 10% only rewrote files in
@@ -282,3 +332,7 @@ SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts WHERE region I
 -- Verify online_sales: 19 online rows across all partitions
 ASSERT VALUE cnt = 19
 SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts WHERE channel = 'online';
+
+-- Verify anti_join: same 28 rows via NOT IN exclusion path
+ASSERT VALUE cnt = 28
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.sales_facts WHERE region NOT IN (SELECT region FROM {{zone_name}}.delta_demos.region_targets WHERE target_amount < 50000);
