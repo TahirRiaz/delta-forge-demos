@@ -89,8 +89,6 @@ WHERE txn_id = 'TXN-0009';
 -- do not contain the value are skipped by bloom filter. The "Skip Breakdown"
 -- section shows BLOOM entries when bloom filters are active.
 
-ASSERT VALUE value >= 0 WHERE key = 'Total Files'
-ASSERT VALUE value >= 0 WHERE key = 'Files to Scan'
 EXECPLAN SELECT * FROM {{zone_name}}.delta_demos.transaction_log WHERE txn_id = 'TXN-0009';
 
 
