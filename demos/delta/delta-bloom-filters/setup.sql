@@ -16,6 +16,7 @@
 --   3. INSERT batch 2 — 15 rows (in-store purchases)
 --   4. INSERT batch 3 — 15 rows (refunds)
 --   5. UPDATE — set 5 transaction statuses to 'disputed'
+--   6. ANALYZE — build bloom filter indexes on txn_id
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
@@ -130,3 +131,13 @@ SELECT * FROM (VALUES
 UPDATE {{zone_name}}.delta_demos.transaction_log
 SET status = 'disputed'
 WHERE txn_id IN ('TXN-0004', 'TXN-0016', 'TXN-0024', 'TXN-0034', 'TXN-0041');
+
+
+-- ============================================================================
+-- STEP 6: ANALYZE — build bloom filter indexes on txn_id
+-- ============================================================================
+-- This rewrites data files to embed Parquet-native bloom filters on txn_id.
+-- Point lookups (WHERE txn_id = 'X') can then skip files that definitely
+-- do not contain the value, dramatically reducing I/O.
+ANALYZE TABLE {{zone_name}}.delta_demos.transaction_log
+    BLOOM FILTER COLUMNS (txn_id);

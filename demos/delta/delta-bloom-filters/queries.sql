@@ -82,6 +82,19 @@ WHERE txn_id = 'TXN-0009';
 
 
 -- ============================================================================
+-- LEARN: EXECPLAN — Verify Bloom Filters Are Skipping Files
+-- ============================================================================
+-- EXECPLAN shows the execution plan and data-skipping statistics without
+-- running the query. For a point lookup on txn_id, files that definitely
+-- do not contain the value are skipped by bloom filter. The "Skip Breakdown"
+-- section shows BLOOM entries when bloom filters are active.
+
+ASSERT VALUE value >= 0 WHERE key = 'Total Files'
+ASSERT VALUE value >= 0 WHERE key = 'Files to Scan'
+EXECPLAN SELECT * FROM {{zone_name}}.delta_demos.transaction_log WHERE txn_id = 'TXN-0009';
+
+
+-- ============================================================================
 -- EXPLORE: Transaction Categories and Spending Patterns
 -- ============================================================================
 -- Breaking down transactions by category shows how different spending
