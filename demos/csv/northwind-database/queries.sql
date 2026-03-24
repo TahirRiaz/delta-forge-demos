@@ -267,15 +267,15 @@ ORDER BY employee_name, region;
 -- Joins: nw_suppliers → nw_products → nw_order_details
 --
 -- Expected results (top 5):
---   Aux joyeux ecclesiastiques           | France  | 2 products | 153,691.28
---   Plutzer Lebensmittelgrossmarkte AG   | Germany | 5 products | 145,372.40
---   Gai paturage                         | France  | 2 products | 117,981.18
---   Pavlova, Ltd.                        | Australia | 5 products | 106,459.78
---   G'day, Mate                          | Australia | 3 products | 65,626.77
+--   Aux joyeux ecclésiastiques           | France    | 2 products | 153,691.28
+--   Plutzer Lebensmittelgroßmärkte AG    | Germany   | 5 products | 145,372.40
+--   Gai pâturage                         | France    | 2 products | 117,981.18
+--   Pavlova; Ltd.                        | Australia | 5 products | 106,459.78
+--   G'day; Mate                          | Australia | 3 products |  65,626.77
 
 ASSERT ROW_COUNT = 10
-ASSERT WARNING VALUE total_revenue = 153691.28 WHERE supplier = 'Aux joyeux ecclesiastiques'
-ASSERT WARNING VALUE products_supplied = 2 WHERE supplier = 'Aux joyeux ecclesiastiques'
+ASSERT WARNING VALUE total_revenue = 153691.28 WHERE supplier = 'Aux joyeux ecclésiastiques'
+ASSERT WARNING VALUE products_supplied = 2 WHERE supplier = 'Aux joyeux ecclésiastiques'
 SELECT
     s.company_name AS supplier,
     s.country,
@@ -296,8 +296,8 @@ LIMIT 10;
 --
 -- Expected results: 37 late orders
 -- Most recent 3 late shipments:
---   Order 10970 | Bolido Comidas preparadas  | required 1998-04-07 | shipped 1998-04-24
---   Order 10924 | Berglunds snabbkop         | required 1998-04-01 | shipped 1998-04-08
+--   Order 10970 | Bólido Comidas preparadas  | required 1998-04-07 | shipped 1998-04-24
+--   Order 10924 | Berglunds snabbköp         | required 1998-04-01 | shipped 1998-04-08
 --   Order 10927 | La corne d'abondance       | required 1998-04-02 | shipped 1998-04-08
 
 ASSERT ROW_COUNT = 37
