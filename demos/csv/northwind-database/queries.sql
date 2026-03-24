@@ -49,7 +49,7 @@ LIMIT 10;
 --
 -- Expected results (all 8 categories):
 --   Beverages      | 12 products | 267,868.18
---   Dairy Products | 10 products | 234,507.29
+--   Dairy Products | 10 products | 234,507.28
 --   Confections    | 13 products | 167,357.22
 --   Meat/Poultry   |  6 products | 163,022.36
 --   Seafood        | 12 products | 131,261.74
@@ -59,7 +59,7 @@ LIMIT 10;
 
 ASSERT ROW_COUNT = 8
 ASSERT WARNING VALUE total_revenue = 267868.18 WHERE category_name = 'Beverages'
-ASSERT WARNING VALUE total_revenue = 234507.29 WHERE category_name = 'Dairy Products'
+ASSERT WARNING VALUE total_revenue = 234507.28 WHERE category_name = 'Dairy Products'
 ASSERT WARNING VALUE total_revenue = 167357.22 WHERE category_name = 'Confections'
 ASSERT WARNING VALUE total_revenue = 163022.36 WHERE category_name = 'Meat/Poultry'
 ASSERT WARNING VALUE total_revenue = 131261.74 WHERE category_name = 'Seafood'
