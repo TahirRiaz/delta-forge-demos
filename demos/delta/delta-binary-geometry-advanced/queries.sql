@@ -54,9 +54,9 @@ ORDER BY latitude DESC;
 -- ============================================================================
 -- EXPLORE: Window — Largest Document per File Type
 -- ============================================================================
--- RANK() partitioned by mime_type reveals the largest file in each category.
--- This pattern is common in storage audits: find the heaviest asset per type
--- to prioritize compression or cleanup.
+-- ROW_NUMBER() partitioned by mime_type reveals the largest file in each
+-- category. Using ROW_NUMBER (not RANK) ensures exactly one winner per type
+-- even when duplicate-content files share the same size.
 
 ASSERT ROW_COUNT = 7
 ASSERT VALUE name = 'marketing_assets.zip' WHERE mime_type = 'application/zip'
@@ -64,7 +64,7 @@ ASSERT VALUE size_bytes = 4567890 WHERE mime_type = 'image/png'
 SELECT id, name, mime_type, size_bytes, size_rank
 FROM (
     SELECT id, name, mime_type, size_bytes,
-           RANK() OVER (PARTITION BY mime_type ORDER BY size_bytes DESC) AS size_rank
+           ROW_NUMBER() OVER (PARTITION BY mime_type ORDER BY size_bytes DESC, id) AS size_rank
     FROM {{zone_name}}.delta_demos.documents
 )
 WHERE size_rank = 1
