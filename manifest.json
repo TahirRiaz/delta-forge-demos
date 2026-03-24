@@ -1314,6 +1314,38 @@
       "updatedAt": "2026-03-09T12:00:00Z"
     },
     {
+      "id": "delta-binary-geometry-advanced",
+      "path": "demos/delta/delta-binary-geometry-advanced",
+      "iconPath": "icons/delta-binary-geometry-advanced.svg",
+      "name": "Delta Binary & Geometry Advanced",
+      "summary": "Advanced analytics over binary hashes, spatial WKT geometry, and cross-table document/location relationships. Covers content-hash deduplication, bounding-box spatial filters, window-function ranking, CTE joins, pairwise distance computation, LAG gap analysis, and audit-log pivoting.",
+      "categories": [
+        "delta-table",
+        "delta-schema-types"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "binary",
+        "geometry",
+        "spatial",
+        "wkt",
+        "hash",
+        "deduplication",
+        "window-functions",
+        "cte",
+        "joins",
+        "analytics"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
       "id": "delta-bloom-filters",
       "path": "demos/delta/delta-bloom-filters",
       "iconPath": "icons/delta-bloom-filters.svg",
