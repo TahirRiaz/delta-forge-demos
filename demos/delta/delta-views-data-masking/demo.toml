@@ -1,0 +1,27 @@
+[demo]
+id = "delta-views-data-masking"
+name = "Delta Views & Data Masking — Role-Based Access Layers"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+Production databases serve multiple audiences — analysts need order metrics, \
+support agents need customer details with masked payment info, and executives \
+need regional summaries without individual records. Views solve this by \
+projecting different column subsets from the same base table. This demo \
+builds three role-based views on an e-commerce order table: an analyst view \
+(no PII, only product and revenue data), a support view (customer details \
+with masked credit card numbers), and an executive view (pre-aggregated \
+regional summaries). Each view enforces its access boundary at the SQL layer.
+"""
+categories = ["delta-table"]
+tags = ["delta-table", "intermediate", "views", "data-masking", "access-control", "e-commerce", "security"]
+difficulty = "intermediate"
+estimated_time_minutes = 8
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.delta_demos.customer_orders"
