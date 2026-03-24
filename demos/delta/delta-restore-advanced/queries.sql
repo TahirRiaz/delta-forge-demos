@@ -13,12 +13,14 @@
 -- ============================================================================
 --
 -- Version history we will build:
---   V0: CREATE + INSERT 35 config settings across 5 categories  (done in setup)
---   V1: UPDATE 10 database settings — change connection pool sizes, timeouts
---   V2: INSERT 10 new settings + UPDATE 5 existing — config deployment
---   V3: DELETE all is_active = 0 — dangerous cleanup removes 8 rows
---   V4: RESTORE TO VERSION 1 — undo deployment and cleanup
---   V5: UPDATE 3 settings — mark as updated_by = 'restored_admin'
+--   V0: CREATE table                         (setup → delta version 0)
+--   V1: INSERT 35 config settings            (setup → delta version 1)
+--   V2: UPDATE 10 database settings          (queries → delta version 2)
+--   V3: INSERT 10 + UPDATE 5 — deployment    (queries → delta versions 3-6)
+--   V4: DELETE is_active = 0 — cleanup       (queries → delta version 7)
+--   V5: INSPECT via VERSION AS OF 2          (read-only, no version change)
+--   V6: RESTORE TO VERSION 2                 (queries → delta version 8)
+--   V7: UPDATE 3 — mark restored_admin       (queries → delta version 9)
 -- ============================================================================
 
 
@@ -144,19 +146,56 @@ FROM {{zone_name}}.delta_demos.config_settings;
 
 
 -- ============================================================================
--- V4: RESTORE TO VERSION 1 — undo the V2 deployment and V3 cleanup
+-- INSPECT: Use VERSION AS OF to verify the restore target
 -- ============================================================================
--- Roll back to the post-V1 state: 35 original rows with database tuning applied.
+-- Before committing to a RESTORE, inspect the target version to confirm
+-- it contains the state you want. VERSION AS OF lets you query any
+-- historical version without changing the table. This is the real-world
+-- workflow: inspect → decide → restore.
+--
+-- Delta version 2 = the state after our V1 database tuning UPDATE.
+-- (V0=CREATE, V1=INSERT in setup, V2=UPDATE in first query block above.)
+
+-- Peek at version 2: should have 35 rows with original inactive settings intact
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_rows = 35
+ASSERT VALUE inactive = 5
+SELECT COUNT(*) AS total_rows,
+       COUNT(*) FILTER (WHERE is_active = 1) AS active,
+       COUNT(*) FILTER (WHERE is_active = 0) AS inactive
+FROM {{zone_name}}.delta_demos.config_settings VERSION AS OF 2;
+
+-- Confirm V2 has the database tuning we want to preserve
+ASSERT VALUE value = '50' WHERE key = 'db.pool.max'
+ASSERT VALUE updated_by = 'dba_team' WHERE key = 'db.pool.max'
+ASSERT ROW_COUNT = 10
+SELECT key, value, updated_by
+FROM {{zone_name}}.delta_demos.config_settings VERSION AS OF 2
+WHERE category = 'database'
+ORDER BY key;
+
+-- Compare with current state (post-delete): only 37 rows, 0 inactive
+ASSERT ROW_COUNT = 1
+ASSERT VALUE current_rows = 37
+ASSERT VALUE version2_rows = 35
+SELECT
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.config_settings) AS current_rows,
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.config_settings VERSION AS OF 2) AS version2_rows;
+
+
+-- ============================================================================
+-- V4: RESTORE TO VERSION 2 — undo the deployment and cleanup
+-- ============================================================================
+-- Now that we have confirmed version 2 is the correct target, execute RESTORE.
 -- This undoes V2 inserts, V2 updates, and V3 deletes.
 --
 -- RESTORE does NOT delete any files or rewind the log.
--- Instead, it creates a NEW commit (V4) that:
---   1. Adds back the data files that existed at V1
---   2. Removes the data files that were added in V2 and V3
+-- Instead, it creates a NEW commit that:
+--   1. Adds back the data files that existed at version 2
+--   2. Removes the data files that were added in later versions
 --
--- The transaction log now has V0 through V4 — RESTORE is just another
--- forward commit that happens to reproduce an earlier state. This means
--- you could even RESTORE the RESTORE if needed.
+-- The transaction log grows forward — RESTORE is just another commit that
+-- happens to reproduce an earlier state. You could even RESTORE the RESTORE.
 
 RESTORE {{zone_name}}.delta_demos.config_settings TO VERSION 2;
 

@@ -1122,7 +1122,91 @@
       "fileCount": 5,
       "author": "Delta Forge Team",
       "version": "1.0.0",
-      "updatedAt": "2026-03-09T12:00:00Z"
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-partitioned",
+      "path": "demos/delta/delta-restore-partitioned",
+      "iconPath": "icons/delta-restore-partitioned.svg",
+      "name": "Delta Recovery Strategy \u2014 RESTORE vs Partition Replace",
+      "summary": "When only one partition is corrupted, a full RESTORE rolls back the entire table \u2014 undoing good changes in other partitions. This demo compares whole-table RESTORE with partition-scoped replacement (DELETE + INSERT FROM VERSION AS OF), demonstrating why partition replace is the surgical recovery tool for partitioned tables.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "restore",
+        "partitioning",
+        "recovery",
+        "partition-replace",
+        "retail",
+        "revenue"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-selective-recovery",
+      "path": "demos/delta/delta-restore-selective-recovery",
+      "iconPath": "icons/delta-restore-selective-recovery.svg",
+      "name": "Delta Selective Recovery \u2014 VERSION AS OF Extraction",
+      "summary": "When only a subset of rows is corrupted but a full RESTORE would undo good changes to other rows, use VERSION AS OF to extract correct data from a historical version and surgically replace the bad rows. This demo recovers one investment portfolio while preserving rebalancing changes to two others.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "restore",
+        "version-as-of",
+        "time-travel",
+        "selective-recovery",
+        "portfolio",
+        "finance"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-vacuum-lifecycle",
+      "path": "demos/delta/delta-restore-vacuum-lifecycle",
+      "iconPath": "icons/delta-restore-vacuum-lifecycle.svg",
+      "name": "Delta RESTORE + VACUUM \u2014 Incident Response Lifecycle",
+      "summary": "The complete incident response pattern for Delta tables: detect bad data via anomaly queries, RESTORE to a known-good version, VACUUM orphaned files from the bad versions, then resume operations. Demonstrates the correct order of operations and why VACUUM after RESTORE is safe.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "restore",
+        "vacuum",
+        "recovery",
+        "lifecycle",
+        "iot",
+        "monitoring"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
     },
     {
       "id": "delta-partitions-dv",
@@ -1422,6 +1506,62 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-time-travel",
+      "path": "demos/delta/delta-restore-time-travel",
+      "iconPath": "icons/delta-restore-time-travel.svg",
+      "name": "Delta RESTORE + Time Travel \u2014 Inspect Before You Recover",
+      "summary": "Teaches the safe recovery workflow: use VERSION AS OF to browse every historical version, compare side by side, choose the right target, then RESTORE. Scenario: a script zeros all student grades and the registrar inspects V1 vs V2 to pick the version that preserves a legitimate curve.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "restore",
+        "time-travel",
+        "version-history",
+        "recovery",
+        "inspect",
+        "version-as-of"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
+    },
+    {
+      "id": "delta-restore-selective-recovery",
+      "path": "demos/delta/delta-restore-selective-recovery",
+      "iconPath": "icons/delta-restore-selective-recovery.svg",
+      "name": "Delta RESTORE \u2014 Selective Recovery with Cherry-Pick",
+      "summary": "RESTORE is all-or-nothing, but real incidents are messy. This demo teaches selective recovery: restore to the last clean version, then surgically re-apply only the wanted changes. Scenario: accidental mass DELETE wipes active projects, but a subsequent archive must be preserved through the recovery.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "restore",
+        "selective-recovery",
+        "time-travel",
+        "cherry-pick",
+        "version-history",
+        "recovery"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-24T12:00:00Z"
     },
     {
       "id": "delta-time-travel-deep",
