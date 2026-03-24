@@ -72,7 +72,7 @@ ORDER BY budget DESC;
 --
 -- ENGINE LOG: Expect "partition pruning: 12" — only 4 of 16 scanned (75%).
 
-ASSERT ROW_COUNT = 15
+ASSERT VALUE row_count = 15
 ASSERT VALUE total_sales = 18735.5
 SELECT COUNT(*) AS row_count,
        ROUND(SUM(amount), 2) AS total_sales,
@@ -90,7 +90,7 @@ WHERE region = 'us-east';
 -- ENGINE LOG: Expect "partition pruning: 12" — only 4 of 16 scanned (75%).
 -- Same reduction as the region filter, but on the other axis.
 
-ASSERT ROW_COUNT = 16
+ASSERT VALUE row_count = 16
 ASSERT VALUE total_sales = 20385.0
 SELECT COUNT(*) AS row_count,
        ROUND(SUM(amount), 2) AS total_sales,
@@ -109,7 +109,7 @@ WHERE quarter = 'Q3-2024';
 -- ENGINE LOG: Expect "partition pruning: 15" — 1 of 16 scanned (93.75%).
 -- This is the maximum possible pruning: only the exact partition needed.
 
-ASSERT ROW_COUNT = 4
+ASSERT VALUE row_count = 4
 ASSERT VALUE total_sales = 4825.5
 SELECT COUNT(*) AS row_count,
        ROUND(SUM(amount), 2) AS total_sales,
@@ -211,7 +211,7 @@ ORDER BY s.region;
 -- In a production table with millions of rows across hundreds of
 -- partitions, this would read only a tiny fraction of the data.
 
-ASSERT ROW_COUNT = 4
+ASSERT VALUE row_count = 4
 ASSERT VALUE total_sales = 4825.5
 SELECT COUNT(*) AS row_count,
        ROUND(SUM(s.amount), 2) AS total_sales,
@@ -236,7 +236,7 @@ WHERE r.target_amount = 75000
 -- This shows why partition column choice matters: if most queries filter
 -- on channel, partitioning by (region, quarter) offers no pruning benefit.
 
-ASSERT ROW_COUNT = 20
+ASSERT VALUE row_count = 20
 ASSERT VALUE total_sales = 31890.0
 SELECT COUNT(*) AS row_count,
        ROUND(SUM(amount), 2) AS total_sales,

@@ -175,7 +175,7 @@ ORDER BY region;
 -- This is the most aggressive pruning (75% reduction) because only one
 -- partition value is selected.
 
-ASSERT ROW_COUNT = 14
+ASSERT VALUE row_count = 14
 ASSERT VALUE total_sales = 18415.5
 SELECT COUNT(*) AS row_count,
        ROUND(SUM(amount), 2) AS total_sales,
