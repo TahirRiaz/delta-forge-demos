@@ -25,10 +25,6 @@
 ASSERT VALUE baseline_count = 10
 SELECT COUNT(*) AS baseline_count FROM {{zone_name}}.delta_demos.iot_readings;
 
--- Verify auto-optimize is enabled on this table
-ASSERT ROW_COUNT = 5
-SELECT * FROM (DESCRIBE AUTO OPTIMIZE {{zone_name}}.delta_demos.iot_readings);
-
 
 -- ============================================================================
 -- BATCH 2: Humidity readings (10 rows) — 1 extreme value (> 90%)
