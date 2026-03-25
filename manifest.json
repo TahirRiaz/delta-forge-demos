@@ -3773,6 +3773,48 @@
       ]
     },
     {
+      "id": "edi-repeating-segments",
+      "path": "demos/edi/edi-repeating-segments",
+      "iconPath": "icons/edi-repeating-segments.svg",
+      "name": "EDI Repeating Segments — Multi-Occurrence X12 Handling",
+      "summary": "Demonstrates the repeating_segment_mode EDI option with three tables from the same X12 data: Indexed mode creates per-occurrence columns (n1_1_1, n1_2_1 for first/second N1), Concatenate mode joins all values with pipes (n1_1 = 'ST|BY|SO'), and ToJson mode produces JSON arrays (n1_1 = '[\"ST\",\"BY\",\"SO\"]'). Shows multi-line PO1 extraction, N1 address analysis, and price computation across indexed occurrences.",
+      "categories": [
+        "edi",
+        "supply-chain"
+      ],
+      "tags": [
+        "edi",
+        "x12",
+        "advanced",
+        "repeating-segments",
+        "indexed",
+        "concatenate",
+        "to-json",
+        "multi-occurrence"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 19192,
+      "fileCount": 14,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.repeating_indexed"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.repeating_concat"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.repeating_json"
+        }
+      ]
+    },
+    {
       "id": "edi-tradacoms-uk-retail",
       "path": "demos/edi/edi-tradacoms-uk-retail",
       "iconPath": "icons/edi-tradacoms-uk-retail.svg",
