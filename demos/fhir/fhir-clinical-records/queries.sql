@@ -18,10 +18,10 @@
 -- for mild, moderate, or severe.
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE onset_date = 2011-08-05 WHERE condition_id = 'f001'
-ASSERT VALUE onset_date = 2011-05-05 WHERE condition_id = 'f002'
-ASSERT VALUE onset_date = 2013-04-02 WHERE condition_id = 'f201'
-ASSERT VALUE onset_date = 2010-07-18 WHERE condition_id = 'stroke'
+ASSERT VALUE onset_date = '2011-08-05' WHERE condition_id = 'f001'
+ASSERT VALUE onset_date = '2011-05-05' WHERE condition_id = 'f002'
+ASSERT VALUE onset_date = '2013-04-02' WHERE condition_id = 'f201'
+ASSERT VALUE onset_date = '2010-07-18' WHERE condition_id = 'stroke'
 SELECT condition_id, clinical_status, verification_status,
        severity, code, body_site, onset_date
 FROM {{zone_name}}.fhir.conditions
@@ -55,9 +55,9 @@ ORDER BY condition_count DESC;
 -- Conditions without abatement_date are likely still active.
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE resolution_status = Resolved WHERE condition_id = 'f204'
-ASSERT VALUE abatement_date = 2013-03-20 WHERE condition_id = 'f204'
-ASSERT VALUE resolution_status = Ongoing WHERE condition_id = 'stroke'
+ASSERT VALUE resolution_status = 'Resolved' WHERE condition_id = 'f204'
+ASSERT VALUE abatement_date = '2013-03-20' WHERE condition_id = 'f204'
+ASSERT VALUE resolution_status = 'Ongoing' WHERE condition_id = 'stroke'
 SELECT condition_id, code, onset_date, abatement_date,
        CASE WHEN abatement_date IS NOT NULL THEN 'Resolved'
             ELSE 'Ongoing' END AS resolution_status
@@ -74,9 +74,9 @@ ORDER BY onset_date;
 -- or not done. The performer array lists the surgical team members.
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE status = completed WHERE procedure_id = 'biopsy'
-ASSERT VALUE status = completed WHERE procedure_id = 'f001'
-ASSERT VALUE status = completed WHERE procedure_id = 'example'
+ASSERT VALUE status = 'completed' WHERE procedure_id = 'biopsy'
+ASSERT VALUE status = 'completed' WHERE procedure_id = 'f001'
+ASSERT VALUE status = 'completed' WHERE procedure_id = 'example'
 SELECT procedure_id, status, code, subject, occurrence_date, body_site
 FROM {{zone_name}}.fhir.procedures
 ORDER BY procedure_id;
@@ -91,8 +91,8 @@ ORDER BY procedure_id;
 -- for full clinical fidelity.
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE status = completed WHERE procedure_id = 'colonoscopy'
-ASSERT VALUE status = completed WHERE procedure_id = 'example-implant'
+ASSERT VALUE status = 'completed' WHERE procedure_id = 'colonoscopy'
+ASSERT VALUE status = 'completed' WHERE procedure_id = 'example-implant'
 SELECT procedure_id, status,
        performer, reason, follow_up, note
 FROM {{zone_name}}.fhir.procedures
@@ -108,7 +108,7 @@ ORDER BY procedure_id;
 -- performed.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE status = completed
+ASSERT VALUE status = 'completed'
 ASSERT VALUE procedure_count = 8
 SELECT status, COUNT(*) AS procedure_count
 FROM {{zone_name}}.fhir.procedures
@@ -126,8 +126,8 @@ ORDER BY procedure_count DESC;
 -- of future reactions: low, high, or unable-to-assess.
 
 ASSERT ROW_COUNT = 6
-ASSERT VALUE criticality = high WHERE allergy_id = 'example'
-ASSERT VALUE criticality = high WHERE allergy_id = 'medication'
+ASSERT VALUE criticality = 'high' WHERE allergy_id = 'example'
+ASSERT VALUE criticality = 'high' WHERE allergy_id = 'medication'
 SELECT allergy_id, clinical_status, type, category,
        criticality, code, patient
 FROM {{zone_name}}.fhir.allergies
@@ -176,10 +176,10 @@ ORDER BY allergy_count DESC;
 -- staging data. This shows the field coverage pattern.
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE has_severity = - WHERE condition_id = 'stroke'
-ASSERT VALUE has_body_site = - WHERE condition_id = 'stroke'
-ASSERT VALUE has_stage = Y WHERE condition_id = 'f002'
-ASSERT VALUE has_abatement = Y WHERE condition_id = 'f204'
+ASSERT VALUE has_severity = '-' WHERE condition_id = 'stroke'
+ASSERT VALUE has_body_site = '-' WHERE condition_id = 'stroke'
+ASSERT VALUE has_stage = 'Y' WHERE condition_id = 'f002'
+ASSERT VALUE has_abatement = 'Y' WHERE condition_id = 'f204'
 SELECT condition_id,
        CASE WHEN severity IS NOT NULL THEN 'Y' ELSE '-' END AS has_severity,
        CASE WHEN body_site IS NOT NULL THEN 'Y' ELSE '-' END AS has_body_site,
@@ -218,9 +218,9 @@ ORDER BY resource_type;
 -- clinical data quality auditing and regulatory compliance.
 
 ASSERT ROW_COUNT = 22
-ASSERT VALUE type = Condition WHERE id = 'stroke'
-ASSERT VALUE type = Allergy WHERE id = 'nka'
-ASSERT VALUE type = Procedure WHERE id = 'biopsy'
+ASSERT VALUE type = 'Condition' WHERE id = 'stroke'
+ASSERT VALUE type = 'Allergy' WHERE id = 'nka'
+ASSERT VALUE type = 'Procedure' WHERE id = 'biopsy'
 SELECT 'Condition' AS type, condition_id AS id, df_file_name FROM {{zone_name}}.fhir.conditions
 UNION ALL
 SELECT 'Procedure' AS type, procedure_id AS id, df_file_name FROM {{zone_name}}.fhir.procedures
