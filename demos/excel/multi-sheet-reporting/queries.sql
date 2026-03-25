@@ -68,7 +68,8 @@ ORDER BY df_file_name;
 -- Joins the Sales and Returns tables on order_id. This is the key multi-sheet
 -- capability: relating data across different sheets in the same workbooks.
 
-ASSERT ROW_COUNT = 33
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_orders = 33
 ASSERT VALUE returned_orders = 7
 ASSERT VALUE clean_orders = 26
 SELECT COUNT(*) AS total_orders,
