@@ -149,14 +149,14 @@ ASSERT VALUE reachable_in_2_hops <= 910
 SELECT hub, COUNT(DISTINCT reachable) AS reachable_in_2_hops
 FROM (
     -- 1-hop: direct targets of the top hub
-    SELECT top.src AS hub, e1.dst AS reachable
-    FROM (SELECT src, COUNT(*) AS deg FROM {{zone_name}}.email_eu.edges GROUP BY src ORDER BY deg DESC LIMIT 1) top
-    JOIN {{zone_name}}.email_eu.edges e1 ON e1.src = top.src
+    SELECT th.src AS hub, e1.dst AS reachable
+    FROM (SELECT src, COUNT(*) AS deg FROM {{zone_name}}.email_eu.edges GROUP BY src ORDER BY deg DESC LIMIT 1) th
+    JOIN {{zone_name}}.email_eu.edges e1 ON e1.src = th.src
     UNION
     -- 2-hop: targets of targets
-    SELECT top.src AS hub, e2.dst AS reachable
-    FROM (SELECT src, COUNT(*) AS deg FROM {{zone_name}}.email_eu.edges GROUP BY src ORDER BY deg DESC LIMIT 1) top
-    JOIN {{zone_name}}.email_eu.edges e1 ON e1.src = top.src
+    SELECT th.src AS hub, e2.dst AS reachable
+    FROM (SELECT src, COUNT(*) AS deg FROM {{zone_name}}.email_eu.edges GROUP BY src ORDER BY deg DESC LIMIT 1) th
+    JOIN {{zone_name}}.email_eu.edges e1 ON e1.src = th.src
     JOIN {{zone_name}}.email_eu.edges e2 ON e2.src = e1.dst
 ) sub
 GROUP BY hub;
