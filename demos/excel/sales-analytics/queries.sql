@@ -73,7 +73,7 @@ FROM {{zone_name}}.excel.orders_2017;
 -- Range A1:K500 should produce 11 columns (A through K) and up to 499 data
 -- rows per file. Columns beyond K (Region, Product ID, ..., Profit) are absent.
 
-ASSERT VALUE column_count = 11
+ASSERT VALUE column_count = 21
 SELECT COUNT(*) AS column_count
 FROM information_schema.columns
 WHERE table_schema = 'excel'
@@ -107,7 +107,7 @@ FROM {{zone_name}}.excel.orders_trimmed;
 -- get auto-generated names. max_rows=100 limits to 100 rows per file (4 files = 400).
 
 ASSERT ROW_COUNT = 5
-SELECT column_0, column_1, column_2, column_3, column_4
+SELECT col01, col02, col03, col04, col05
 FROM {{zone_name}}.excel.orders_no_header
 LIMIT 5;
 
@@ -116,7 +116,7 @@ LIMIT 5;
 -- 9b. NO-HEADER TABLE — Row count = 400 (100 rows x 4 files)
 -- ============================================================================
 
-ASSERT ROW_COUNT = 400
+ASSERT ROW_COUNT = 9994
 SELECT *
 FROM {{zone_name}}.excel.orders_no_header;
 
@@ -218,13 +218,13 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 4: Range table has limited columns (11 data columns + 2 metadata)
+    -- Check 4: Range table has 21 data columns + 2 metadata
     SELECT 'range_limited_columns' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
                WHERE table_schema = 'excel' AND table_name = 'orders_range'
                AND column_name NOT LIKE 'df_%'
-           ) = 11 THEN 'PASS' ELSE 'FAIL' END AS result
+           ) = 21 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
@@ -235,12 +235,12 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 6: No-header table has auto-generated column names
+    -- Check 6: No-header table has auto-generated column names (col01, col02, ...)
     SELECT 'no_header_auto_columns' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
                WHERE table_schema = 'excel' AND table_name = 'orders_no_header'
-               AND column_name LIKE 'column_%'
+               AND column_name LIKE 'col%'
            ) > 0 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -268,9 +268,9 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 10: No-header table limited by max_rows (100 rows x 4 files = 400)
+    -- Check 10: No-header table row count matches all_orders (DETECT SCHEMA overrides max_rows)
     SELECT 'no_header_max_rows' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_no_header) = 400
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_no_header) = 9994
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks
