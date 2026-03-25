@@ -272,8 +272,8 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'x12_204_motor_carrier_load_tender.edi'
-ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'x12_820_payment_order.edi'
-ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'x12_214_shipment_status.edi'
+ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'x12_210_freight_invoice.edi'
+ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'x12_210_freight_invoice_edifabric.edi'
 SELECT
     df_file_name,
     st_1 AS transaction,
