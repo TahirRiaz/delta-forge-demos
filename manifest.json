@@ -109,8 +109,7 @@
       "name": "Delta Advanced SQL — Windows, CTEs & Analytics",
       "summary": "Delta tables support the full power of SQL analytics including window \\ functions, CTEs, and advanced aggregations, making them a drop-in \\ replacement for traditional data warehouses. This...",
       "categories": [
-        "delta-table",
-        "delta-dml-merge"
+        "delta-table"
       ],
       "tags": [
         "delta-table",
@@ -594,8 +593,7 @@
       "name": "Delta Constraint Enforcement — NOT NULL & CHECK",
       "summary": "Delta Lake CHECK constraints enforce data quality invariants at the protocol \\ level, rejecting any commit whose rows violate the declared expressions. \\ Without constraints, bad data silently...",
       "categories": [
-        "delta-table",
-        "delta-dml-merge"
+        "delta-table"
       ],
       "tags": [
         "delta-table",
@@ -857,11 +855,11 @@
       "id": "delta-dml-patterns",
       "path": "demos/delta/delta-dml-patterns",
       "iconPath": "icons/delta-dml-patterns.svg",
-      "name": "Delta DML Patterns — Complex DELETE & UPDATE",
+      "name": "Delta DML Patterns — INSERT, UPDATE & DELETE",
       "summary": "Delta Lake supports full DML (INSERT, UPDATE, DELETE) on top of immutable \\ Parquet files by recording add/remove file actions in the transaction log, \\ whereas traditional data lakes are...",
       "categories": [
-        "delta-table",
-        "delta-dml-merge"
+        "data-manipulation",
+        "delta-table"
       ],
       "tags": [
         "delta-table",
@@ -998,8 +996,7 @@
       "name": "Delta Edge Cases — Empty, Wide & Minimal Tables",
       "summary": "Delta tables gracefully handle boundary conditions that often trip up \\ traditional data systems, including single-row tables, wide schemas, \\ and empty tables. Understanding these edge cases is...",
       "categories": [
-        "delta-table",
-        "delta-dml-merge"
+        "delta-table"
       ],
       "tags": [
         "delta-table",
@@ -1700,7 +1697,7 @@
       "id": "delta-multi-level-partitioning",
       "path": "demos/delta/delta-multi-level-partitioning",
       "iconPath": "icons/delta-multi-level-partitioning.svg",
-      "name": "{{zone_name}}.delta_demos.quarter_dim",
+      "name": "Delta Multi-Level Partitioning — Compound Partition Pruning",
       "summary": "Multi-level partitioning creates a hierarchy of partition directories \\\r(e.g., region=us-east/quarter=Q1-2024/) that enables compound pruning: \\\rthe engine can skip partitions on BOTH dimensions simultaneously. A query \\\rfiltering on region AND quarter can prune down to 1 of 16 partitions — a \\\r93.7",
       "categories": [
         "delta-table"
@@ -1741,7 +1738,7 @@
       "id": "delta-null-statistics",
       "path": "demos/delta/delta-null-statistics",
       "iconPath": "icons/delta-null-statistics.svg",
-      "name": "NULL Statistics — NULL-Aware Query Optimization",
+      "name": "Delta NULL Statistics — NULL-Aware Query Optimization",
       "summary": "Healthcare patient records have optional fields that start NULL and get populated over time. Delta tracks per-file NULL counts, enabling the engine to skip files with zero NULLs or all-NULL columns...",
       "categories": [
         "delta-table",
@@ -1774,7 +1771,7 @@
       "id": "delta-optimize-compaction",
       "path": "demos/delta/delta-optimize-compaction",
       "iconPath": "icons/delta-optimize-compaction.svg",
-      "name": "{{zone_name}}.delta_demos.daily_orders",
+      "name": "Delta OPTIMIZE — Manual File Compaction & TARGET SIZE",
       "summary": "OPTIMIZE is a Delta Lake maintenance command that compacts small Parquet files \\\rinto larger, optimally-sized ones. Frequent small INSERTs — such as daily batch \\\rloads or streaming micro-batches — create a \"small files problem\" that degrades \\\rread performance due to excessive file-open overhead. \\",
       "categories": [
         "delta-table"
@@ -1910,7 +1907,7 @@
       "id": "delta-partition-pitfalls",
       "path": "demos/delta/delta-partition-pitfalls",
       "iconPath": "icons/delta-partition-pitfalls.svg",
-      "name": "{{zone_name}}.delta_demos.events_by_month",
+      "name": "Delta Partition Pitfalls — Over-Partitioning & Repartitioning",
       "summary": "Over-partitioning is one of the most common Delta table design mistakes. When \\\ra table is partitioned by a high-cardinality column (like customer_id), each \\\rpartition directory contains very few rows, creating hundreds or thousands of \\\rtiny Parquet files. This \"small files problem\" degrades query",
       "categories": [
         "delta-table"
@@ -2015,7 +2012,7 @@
       "id": "delta-partition-selective-optimize",
       "path": "demos/delta/delta-partition-selective-optimize",
       "iconPath": "icons/delta-partition-selective-optimize.svg",
-      "name": "Partition-Scoped Maintenance",
+      "name": "Delta Partition-Scoped Maintenance",
       "summary": "In production Delta Lake deployments, OPTIMIZE can target individual partitions using WHERE clauses. This demo models a global e-commerce system partitioned by warehouse datacenter, demonstrating that mutations create partition-scoped DVs and OPTIMIZE can compact one partition without touching others.",
       "categories": [
         "delta-table",
@@ -2048,7 +2045,7 @@
       "id": "delta-partition-time-series",
       "path": "demos/delta/delta-partition-time-series",
       "iconPath": "icons/delta-partition-time-series.svg",
-      "name": "{{zone_name}}.delta_demos.line_metrics",
+      "name": "Delta Time-Based Partitioning — Monthly Sensor Data",
       "summary": "Time-based partitioning is the most common strategy in production data lakes, \\\rorganizing files into directories by time period (year_month, event_date, etc.). \\\rThis demo partitions factory sensor readings by month and demonstrates time-range \\\rqueries with partition pruning, partition-scoped reca",
       "categories": [
         "delta-table"
@@ -2387,7 +2384,7 @@
       "id": "delta-row-tracking",
       "path": "demos/delta/delta-row-tracking",
       "iconPath": "icons/delta-row-tracking.svg",
-      "name": "{{zone_name}}.delta_demos.compliance_audit",
+      "name": "Delta Row Tracking — Stable Row IDs & Audit Trail",
       "summary": "Row tracking is a Delta Lake protocol feature that assigns stable, unique \\identifiers to each row so that changes can be traced across versions. It \\enables fine-grained change detection for CDC pipelines, merge operations, \\and regulatory compliance. This demo builds a financial audit trail that \\",
       "categories": [
         "delta-table"
@@ -2553,7 +2550,7 @@
       "id": "delta-statistics-skipping",
       "path": "demos/delta/delta-statistics-skipping",
       "iconPath": "icons/delta-statistics-skipping.svg",
-      "name": "Data Skipping — Range Statistics in Action",
+      "name": "Delta Data Skipping — Range Statistics in Action",
       "summary": "E-commerce order data arrives in monthly batches with naturally non-overlapping price ranges. Per-file min/max statistics allow the query engine to skip entire files when filters don't overlap a file's value range...",
       "categories": [
         "delta-table",
@@ -2586,7 +2583,7 @@
       "id": "delta-string-statistics",
       "path": "demos/delta/delta-string-statistics",
       "iconPath": "icons/delta-string-statistics.svg",
-      "name": "String Statistics — Truncation & Bloom Filter Bridge",
+      "name": "Delta String Statistics — Truncation & Bloom Filter Bridge",
       "summary": "Delta stores min/max statistics for string columns, but only the first 32 characters. Short strings like SKU codes get full statistics; long strings like URLs share the same truncated prefix...",
       "categories": [
         "delta-table",
@@ -2918,7 +2915,7 @@
       "id": "delta-update-cross-partition",
       "path": "demos/delta/delta-update-cross-partition",
       "iconPath": "icons/delta-update-cross-partition.svg",
-      "name": "Cross-Partition Updates",
+      "name": "Delta Cross-Partition Updates",
       "summary": "When an UPDATE predicate does not align with the partition key, Delta must create deletion vectors (DVs) in every partition that contains matching rows. This demo uses a SaaS billing platform where pricing tier changes apply globally across all regions, forcing cross-partition DV writes.",
       "categories": [
         "delta-table",

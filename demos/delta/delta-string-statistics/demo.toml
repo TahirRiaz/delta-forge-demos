@@ -1,6 +1,6 @@
 [demo]
 id = "delta-string-statistics"
-name = "String Statistics — Truncation & Bloom Filter Bridge"
+name = "Delta String Statistics — Truncation & Bloom Filter Bridge"
 version = "1.0.0"
 author = "Delta Forge Team"
 description = """

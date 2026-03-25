@@ -1,6 +1,6 @@
 [demo]
 id = "delta-null-statistics"
-name = "NULL Statistics — NULL-Aware Query Optimization"
+name = "Delta NULL Statistics — NULL-Aware Query Optimization"
 version = "1.0.0"
 author = "Delta Forge Team"
 description = """

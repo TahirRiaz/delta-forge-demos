@@ -1,6 +1,6 @@
 [demo]
 id = "delta-statistics-skipping"
-name = "Data Skipping — Range Statistics in Action"
+name = "Delta Data Skipping — Range Statistics in Action"
 version = "1.0.0"
 author = "Delta Forge Team"
 description = """

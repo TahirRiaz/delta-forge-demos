@@ -1,6 +1,6 @@
 [demo]
 id = "delta-update-cross-partition"
-name = "Cross-Partition Updates"
+name = "Delta Cross-Partition Updates"
 version = "1.0.0"
 author = "Delta Forge Team"
 description = """

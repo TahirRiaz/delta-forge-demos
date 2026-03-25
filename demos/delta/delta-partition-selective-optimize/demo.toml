@@ -1,6 +1,6 @@
 [demo]
 id = "delta-partition-selective-optimize"
-name = "Partition-Scoped Maintenance"
+name = "Delta Partition-Scoped Maintenance"
 version = "1.0.0"
 author = "Delta Forge Team"
 description = """
