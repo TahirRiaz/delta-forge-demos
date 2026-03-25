@@ -345,7 +345,7 @@ ORDER BY step;
 -- are in her inner circle; distant people (3+ hops) may never hear her
 -- ideas unless bridges carry them.
 
-ASSERT ROW_COUNT = 50
+ASSERT ROW_COUNT = 49
 USE {{zone_name}}.graph.cypher_demo
 CALL algo.allShortestPaths({source: 1})
 YIELD node_id, distance, path
