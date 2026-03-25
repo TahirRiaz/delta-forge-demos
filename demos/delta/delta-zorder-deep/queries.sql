@@ -130,7 +130,7 @@ ORDER BY region, sensor_type, recorded_date;
 -- OPTIMIZE ZORDER to restore locality.
 
 ASSERT ROW_COUNT = 8
-ASSERT RESULT SET INCLUDES (6, 'DEV-006', 'temperature', 21.0, 'eu-west', 0, '2025-03-03')
+ASSERT RESULT SET INCLUDES (6, 'DEV-006', 'temperature', 21, 'eu-west', 0, '2025-03-03')
 SELECT id, device_id, sensor_type, reading, region,
        quality_score, recorded_date
 FROM {{zone_name}}.delta_demos.sensor_telemetry
@@ -150,7 +150,7 @@ ORDER BY region, sensor_type;
 
 ASSERT NO_FAIL IN result
 ASSERT ROW_COUNT = 10
-ASSERT RESULT SET INCLUDES ('2025-03-01', 8, 2, 4, 90.0)
+ASSERT RESULT SET INCLUDES ('2025-03-01', 8, 2, 4, 90)
 SELECT recorded_date, COUNT(*) AS readings,
        COUNT(DISTINCT region) AS regions,
        COUNT(DISTINCT sensor_type) AS sensor_types,
