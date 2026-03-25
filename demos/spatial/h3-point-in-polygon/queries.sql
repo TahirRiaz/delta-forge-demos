@@ -222,17 +222,17 @@ WHERE NOT EXISTS (
 -- Query 10: Single-point zone lookup
 -- ============================================================================
 -- "Is this specific GPS coordinate inside a pricing zone?"
--- SFO Airport coordinates (37.6213, -122.3790) should match SFO Airport zone.
--- Times Square (40.758, -73.9855) should match Manhattan Core zone.
--- Null Island (0, 0) should match nothing.
+-- SFO Airport should match SFO Airport zone (coords: 37.6213, -122.3790).
+-- Times Square should match Manhattan Core zone (coords: 40.758, -73.9855).
+-- Null Island should match nothing (coords: 0, 0).
 -- ============================================================================
 ASSERT ROW_COUNT = 3
-ASSERT VALUE matched_zone = 'SFO Airport' WHERE test_point = 'SFO Airport (37.6213, -122.3790)'
-ASSERT VALUE surcharge_pct = 25.0 WHERE test_point = 'SFO Airport (37.6213, -122.3790)'
-ASSERT VALUE matched_zone = 'Manhattan Core' WHERE test_point = 'Times Square (40.758, -73.9855)'
-ASSERT VALUE matched_zone = 'NO MATCH' WHERE test_point = 'Null Island (0, 0)'
+ASSERT VALUE matched_zone = 'SFO Airport' WHERE test_point = 'SFO Airport'
+ASSERT VALUE surcharge_pct = 25.0 WHERE test_point = 'SFO Airport'
+ASSERT VALUE matched_zone = 'Manhattan Core' WHERE test_point = 'Times Square'
+ASSERT VALUE matched_zone = 'NO MATCH' WHERE test_point = 'Null Island'
 SELECT
-    'SFO Airport (37.6213, -122.3790)' AS test_point,
+    'SFO Airport' AS test_point,
     z.zone_name AS matched_zone,
     z.surcharge_pct
 FROM {{zone_name}}.spatial.zone_cells z
@@ -241,7 +241,7 @@ WHERE z.h3_cell = h3_latlng_to_cell(37.6213, -122.3790, 9)
 UNION ALL
 
 SELECT
-    'Times Square (40.758, -73.9855)' AS test_point,
+    'Times Square' AS test_point,
     z.zone_name AS matched_zone,
     z.surcharge_pct
 FROM {{zone_name}}.spatial.zone_cells z
@@ -250,7 +250,7 @@ WHERE z.h3_cell = h3_latlng_to_cell(40.758, -73.9855, 9)
 UNION ALL
 
 SELECT
-    'Null Island (0, 0)' AS test_point,
+    'Null Island' AS test_point,
     'NO MATCH' AS matched_zone,
     0.0 AS surcharge_pct
 WHERE NOT EXISTS (
