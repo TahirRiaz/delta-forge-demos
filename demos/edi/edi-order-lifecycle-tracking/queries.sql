@@ -312,7 +312,7 @@ ASSERT VALUE party_code = 'SO' WHERE party_name = 'Aaron Copeland'
 SELECT
     n1_2 AS party_name,
     n1_1 AS party_code,
-    GROUP_CONCAT(DISTINCT
+    string_agg(DISTINCT
         CASE st_1
             WHEN '850' THEN 'Order'
             WHEN '855' THEN 'Acknowledgment'
@@ -323,7 +323,7 @@ SELECT
             WHEN '997' THEN 'Acknowledgment (Func)'
             WHEN '824' THEN 'Application Advice'
             ELSE 'Other'
-        END
+        END, ', '
     ) AS stages,
     COUNT(*) AS document_count
 FROM {{zone_name}}.edi.lifecycle_tracking

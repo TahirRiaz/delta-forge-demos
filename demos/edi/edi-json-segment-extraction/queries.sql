@@ -8,8 +8,8 @@
 -- JSON functions demonstrated:
 --   json_array_length()       — Count body segments per transaction
 --   json_typeof()             — Inspect JSON value types at any path
---   #>> '{path}'              — Extract text value at a JSON path
---   json_extract_path_text()  — Extract text value by path components
+--   json_extract_path_text()  — Extract text value at a JSON path
+--   json_extract_path()       — Extract JSON value at a path (for nesting)
 --   jsonb_pretty()            — Pretty-print JSON for human inspection
 --
 -- df_transaction_json structure:
@@ -115,7 +115,7 @@ SELECT
     df_file_name,
     st_1 AS txn_type,
     json_typeof(df_transaction_json) AS root_json_type,
-    json_typeof(df_transaction_json -> 0) AS first_element_type
+    json_typeof(json_extract_path(df_transaction_json, '0')) AS first_element_type
 FROM {{zone_name}}.edi.json_extraction_messages
 ORDER BY df_file_name;
 
@@ -126,7 +126,7 @@ ORDER BY df_file_name;
 -- Extracts the name of the first body segment from each transaction to reveal
 -- what each document type starts with after the ST envelope. This uses the
 -- #>> operator for JSON path extraction:
---   df_transaction_json #>> '{0,segment}' — segment name at array index 0
+--   json_extract_path_text(df_transaction_json, '0', 'segment') — segment name at array index 0
 --
 -- Expected first segments by transaction type:
 --   850 → BEG (Beginning Segment for Purchase Order)
@@ -149,7 +149,7 @@ ASSERT VALUE first_segment = 'AK1' WHERE df_file_name = 'x12_997_functional_ackn
 SELECT
     df_file_name,
     st_1 AS txn_type,
-    df_transaction_json #>> '{0,segment}' AS first_segment
+    json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment
 FROM {{zone_name}}.edi.json_extraction_messages
 ORDER BY df_file_name;
 
@@ -183,10 +183,10 @@ ASSERT VALUE po_number = '4600000406' WHERE df_file_name = 'x12_850_purchase_ord
 ASSERT VALUE po_number = 'XX-1234' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 SELECT
     df_file_name,
-    df_transaction_json #>> '{0,segment}' AS first_segment,
-    df_transaction_json #>> '{0,elements,0,value}' AS purpose_code,
-    df_transaction_json #>> '{0,elements,2,value}' AS po_number,
-    df_transaction_json #>> '{0,elements,4,value}' AS po_date
+    json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment,
+    json_extract_path_text(df_transaction_json, '0', 'elements', '0', 'value') AS purpose_code,
+    json_extract_path_text(df_transaction_json, '0', 'elements', '2', 'value') AS po_number,
+    json_extract_path_text(df_transaction_json, '0', 'elements', '4', 'value') AS po_date
 FROM {{zone_name}}.edi.json_extraction_messages
 WHERE st_1 = '850'
 ORDER BY df_file_name;
@@ -247,8 +247,8 @@ ASSERT VALUE second_segment_pretty IS NOT NULL WHERE df_file_name = 'x12_850_pur
 SELECT
     df_file_name,
     st_1 AS txn_type,
-    jsonb_pretty(df_transaction_json -> 0) AS first_segment_pretty,
-    jsonb_pretty(df_transaction_json -> 1) AS second_segment_pretty
+    jsonb_pretty(json_extract_path(df_transaction_json, '0')) AS first_segment_pretty,
+    jsonb_pretty(json_extract_path(df_transaction_json, '1')) AS second_segment_pretty
 FROM {{zone_name}}.edi.json_extraction_messages
 WHERE df_file_name = 'x12_850_purchase_order.edi';
 
@@ -303,7 +303,7 @@ SELECT check_name, result FROM (
     SELECT 'first_850_segment_beg' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
                        WHERE st_1 = '850'
-                         AND df_transaction_json #>> '{0,segment}' = 'BEG') = 3
+                         AND json_extract_path_text(df_transaction_json, '0', 'segment') = 'BEG') = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -312,7 +312,7 @@ SELECT check_name, result FROM (
     SELECT 'first_810_segment_big' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
                        WHERE st_1 = '810'
-                         AND df_transaction_json #>> '{0,segment}' = 'BIG') = 5
+                         AND json_extract_path_text(df_transaction_json, '0', 'segment') = 'BIG') = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks
