@@ -35,6 +35,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.persons_cypher (
     active      BOOLEAN
 ) LOCATION '{{data_path}}/persons_cypher';
 
+GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_cypher TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.graph.persons_cypher
 SELECT
     id,
@@ -71,7 +73,6 @@ SELECT
 FROM generate_series(1, 50) AS t(id);
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.persons_cypher;
-GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_cypher TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -88,6 +89,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.friendships_cypher (
     context             STRING,
     rating              INT
 ) LOCATION '{{data_path}}/friendships_cypher';
+
+GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_cypher TO USER {{current_user}};
 
 
 -- Batch 1: Intra-department colleagues (~50 edges)
@@ -226,7 +229,6 @@ FROM (
 WHERE src != dst;
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.friendships_cypher;
-GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_cypher TO USER {{current_user}};
 
 
 -- ============================================================================
