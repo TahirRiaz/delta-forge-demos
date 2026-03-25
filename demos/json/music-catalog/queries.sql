@@ -24,8 +24,8 @@ ASSERT ROW_COUNT = 15
 ASSERT VALUE name = 'For Those About To Rock We Salute You' WHERE details_track_id = 1
 ASSERT VALUE vendor_name = 'AC/DC' WHERE details_track_id = 1
 ASSERT VALUE details_name = 'For Those About To Rock (We Salute You)' WHERE details_track_id = 1
-SELECT name, vendor_name, details_name, details_composer, details_genre_id,
-       details_milliseconds, details_unit_price
+SELECT details_track_id, name, vendor_name, details_name, details_composer,
+       details_genre_id, details_milliseconds, details_unit_price
 FROM {{zone_name}}.json.album_tracks
 ORDER BY id, details_track_id
 LIMIT 15;
