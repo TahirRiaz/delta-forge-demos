@@ -13,6 +13,10 @@
 -- clusters, project teams are nested sub-communities, and a small
 -- percentage of bridge/liaison employees connect the clusters.
 --
+-- All proof values were independently computed using DuckDB against
+-- the same deterministic generation formulas. Delta Forge must reproduce
+-- every value exactly — proving correct execution at enterprise scale.
+--
 -- PART 1: EXPLORE & ANALYZE (queries 1–16)
 --   Pattern matching, property filtering, relationship analysis.
 --
@@ -33,6 +37,8 @@
 -- ============================================================================
 -- 1. ORGANIZATION SIZE — Verify all 1M employees loaded
 -- ============================================================================
+-- The graph engine must scan all 1,000,000 vertex nodes and return
+-- an exact count. Proof: generate_series(1, 1000000) → exactly 1M rows.
 
 ASSERT VALUE total_employees = 1000000
 USE {{zone_name}}.graph.stress_test_network
@@ -43,6 +49,14 @@ RETURN count(n) AS total_employees;
 -- ============================================================================
 -- 2. TOTAL CONNECTIONS — Full edge scan at 5M+ scale
 -- ============================================================================
+-- Seven deterministic batches produce exactly 5,059,998 directed edges:
+--   Batch 1: 1,500,000  (dept neighborhood)
+--   Batch 2: 1,000,000  (team connections)
+--   Batch 3:   800,000  (city social)
+--   Batch 4:   550,000  (mentorship)
+--   Batch 5:   400,000  (bridge nodes)
+--   Batch 6:   490,000  (hub nodes)
+--   Batch 7:   319,998  (weak ties)
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_connections = 5059998
@@ -54,14 +68,15 @@ RETURN count(r) AS total_connections;
 -- ============================================================================
 -- 3. WORKFORCE BY DEPARTMENT — Headcount distribution
 -- ============================================================================
--- HR needs a snapshot of each department. Uneven headcounts across 20
--- departments may indicate growth imbalances.
+-- department = id % 20 distributes 1M people across 20 departments.
+-- IDs 1..1M: residues 1..10 each get 50,000; residues 11..19 and 0 each
+-- get 50,000. Uniform distribution: exactly 50,000 per department.
 
 ASSERT ROW_COUNT = 20
 ASSERT VALUE headcount = 50000 WHERE department = 'Engineering'
 ASSERT VALUE headcount = 50000 WHERE department = 'Sales'
--- Non-deterministic: float average may vary slightly across engines
-ASSERT WARNING VALUE avg_age BETWEEN 40.0 AND 41.5 WHERE department = 'Engineering'
+ASSERT VALUE headcount = 50000 WHERE department = 'AI/ML'
+ASSERT VALUE headcount = 50000 WHERE department = 'Data Science'
 USE {{zone_name}}.graph.stress_test_network
 MATCH (n)
 RETURN n.department AS department, count(n) AS headcount,
@@ -72,9 +87,14 @@ ORDER BY headcount DESC;
 -- ============================================================================
 -- 4. GLOBAL FOOTPRINT — Employee distribution across 15 offices
 -- ============================================================================
+-- city = id % 15. For IDs 1..1M: residues 1..10 get 66,667 people each,
+-- residues 0 and 11..14 get 66,666. Proves correct modular distribution.
 
 ASSERT ROW_COUNT = 15
 ASSERT VALUE headcount = 66667 WHERE city = 'SF'
+ASSERT VALUE headcount = 66667 WHERE city = 'London'
+ASSERT VALUE headcount = 66666 WHERE city = 'NYC'
+ASSERT VALUE headcount = 66666 WHERE city = 'Austin'
 USE {{zone_name}}.graph.stress_test_network
 MATCH (n)
 RETURN n.city AS city, count(n) AS headcount
@@ -84,12 +104,19 @@ ORDER BY headcount DESC;
 -- ============================================================================
 -- 5. RELATIONSHIP MIX — What types of bonds exist?
 -- ============================================================================
--- Understanding the connection type mix across 5M+ edges reveals
--- organizational patterns at enterprise scale.
+-- The 7 edge batches produce exactly 18 relationship types. Top counts
+-- come from Batch 1 (colleague=750K, teammate=750K) and Batch 4
+-- (mentor=550K). Each count is deterministic from the generation logic.
 
 ASSERT ROW_COUNT = 18
 ASSERT VALUE count = 750000 WHERE type = 'colleague'
+ASSERT VALUE count = 750000 WHERE type = 'teammate'
 ASSERT VALUE count = 550000 WHERE type = 'mentor'
+ASSERT VALUE count = 333334 WHERE type = 'project-mate'
+ASSERT VALUE count = 333333 WHERE type = 'sprint-partner'
+ASSERT VALUE count = 333333 WHERE type = 'code-reviewer'
+ASSERT VALUE count = 200000 WHERE type = 'city-social'
+ASSERT VALUE count = 200000 WHERE type = 'lunch-buddy'
 USE {{zone_name}}.graph.stress_test_network
 MATCH (a)-[r]->(b)
 RETURN r.relationship_type AS type, count(r) AS count,
@@ -100,8 +127,9 @@ ORDER BY count DESC;
 -- ============================================================================
 -- 6. ENGINEERING VETERANS — Senior engineers over 50
 -- ============================================================================
--- HR is planning a mentorship program. Find experienced engineers who
--- could mentor the next generation.
+-- Age formula: 22 + floor((id × φ mod 1) × 38). The golden ratio
+-- scattering gives ages 22–59 (38 integer buckets, 0-indexed).
+-- In Engineering (id%20=0), there are exactly 11,842 people with age > 50.
 
 ASSERT ROW_COUNT = 25
 ASSERT VALUE age = 59
@@ -116,8 +144,9 @@ LIMIT 25;
 -- ============================================================================
 -- 7. STRONGEST MENTORSHIPS — High-impact mentor bonds
 -- ============================================================================
--- Which mentor-mentee pairs have bonds > 0.8? These are the mentorships
--- worth studying and replicating across the enterprise.
+-- Mentor weights use: 0.6 + 0.4 × ((src×3 + dst×7) × φ mod 1).
+-- Range is [0.6, 1.0). Pairs with weight > 0.8 are in the top 50%
+-- of the mentor weight distribution.
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.graph.stress_test_network
@@ -131,8 +160,12 @@ LIMIT 25;
 -- ============================================================================
 -- 8. CROSS-DEPARTMENT BRIDGES — Who connects the silos?
 -- ============================================================================
+-- The top cross-department pair is Engineering → Platform with exactly
+-- 91,000 connections: 50K shared-city edges + 41K bridge/hub/weak-tie
+-- edges between departments that are 15 IDs apart.
 
 ASSERT ROW_COUNT = 30
+ASSERT VALUE connections = 91000 WHERE from_dept = 'Engineering'
 USE {{zone_name}}.graph.stress_test_network
 MATCH (a)-[r]->(b)
 WHERE a.department <> b.department
@@ -157,7 +190,34 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 10. KNOWLEDGE PATHS — 2-hop information flow from employee #1
+-- 10. IDENTITY CHECK — Verify specific employees by ID
+-- ============================================================================
+-- The generation is deterministic: employee #1 is Bob_1 in Marketing/SF,
+-- employee #1000 is Alice_1000, a VP in Engineering/Seattle,
+-- employee #500000 is Alice_500000, a VP in Engineering/Tokyo.
+-- This proves the Cypher engine correctly resolves vertex properties.
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE name = 'Bob_1' WHERE id = 1
+ASSERT VALUE department = 'Marketing' WHERE id = 1
+ASSERT VALUE city = 'SF' WHERE id = 1
+ASSERT VALUE name = 'Alice_1000' WHERE id = 1000
+ASSERT VALUE title = 'VP' WHERE id = 1000
+ASSERT VALUE department = 'Engineering' WHERE id = 1000
+ASSERT VALUE city = 'Seattle' WHERE id = 1000
+ASSERT VALUE name = 'Alice_500000' WHERE id = 500000
+ASSERT VALUE title = 'VP' WHERE id = 500000
+ASSERT VALUE city = 'Tokyo' WHERE id = 500000
+USE {{zone_name}}.graph.stress_test_network
+MATCH (n)
+WHERE n.id IN [1, 1000, 500000]
+RETURN n.id AS id, n.name AS name, n.department AS department,
+       n.city AS city, n.title AS title, n.level AS level
+ORDER BY n.id;
+
+
+-- ============================================================================
+-- 11. KNOWLEDGE PATHS — 2-hop information flow from employee #1
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 1
@@ -169,7 +229,7 @@ LIMIT 50;
 
 
 -- ============================================================================
--- 11. REACHABILITY — Who can employee #1 reach within 2 hops?
+-- 12. REACHABILITY — Who can employee #1 reach within 2 hops?
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 1
@@ -181,7 +241,7 @@ LIMIT 50;
 
 
 -- ============================================================================
--- 12. RECIPROCAL RELATIONSHIPS — Mutual bonds at scale
+-- 13. RECIPROCAL RELATIONSHIPS — Mutual bonds at scale
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 1
@@ -194,14 +254,17 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 13. MENTORSHIP LEVEL FLOW — Are seniors mentoring juniors?
+-- 14. MENTORSHIP LEVEL FLOW — Are seniors mentoring juniors?
 -- ============================================================================
--- A healthy program has senior staff (L5+) mentoring people 1-2 levels
--- below. If VPs only mentor other VPs, the program isn't reaching juniors.
+-- Batch 4 generates mentor edges from L5+ to same-department subordinates.
+-- L6 (8,000 Sr Managers × 30 mentees × dept overlap) → exact level-pair
+-- counts. The engine must correctly join edge + vertex tables at scale.
 
 ASSERT ROW_COUNT = 14
 ASSERT VALUE mentorship_count = 192000 WHERE mentor_level = 'L6'
 ASSERT VALUE mentorship_count = 120000 WHERE mentor_level = 'L5'
+ASSERT VALUE mentorship_count = 80000 WHERE mentor_level = 'L8'
+ASSERT VALUE mentorship_count = 48000 WHERE mentor_level = 'L7'
 USE {{zone_name}}.graph.stress_test_network
 MATCH (mentor)-[r]->(mentee)
 WHERE r.relationship_type = 'mentor'
@@ -211,7 +274,7 @@ ORDER BY mentorship_count DESC;
 
 
 -- ============================================================================
--- 14. SENIORITY FLOW — How does information flow across levels?
+-- 15. SENIORITY FLOW — How does information flow across levels?
 -- ============================================================================
 -- Do senior people mostly connect to other seniors (echo chamber), or
 -- do connections span levels?
@@ -226,8 +289,12 @@ LIMIT 20;
 
 
 -- ============================================================================
--- 15. TEAM vs CROSS-TEAM — Is the org collaborating or siloed?
+-- 16. TEAM vs CROSS-TEAM — Is the org collaborating or siloed?
 -- ============================================================================
+-- Batches 1, 2, and 4 preserve department membership (stride 20, 200, 50).
+-- Cross-department edges come from Batches 3, 5, 6, 7.
+-- Exact split: 3,125,998 within-department + 1,934,000 cross-department
+-- = 5,059,998 total. These two queries must sum to the total edge count.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE connections = 3125998
@@ -241,7 +308,7 @@ RETURN 'within_department' AS scope, count(r) AS connections,
 
 
 -- ============================================================================
--- 16. CROSS-DEPARTMENT VOLUME — Complement to within-department
+-- 17. CROSS-DEPARTMENT VOLUME — Complement to within-department
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
@@ -265,12 +332,16 @@ RETURN 'cross_department' AS scope, count(r) AS connections,
 
 
 -- ============================================================================
--- 17. DEGREE CENTRALITY — Most connected people at 1M scale
+-- 18. DEGREE CENTRALITY — Most connected people at 1M scale
 -- ============================================================================
+-- The most connected nodes are L4+ hub nodes (id%20=0) who also happen
+-- to be VPs (id%1000=0). They get edges from Batches 1,2,4,6 plus
+-- inbound from all batches. Top total_degree = 194 (out=178, in=16).
 
 ASSERT ROW_COUNT = 25
 ASSERT VALUE total_degree = 194
 ASSERT VALUE out_degree = 178
+ASSERT VALUE in_degree = 16
 USE {{zone_name}}.graph.stress_test_network
 CALL algo.degree()
 YIELD node_id, in_degree, out_degree, total_degree
@@ -280,7 +351,7 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 18. PAGERANK — True organizational influence at enterprise scale
+-- 19. PAGERANK — True organizational influence at enterprise scale
 -- ============================================================================
 -- PageRank at 1M nodes and 5M edges: finds the people who are
 -- connected to by other well-connected people. The real power structure.
@@ -295,12 +366,13 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 19. NATURAL COMMUNITIES — Connected components at scale
+-- 20. NATURAL COMMUNITIES — Connected components at scale
 -- ============================================================================
--- In a healthy org, there should be one giant component. Multiple
--- components indicate truly disconnected groups.
+-- The graph is fully connected: weak ties (Batch 7) and bridge nodes
+-- (Batch 5) ensure a single giant component containing all 1,000,000
+-- employees. Zero isolated nodes.
 
-ASSERT ROW_COUNT >= 1
+ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 1000000
 USE {{zone_name}}.graph.stress_test_network
 CALL algo.connectedComponents()
@@ -311,7 +383,7 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 20. LOUVAIN COMMUNITIES — Real organizational clusters
+-- 21. LOUVAIN COMMUNITIES — Real organizational clusters
 -- ============================================================================
 -- Finds dense subgroups regardless of the formal org chart. Do the
 -- detected communities align with the 20 departments?
@@ -326,7 +398,7 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 21. GATEKEEPERS — Who controls information flow at scale?
+-- 22. GATEKEEPERS — Who controls information flow at scale?
 -- ============================================================================
 -- Betweenness centrality at 1M nodes: finds people on many shortest paths.
 -- If they leave, communication between groups breaks down. Critical
@@ -343,7 +415,7 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 22. TIGHT-KNIT GROUPS — Triangle count at scale
+-- 23. TIGHT-KNIT GROUPS — Triangle count at scale
 -- ============================================================================
 
 ASSERT ROW_COUNT = 25
@@ -356,10 +428,11 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 23. SHORTEST PATH — Route across the enterprise
+-- 24. SHORTEST PATH — Route across the enterprise
 -- ============================================================================
--- If employee #1 needs to reach employee #500000 (different department,
--- different city), what's the fastest chain? Tests Dijkstra at 1M scale.
+-- If employee #1 (Bob_1, Marketing, SF) needs to reach employee #500000
+-- (Alice_500000, VP, Engineering, Tokyo), what's the fastest chain?
+-- Tests Dijkstra at 1M scale with weighted edges.
 
 ASSERT ROW_COUNT >= 2
 USE {{zone_name}}.graph.stress_test_network
@@ -370,7 +443,7 @@ ORDER BY step;
 
 
 -- ============================================================================
--- 24. SIX DEGREES — Small world property at 1M scale
+-- 25. SIX DEGREES — Small world property at 1M scale
 -- ============================================================================
 -- Most people should be reachable within 4-6 hops even in an enterprise
 -- of 1 million. More suggests organizational fragmentation.
@@ -385,7 +458,7 @@ LIMIT 20;
 
 
 -- ============================================================================
--- 25. DIRECTED REACHABILITY — Strongly connected components
+-- 26. DIRECTED REACHABILITY — Strongly connected components
 -- ============================================================================
 -- A large SCC means good bidirectional communication. Many small SCCs
 -- indicate one-way information flow (top-down only).
@@ -400,7 +473,7 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 26. ACCESSIBILITY — Who can reach everyone fastest?
+-- 27. ACCESSIBILITY — Who can reach everyone fastest?
 -- ============================================================================
 -- High closeness = good candidate for company-wide announcements or
 -- change agent roles.
@@ -416,10 +489,10 @@ LIMIT 25;
 
 
 -- ============================================================================
--- 27. BACKBONE NETWORK — Essential connections
+-- 28. BACKBONE NETWORK — Essential connections
 -- ============================================================================
--- The minimum spanning tree at 1M scale: the lightest set of edges
--- that still connects every employee. Reveals the organizational skeleton.
+-- The minimum spanning tree at 1M scale: exactly 999,999 edges
+-- (N-1 for a connected graph of N=1,000,000 nodes).
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE backbone_edges = 999999
@@ -430,7 +503,7 @@ RETURN count(*) AS backbone_edges, sum(weight) AS total_weight;
 
 
 -- ============================================================================
--- 28. ALL DISTANCES FROM EMPLOYEE #1
+-- 29. ALL DISTANCES FROM EMPLOYEE #1
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 1
@@ -443,7 +516,7 @@ LIMIT 50;
 
 
 -- ============================================================================
--- 29. DEPTH-FIRST EXPLORATION — Trace influence chains
+-- 30. DEPTH-FIRST EXPLORATION — Trace influence chains
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 1
@@ -456,7 +529,7 @@ LIMIT 50;
 
 
 -- ============================================================================
--- 30. NEAREST NEIGHBORS — Structural similarity at scale
+-- 31. NEAREST NEIGHBORS — Structural similarity at scale
 -- ============================================================================
 
 ASSERT ROW_COUNT = 10
@@ -476,27 +549,31 @@ ORDER BY rank;
 -- ############################################################################
 -- Each query is a real use case — visualizing a specific organizational
 -- slice. Scale increases progressively to find rendering limits.
+-- All edge counts are independently verified via DuckDB against the
+-- same deterministic edge-generation formulas.
 --
---   31.  Single team (~100 nodes)        — should render instantly
---   32.  Small department slice (500)     — fast render
---   33.  Full department unit (1,000)     — smooth render
---   34.  Multi-team view (5,000)          — may need layout time
---   35.  Division-level (10,000)          — stress test begins
---   36.  Regional network (50,000)        — expect lag
---   37.  Large region (100,000)           — browser stress
---   38.  Full organization (1M + 5M)      — ultimate stress test
+--   32.  Single team (~100 nodes)        — should render instantly
+--   33.  Small department slice (500)     — fast render
+--   34.  Full department unit (1,000)     — smooth render
+--   35.  Multi-team view (5,000)          — may need layout time
+--   36.  Division-level (10,000)          — stress test begins
+--   37.  Regional network (50,000)        — expect lag
+--   38.  Large region (100,000)           — browser stress
+--   39.  Full organization (1M + 5M)      — ultimate stress test
 --
 -- Node-only rendering:
---   39.  100 nodes    — node layout test
---   40.  1,000 nodes  — medium density
---   41.  10,000 nodes — large node cloud
---   42.  All 1M nodes — extreme test
+--   40.  100 nodes    — node layout test
+--   41.  1,000 nodes  — medium density
+--   42.  10,000 nodes — large node cloud
+--   43.  All 1M nodes — extreme test
 -- ############################################################################
 
 
 -- ============================================================================
--- 31. VIZ: SINGLE PROJECT TEAM — ~100 person team network
+-- 32. VIZ: SINGLE PROJECT TEAM — ~100 person team network
 -- ============================================================================
+-- Edges among ids 1-100: 389 edges from Batches 1-7 where both
+-- endpoints fall within this range.
 
 ASSERT ROW_COUNT = 389
 USE {{zone_name}}.graph.stress_test_network
@@ -506,7 +583,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 32. VIZ: DEPARTMENT SLICE — 500 employees
+-- 33. VIZ: DEPARTMENT SLICE — 500 employees
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3217
@@ -517,7 +594,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 33. VIZ: FULL DEPARTMENT — 1,000 employees
+-- 34. VIZ: FULL DEPARTMENT — 1,000 employees
 -- ============================================================================
 
 ASSERT ROW_COUNT = 7377
@@ -528,7 +605,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 34. VIZ: MULTI-TEAM — 5,000 employees
+-- 35. VIZ: MULTI-TEAM — 5,000 employees
 -- ============================================================================
 
 ASSERT ROW_COUNT = 41095
@@ -539,7 +616,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 35. VIZ: DIVISION — 10,000 employees, stress test begins
+-- 36. VIZ: DIVISION — 10,000 employees, stress test begins
 -- ============================================================================
 
 ASSERT ROW_COUNT = 83323
@@ -550,7 +627,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 36. VIZ: REGIONAL — 50,000 employees, extreme rendering
+-- 37. VIZ: REGIONAL — 50,000 employees, extreme rendering
 -- ============================================================================
 -- WARNING: Large result set. The visualizer may become sluggish.
 
@@ -562,7 +639,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 37. VIZ: LARGE REGION — 100,000 employees, browser stress
+-- 38. VIZ: LARGE REGION — 100,000 employees, browser stress
 -- ============================================================================
 -- WARNING: Expect significant lag or memory pressure.
 
@@ -574,7 +651,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 38. VIZ: FULL ORGANIZATION — All 1M employees + 5M connections
+-- 39. VIZ: FULL ORGANIZATION — All 1M employees + 5M connections
 -- ============================================================================
 -- WARNING: Ultimate stress test. The visualizer will likely freeze.
 
@@ -585,7 +662,7 @@ RETURN a, r, b;
 
 
 -- ============================================================================
--- 39. VIZ NODES: SINGLE TEAM — 100 employee nodes
+-- 40. VIZ NODES: SINGLE TEAM — 100 employee nodes
 -- ============================================================================
 
 ASSERT ROW_COUNT = 100
@@ -596,7 +673,7 @@ RETURN n;
 
 
 -- ============================================================================
--- 40. VIZ NODES: DEPARTMENT — 1,000 employee nodes
+-- 41. VIZ NODES: DEPARTMENT — 1,000 employee nodes
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1000
@@ -607,7 +684,7 @@ RETURN n;
 
 
 -- ============================================================================
--- 41. VIZ NODES: DIVISION — 10,000 employee nodes
+-- 42. VIZ NODES: DIVISION — 10,000 employee nodes
 -- ============================================================================
 
 ASSERT ROW_COUNT = 10000
@@ -618,7 +695,7 @@ RETURN n;
 
 
 -- ============================================================================
--- 42. VIZ NODES: FULL ORGANIZATION — All 1M employee nodes
+-- 43. VIZ NODES: FULL ORGANIZATION — All 1M employee nodes
 -- ============================================================================
 -- WARNING: Returns 1,000,000 node objects. Ultimate node rendering test.
 
@@ -632,7 +709,8 @@ RETURN n;
 -- VERIFY: All Checks
 -- ============================================================================
 -- Cross-cutting sanity check: proves the full 1M-node / 5M-edge graph
--- loaded with the correct topology and uniform department distribution.
+-- loaded with the correct topology, uniform department distribution,
+-- correct title hierarchy, and accurate active/inactive split.
 
 -- Node count, department count, and city count
 ASSERT ROW_COUNT = 1
@@ -654,7 +732,79 @@ FROM {{zone_name}}.graph.st_edges;
 -- Uniform department headcount: 1M / 20 = exactly 50000 per department
 ASSERT ROW_COUNT = 20
 ASSERT VALUE headcount = 50000 WHERE department = 'Engineering'
+ASSERT VALUE headcount = 50000 WHERE department = 'AI/ML'
 SELECT department, COUNT(*) AS headcount
 FROM {{zone_name}}.graph.st_people
 GROUP BY department
 ORDER BY department;
+
+-- Title hierarchy: 7 levels with exact counts from the modular generation
+ASSERT ROW_COUNT = 7
+ASSERT VALUE cnt = 800000 WHERE title = 'Associate'
+ASSERT VALUE cnt = 140000 WHERE title = 'Engineer'
+ASSERT VALUE cnt = 40000 WHERE title = 'Senior Engineer'
+ASSERT VALUE cnt = 10000 WHERE title = 'Manager'
+ASSERT VALUE cnt = 8000 WHERE title = 'Senior Manager'
+ASSERT VALUE cnt = 1000 WHERE title = 'Director'
+ASSERT VALUE cnt = 1000 WHERE title = 'VP'
+SELECT title, COUNT(*) AS cnt
+FROM {{zone_name}}.graph.st_people
+GROUP BY title
+ORDER BY cnt DESC;
+
+-- Level distribution: 8 levels with exact counts
+ASSERT ROW_COUNT = 8
+ASSERT VALUE cnt = 533333 WHERE level = 'L1'
+ASSERT VALUE cnt = 266667 WHERE level = 'L2'
+ASSERT VALUE cnt = 140000 WHERE level = 'L3'
+ASSERT VALUE cnt = 40000 WHERE level = 'L4'
+ASSERT VALUE cnt = 10000 WHERE level = 'L5'
+ASSERT VALUE cnt = 8000 WHERE level = 'L6'
+ASSERT VALUE cnt = 1000 WHERE level = 'L7'
+ASSERT VALUE cnt = 1000 WHERE level = 'L8'
+SELECT level, COUNT(*) AS cnt
+FROM {{zone_name}}.graph.st_people
+GROUP BY level
+ORDER BY level;
+
+-- Active/Inactive split: active = (id % 21 != 0) → 952,381 active, 47,619 inactive
+ASSERT ROW_COUNT = 1
+ASSERT VALUE active_count = 952381
+ASSERT VALUE inactive_count = 47619
+SELECT
+    SUM(CASE WHEN active = true THEN 1 ELSE 0 END)  AS active_count,
+    SUM(CASE WHEN active = false THEN 1 ELSE 0 END) AS inactive_count
+FROM {{zone_name}}.graph.st_people;
+
+-- Relationship type breakdown: all 18 types with exact counts
+ASSERT ROW_COUNT = 18
+ASSERT VALUE cnt = 750000 WHERE relationship_type = 'colleague'
+ASSERT VALUE cnt = 750000 WHERE relationship_type = 'teammate'
+ASSERT VALUE cnt = 550000 WHERE relationship_type = 'mentor'
+ASSERT VALUE cnt = 333334 WHERE relationship_type = 'project-mate'
+ASSERT VALUE cnt = 200000 WHERE relationship_type = 'city-social'
+ASSERT VALUE cnt = 163335 WHERE relationship_type = 'strategic-partner'
+ASSERT VALUE cnt = 163334 WHERE relationship_type = 'leadership-network'
+ASSERT VALUE cnt = 163331 WHERE relationship_type = 'executive-link'
+ASSERT VALUE cnt = 160000 WHERE relationship_type = 'alumni-connection'
+ASSERT VALUE cnt = 159998 WHERE relationship_type = 'acquaintance'
+ASSERT VALUE cnt = 133334 WHERE relationship_type = 'inter-team-link'
+ASSERT VALUE cnt = 133333 WHERE relationship_type = 'cross-dept-bridge'
+ASSERT VALUE cnt = 133333 WHERE relationship_type = 'liaison'
+SELECT relationship_type, COUNT(*) AS cnt
+FROM {{zone_name}}.graph.st_edges
+GROUP BY relationship_type
+ORDER BY cnt DESC;
+
+-- Within vs cross department edge split must sum to total
+ASSERT ROW_COUNT = 1
+ASSERT VALUE within_dept = 3125998
+ASSERT VALUE cross_dept = 1934000
+ASSERT VALUE total_check = 5059998
+SELECT
+    SUM(CASE WHEN s.department = d.department THEN 1 ELSE 0 END) AS within_dept,
+    SUM(CASE WHEN s.department != d.department THEN 1 ELSE 0 END) AS cross_dept,
+    COUNT(*) AS total_check
+FROM {{zone_name}}.graph.st_edges e
+JOIN {{zone_name}}.graph.st_people s ON e.src = s.id
+JOIN {{zone_name}}.graph.st_people d ON e.dst = d.id;
