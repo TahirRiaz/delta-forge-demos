@@ -45,10 +45,10 @@
 ASSERT ROW_COUNT >= 22
 ASSERT VALUE syntax_id = 'UNOB' WHERE df_file_name = 'edifact_ORDERS_purchase_order.edi'
 ASSERT VALUE sender = 'SENDER1' WHERE df_file_name = 'edifact_ORDERS_purchase_order.edi'
-ASSERT VALUE msg_type = 'ORDERS:D:96A:UN' WHERE df_file_name = 'edifact_ORDERS_purchase_order.edi'
+ASSERT VALUE msg_type = 'ORDERS' WHERE df_file_name = 'edifact_ORDERS_purchase_order.edi'
 ASSERT VALUE syntax_id = 'IATB' WHERE df_file_name = 'edifact_wikipedia_example.edi'
-ASSERT VALUE msg_type = 'PAORES:93:1:IA' WHERE df_file_name = 'edifact_wikipedia_example.edi'
-ASSERT VALUE msg_type = 'DESADV:D:96A:UN:EAN007' WHERE df_file_name = 'eancom_DESADV_despatch_advice.edi'
+ASSERT VALUE msg_type = 'PAORES' WHERE df_file_name = 'edifact_wikipedia_example.edi'
+ASSERT VALUE msg_type = 'DESADV' WHERE df_file_name = 'eancom_DESADV_despatch_advice.edi'
 SELECT
     df_file_name,
     unb_1 AS syntax_id,
@@ -76,9 +76,9 @@ ORDER BY df_file_name;
 -- QUOTES, PAORES, DESADV, IFTSTA, PRICAT, IFTMIN
 
 ASSERT ROW_COUNT >= 10
-ASSERT VALUE msg_count = 2 WHERE msg_type = 'CONTRL:4:1:UN'
-ASSERT VALUE msg_count = 1 WHERE msg_type = 'ORDERS:D:96A:UN'
-ASSERT VALUE msg_count = 1 WHERE msg_type = 'PAORES:93:1:IA'
+ASSERT VALUE msg_count = 2 WHERE msg_type = 'CONTRL'
+ASSERT VALUE msg_count = 1 WHERE msg_type = 'ORDERS'
+ASSERT VALUE msg_count = 1 WHERE msg_type = 'PAORES'
 SELECT
     unh_2 AS msg_type,
     COUNT(*) AS msg_count
@@ -135,10 +135,10 @@ ORDER BY msg_count DESC;
 --   Other         — INFENT, PAORES, etc.
 
 ASSERT ROW_COUNT >= 15
-ASSERT VALUE domain = 'Commerce' WHERE msg_type = 'ORDERS:D:96A:UN'
-ASSERT VALUE domain = 'Transport' WHERE msg_type = 'DESADV:D:96A:UN:EAN007'
-ASSERT VALUE domain = 'Acknowledgment' WHERE msg_type = 'CONTRL:4:1:UN'
-ASSERT VALUE domain = 'Other' WHERE msg_type = 'PAORES:93:1:IA'
+ASSERT VALUE domain = 'Commerce' WHERE msg_type = 'ORDERS'
+ASSERT VALUE domain = 'Transport' WHERE msg_type = 'DESADV'
+ASSERT VALUE domain = 'Acknowledgment' WHERE msg_type = 'CONTRL'
+ASSERT VALUE domain = 'Other' WHERE msg_type = 'PAORES'
 SELECT
     CASE
         WHEN unh_2 LIKE 'ORDERS%' OR unh_2 LIKE 'ORDRSP%' OR unh_2 LIKE 'INVOIC%'
