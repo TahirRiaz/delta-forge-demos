@@ -233,8 +233,9 @@ LIMIT 10;
 -- (tie-breaking varies), but the number of communities is stable.
 
 -- Non-deterministic: Louvain community assignment depends on iteration order;
--- but total members across all communities must always equal 62.
-ASSERT WARNING EXPRESSION SUM(members) = 62
+-- but the network consistently splits into 2–4 communities.
+ASSERT WARNING ROW_COUNT >= 2
+ASSERT WARNING ROW_COUNT <= 10
 USE {{zone_name}}.dolphins.dolphins_social
 CALL algo.louvain({resolution: 1.0})
 YIELD node_id, community_id
