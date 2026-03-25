@@ -67,7 +67,7 @@ OPTIONS (
             "po1_1", "po1_2", "po1_3", "po1_4"
         ],
         "max_repeating_segments": 6,
-        "repeating_segment_mode": "Indexed"
+        "repeating_segment_mode": "indexed"
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
@@ -97,7 +97,7 @@ OPTIONS (
             "po1_1", "po1_2", "po1_3", "po1_4"
         ],
         "max_repeating_segments": 6,
-        "repeating_segment_mode": "Concatenate"
+        "repeating_segment_mode": "concatenate"
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
@@ -127,7 +127,7 @@ OPTIONS (
             "po1_1", "po1_2", "po1_3", "po1_4"
         ],
         "max_repeating_segments": 6,
-        "repeating_segment_mode": "ToJson"
+        "repeating_segment_mode": "to_json"
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
