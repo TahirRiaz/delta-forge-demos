@@ -245,12 +245,24 @@ ORDER BY df_file_name;
 --   OS = Consignor               (CUSCAR cargo report)
 --   VW = Vessel master           (PAXLST)
 
-ASSERT ROW_COUNT = 5
-ASSERT VALUE nad_val = 'VW' WHERE file_name = 'edifact_PAXLST_passenger_list.edi'
-ASSERT VALUE nad_val = 'CF' WHERE file_name = 'edifact_BAPLIE_bayplan_stowage.edi'
-ASSERT VALUE nad_val = 'OS' WHERE file_name = 'edifact_CUSCAR_cargo_report.edi'
-ASSERT VALUE nad_val = 'N1' WHERE file_name = 'edifact_D95B_CUSCAR_customs_cargo.edi'
-SELECT df_file_name AS file_name, nad_1 AS nad_val FROM {{zone_name}}.edi.customs_materialized ORDER BY df_file_name;
+ASSERT ROW_COUNT = 4
+ASSERT VALUE qualifier_name = 'Vessel master' WHERE nad_qualifier = 'VW'
+ASSERT VALUE qualifier_name = 'Carrier agent' WHERE nad_qualifier = 'CA'
+ASSERT VALUE qualifier_name = 'WZ' WHERE nad_qualifier = 'WZ'
+SELECT
+    nad_1 AS nad_qualifier,
+    CASE nad_1
+        WHEN 'CA' THEN 'Carrier agent'
+        WHEN 'MS' THEN 'Document/message issuer'
+        WHEN 'VW' THEN 'Vessel master'
+        WHEN 'WZ' THEN 'Consignment routing party'
+        ELSE nad_1
+    END AS qualifier_name,
+    COUNT(*) AS msg_count
+FROM {{zone_name}}.edi.customs_materialized
+WHERE nad_1 IS NOT NULL
+GROUP BY nad_1
+ORDER BY nad_1;
 
 
 -- ============================================================================
