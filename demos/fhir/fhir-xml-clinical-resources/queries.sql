@@ -16,12 +16,12 @@
 -- ============================================================================
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE gender = male WHERE patient_id = 'example'
-ASSERT VALUE birth_date = 1974-12-25 WHERE patient_id = 'example'
-ASSERT VALUE gender = male WHERE patient_id = 'f001'
-ASSERT VALUE birth_date = 1944-11-17 WHERE patient_id = 'f001'
-ASSERT VALUE gender = female WHERE patient_id = 'pat4'
-ASSERT VALUE birth_date = 1932-09-24 WHERE patient_id = 'xcda'
+ASSERT VALUE gender = 'male' WHERE patient_id = 'example'
+ASSERT VALUE birth_date = '1974-12-25' WHERE patient_id = 'example'
+ASSERT VALUE gender = 'male' WHERE patient_id = 'f001'
+ASSERT VALUE birth_date = '1944-11-17' WHERE patient_id = 'f001'
+ASSERT VALUE gender = 'female' WHERE patient_id = 'pat4'
+ASSERT VALUE birth_date = '1932-09-24' WHERE patient_id = 'xcda'
 SELECT
     patient_id,
     family_name,
@@ -63,8 +63,8 @@ FROM {{zone_name}}.fhir_xml.patients_xml;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3
-ASSERT VALUE family_name = van de Heuvel WHERE patient_id = 'f001'
-ASSERT VALUE family_name = Bor WHERE patient_id = 'f201'
+ASSERT VALUE family_name = 'van de Heuvel' WHERE patient_id = 'f001'
+ASSERT VALUE family_name = 'Bor' WHERE patient_id = 'f201'
 SELECT
     patient_id,
     family_name,
@@ -88,8 +88,8 @@ ORDER BY patient_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 2
-ASSERT VALUE marital_code = M WHERE patient_id = 'f001'
-ASSERT VALUE marital_display = Married WHERE patient_id = 'f001'
+ASSERT VALUE marital_code = 'M' WHERE patient_id = 'f001'
+ASSERT VALUE marital_display = 'Married' WHERE patient_id = 'f001'
 SELECT
     patient_id,
     family_name,
@@ -112,9 +112,9 @@ ORDER BY patient_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3
-ASSERT VALUE city = Amsterdam WHERE patient_id = 'f001'
-ASSERT VALUE city = Amsterdam WHERE patient_id = 'f201'
-ASSERT VALUE city = PleasantVille WHERE patient_id = 'example'
+ASSERT VALUE city = 'Amsterdam' WHERE patient_id = 'f001'
+ASSERT VALUE city = 'Amsterdam' WHERE patient_id = 'f201'
+ASSERT VALUE city = 'PleasantVille' WHERE patient_id = 'example'
 SELECT
     patient_id,
     family_name,
@@ -137,10 +137,10 @@ ORDER BY city;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE has_marital = Y WHERE patient_id = 'f001'
-ASSERT VALUE has_telecom = Y WHERE patient_id = 'f001'
-ASSERT VALUE has_gender = Y WHERE patient_id = 'xcda'
-ASSERT VALUE has_comms = Y WHERE patient_id = 'f201'
+ASSERT VALUE has_marital = 'Y' WHERE patient_id = 'f001'
+ASSERT VALUE has_telecom = 'Y' WHERE patient_id = 'f001'
+ASSERT VALUE has_gender = 'Y' WHERE patient_id = 'xcda'
+ASSERT VALUE has_comms = 'Y' WHERE patient_id = 'f201'
 SELECT
     patient_id,
     family_name,
@@ -164,8 +164,8 @@ ORDER BY patient_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 4
-ASSERT VALUE family_name = Chalmers WHERE patient_id = 'example'
-ASSERT VALUE family_name = Donald WHERE patient_id = 'pat1'
+ASSERT VALUE family_name = 'Chalmers' WHERE patient_id = 'example'
+ASSERT VALUE family_name = 'Donald' WHERE patient_id = 'pat1'
 SELECT
     patient_id,
     family_name,
@@ -186,9 +186,9 @@ ORDER BY patient_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE status = final WHERE observation_id = 'example'
-ASSERT VALUE status = final WHERE observation_id = 'f001'
-ASSERT VALUE status = final WHERE observation_id = 'blood-pressure'
+ASSERT VALUE status = 'final' WHERE observation_id = 'example'
+ASSERT VALUE status = 'final' WHERE observation_id = 'f001'
+ASSERT VALUE status = 'final' WHERE observation_id = 'blood-pressure'
 SELECT
     observation_id,
     code_system,
@@ -209,9 +209,9 @@ ORDER BY observation_id;
 
 ASSERT ROW_COUNT = 7
 ASSERT VALUE result_value = 185 WHERE observation_id = 'example'
-ASSERT VALUE result_unit = lbs WHERE observation_id = 'example'
+ASSERT VALUE result_unit = 'lbs' WHERE observation_id = 'example'
 ASSERT VALUE result_value = 16.2 WHERE observation_id = 'bmi'
-ASSERT VALUE result_unit = kg/m2 WHERE observation_id = 'bmi'
+ASSERT VALUE result_unit = 'kg/m2' WHERE observation_id = 'bmi'
 SELECT
     observation_id,
     code_display,
@@ -235,7 +235,7 @@ ORDER BY observation_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE observation_id = blood-pressure
+ASSERT VALUE observation_id = 'blood-pressure'
 SELECT
     observation_id,
     code_display,
@@ -257,9 +257,9 @@ ORDER BY observation_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3
-ASSERT VALUE result_unit = mmol/l WHERE observation_id = 'f001'
-ASSERT VALUE result_unit = mmol/l WHERE observation_id = 'f002'
-ASSERT VALUE result_unit = kPa WHERE observation_id = 'f003'
+ASSERT VALUE result_unit = 'mmol/l' WHERE observation_id = 'f001'
+ASSERT VALUE result_unit = 'mmol/l' WHERE observation_id = 'f002'
+ASSERT VALUE result_unit = 'kPa' WHERE observation_id = 'f003'
 SELECT
     observation_id,
     code_display,
@@ -281,8 +281,8 @@ ORDER BY observation_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE family_name = Chalmers WHERE observation_id = 'example'
-ASSERT VALUE family_name = van de Heuvel WHERE observation_id = 'f001'
+ASSERT VALUE family_name = 'Chalmers' WHERE observation_id = 'example'
+ASSERT VALUE family_name = 'van de Heuvel' WHERE observation_id = 'f001'
 SELECT
     o.observation_id,
     o.code_display          AS observation_type,
