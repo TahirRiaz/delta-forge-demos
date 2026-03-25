@@ -38,6 +38,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.persons_json (
     props   STRING
 ) LOCATION '{{data_path}}/persons_json';
 
+GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_json TO USER {{current_user}};
+
 INSERT INTO {{zone_name}}.graph.persons_json
 SELECT
     id,
@@ -89,7 +91,6 @@ SELECT
 FROM generate_series(1, 50) AS t(id);
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.persons_json;
-GRANT ADMIN ON TABLE {{zone_name}}.graph.persons_json TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -107,6 +108,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.friendships_json (
     relationship_type  VARCHAR,
     props              STRING
 ) LOCATION '{{data_path}}/friendships_json';
+
+GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user}};
 
 
 -- Batch 1: Intra-department colleagues (~50 edges)
@@ -245,7 +248,6 @@ FROM (
 WHERE src != dst;
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.graph.friendships_json;
-GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_json TO USER {{current_user}};
 
 
 -- ============================================================================
