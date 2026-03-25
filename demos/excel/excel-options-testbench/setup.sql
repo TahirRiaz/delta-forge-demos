@@ -67,20 +67,18 @@ GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_no_header TO USER {{current_us
 
 
 -- ============================================================================
--- TABLE 3: opt_skip_rows — Skip metadata rows before the real header
+-- TABLE 3: opt_skip_rows — Skip first N data rows after the header
 -- ============================================================================
--- 03_skip_rows.xlsx has a "Report" sheet with 3 metadata rows at the top,
--- then a header row (id, project, hours, status), then 5 data rows.
--- skip_rows=3 skips the metadata so the parser finds the header correctly.
--- Without skip_rows, the first metadata row becomes the header and data is
--- garbage.
+-- 03_skip_rows.xlsx has a "Data" sheet with a header row (id, project, hours,
+-- status) and 8 data rows. skip_rows=3 skips the first 3 data rows after the
+-- header, returning only 5 rows (ids 4–8). Without skip_rows, all 8 rows
+-- would appear.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_opts.opt_skip_rows
 USING EXCEL
 LOCATION '{{data_path}}'
 OPTIONS (
     file_filter = '03_skip_rows*',
-    sheet_name = 'Report',
     skip_rows = '3',
     has_header = 'true'
 );

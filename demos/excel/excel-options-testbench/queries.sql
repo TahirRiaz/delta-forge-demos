@@ -61,14 +61,14 @@ ORDER BY ordinal_position;
 
 
 -- ============================================================================
--- 5. SKIP ROWS — Metadata rows skipped, correct header and data
+-- 5. SKIP ROWS — First 3 data rows skipped, 5 remaining rows returned
 -- ============================================================================
--- 03_skip_rows.xlsx "Report" sheet has 3 metadata rows, then header
--- (id, project, hours, status), then 5 data rows.
+-- 03_skip_rows.xlsx has 8 data rows. skip_rows=3 skips the first 3 (ids 1-3),
+-- returning only 5 rows starting from id=4 (Delta).
 
 ASSERT ROW_COUNT = 5
-ASSERT VALUE project = 'Alpha' WHERE id = 1
-ASSERT VALUE hours = 120 WHERE id = 1
+ASSERT VALUE project = 'Delta' WHERE id = 4
+ASSERT VALUE hours = 45 WHERE id = 4
 SELECT id, project, hours, status
 FROM {{zone_name}}.excel_opts.opt_skip_rows
 ORDER BY id;
@@ -150,7 +150,7 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 3: skip_rows — 5 data rows after skipping metadata
+    -- Check 3: skip_rows — 5 data rows after skipping first 3
     SELECT 'skip_rows_correct_rows' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_opts.opt_skip_rows) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
