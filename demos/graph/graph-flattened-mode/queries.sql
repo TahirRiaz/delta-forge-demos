@@ -122,7 +122,7 @@ USE {{zone_name}}.graph.flattened_demo
 MATCH (a)-[r]->(b)
 WHERE r.weight > 0.8
 RETURN a.name AS person_a, b.name AS person_b,
-       type(r) AS type, r.weight AS strength,
+       r.relationship_type AS type, r.weight AS strength,
        r.since_year AS since, r.frequency AS freq, r.context AS context
 ORDER BY r.weight DESC;
 
