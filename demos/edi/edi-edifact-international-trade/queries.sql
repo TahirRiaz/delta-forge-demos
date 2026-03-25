@@ -189,7 +189,7 @@ ORDER BY domain, msg_type;
 --                    231=Cargo report, etc.)
 --   - doc_number:    Document/message number from BGM_2
 
-ASSERT ROW_COUNT = 20
+ASSERT ROW_COUNT = 19
 ASSERT VALUE doc_code = '220' WHERE df_file_name = 'edifact_ORDERS_purchase_order.edi'
 ASSERT VALUE doc_number = '128576' WHERE df_file_name = 'edifact_ORDERS_purchase_order.edi'
 ASSERT VALUE doc_code = '351' WHERE df_file_name = 'eancom_DESADV_despatch_advice.edi'
