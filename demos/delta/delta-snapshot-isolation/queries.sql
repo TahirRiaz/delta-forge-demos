@@ -37,7 +37,7 @@ FROM {{zone_name}}.delta_demos.fund_holdings;
 -- queried via VERSION AS OF, even after OPTIMIZE rewrites the underlying files.
 
 ASSERT VALUE total_market_value = 476910.00 WHERE fund_id = 'GF01'
-ASSERT VALUE total_market_value = 3802542.00
+ASSERT VALUE total_market_value = 1015445.00 WHERE fund_id = 'VF02'
 ASSERT ROW_COUNT = 4
 SELECT fund_id,
        COUNT(*) AS positions,
@@ -107,9 +107,8 @@ WHERE fund_id = 'GF01' AND sector = 'Technology';
 -- Version 5 (latest) shows the updated portfolio value. Only GF01's value
 -- changed — the other three funds are untouched.
 
-ASSERT VALUE total_positions = 60
-ASSERT VALUE total_market_value = 3815383.50
 ASSERT VALUE total_market_value = 489751.50 WHERE fund_id = 'GF01'
+ASSERT VALUE total_market_value = 1015445.00 WHERE fund_id = 'VF02'
 ASSERT ROW_COUNT = 4
 SELECT fund_id,
        COUNT(*) AS positions,
@@ -126,8 +125,8 @@ ORDER BY fund_id;
 -- The UPDATE in version 5 is completely invisible. This is snapshot isolation:
 -- each version is a self-contained, immutable view of the data.
 
-ASSERT VALUE total_market_value = 3802542.00
 ASSERT VALUE total_market_value = 476910.00 WHERE fund_id = 'GF01'
+ASSERT VALUE total_market_value = 1015445.00 WHERE fund_id = 'VF02'
 ASSERT ROW_COUNT = 4
 SELECT fund_id,
        COUNT(*) AS positions,

@@ -1,149 +1,240 @@
 -- ============================================================================
--- Delta Type Widening -- Educational Queries
+-- Delta Type Widening — IoT Fleet Counter Overflow — Educational Queries
 -- ============================================================================
--- WHAT: Type widening allows promoting a column's type to a wider one (INT to
---       BIGINT, FLOAT to DOUBLE) without rewriting existing Parquet data files.
--- WHY:  As data grows, values may exceed the original type's range. Type widening
---       avoids costly full-table rewrites when schema needs to evolve.
--- HOW:  Delta records the widened type in the schema metadata of the transaction
---       log. Readers automatically upcast values from older Parquet files that
---       still use the narrower type -- no physical rewrite needed.
+-- WHAT: Type widening promotes a column's type to a wider one (INT → BIGINT,
+--       FLOAT → DOUBLE) via ALTER TABLE ALTER COLUMN TYPE, without rewriting
+--       existing Parquet data files.
+-- WHY:  IoT device counters accumulate over months. A gateway processing
+--       50K events/day reaches 2.1 billion (INT max) in ~4 years. Type
+--       widening avoids a costly full-table rewrite when this happens.
+-- HOW:  Delta records the widened type in the transaction log metadata.
+--       Old Parquet files keep their INT encoding. When read, the engine
+--       automatically upcasts INT values to BIGINT — no physical rewrite.
 -- ============================================================================
 
 
 -- ============================================================================
--- EXPLORE: What numeric types are in use?
+-- EXPLORE: Baseline device telemetry — all values fit in INT
 -- ============================================================================
--- This table has three numeric columns with different ranges:
---   small_reading (INT)    -- fits values up to ~2.1 billion
---   large_reading (BIGINT) -- fits values up to ~9.2 quintillion
---   precise_value (DOUBLE) -- 64-bit floating point for decimal precision
--- Notice how the same "measurement" concept needs different types at scale.
+-- The fleet has 25 devices: 12 gateways (GW-*), 6 sensors (SNS-*),
+-- 3 cameras (CAM-*), and 4 routers (RTR-*). All event_count and
+-- bytes_sent values are well within INT range (max 2,147,483,647).
 
 ASSERT ROW_COUNT = 10
-SELECT id, sensor_id, category,
-       small_reading, large_reading, precise_value,
-       unit
-FROM {{zone_name}}.delta_demos.measurements
+SELECT id, device_id, region, event_count, bytes_sent, avg_latency
+FROM {{zone_name}}.delta_demos.device_telemetry
 ORDER BY id
 LIMIT 10;
 
 
 -- ============================================================================
--- EXPLORE: The INT vs BIGINT boundary
+-- EXPLORE: How close are we to INT limits?
 -- ============================================================================
--- INT tops out at 2,147,483,647. Look at the large_reading column for
--- categories like 'bytes' and 'ticks' -- these values far exceed INT range.
--- Without BIGINT (or type widening from INT to BIGINT), these values would
--- overflow or require a full table rewrite to change the column type.
+-- Right now, the largest counter is 225,000 — just 0.01% of INT max.
+-- But these are daily snapshots. Cumulative counters grow fast.
 
--- Verify all 9 rows from bytes/ticks/nanoseconds categories are returned
-ASSERT ROW_COUNT = 9
-SELECT id, sensor_id, category,
-       small_reading, large_reading,
-       CASE WHEN large_reading > 2147483647 THEN 'exceeds INT range'
-            ELSE 'fits in INT' END AS int_compatibility
-FROM {{zone_name}}.delta_demos.measurements
-WHERE category IN ('bytes', 'ticks', 'nanoseconds')
-ORDER BY large_reading DESC;
+ASSERT ROW_COUNT = 1
+ASSERT VALUE max_event_count = 225000
+ASSERT VALUE max_bytes_sent = 5500000
+SELECT MAX(event_count) AS max_event_count,
+       MAX(bytes_sent) AS max_bytes_sent
+FROM {{zone_name}}.delta_demos.device_telemetry;
 
 
 -- ============================================================================
--- LEARN: Precision preservation after arithmetic operations
+-- PHASE 1: Enable type widening and promote columns to BIGINT
 -- ============================================================================
--- The pressure readings were scaled by 1000x (hPa to Pa conversion) via UPDATE.
--- Delta wrote new Parquet files with the updated values. Because precise_value
--- is DOUBLE, the multiplication preserves decimal places (with ROUND).
--- This is a common real-world pattern: unit conversions that change magnitude
--- but must preserve precision.
+-- Before counter accumulation pushes values past INT range, we proactively
+-- widen the columns. This is a metadata-only operation — it updates the
+-- Delta transaction log schema but does NOT rewrite existing Parquet files.
+-- The old files retain their INT encoding; the engine upcasts on read.
 
-ASSERT ROW_COUNT = 5
-SELECT id, sensor_id,
-       small_reading AS scaled_int_reading,
-       precise_value AS scaled_precise_value,
-       unit
-FROM {{zone_name}}.delta_demos.measurements
-WHERE category = 'pressure'
-ORDER BY id;
+ALTER TABLE {{zone_name}}.delta_demos.device_telemetry SET TBLPROPERTIES ('delta.enableTypeWidening' = 'true');
+
+ALTER TABLE {{zone_name}}.delta_demos.device_telemetry ALTER COLUMN event_count TYPE BIGINT;
+
+ALTER TABLE {{zone_name}}.delta_demos.device_telemetry ALTER COLUMN bytes_sent TYPE BIGINT;
 
 
 -- ============================================================================
--- LEARN: Comparing value ranges across categories
+-- OBSERVE: Schema now shows BIGINT for widened columns
 -- ============================================================================
--- Type widening matters most when a single table holds data with vastly
--- different magnitudes. Here we see categories ranging from single-digit
--- temperatures to trillion-scale byte counts -- all in the same table.
--- The Delta schema tracks that small_reading is INT and large_reading is
--- BIGINT, allowing both to coexist in the same Parquet column metadata.
+-- The information_schema reflects the new types immediately. Existing data
+-- is still stored as INT in Parquet — the engine upcasts transparently.
+
+ASSERT ROW_COUNT = 8
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'delta_demos'
+  AND table_name = 'device_telemetry'
+ORDER BY ordinal_position;
+
+
+-- ============================================================================
+-- PHASE 2: Simulate 4 years of counter accumulation for gateways
+-- ============================================================================
+-- Each gateway processes tens of thousands of events daily. Over ~48,000
+-- accumulation cycles, cumulative counters grow dramatically. Without
+-- type widening, this UPDATE would overflow INT. With BIGINT columns,
+-- values safely exceed the 2.1 billion INT limit.
+
+UPDATE {{zone_name}}.delta_demos.device_telemetry
+SET event_count = event_count * 48000,
+    bytes_sent = bytes_sent * 48000
+WHERE device_id LIKE 'GW-%';
+
+
+-- ============================================================================
+-- LEARN: Which gateways now exceed INT range?
+-- ============================================================================
+-- After accumulation, 6 of 12 gateways have event_count > 2,147,483,647
+-- (the INT maximum). These values are only possible because we widened
+-- to BIGINT before the UPDATE. The old Parquet files (with INT-encoded
+-- values for sensors, cameras, routers) coexist seamlessly with new
+-- Parquet files (BIGINT-encoded gateway values).
+
+ASSERT ROW_COUNT = 6
+SELECT device_id, region, event_count, bytes_sent
+FROM {{zone_name}}.delta_demos.device_telemetry
+WHERE device_id LIKE 'GW-%' AND event_count > 2147483647
+ORDER BY event_count DESC;
+
+
+-- ============================================================================
+-- OBSERVE: Post-accumulation gateway values
+-- ============================================================================
+-- All 12 gateways have been scaled. The smallest (GW-SYD-003 at 1.056B)
+-- still fits in INT, but the largest (GW-TKY-001 at 3.456B) does not.
+
+ASSERT ROW_COUNT = 12
+ASSERT VALUE event_count = 3456000000 WHERE device_id = 'GW-TKY-001'
+ASSERT VALUE event_count = 2160000000 WHERE device_id = 'GW-NYC-001'
+ASSERT VALUE bytes_sent = 57600000000 WHERE device_id = 'GW-NYC-001'
+SELECT device_id, region, event_count, bytes_sent, avg_latency
+FROM {{zone_name}}.delta_demos.device_telemetry
+WHERE device_id LIKE 'GW-%'
+ORDER BY event_count DESC;
+
+
+-- ============================================================================
+-- PHASE 3: Insert 10 high-volume devices that require BIGINT from day one
+-- ============================================================================
+-- New edge nodes and CDN servers join the fleet. Their counters already
+-- exceed INT range. These rows are written to new Parquet files with
+-- BIGINT encoding — coexisting with old INT-encoded Parquet files.
 
 ASSERT ROW_COUNT = 10
-ASSERT VALUE max_large = 9223372036854 WHERE category = 'ticks'
-ASSERT VALUE min_small = -5 WHERE category = 'temperature'
-SELECT category,
-       MIN(small_reading) AS min_small,
-       MAX(small_reading) AS max_small,
-       MIN(large_reading) AS min_large,
-       MAX(large_reading) AS max_large,
-       COUNT(*) AS readings
-FROM {{zone_name}}.delta_demos.measurements
-GROUP BY category
-ORDER BY max_large DESC;
+INSERT INTO {{zone_name}}.delta_demos.device_telemetry
+SELECT * FROM (VALUES
+    (26, 'GW-NYC-004',     'us-east',  3500000000,  85000000000,   11.20, 'active', '2025-07-15'),
+    (27, 'GW-LON-004',     'eu-west',  2800000000,  72000000000,   18.90, 'active', '2025-07-15'),
+    (28, 'GW-TKY-004',     'ap-east',  4100000000,  95000000000,   27.30, 'active', '2025-07-15'),
+    (29, 'GW-SYD-004',     'ap-south', 1900000000,  48000000000,   39.60, 'active', '2025-07-15'),
+    (30, 'EDGE-US-001',    'us-east',  8500000000,  210000000000,  7.80,  'active', '2025-07-15'),
+    (31, 'EDGE-EU-001',    'eu-west',  7200000000,  180000000000,  9.50,  'active', '2025-07-15'),
+    (32, 'EDGE-AP-001',    'ap-east',  9100000000,  230000000000,  6.20,  'active', '2025-07-15'),
+    (33, 'EDGE-AP-002',    'ap-south', 6800000000,  165000000000,  11.40, 'active', '2025-07-15'),
+    (34, 'CDN-GLOBAL-001', 'us-east',  15000000000, 500000000000,  2.10,  'active', '2025-07-15'),
+    (35, 'CDN-GLOBAL-002', 'eu-west',  12000000000, 420000000000,  3.40,  'active', '2025-07-15')
+) AS t(id, device_id, region, event_count, bytes_sent, avg_latency, status, reported_date);
 
 
 -- ============================================================================
--- LEARN: DOUBLE precision and rounding behavior
+-- LEARN: Mixed-era Parquet files coexist seamlessly
 -- ============================================================================
--- DOUBLE (64-bit IEEE 754) provides ~15-17 significant digits. For most sensor
--- and financial calculations this is sufficient, but ROUND() is essential to
--- control output precision. Delta stores the exact DOUBLE bits in Parquet;
--- rounding is a query-time operation, not a storage-time one.
+-- The table now spans three eras of Parquet files:
+--   Era 1: Original INT-encoded files (sensors, cameras, routers — unchanged)
+--   Era 2: BIGINT-encoded files from the gateway UPDATE
+--   Era 3: BIGINT-encoded files from the new device INSERT
+-- Delta's type widening metadata tells the engine to upcast Era 1 values.
 
-ASSERT ROW_COUNT = 10
--- Non-deterministic: floating-point AVG over DOUBLE column may vary slightly across platforms
-ASSERT WARNING VALUE avg_amount BETWEEN 45.74 AND 45.76 WHERE category = 'pressure'
--- Non-deterministic: floating-point AVG over DOUBLE column may vary slightly across platforms
-ASSERT WARNING VALUE avg_amount BETWEEN 20.43 AND 20.47 WHERE category = 'temperature'
-SELECT category,
-       ROUND(AVG(precise_value), 3) AS avg_precise,
-       ROUND(AVG(amount), 2) AS avg_amount,
-       COUNT(*) AS readings
-FROM {{zone_name}}.delta_demos.measurements
-GROUP BY category
-ORDER BY avg_precise DESC;
+ASSERT ROW_COUNT = 4
+ASSERT VALUE device_count = 10 WHERE region = 'us-east'
+ASSERT VALUE total_events = 33960590000 WHERE region = 'us-east'
+SELECT region,
+       COUNT(*) AS device_count,
+       SUM(event_count) AS total_events,
+       SUM(bytes_sent) AS total_bytes,
+       ROUND(AVG(avg_latency), 2) AS avg_latency
+FROM {{zone_name}}.delta_demos.device_telemetry
+GROUP BY region
+ORDER BY total_events DESC;
+
+
+-- ============================================================================
+-- LEARN: Device type analysis — small sensors coexist with massive CDNs
+-- ============================================================================
+-- The same table holds sensor readings (119K events) alongside CDN counters
+-- (15 billion events) — a 126,000x range. Without type widening, the CDN
+-- values would have required a full table rewrite or a separate table.
+
+ASSERT ROW_COUNT = 6
+ASSERT VALUE max_events = 15000000000 WHERE device_type = 'CDN'
+ASSERT VALUE min_events = 119000 WHERE device_type = 'Sensor'
+SELECT CASE
+         WHEN device_id LIKE 'GW-%'   THEN 'Gateway'
+         WHEN device_id LIKE 'SNS-%'  THEN 'Sensor'
+         WHEN device_id LIKE 'CAM-%'  THEN 'Camera'
+         WHEN device_id LIKE 'RTR-%'  THEN 'Router'
+         WHEN device_id LIKE 'EDGE-%' THEN 'Edge Node'
+         WHEN device_id LIKE 'CDN-%'  THEN 'CDN'
+       END AS device_type,
+       COUNT(*) AS device_count,
+       MIN(event_count) AS min_events,
+       MAX(event_count) AS max_events
+FROM {{zone_name}}.delta_demos.device_telemetry
+GROUP BY CASE
+         WHEN device_id LIKE 'GW-%'   THEN 'Gateway'
+         WHEN device_id LIKE 'SNS-%'  THEN 'Sensor'
+         WHEN device_id LIKE 'CAM-%'  THEN 'Camera'
+         WHEN device_id LIKE 'RTR-%'  THEN 'Router'
+         WHEN device_id LIKE 'EDGE-%' THEN 'Edge Node'
+         WHEN device_id LIKE 'CDN-%'  THEN 'CDN'
+       END
+ORDER BY max_events DESC;
 
 
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
 
--- Verify total row count is 40
-ASSERT ROW_COUNT = 40
-SELECT * FROM {{zone_name}}.delta_demos.measurements;
+-- Verify total row count is 35
+ASSERT ROW_COUNT = 35
+SELECT * FROM {{zone_name}}.delta_demos.device_telemetry;
 
--- Verify 10 distinct categories
-ASSERT VALUE category_count = 10
-SELECT COUNT(DISTINCT category) AS category_count FROM {{zone_name}}.delta_demos.measurements;
+-- Verify 4 distinct regions
+ASSERT VALUE region_count = 4
+SELECT COUNT(DISTINCT region) AS region_count FROM {{zone_name}}.delta_demos.device_telemetry;
 
--- Verify pressure readings have updated unit 'pa'
-ASSERT VALUE pressure_pa_count = 5
-SELECT COUNT(*) AS pressure_pa_count FROM {{zone_name}}.delta_demos.measurements WHERE category = 'pressure' AND unit = 'pa';
+-- Verify GW-NYC-001 accumulated counter (45000 * 48000)
+ASSERT VALUE event_count = 2160000000
+SELECT event_count FROM {{zone_name}}.delta_demos.device_telemetry WHERE id = 1;
 
--- Verify pressure scaled reading (id=6, 1013 * 1000 = 1013000)
-ASSERT VALUE small_reading = 1013000
-SELECT small_reading FROM {{zone_name}}.delta_demos.measurements WHERE id = 6;
+-- Verify GW-NYC-001 accumulated bytes (1200000 * 48000)
+ASSERT VALUE bytes_sent = 57600000000
+SELECT bytes_sent FROM {{zone_name}}.delta_demos.device_telemetry WHERE id = 1;
 
--- Verify pressure precise value (id=6)
-ASSERT VALUE precise_value = 1013250.0
-SELECT precise_value FROM {{zone_name}}.delta_demos.measurements WHERE id = 6;
+-- Verify CDN-GLOBAL-001 event count (BIGINT insert)
+ASSERT VALUE event_count = 15000000000
+SELECT event_count FROM {{zone_name}}.delta_demos.device_telemetry WHERE id = 34;
 
--- Verify BIGINT large value (id=31)
-ASSERT VALUE large_reading = 2199023255552
-SELECT large_reading FROM {{zone_name}}.delta_demos.measurements WHERE id = 31;
+-- Verify CDN-GLOBAL-001 bytes sent (BIGINT insert)
+ASSERT VALUE bytes_sent = 500000000000
+SELECT bytes_sent FROM {{zone_name}}.delta_demos.device_telemetry WHERE id = 34;
 
--- Verify max large_reading across all rows
-ASSERT VALUE max_large_reading = 9223372036854
-SELECT MAX(large_reading) AS max_large_reading FROM {{zone_name}}.delta_demos.measurements;
+-- Verify max event_count across all devices
+ASSERT VALUE max_event_count = 15000000000
+SELECT MAX(event_count) AS max_event_count FROM {{zone_name}}.delta_demos.device_telemetry;
 
--- Verify temperature reading unchanged (id=1)
-ASSERT VALUE small_reading = 22
-SELECT small_reading FROM {{zone_name}}.delta_demos.measurements WHERE id = 1;
+-- Verify 15 rows exceed INT max for event_count
+ASSERT VALUE exceeds_int_count = 15
+SELECT COUNT(*) AS exceeds_int_count FROM {{zone_name}}.delta_demos.device_telemetry WHERE event_count > 2147483647;
+
+-- Verify sensor reading unchanged by gateway UPDATE (id=13)
+ASSERT VALUE event_count = 150000
+SELECT event_count FROM {{zone_name}}.delta_demos.device_telemetry WHERE id = 13;
+
+-- Verify schema shows BIGINT for widened columns
+ASSERT VALUE column_count = 8
+SELECT COUNT(*) AS column_count FROM information_schema.columns
+WHERE table_schema = 'delta_demos' AND table_name = 'device_telemetry';

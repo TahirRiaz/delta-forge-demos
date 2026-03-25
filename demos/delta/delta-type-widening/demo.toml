@@ -1,21 +1,22 @@
 [demo]
 id = "delta-type-widening"
-name = "Delta Type Widening — Numeric Precision & Ranges"
-version = "1.0.0"
+name = "Delta Type Widening — IoT Fleet Counter Overflow"
+version = "2.0.0"
 author = "Delta Forge Team"
 description = """
 Type widening is a Delta protocol feature that allows a column's data type to \
 be safely promoted to a wider type (e.g., INT to BIGINT, FLOAT to DOUBLE) \
-without rewriting existing data files. \
-This solves the problem of schema rigidity -- as data grows, values may exceed \
-the range of their original type, and type widening avoids costly table rewrites. \
-This demo explores how INT, BIGINT, and DOUBLE columns coexist in a sensor \
-measurements table, showing precision preservation across arithmetic operations.
+without rewriting existing Parquet data files. This solves a real-world problem \
+in IoT fleet monitoring: device telemetry counters start as INT but accumulate \
+beyond the 2.1 billion INT limit as fleets scale. This demo creates a device \
+telemetry table with INT counters, enables type widening, promotes columns to \
+BIGINT via ALTER TABLE ALTER COLUMN TYPE, then continues operations with \
+values that exceed INT range — all while old Parquet files remain untouched.
 """
 categories = ["delta-table"]
-tags = ["delta-table", "intermediate", "type-widening", "numeric", "precision", "decimal", "bigint"]
+tags = ["delta-table", "intermediate", "type-widening", "alter-column", "bigint", "schema-evolution", "iot"]
 difficulty = "intermediate"
-estimated_time_minutes = 8
+estimated_time_minutes = 10
 
 [demo.variables]
 data_path = { description = "Root path where Delta table data is stored", required = true }
@@ -23,4 +24,4 @@ zone_name = { description = "Target zone name for tables (defaults to 'external'
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.delta_demos.measurements"
+name = "{{zone_name}}.delta_demos.device_telemetry"
