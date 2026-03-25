@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-02-11T12:00:00Z",
+  "generatedAt": "2026-03-25T13:13:28Z",
   "demos": [
     {
       "id": "avro-iot-sensors",
@@ -3329,7 +3329,7 @@
       "path": "demos/edi/edi-edifact-international-trade",
       "iconPath": "icons/edi-edifact-international-trade.svg",
       "name": "EDI EDIFACT — International Trade & Logistics",
-      "summary": "Demonstrates UN/EDIFACT and EANCOM message parsing across 22 files covering international trade, logistics, customs clearance, and passenger data from 7 directory versions (D:96A through D:13B) and 6 syntax identifiers. 17 distinct message types (ORDERS, INVOIC, IFCSUM, CUSCAR, PAXLST, etc.) with materialized field extraction, multi-message files, and full JSON transaction access.",
+      "summary": "Overview of UN/EDIFACT and EANCOM message parsing across 22 files covering international trade, logistics, customs, and passenger data. Demonstrates 6 syntax identifiers (UNOA through IATA), 17+ distinct message types, domain classification (Commerce/Transport/Border/Acknowledgment), EANCOM vs EDIFACT standard differentiation, and full JSON transaction access.",
       "categories": [
         "edi"
       ],
@@ -3350,15 +3350,119 @@
       "fileCount": 22,
       "author": "Delta Forge Team",
       "version": "1.0.0",
-      "updatedAt": "2026-02-27T12:00:00Z",
+      "updatedAt": "2026-03-25T13:13:28Z",
       "targetObjects": [
         {
           "objectType": "external_table",
           "name": "{{zone_name}}.edi.edifact_messages"
+        }
+      ]
+    },
+    {
+      "id": "edi-edifact-customs-border",
+      "path": "demos/edi/edi-edifact-customs-border",
+      "iconPath": "icons/edi-edifact-customs-border.svg",
+      "name": "EDIFACT Customs & Border Control",
+      "summary": "Port authority customs system processing UN/EDIFACT messages for border security and trade compliance. Parses cargo manifests (CUSCAR) with consignment and goods item details, passenger lists (PAXLST) with travel document verification, passenger name records (PNRGOV) for advance screening, and bayplan stowage plans (BAPLIE) for vessel operations. Demonstrates materialized_paths for BGM, TDT, NAD, LOC, CNI, GID, EQD, and DOC segments — message types unique to EDIFACT with no X12 equivalent.",
+      "categories": [
+        "edi"
+      ],
+      "tags": [
+        "edi",
+        "edifact",
+        "customs",
+        "border-control",
+        "cargo",
+        "passenger",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 6593,
+      "fileCount": 5,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T13:13:28Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.customs_messages"
         },
         {
           "objectType": "external_table",
-          "name": "{{zone_name}}.edi.edifact_materialized"
+          "name": "{{zone_name}}.edi.customs_materialized"
+        }
+      ]
+    },
+    {
+      "id": "edi-eancom-retail-supply-chain",
+      "path": "demos/edi/edi-eancom-retail-supply-chain",
+      "iconPath": "icons/edi-eancom-retail-supply-chain.svg",
+      "name": "EANCOM Retail Supply Chain",
+      "summary": "European retailer EDI hub processing GS1/EANCOM messages across the retail supply chain. Covers despatch advices (DESADV) for warehouse receiving, invoices (INVOIC) for accounts payable, order responses (ORDRSP) for procurement, price catalogues (PRICAT) for product master data, transport status (IFTSTA) for shipment tracking, and transport instructions (IFTMIN) for carrier booking. EANCOM is the GS1 subset of EDIFACT used by major European retailers — demonstrates BGM document codes, NAD trading partner identification, LIN product lines with GTINs, and STS shipment status tracking.",
+      "categories": [
+        "edi"
+      ],
+      "tags": [
+        "edi",
+        "eancom",
+        "gs1",
+        "retail",
+        "supply-chain",
+        "gtin",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 7,
+      "dataSizeBytes": 4844,
+      "fileCount": 6,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T13:13:28Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.eancom_messages"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.eancom_materialized"
+        }
+      ]
+    },
+    {
+      "id": "edi-edifact-invoice-reconciliation",
+      "path": "demos/edi/edi-edifact-invoice-reconciliation",
+      "iconPath": "icons/edi-edifact-invoice-reconciliation.svg",
+      "name": "EDIFACT Invoice Reconciliation",
+      "summary": "Accounts payable reconciliation matching EDIFACT purchase orders (ORDERS) with order responses (ORDRSP) and invoices (INVOIC) across the procurement cycle. Extracts BGM document codes (220=Order, 380/393=Invoice), NAD trading partner identifiers, LIN product line items with EAN codes, DTM date qualifiers, MOA monetary amounts, and TAX details. Two EDIFACT directory versions (D:96A, D:01B) demonstrate cross-version reconciliation with materialized_paths for document matching, amount validation, and partner verification.",
+      "categories": [
+        "edi"
+      ],
+      "tags": [
+        "edi",
+        "edifact",
+        "invoice",
+        "reconciliation",
+        "procurement",
+        "accounts-payable",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 7,
+      "dataSizeBytes": 3137,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T13:13:28Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.commerce_messages"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.commerce_materialized"
         }
       ]
     },

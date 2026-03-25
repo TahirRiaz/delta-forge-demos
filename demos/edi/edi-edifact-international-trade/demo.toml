@@ -164,6 +164,3 @@ size_bytes = 565
 type = "external_table"
 name = "{{zone_name}}.edi.edifact_messages"
 
-[[demo.target_objects]]
-type = "external_table"
-name = "{{zone_name}}.edi.edifact_materialized"
