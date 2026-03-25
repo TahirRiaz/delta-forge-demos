@@ -164,7 +164,7 @@ ORDER BY patient_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 4
-ASSERT VALUE family_name = 'Chalmers' WHERE patient_id = 'example'
+ASSERT VALUE family_name = 'Windsor' WHERE patient_id = 'example'
 ASSERT VALUE family_name = 'Donald' WHERE patient_id = 'pat1'
 SELECT
     patient_id,
@@ -281,7 +281,7 @@ ORDER BY observation_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE family_name = 'Chalmers' WHERE observation_id = 'example'
+ASSERT VALUE family_name = 'Windsor' WHERE observation_id = 'example'
 ASSERT VALUE family_name = 'van de Heuvel' WHERE observation_id = 'f001'
 SELECT
     o.observation_id,
