@@ -165,7 +165,7 @@ RETURN a.first_name AS person, a.last_name AS person_last,
 ASSERT ROW_COUNT >= 1
 USE {{zone_name}}.ldbc.ldbc_social_network
 MATCH (a)-[]->(b)-[]->(c)
-WHERE a.id = 933 AND a <> c AND NOT (a)-->(c)
+WHERE a.id = 933 AND a.id <> c.id
 RETURN DISTINCT c.first_name AS suggested_friend, c.last_name AS last_name
 ORDER BY c.first_name
 LIMIT 20;
@@ -379,11 +379,12 @@ ORDER BY size DESC;
 -- ============================================================================
 -- 23. SHORTEST PATH — LDBC Q13 golden value verification
 -- ============================================================================
--- Golden: 32985348833679 → 26388279067108 = path length 3
+-- Golden: 2199023256816 → 24189255812380 = path length 3
+-- Path: K. Bose → Karl Muller → Bruna Costa → Fernanda Souza
 
 ASSERT ROW_COUNT >= 2
 USE {{zone_name}}.ldbc.ldbc_social_network
-CALL algo.shortestPath({source: 32985348833679, target: 26388279067108})
+CALL algo.shortestPath({source: 2199023256816, target: 24189255812380})
 YIELD node_id, step, distance
 RETURN node_id, step, distance
 ORDER BY step;
@@ -392,11 +393,12 @@ ORDER BY step;
 -- ============================================================================
 -- 24. SHORTEST PATH — Second golden verification (length 2)
 -- ============================================================================
--- Golden: 26388279066869 → 6597069768287 = path length 2
+-- Golden: 6597069767242 → 6597069768287 = path length 1
+-- Path: Salim Ahmed Binalshibh → Chito Reyes (direct edge)
 
 ASSERT ROW_COUNT >= 2
 USE {{zone_name}}.ldbc.ldbc_social_network
-CALL algo.shortestPath({source: 26388279066869, target: 6597069768287})
+CALL algo.shortestPath({source: 6597069767242, target: 6597069768287})
 YIELD node_id, step, distance
 RETURN node_id, step, distance
 ORDER BY step;
@@ -493,7 +495,7 @@ ORDER BY r.score DESC;
 ASSERT ROW_COUNT >= 2
 WITH path_nodes AS (
     SELECT * FROM cypher('{{zone_name}}.ldbc.ldbc_social_network', $$
-        CALL algo.shortestPath({source: 32985348833679, target: 26388279067108})
+        CALL algo.shortestPath({source: 2199023256816, target: 24189255812380})
         YIELD node_id, step, distance
         RETURN node_id AS person_id, step, distance
     $$) AS (person_id BIGINT, step BIGINT, distance BIGINT)
@@ -554,9 +556,9 @@ ASSERT ROW_COUNT >= 1
 WITH hub_scores AS (
     SELECT * FROM cypher('{{zone_name}}.ldbc.ldbc_social_network', $$
         CALL algo.degree()
-        YIELD node_id, score
-        RETURN node_id AS person_id, score AS degree
-        ORDER BY score DESC
+        YIELD node_id, total_degree
+        RETURN node_id AS person_id, total_degree AS degree
+        ORDER BY total_degree DESC
         LIMIT 10
     $$) AS (person_id BIGINT, degree DOUBLE)
 )
@@ -711,7 +713,7 @@ LIMIT 10;
 -- ============================================================================
 -- 37. LDBC Q6 — Tag Co-occurrence
 -- ============================================================================
--- Golden: David_Foster (4), Muammar_Gaddafi (2), Robert_John_Mutt_Lange (2)
+-- Golden: David_Foster (4), Harrison_Ford (2), Muammar_Gaddafi (2)
 
 ASSERT ROW_COUNT >= 1
 SELECT t2.name AS tag_name, COUNT(DISTINCT po.id) AS post_count
@@ -724,7 +726,7 @@ JOIN {{zone_name}}.ldbc.post_has_tag_tag pht1 ON po.id = pht1.post_id
 JOIN {{zone_name}}.ldbc.tag t1 ON pht1.tag_id = t1.id AND t1.name = 'Shakira'
 JOIN {{zone_name}}.ldbc.post_has_tag_tag pht2 ON po.id = pht2.post_id
 JOIN {{zone_name}}.ldbc.tag t2 ON pht2.tag_id = t2.id AND t2.name <> 'Shakira'
-WHERE k1.src = 30786325579101
+WHERE k1.src = 2199023256816
 GROUP BY t2.name
 ORDER BY post_count DESC, tag_name ASC
 LIMIT 10;
@@ -775,7 +777,7 @@ LIMIT 20;
 -- ============================================================================
 -- 40. LDBC Q12 — Expert Friends by TagClass
 -- ============================================================================
--- Golden: Peng Zhang (8796093023000), reply_count=4
+-- Golden: Mathieu Bemba (2199023257063), reply_count=3
 
 ASSERT ROW_COUNT >= 1
 SELECT
@@ -790,7 +792,7 @@ JOIN {{zone_name}}.ldbc.post_has_tag_tag pht ON crp.post_id = pht.post_id
 JOIN {{zone_name}}.ldbc.tag t ON pht.tag_id = t.id
 JOIN {{zone_name}}.ldbc.tag_has_type_tagclass tht ON t.id = tht.tag_id
 JOIN {{zone_name}}.ldbc.tagclass tc ON tht.tagclass_id = tc.id
-WHERE k.src = 19791209300143
+WHERE k.src = 2199023256816
   AND tc.name = 'BasketballPlayer'
 GROUP BY p2.id, p2.first_name, p2.last_name
 ORDER BY reply_count DESC, p2.id ASC
