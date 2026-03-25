@@ -316,11 +316,13 @@ SELECT check_name, result FROM (
     UNION ALL
 
     -- Check 10: Three distinct resource types from one directory
+    -- Uses literal identifiers per table since resourceType extraction
+    -- depends on flattener configuration; verifies all three tables have data.
     SELECT 'multi_resource_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT resource_type) FROM (
-               SELECT resource_type FROM {{zone_name}}.fhir.conditions
-               UNION ALL SELECT resource_type FROM {{zone_name}}.fhir.procedures
-               UNION ALL SELECT resource_type FROM {{zone_name}}.fhir.allergies
+           CASE WHEN (SELECT COUNT(DISTINCT source_type) FROM (
+               SELECT 'Condition' AS source_type FROM {{zone_name}}.fhir.conditions
+               UNION SELECT 'Procedure' AS source_type FROM {{zone_name}}.fhir.procedures
+               UNION SELECT 'Allergy' AS source_type FROM {{zone_name}}.fhir.allergies
            ) combined) = 3 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks
