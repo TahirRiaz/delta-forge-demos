@@ -11,9 +11,11 @@
 -- 40 meetings inserted in 4 batches, followed by UPDATE and DELETE operations.
 -- ============================================================================
 
-CREATE ZONE IF NOT EXISTS {{zone_name}};
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
+    COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos;
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 -- ============================================================================
 -- Table DDL
@@ -34,6 +36,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.conference_schedule (
     organizer           VARCHAR,
     priority            VARCHAR
 ) LOCATION '{{data_path}}/conference_schedule';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.conference_schedule TO USER {{current_user}};
 
 -- ============================================================================
 -- Batch 1: New York (ids 1-8) + London (ids 9-10)

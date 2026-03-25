@@ -22,9 +22,11 @@
 -- Zone & Schema
 -- ============================================================================
 
-CREATE ZONE IF NOT EXISTS {{zone_name}};
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
+    COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos;
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 -- ============================================================================
 -- Create Delta Table
@@ -43,6 +45,8 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.shift_handover (
     department          VARCHAR,
     status              VARCHAR
 ) LOCATION '{{data_path}}/shift_handover';
+
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.shift_handover TO USER {{current_user}};
 
 -- ============================================================================
 -- Batch 1: Metro General NYC (UTC-4) + Pacific Medical LA (UTC-7)
