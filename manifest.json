@@ -3669,48 +3669,6 @@
       ]
     },
     {
-      "id": "edi-repeating-segments",
-      "path": "demos/edi/edi-repeating-segments",
-      "iconPath": "icons/edi-repeating-segments.svg",
-      "name": "EDI Repeating Segments — Multi-Occurrence X12 Handling",
-      "summary": "Demonstrates the repeating_segment_mode EDI option — creating 3 tables from the same X12 data with Indexed, Concatenate, and ToJson modes. Shows how multi-occurrence segments (N1 addresses, PO1 line items) are handled differently: Indexed creates separate columns per occurrence (n1_1_2, n1_2_2), Concatenate joins values with pipes, and ToJson produces JSON arrays. The only EDI demo showcasing multi-occurrence segment handling.",
-      "categories": [
-        "edi",
-        "supply-chain"
-      ],
-      "tags": [
-        "edi",
-        "x12",
-        "advanced",
-        "repeating-segments",
-        "indexed",
-        "concatenate",
-        "to-json",
-        "multi-occurrence"
-      ],
-      "difficulty": "advanced",
-      "estimatedTimeMinutes": 10,
-      "dataSizeBytes": 19192,
-      "fileCount": 14,
-      "author": "Delta Forge Team",
-      "version": "1.0.0",
-      "updatedAt": "2026-03-25T12:00:00Z",
-      "targetObjects": [
-        {
-          "objectType": "external_table",
-          "name": "{{zone_name}}.edi.repeating_indexed"
-        },
-        {
-          "objectType": "external_table",
-          "name": "{{zone_name}}.edi.repeating_concat"
-        },
-        {
-          "objectType": "external_table",
-          "name": "{{zone_name}}.edi.repeating_json"
-        }
-      ]
-    },
-    {
       "id": "edi-tradacoms-uk-retail",
       "path": "demos/edi/edi-tradacoms-uk-retail",
       "iconPath": "icons/edi-tradacoms-uk-retail.svg",
@@ -3745,6 +3703,117 @@
         {
           "objectType": "external_table",
           "name": "{{zone_name}}.edi.tradacoms_materialized"
+        }
+      ]
+    },
+    {
+      "id": "edi-tradacoms-purchase-orders",
+      "path": "demos/edi/edi-tradacoms-purchase-orders",
+      "iconPath": "icons/edi-tradacoms-purchase-orders.svg",
+      "name": "EDI TRADACOMS — Purchase Order Line Items",
+      "summary": "Extracts order line items (OLD segments), delivery instructions, and totals from a UK grocery retailer’s TRADACOMS purchase order. Demonstrates the Header–Detail–Trailer message pattern, cross-message analysis, and materialized_paths for deep segment extraction.",
+      "categories": [
+        "edi",
+        "supply-chain"
+      ],
+      "tags": [
+        "edi",
+        "tradacoms",
+        "intermediate",
+        "purchase-order",
+        "order-lines",
+        "ean-13",
+        "materialized-paths",
+        "header-detail-trailer"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 747,
+      "fileCount": 1,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.tradacoms_order_compact"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.tradacoms_order_lines"
+        }
+      ]
+    },
+    {
+      "id": "edi-tradacoms-utility-billing",
+      "path": "demos/edi/edi-tradacoms-utility-billing",
+      "iconPath": "icons/edi-tradacoms-utility-billing.svg",
+      "name": "EDI TRADACOMS — UK Energy Billing & VAT Reconciliation",
+      "summary": "Extracts billing details from CCD charge segments, verifies VAT calculations, and reconciles bill totals from a UK energy company’s TRADACOMS utility bills. Demonstrates escape character decoding for special characters in customer names.",
+      "categories": [
+        "edi",
+        "utilities"
+      ],
+      "tags": [
+        "edi",
+        "tradacoms",
+        "intermediate",
+        "utility-billing",
+        "energy",
+        "vat",
+        "escape-characters",
+        "charge-detail",
+        "reconciliation"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 2544,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.tradacoms_bills"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.tradacoms_bill_details"
+        }
+      ]
+    },
+    {
+      "id": "edi-tradacoms-json-deep-access",
+      "path": "demos/edi/edi-tradacoms-json-deep-access",
+      "iconPath": "icons/edi-tradacoms-json-deep-access.svg",
+      "name": "EDI TRADACOMS — JSON Deep Segment Extraction",
+      "summary": "Demonstrates on-demand extraction of deeply nested TRADACOMS segments using SQL JSON functions. Queries product planning forecasts (PDN/PLO/SFS) and order line items (OLD/DIN) directly from df_transaction_json without materialized_paths.",
+      "categories": [
+        "edi",
+        "analytics"
+      ],
+      "tags": [
+        "edi",
+        "tradacoms",
+        "advanced",
+        "json",
+        "segment-extraction",
+        "product-planning",
+        "deep-access",
+        "on-demand"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 1716,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.edi.tradacoms_json_messages"
         }
       ]
     },
