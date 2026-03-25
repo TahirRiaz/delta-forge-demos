@@ -2315,43 +2315,44 @@
       ]
     },
     {
-      "id": "delta-time-travel-deep",
-      "path": "demos/delta/delta-time-travel-deep",
-      "iconPath": "icons/delta-time-travel-deep.svg",
-      "name": "Delta Time Travel — Version History Deep Dive",
-      "summary": "Time travel is Delta Lake's ability to query any previous version of a \\ table using VERSION AS OF, giving you instant access to historical \\ snapshots without maintaining separate copies. It...",
+      "id": "delta-optimize-version-proof",
+      "path": "demos/delta/delta-optimize-version-proof",
+      "iconPath": "icons/delta-optimize-version-proof.svg",
+      "name": "Delta OPTIMIZE — Cross-Version Data Integrity Proof",
+      "summary": "A logistics company tracks shipment manifests across three carriers. Daily uploads fragment the table. Weekly OPTIMIZE compacts the files, and cross-version comparison proves zero data loss: carrier breakdowns, weight sums, and row counts are identical before and after compaction.",
       "categories": [
         "delta-table",
-        "delta-versioning"
+        "delta-performance"
       ],
       "tags": [
         "delta-table",
-        "advanced",
-        "time-travel",
+        "intermediate",
+        "optimize",
         "versioning",
-        "history",
-        "iot"
+        "integrity",
+        "compliance",
+        "logistics"
       ],
-      "difficulty": "advanced",
-      "estimatedTimeMinutes": 12,
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
-      "fileCount": 5,
+      "fileCount": 4,
       "author": "Delta Forge Team",
       "version": "1.0.0",
-      "updatedAt": "2026-03-09T12:00:00Z",
+      "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.delta_demos.sensor_readings"
+          "name": "{{zone_name}}.delta_demos.shipments"
         }
       ]
     },
     {
-      "id": "delta-time-travel-optimize",
-      "path": "demos/delta/delta-time-travel-optimize",
-      "iconPath": "icons/delta-time-travel-optimize.svg",
-      "name": "Delta Time Travel & OPTIMIZE — Version History",
-      "summary": "OPTIMIZE is a Delta Lake maintenance command that compacts many small \\ Parquet files into fewer, larger ones for dramatically faster read \\ performance. Frequent writes (inserts, updates,...",
+      "id": "delta-history-investigation",
+      "path": "demos/delta/delta-history-investigation",
+      "iconPath": "icons/delta-history-investigation.svg",
+      "name": "Delta DESCRIBE HISTORY — Root-Cause Investigation",
+      "summary": "A SaaS platform's reporting dashboard shows inflated Americas revenue. A data engineer uses DESCRIBE HISTORY to list every version, then time-travels through commits to pinpoint the exact update that doubled revenue — a full diagnostic workflow without modifying the table.",
       "categories": [
         "delta-table",
         "delta-versioning"
@@ -2359,22 +2360,23 @@
       "tags": [
         "delta-table",
         "intermediate",
+        "describe-history",
+        "investigation",
+        "diagnostics",
         "time-travel",
-        "optimize",
-        "versioning",
-        "history"
+        "saas"
       ],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
-      "fileCount": 5,
+      "fileCount": 4,
       "author": "Delta Forge Team",
       "version": "1.0.0",
-      "updatedAt": "2026-03-09T12:00:00Z",
+      "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.delta_demos.inventory"
+          "name": "{{zone_name}}.delta_demos.product_metrics"
         }
       ]
     },
@@ -4584,6 +4586,107 @@
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-01T12:00:00Z"
+    },
+    {
+      "id": "delta-time-travel-row-diff",
+      "path": "demos/delta/delta-time-travel-row-diff",
+      "iconPath": "icons/delta-time-travel-row-diff.svg",
+      "name": "Delta Time Travel — Row-Level Change Detection",
+      "summary": "Detect modified, deleted, and inserted rows across Delta versions using self-JOINs and LEFT JOINs on VERSION AS OF — the fallback when Change Data Feed wasn’t enabled.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "time-travel",
+        "change-detection",
+        "self-join",
+        "etl-validation"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.ecom_orders"
+        }
+      ]
+    },
+    {
+      "id": "delta-time-travel-point-in-time-join",
+      "path": "demos/delta/delta-time-travel-point-in-time-join",
+      "iconPath": "icons/delta-time-travel-point-in-time-join.svg",
+      "name": "Delta Time Travel — Point-in-Time Joins",
+      "summary": "JOIN a fact table against a dimension table pinned to a historical version, ensuring each trade is valued at the exchange rate active when it executed.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "time-travel",
+        "temporal-join",
+        "finance",
+        "regulatory"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.fx_trades"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.fx_rates"
+        }
+      ]
+    },
+    {
+      "id": "delta-time-travel-vacuum-boundary",
+      "path": "demos/delta/delta-time-travel-vacuum-boundary",
+      "iconPath": "icons/delta-time-travel-vacuum-boundary.svg",
+      "name": "Delta Time Travel — VACUUM Retention Boundary",
+      "summary": "Demonstrate that VACUUM removes old Parquet files and breaks time travel for vacuumed versions, while DESCRIBE HISTORY still shows ghost entries in the delta log.",
+      "categories": [
+        "delta-table",
+        "delta-versioning",
+        "delta-maintenance"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "time-travel",
+        "vacuum",
+        "retention",
+        "data-lifecycle"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.activity_log"
+        }
+      ]
     }
   ],
   "categories": [
