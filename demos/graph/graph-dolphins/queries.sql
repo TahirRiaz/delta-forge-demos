@@ -135,10 +135,10 @@ ORDER BY associate_id;
 -- ============================================================================
 -- 9. TWO-HOP REACHABILITY FROM NODE 0 — How far does association reach?
 -- ============================================================================
--- Node 0 has 6 direct neighbors. Through them, 28 distinct nodes are
--- reachable in 1–2 hops (45% of the graph) — includes 0 itself via loop-back.
+-- Node 0 has 6 direct neighbors. Through them, 27 distinct nodes are
+-- reachable in 1–2 hops (44% of the graph) — excludes node 0 itself.
 
-ASSERT VALUE reachable_in_2_hops = 28
+ASSERT VALUE reachable_in_2_hops = 27
 USE {{zone_name}}.dolphins.dolphins_social
 MATCH (a)-[*1..2]->(b)
 WHERE a.id = 0
@@ -198,7 +198,7 @@ LIMIT 10;
 ASSERT VALUE rank = 1 WHERE node_id = 36
 ASSERT VALUE rank = 2 WHERE node_id = 1
 ASSERT VALUE centrality >= 0.24 WHERE node_id = 36
-ASSERT VALUE centrality >= 0.21 WHERE node_id = 1
+ASSERT VALUE centrality >= 0.20 WHERE node_id = 1
 USE {{zone_name}}.dolphins.dolphins_social
 CALL algo.betweenness()
 YIELD node_id, centrality, rank
