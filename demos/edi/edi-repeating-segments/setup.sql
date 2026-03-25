@@ -72,7 +72,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.repeating_indexed;
 
 GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_indexed TO USER {{current_user}};
 
@@ -102,7 +101,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.repeating_concat;
 
 GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_concat TO USER {{current_user}};
 
@@ -132,6 +130,5 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.repeating_json;
 
 GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_json TO USER {{current_user}};
