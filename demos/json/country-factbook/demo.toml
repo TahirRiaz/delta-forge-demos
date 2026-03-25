@@ -13,7 +13,7 @@ exclude_paths, column_mappings, preserve_original, max_depth, and multi-file \
 reading with schema variation.
 """
 categories = ["json"]
-tags = ["json", "advanced", "deep-nesting", "schema-evolution", "column-mappings", "exclude-paths", "preserve-original", "multi-file"]
+tags = ["json", "advanced", "deep-nesting", "schema-evolution", "column-mappings", "exclude-paths", "multi-file"]
 difficulty = "advanced"
 estimated_time_minutes = 10
 

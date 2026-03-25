@@ -10,7 +10,6 @@
 --   - include_paths: selective extraction from 13 top-level sections
 --   - exclude_paths: skip verbose Introduction/Background HTML text
 --   - column_mappings: deep paths → friendly column names
---   - preserve_original: keep full JSON source for audit
 --   - Schema evolution: Terrorism and Space sections are optional (NULL fill)
 --   - Multi-file reading: 10 .json files (one per country)
 --   - file_metadata: df_file_name reveals country code (eg.json, sf.json...)
@@ -29,8 +28,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- ============================================================================
 -- Extracts key fields from Geography, People, Government, and optional
 -- Terrorism/Space sections. The verbose Introduction.Background HTML text
--- is excluded. The full original JSON is preserved for audit via
--- preserve_original.
+-- is excluded.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.countries
 USING JSON
@@ -75,13 +73,12 @@ OPTIONS (
         },
         "max_depth": 5,
         "separator": "_",
-        "preserve_original": true,
         "infer_types": false
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.json.countries;
 GRANT ADMIN ON TABLE {{zone_name}}.json.countries TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.json.countries;
 
 
 -- ============================================================================
@@ -141,5 +138,5 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.json.country_economy;
 GRANT ADMIN ON TABLE {{zone_name}}.json.country_economy TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.json.country_economy;

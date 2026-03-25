@@ -82,17 +82,6 @@ SELECT 'exclude_paths_verified' AS check_name,
        'PASS' AS result;
 
 
--- ============================================================================
--- 7. PRESERVE ORIGINAL — Full JSON source kept per row
--- ============================================================================
--- Each row should have a non-NULL _json_source column containing the
--- complete original JSON document for audit purposes.
-
-ASSERT VALUE json_source_count = 10
-SELECT COUNT(*) AS json_source_count
-FROM {{zone_name}}.json.countries
-WHERE _json_source IS NOT NULL;
-
 
 -- ============================================================================
 -- 8. FILE METADATA — df_file_name reveals country code
@@ -168,10 +157,10 @@ ORDER BY government_country_name_conventional_short_form_text;
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
--- Cross-cutting sanity check: row counts, schema evolution, preserve_original,
+-- Cross-cutting sanity check: row counts, schema evolution,
 -- file metadata, and key invariants across both tables.
 
-ASSERT ROW_COUNT = 12
+ASSERT ROW_COUNT = 11
 SELECT check_name, result FROM (
 
     -- Check 1: Country count = 10
@@ -220,14 +209,7 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 7: preserve_original — all rows have _json_source
-    SELECT 'preserve_original_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE _json_source IS NOT NULL) = 10
-                THEN 'PASS' ELSE 'FAIL' END AS result
-
-    UNION ALL
-
-    -- Check 8: Column mappings — country_name populated for all
+    -- Check 7: Column mappings — country_name populated for all
     SELECT 'column_mapping_country_name' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE government_country_name_conventional_short_form_text IS NOT NULL) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result

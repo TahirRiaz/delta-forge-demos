@@ -22,11 +22,11 @@ FROM {{zone_name}}.json.customers;
 --   $.first → first, $.last → last, $.created_at → created_at
 
 ASSERT ROW_COUNT = 10
-ASSERT VALUE first = 'Torrey' WHERE id = 1
-ASSERT VALUE last = 'Veum' WHERE id = 1
-ASSERT VALUE country = 'Switzerland' WHERE id = 1
-ASSERT VALUE first = 'Micah' WHERE id = 2
-ASSERT VALUE last = 'Sanford' WHERE id = 2
+ASSERT VALUE first = 'Torrey' WHERE id = '1'
+ASSERT VALUE last = 'Veum' WHERE id = '1'
+ASSERT VALUE country = 'Switzerland' WHERE id = '1'
+ASSERT VALUE first = 'Ryleigh' WHERE id = '10'
+ASSERT VALUE last = 'Cole' WHERE id = '10'
 SELECT id, email, first, last, company, created_at, country
 FROM {{zone_name}}.json.customers
 ORDER BY id
@@ -111,7 +111,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE company = 'Hilll, Mayert and Wolf'
 SELECT id, first, last, company, country
 FROM {{zone_name}}.json.customers
-WHERE id = 1;
+WHERE id = '1';
 
 
 -- ============================================================================
@@ -181,7 +181,7 @@ SELECT check_name, result FROM (
     SELECT 'spot_check_customer_1' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM {{zone_name}}.json.customers
-               WHERE id = 1 AND first = 'Torrey' AND last = 'Veum' AND country = 'Switzerland'
+               WHERE id = '1' AND first = 'Torrey' AND last = 'Veum' AND country = 'Switzerland'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

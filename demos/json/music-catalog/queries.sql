@@ -21,10 +21,10 @@ FROM {{zone_name}}.json.album_tracks;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 15
-ASSERT VALUE name = 'For Those About To Rock We Salute You' WHERE details_track_id = '1'
-ASSERT VALUE vendor_name = 'AC/DC' WHERE details_track_id = '1'
-ASSERT VALUE details_name = 'For Those About To Rock (We Salute You)' WHERE details_track_id = '1'
-SELECT name, vendor_name, details_name, composer, details_genre_id,
+ASSERT VALUE name = 'For Those About To Rock We Salute You' WHERE details_track_id = 1
+ASSERT VALUE vendor_name = 'AC/DC' WHERE details_track_id = 1
+ASSERT VALUE details_name = 'For Those About To Rock (We Salute You)' WHERE details_track_id = 1
+SELECT name, vendor_name, details_name, details_composer, details_genre_id,
        details_milliseconds, details_unit_price
 FROM {{zone_name}}.json.album_tracks
 ORDER BY id, details_track_id
@@ -110,12 +110,12 @@ ORDER BY track_count DESC;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 10
-ASSERT VALUE composer = 'Steve Harris' WHERE tracks_composed >= 80
-ASSERT VALUE tracks_composed >= 80 WHERE composer = 'Steve Harris'
-SELECT composer, COUNT(*) AS tracks_composed
+ASSERT VALUE details_composer = 'Steve Harris' WHERE tracks_composed >= 80
+ASSERT VALUE tracks_composed >= 80 WHERE details_composer = 'Steve Harris'
+SELECT details_composer, COUNT(*) AS tracks_composed
 FROM {{zone_name}}.json.album_tracks
-WHERE composer IS NOT NULL
-GROUP BY composer
+WHERE details_composer IS NOT NULL
+GROUP BY details_composer
 ORDER BY tracks_composed DESC
 LIMIT 10;
 
@@ -138,7 +138,8 @@ LIMIT 10;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 10
-ASSERT VALUE name = 'Greatest Hits' WHERE total_revenue > 55.0
+ASSERT VALUE name = 'Greatest Hits'
+ASSERT VALUE total_revenue = 56.43
 SELECT name, vendor_name,
        COUNT(*) AS tracks,
        ROUND(SUM(CAST(details_unit_price AS DOUBLE)), 2) AS total_revenue
