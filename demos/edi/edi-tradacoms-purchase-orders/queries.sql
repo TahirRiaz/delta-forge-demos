@@ -15,6 +15,8 @@
 -- The file represents a UK grocery retailer (ANY SHOP PLC) sending
 -- purchase orders to their supplier (XYZ MANUFACTURING PLC) via TRADACOMS.
 -- Order 981 has 3 product lines; Order 982 has 2 product lines.
+-- NOTE: materialized_paths extracts the last occurrence of repeating segments
+-- (e.g., OLD), so only the final line per ORDERS message is visible.
 --
 -- Column reference (tradacoms_order_lines materialized columns):
 --   OLD_1  = Line number        OLD_2  = Product EAN-13 code
@@ -83,28 +85,27 @@ WHERE mhd_2 = 'ORDHDR:9';
 
 
 -- ============================================================================
--- 3. Order Line Items — All Products
+-- 3. Order Line Items — Last Line Per Order
 -- ============================================================================
--- Extracts OLD (Order Line Detail) segments from ORDERS messages. Each OLD
--- segment represents one product line with EAN-13 code, supplier code,
--- quantity, unit price, and description. Order 981 has 3 lines (Products
--- A, B, C); Order 982 has 2 lines (Products K, L).
+-- Extracts OLD (Order Line Detail) segments from ORDERS messages. Because
+-- materialized_paths extracts the last occurrence of repeating segments,
+-- only the final OLD segment per ORDERS message survives. Order 981 shows
+-- OLD 3 (PRODUCT C); Order 982 shows OLD 2 (PRODUCT L).
 --
 -- What you'll see:
 --   - order_ref:      ORD_1 — order reference (composite: number::date)
---   - line_num:       OLD_1 — sequential line number within the order
+--   - line_num:       OLD_1 — line number (last line in the order)
 --   - product_ean:    OLD_2 — EAN-13 product barcode
 --   - supplier_code:  OLD_3 — supplier's internal product code
 --   - quantity:       OLD_5 — quantity ordered
 --   - unit_price:     OLD_6 — price per unit
 --   - description:    OLD_10 — product description text
 
-ASSERT ROW_COUNT = 5
-ASSERT VALUE product_ean = '5000100481452' WHERE line_num = '1' AND order_ref = '981::940321'
-ASSERT VALUE description = 'PRODUCT A' WHERE line_num = '1' AND order_ref = '981::940321'
-ASSERT VALUE quantity = '4' WHERE line_num = '3' AND order_ref = '981::940321'
-ASSERT VALUE unit_price = '30' WHERE line_num = '3' AND order_ref = '981::940321'
-ASSERT VALUE description = 'PRODUCT K' WHERE line_num = '1' AND order_ref = '982::940321'
+ASSERT ROW_COUNT = 2
+ASSERT VALUE product_ean = '5000100154073' WHERE order_ref = '981::940321'
+ASSERT VALUE description = 'PRODUCT C' WHERE order_ref = '981::940321'
+ASSERT VALUE quantity = '6' WHERE order_ref = '982::940321'
+ASSERT VALUE description = 'PRODUCT L' WHERE order_ref = '982::940321'
 SELECT
     ord_1 AS order_ref,
     old_1 AS line_num,
@@ -121,20 +122,21 @@ ORDER BY ord_1, old_1;
 -- ============================================================================
 -- 4. Order Value Calculation
 -- ============================================================================
--- Calculates the total value of each order by multiplying quantity by unit
--- price for each line item and summing per order. This demonstrates
--- CAST-based arithmetic on TRADACOMS string fields.
+-- Calculates the total value of each order from the last OLD segment per
+-- ORDERS message (materialized_paths extracts the last occurrence of
+-- repeating segments). This demonstrates CAST-based arithmetic on
+-- TRADACOMS string fields.
 --
 -- What you'll see:
 --   - order_ref:   ORD_1 — the order reference
---   - order_total: Calculated sum of (quantity * unit_price) per order
+--   - order_total: Calculated (quantity * unit_price) for the last line
 --
--- Order 981: (12*10)+(6*10)+(4*30) = 120+60+120 = 300
--- Order 982: (6*5)+(6*8)           = 30+48       = 78
+-- Order 981: 4*30 = 120 (last line: OLD 3, PRODUCT C)
+-- Order 982: 6*8  = 48  (last line: OLD 2, PRODUCT L)
 
 ASSERT ROW_COUNT = 2
-ASSERT VALUE order_total = 300 WHERE order_ref = '981::940321'
-ASSERT VALUE order_total = 78 WHERE order_ref = '982::940321'
+ASSERT VALUE order_total = 120 WHERE order_ref = '981::940321'
+ASSERT VALUE order_total = 48 WHERE order_ref = '982::940321'
 SELECT
     ord_1 AS order_ref,
     SUM(CAST(old_5 AS INTEGER) * CAST(old_6 AS INTEGER)) AS order_total
@@ -222,14 +224,14 @@ ORDER BY ord_1;
 -- This gives a single-row summary of the entire purchase order transmission.
 --
 -- What you'll see:
---   - total_lines:       Total number of OLD line items (5)
---   - grand_total:       Sum of (quantity * unit_price) across all orders (378)
---   - distinct_products: Count of unique EAN-13 product codes (5)
+--   - total_lines:       Number of ORDERS messages with OLD data (2)
+--   - grand_total:       Sum of (quantity * unit_price) for last lines (168)
+--   - distinct_products: Count of unique EAN-13 product codes (2)
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE total_lines = 5
-ASSERT VALUE grand_total = 378
-ASSERT VALUE distinct_products = 5
+ASSERT VALUE total_lines = 2
+ASSERT VALUE grand_total = 168
+ASSERT VALUE distinct_products = 2
 SELECT
     COUNT(*) AS total_lines,
     SUM(CAST(old_5 AS INTEGER) * CAST(old_6 AS INTEGER)) AS grand_total,
@@ -267,19 +269,19 @@ SELECT check_name, result FROM (
 
     UNION ALL
 
-    -- Check 3: 5 total line items across both orders
+    -- Check 3: 2 line items (last OLD per ORDERS message)
     SELECT 'line_count' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_order_lines
-                       WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL) = 5
+                       WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL) = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
-    -- Check 4: Grand total = 378 (300 + 78)
+    -- Check 4: Grand total = 168 (120 + 48)
     SELECT 'grand_total' AS check_name,
            CASE WHEN (SELECT SUM(CAST(old_5 AS INTEGER) * CAST(old_6 AS INTEGER))
                        FROM {{zone_name}}.edi.tradacoms_order_lines
-                       WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL) = 378
+                       WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL) = 168
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

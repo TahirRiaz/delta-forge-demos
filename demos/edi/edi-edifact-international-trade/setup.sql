@@ -27,9 +27,8 @@
 --   PRICAT   — Price Catalogue               (1 file)
 --   IFTMIN   — Transport Instruction         (1 file)
 --
--- Two tables demonstrate different views of the same EDIFACT feed:
---   1. edifact_messages      — Compact: UNB/UNH headers + full JSON
---   2. edifact_materialized  — Enriched: headers + key trade fields
+-- One table is created:
+--   edifact_messages — UNB/UNH headers + full JSON for every message
 --
 -- Variables (auto-injected by Delta Forge):
 --   data_path     — Local or cloud path where demo data files were downloaded
@@ -86,41 +85,3 @@ OPTIONS (
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.edi.edifact_messages;
 GRANT ADMIN ON TABLE {{zone_name}}.edi.edifact_messages TO USER {{current_user}};
-
-
--- ============================================================================
--- TABLE 2: edifact_materialized — Key trade fields extracted
--- ============================================================================
--- Uses materialized_paths to extract commonly-queried international trade
--- fields as first-class columns alongside the default UNB/UNH headers
--- and JSON output.
---
--- Materialized columns:
---   BGM_1  — Document/message name code (220=Order, 380=Invoice, etc.)
---   BGM_2  — Document/message number (PO number, invoice number, etc.)
---   NAD_1  — Party qualifier (BY=Buyer, SE=Seller, CN=Consignee, etc.)
---   NAD_2  — Party identification (company ID or code)
---   DTM_1  — Date/time qualifier (137=Document date, 35=Delivery date)
---   DTM_2  — Date/time/period value
---   LIN_1  — Line item number
---   LIN_3  — Item number (EAN/GTIN or supplier code)
--- ============================================================================
-
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.edifact_materialized
-USING EDI
-LOCATION '{{data_path}}/*.edi'
-OPTIONS (
-    edi_config = '{
-        "ediFormat": "edifact",
-        "materialized_paths": [
-            "bgm_1", "bgm_2",
-            "nad_1", "nad_2",
-            "dtm_1", "dtm_2",
-            "lin_1", "lin_3"
-        ]
-    }',
-    file_metadata = '{"columns":["df_file_name","df_row_number"]}'
-);
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.edifact_materialized;
-GRANT ADMIN ON TABLE {{zone_name}}.edi.edifact_materialized TO USER {{current_user}};
