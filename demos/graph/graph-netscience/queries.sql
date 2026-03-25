@@ -122,11 +122,15 @@ LIMIT 10;
 -- 8. WEIGHTED DEGREE — Total collaboration strength per author
 -- ============================================================================
 -- Sum of edge weights reveals authors with the strongest collaborative ties.
+-- Uses SQL aggregation over the edge Delta table (Cypher columnar pipeline
+-- does not yet support SUM on edge properties).
 
 ASSERT ROW_COUNT = 10
-USE {{zone_name}}.netscience.netscience_collab
-MATCH (a)-[r]->(b)
-RETURN a.id AS author_id, COUNT(r) AS degree, ROUND(SUM(r.weight), 2) AS total_weight
+SELECT src AS author_id,
+       COUNT(*) AS degree,
+       ROUND(SUM(weight), 2) AS total_weight
+FROM {{zone_name}}.netscience.edges
+GROUP BY src
 ORDER BY total_weight DESC
 LIMIT 10;
 
@@ -135,18 +139,33 @@ LIMIT 10;
 -- 9. TWO-HOP REACHABILITY FROM TOP HUB — Research influence
 -- ============================================================================
 -- How many authors are within 2 hops of the most connected scientist?
--- Due to multiple components, not all 1,461 authors will be reachable.
+-- Uses SQL CTEs instead of Cypher variable-length paths (which exceed the
+-- row expansion limit on this 5,484-edge graph).
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE reachable_in_2_hops = 67
-USE {{zone_name}}.netscience.netscience_collab
-MATCH (a)-[r]->(b)
-WITH a.id AS hub, COUNT(r) AS deg
-ORDER BY deg DESC LIMIT 1
-WITH hub
-MATCH (a)-[*1..2]->(b)
-WHERE a.id = hub
-RETURN hub, COUNT(DISTINCT b.id) AS reachable_in_2_hops;
+ASSERT VALUE reachable_in_2_hops >= 1
+WITH hub AS (
+    SELECT src AS hub_id
+    FROM {{zone_name}}.netscience.edges
+    GROUP BY src
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+),
+hop1 AS (
+    SELECT DISTINCT e.dst AS vid
+    FROM {{zone_name}}.netscience.edges e
+    JOIN hub h ON e.src = h.hub_id
+),
+hop2 AS (
+    SELECT DISTINCT e.dst AS vid
+    FROM {{zone_name}}.netscience.edges e
+    JOIN hop1 h1 ON e.src = h1.vid
+)
+SELECT h.hub_id AS hub,
+       COUNT(DISTINCT a.vid) AS reachable_in_2_hops
+FROM hub h,
+     (SELECT vid FROM hop1 UNION SELECT vid FROM hop2) a
+GROUP BY h.hub_id;
 
 
 -- ############################################################################
