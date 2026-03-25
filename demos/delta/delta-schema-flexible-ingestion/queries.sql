@@ -70,15 +70,13 @@ ORDER BY id;
 ALTER TABLE {{zone_name}}.delta_demos.sensor_telemetry ADD COLUMN location VARCHAR;
 
 -- Backfill: extract location from JSON metadata into the typed column.
--- CASE WHEN with LIKE patterns maps each known location value.
-UPDATE {{zone_name}}.delta_demos.sensor_telemetry
-SET location = CASE
-    WHEN metadata LIKE '%"location":"floor_1_east"%' THEN 'floor_1_east'
-    WHEN metadata LIKE '%"location":"floor_1_west"%' THEN 'floor_1_west'
-    WHEN metadata LIKE '%"location":"boiler_room"%' THEN 'boiler_room'
-    WHEN metadata LIKE '%"location":"compressor"%' THEN 'compressor'
-    WHEN metadata LIKE '%"location":"clean_room"%' THEN 'clean_room'
-END;
+-- Each UPDATE targets rows matching a specific location pattern in the JSON.
+-- This is the standard backfill pattern — one UPDATE per known value.
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET location = 'floor_1_east' WHERE metadata LIKE '%"location":"floor_1_east"%';
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET location = 'floor_1_west' WHERE metadata LIKE '%"location":"floor_1_west"%';
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET location = 'boiler_room' WHERE metadata LIKE '%"location":"boiler_room"%';
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET location = 'compressor' WHERE metadata LIKE '%"location":"compressor"%';
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET location = 'clean_room' WHERE metadata LIKE '%"location":"clean_room"%';
 
 -- Verify all 20 rows now have a non-null location
 ASSERT VALUE backfilled = 20
@@ -95,11 +93,9 @@ WHERE location IS NOT NULL;
 
 ALTER TABLE {{zone_name}}.delta_demos.sensor_telemetry ADD COLUMN alert_flag VARCHAR;
 
-UPDATE {{zone_name}}.delta_demos.sensor_telemetry
-SET alert_flag = CASE
-    WHEN metadata LIKE '%"alert":true%' THEN 'true'
-    ELSE 'false'
-END;
+-- First set all rows to 'false' (the common case), then override the alerts.
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET alert_flag = 'false';
+UPDATE {{zone_name}}.delta_demos.sensor_telemetry SET alert_flag = 'true' WHERE metadata LIKE '%"alert":true%';
 
 -- Verify: 2 alerts, 18 non-alerts
 ASSERT VALUE alert_count = 2
