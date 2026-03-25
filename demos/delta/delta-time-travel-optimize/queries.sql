@@ -20,10 +20,11 @@
 -- ============================================================================
 -- After setup, the table went through 4 versions of DML operations:
 --
---   V0: CREATE + INSERT 25 items      (creates initial data files)
---   V1: UPDATE 5 low-stock items      (creates rewritten files for changed rows)
---   V2: DELETE 3 discontinued items   (creates rewritten files minus deleted rows)
---   V3: INSERT 10 new items           (creates additional data files)
+--   V0: CREATE empty table             (creates Delta log)
+--   V1: INSERT 25 items               (creates initial data files)
+--   V2: UPDATE 5 low-stock items      (creates rewritten files for changed rows)
+--   V3: DELETE 3 discontinued items   (creates rewritten files minus deleted rows)
+--   V4: INSERT 10 new items           (creates additional data files)
 --
 -- Each operation added new small Parquet files. Let's see the current state
 -- before running OPTIMIZE:
@@ -82,33 +83,33 @@ OPTIMIZE {{zone_name}}.delta_demos.inventory;
 -- ============================================================================
 -- LEARN: OPTIMIZE Creates a New Version
 -- ============================================================================
--- OPTIMIZE is itself a versioned operation (V4 in this demo). This means:
+-- OPTIMIZE is itself a versioned operation (V5 in this demo). This means:
 --   1. You can time-travel back to before OPTIMIZE ran
 --   2. The old small files are not immediately deleted (they are just
 --      marked as removed in the log)
 --   3. VACUUM is needed later to physically delete the old files
 --
--- The data at V3 and V4 is identical — only the file layout differs:
+-- The data at V4 and V5 is identical — only the file layout differs:
 
 ASSERT ROW_COUNT = 5
-ASSERT VALUE row_count = 25 WHERE version = 'V0 (initial)'
-ASSERT VALUE row_count = 25 WHERE version = 'V1 (restocked)'
-ASSERT VALUE row_count = 22 WHERE version = 'V2 (deleted 3)'
-ASSERT VALUE row_count = 32 WHERE version = 'V3 (added 10)'
-ASSERT VALUE row_count = 32 WHERE version = 'V4 (optimized)'
-SELECT 'V0 (initial)' AS version, COUNT(*) AS row_count
-FROM {{zone_name}}.delta_demos.inventory VERSION AS OF 0
-UNION ALL
-SELECT 'V1 (restocked)', COUNT(*)
+ASSERT VALUE row_count = 25 WHERE version = 'V1 (initial)'
+ASSERT VALUE row_count = 25 WHERE version = 'V2 (restocked)'
+ASSERT VALUE row_count = 22 WHERE version = 'V3 (deleted 3)'
+ASSERT VALUE row_count = 32 WHERE version = 'V4 (added 10)'
+ASSERT VALUE row_count = 32 WHERE version = 'V5 (optimized)'
+SELECT 'V1 (initial)' AS version, COUNT(*) AS row_count
 FROM {{zone_name}}.delta_demos.inventory VERSION AS OF 1
 UNION ALL
-SELECT 'V2 (deleted 3)', COUNT(*)
+SELECT 'V2 (restocked)', COUNT(*)
 FROM {{zone_name}}.delta_demos.inventory VERSION AS OF 2
 UNION ALL
-SELECT 'V3 (added 10)', COUNT(*)
+SELECT 'V3 (deleted 3)', COUNT(*)
 FROM {{zone_name}}.delta_demos.inventory VERSION AS OF 3
 UNION ALL
-SELECT 'V4 (optimized)', COUNT(*)
+SELECT 'V4 (added 10)', COUNT(*)
+FROM {{zone_name}}.delta_demos.inventory VERSION AS OF 4
+UNION ALL
+SELECT 'V5 (optimized)', COUNT(*)
 FROM {{zone_name}}.delta_demos.inventory;
 
 
