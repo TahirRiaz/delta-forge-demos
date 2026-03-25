@@ -2851,6 +2851,74 @@
       ]
     },
     {
+      "id": "delta-vacuum-storage-savings",
+      "path": "demos/delta/delta-vacuum-storage-savings",
+      "iconPath": "icons/delta-vacuum-storage-savings.svg",
+      "name": "Delta VACUUM — Storage Cost Savings",
+      "summary": "Every UPDATE and DELETE in Delta Lake orphans old Parquet files via copy-on-write, silently inflating cloud storage costs. This demo uses a SaaS billing system to show how DESCRIBE DETAIL measures file accumulation and VACUUM RETAIN 0 HOURS reclaims storage — proving zero data change through before/after integrity checks.",
+      "categories": [
+        "delta-table",
+        "delta-versioning"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "vacuum",
+        "storage",
+        "maintenance",
+        "describe-detail",
+        "cost-optimization",
+        "retain"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.billing_transactions"
+        }
+      ]
+    },
+    {
+      "id": "delta-vacuum-optimize-maintenance",
+      "path": "demos/delta/delta-vacuum-optimize-maintenance",
+      "iconPath": "icons/delta-vacuum-optimize-maintenance.svg",
+      "name": "Delta Maintenance Playbook — OPTIMIZE Then VACUUM",
+      "summary": "The standard Delta Lake maintenance sequence: OPTIMIZE compacts fragmented small files from daily micro-batch ingestion, then VACUUM RETAIN 0 HOURS purges the orphaned pre-compaction files. Uses an e-commerce order pipeline with DESCRIBE DETAIL at each stage to show physical file state while data integrity stays constant.",
+      "categories": [
+        "delta-table"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "vacuum",
+        "optimize",
+        "maintenance",
+        "compaction",
+        "playbook",
+        "describe-detail",
+        "fragmentation"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.order_pipeline"
+        }
+      ]
+    },
+    {
       "id": "delta-variant-type",
       "path": "demos/delta/delta-variant-type",
       "iconPath": "icons/delta-variant-type.svg",
