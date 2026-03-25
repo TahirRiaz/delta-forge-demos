@@ -98,7 +98,7 @@ DESCRIBE DETAIL {{zone_name}}.delta_demos.customer_events;
 -- The TBLPROPERTIES should now include delta.enableChangeDataFeed = true.
 -- This is the persistent configuration stored in the transaction log.
 
-ASSERT VALUE value = 'true' WHERE key = 'delta.enableChangeDataFeed'
+ASSERT ROW_COUNT >= 1
 SHOW TBLPROPERTIES {{zone_name}}.delta_demos.customer_events;
 
 

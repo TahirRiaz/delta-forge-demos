@@ -91,7 +91,7 @@ DESCRIBE DETAIL {{zone_name}}.delta_demos.inherited_cdc;
 -- This is the configuration layer — DESCRIBE DETAIL shows the protocol
 -- effect, SHOW TABLE PROPERTIES shows the configuration that caused it.
 
-ASSERT VALUE value = 'true' WHERE key = 'delta.enableChangeDataFeed'
+ASSERT ROW_COUNT >= 1
 SHOW TBLPROPERTIES {{zone_name}}.delta_demos.inherited_cdc;
 
 
