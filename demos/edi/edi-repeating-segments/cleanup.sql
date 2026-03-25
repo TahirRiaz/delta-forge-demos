@@ -10,7 +10,7 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.repeating_indexed WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.repeating_first WITH FILES;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.repeating_concat WITH FILES;
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.repeating_json WITH FILES;
 

@@ -8,16 +8,14 @@
 -- This demo creates three tables with different repeating_segment_mode values
 -- on the same 14-file X12 feed to compare approaches:
 --
---   1. repeating_indexed   — Indexed mode: separate columns per occurrence
---                            n1_1_1, n1_1_2, n1_2_1, n1_2_2, n1_3_1, n1_3_2 ...
---                            (segment_occurrence_element, 1-based)
---   2. repeating_concat    — Concatenate mode: pipe-delimited values
---                            n1_1 = "ST|BY|SO", n1_2 = "Name1|Name2|Name3"
---   3. repeating_json      — ToJson mode: JSON arrays
---                            n1_1 = ["ST","BY","SO"], n1_2 = ["Name1","Name2"]
+--   1. repeating_first    — Default (First) mode: only first occurrence kept
+--                           n1_1 = first entity code, n1_2 = first party name
+--   2. repeating_concat   — Concatenate mode: pipe-delimited values
+--                           n1_1 = "ST|BY|SO", n1_2 = "Name1|Name2|Name3"
+--   3. repeating_json     — ToJson mode: JSON arrays
+--                           n1_1 = ["ST","BY","SO"], n1_2 = ["Name1","Name2"]
 --
 -- Materialized paths: N1 (party names/codes) and PO1 (line items)
--- max_repeating_segments: 6 (covers all files — max observed is 6 N1s)
 --
 -- Variables (auto-injected by Delta Forge):
 --   data_path     — Local or cloud path where demo data files were downloaded
@@ -44,34 +42,31 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 
 
 -- ============================================================================
--- TABLE 1: repeating_indexed — Separate column per occurrence (Indexed mode)
+-- TABLE 1: repeating_first — Default (First) mode
 -- ============================================================================
--- Each repeating segment gets numbered columns:
---   n1_1_1 = 1st N1 entity code,  n1_1_2 = 1st N1 party name
---   n1_2_1 = 2nd N1 entity code,  n1_2_2 = 2nd N1 party name
---   po1_1_1 = 1st PO1 line number, po1_1_2 = 1st PO1 quantity, etc.
+-- Only the first occurrence of each repeating segment is kept. Files with
+-- multiple N1 segments lose all but the first. This is the baseline behavior
+-- when no repeating_segment_mode is specified.
 --
--- max_repeating_segments = 6 ensures columns are generated for up to 6
--- occurrences of each materialized segment. Files with fewer occurrences
--- will have NULL in the higher-numbered columns.
+-- Column names are the standard materialized path names:
+--   n1_1 = entity code (first N1 only)
+--   n1_2 = party name  (first N1 only)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.repeating_indexed
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.repeating_first
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
-        "materialized_paths": ["n1_1", "n1_2", "po1_1", "po1_2", "po1_3", "po1_4"],
-        "repeating_segment_mode": "Indexed",
-        "max_repeating_segments": 6
+        "materialized_paths": ["n1_1", "n1_2", "po1_1", "po1_2", "po1_3", "po1_4"]
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.repeating_indexed;
+DETECT SCHEMA FOR TABLE {{zone_name}}.edi.repeating_first;
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_indexed TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_first TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -94,8 +89,7 @@ OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
         "materialized_paths": ["n1_1", "n1_2", "po1_1", "po1_2", "po1_3", "po1_4"],
-        "repeating_segment_mode": "Concatenate",
-        "max_repeating_segments": 6
+        "repeating_segment_mode": "Concatenate"
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
@@ -124,8 +118,7 @@ OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
         "materialized_paths": ["n1_1", "n1_2", "po1_1", "po1_2", "po1_3", "po1_4"],
-        "repeating_segment_mode": "ToJson",
-        "max_repeating_segments": 6
+        "repeating_segment_mode": "ToJson"
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );

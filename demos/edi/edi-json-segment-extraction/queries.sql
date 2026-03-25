@@ -227,26 +227,30 @@ ORDER BY df_file_name;
 -- ============================================================================
 -- 7. First Two Segments Sample — json_extract_path_text
 -- ============================================================================
--- Extracts the raw JSON text of the first two body segments from a single
--- transaction. This is useful for analysts exploring an unfamiliar
--- transaction structure — they can see the full segment content before
--- writing targeted extraction queries.
+-- Extracts the segment name and description of the first two body segments
+-- from a single transaction. This is useful for analysts exploring an
+-- unfamiliar transaction structure — they can see what segments appear
+-- before writing targeted element extraction queries.
 --
 -- What you'll see:
---   - df_file_name:          Source file (the simple 850)
---   - txn_type:              '850'
---   - first_segment_pretty:  JSON text of the first body segment
---   - second_segment_pretty: JSON text of the second body segment
+--   - df_file_name:               Source file (the simple 850)
+--   - txn_type:                   '850'
+--   - first_segment_name:         Segment code of the first body segment (e.g., BEG)
+--   - first_segment_description:  Human-readable name of the first body segment
+--   - second_segment_name:        Segment code of the second body segment
+--   - second_segment_description: Human-readable name of the second body segment
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE txn_type = '850' WHERE df_file_name = 'x12_850_purchase_order.edi'
-ASSERT VALUE first_segment_pretty IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
-ASSERT VALUE second_segment_pretty IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE first_segment_name IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE second_segment_name IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
 SELECT
     df_file_name,
     st_1 AS txn_type,
-    json_extract_path_text(df_transaction_json, '0') AS first_segment_pretty,
-    json_extract_path_text(df_transaction_json, '1') AS second_segment_pretty
+    json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment_name,
+    json_extract_path_text(df_transaction_json, '0', 'name') AS first_segment_description,
+    json_extract_path_text(df_transaction_json, '1', 'segment') AS second_segment_name,
+    json_extract_path_text(df_transaction_json, '1', 'name') AS second_segment_description
 FROM {{zone_name}}.edi.json_extraction_messages
 WHERE df_file_name = 'x12_850_purchase_order.edi';
 

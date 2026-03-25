@@ -9,15 +9,15 @@ X12 transactions with multiple occurrences of the same segment type. \
 Real-world EDI documents routinely contain repeating segments — purchase \
 orders with multiple line items (PO1), multiple ship-to/bill-to addresses \
 (N1), and multiple reference numbers (REF). The default "First" mode keeps \
-only the first occurrence, but Indexed, Concatenate, and ToJson modes \
-capture every occurrence as queryable columns. Three tables demonstrate \
-each mode side-by-side on the same 14-file X12 feed: Indexed produces \
-numbered columns (n1_1_2, n1_2_2, n1_3_2), Concatenate joins values with \
-a pipe delimiter, and ToJson emits JSON arrays — letting analysts choose \
-the right trade-off between column granularity and schema simplicity.
+only the first occurrence, Concatenate joins values with a pipe delimiter, \
+and ToJson emits JSON arrays — letting analysts choose the right trade-off \
+between simplicity and completeness. Three tables demonstrate each mode \
+side-by-side on the same 14-file X12 feed: First (baseline, data loss for \
+repeating segments), Concatenate (compact pipe-delimited), and ToJson \
+(structured JSON arrays for programmatic access).
 """
 categories = ["edi", "supply-chain"]
-tags = ["edi", "x12", "repeating-segments", "indexed", "concatenate", "multi-occurrence", "advanced"]
+tags = ["edi", "x12", "repeating-segments", "concatenate", "json", "multi-occurrence", "advanced"]
 difficulty = "advanced"
 estimated_time_minutes = 10
 
@@ -111,7 +111,7 @@ size_bytes = 581
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.edi.repeating_indexed"
+name = "{{zone_name}}.edi.repeating_first"
 
 [[demo.target_objects]]
 type = "external_table"
