@@ -47,7 +47,7 @@ SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.trial_participant
 
 ASSERT ROW_COUNT = 6
 ASSERT VALUE status = 'Active' WHERE subject_id = 'SUBJ-001'
-ASSERT VALUE ssn = '***-**-****' WHERE subject_id = 'SUBJ-001'
+ASSERT VALUE ssn_redacted = '***-**-****' WHERE subject_id = 'SUBJ-001'
 ASSERT VALUE treatment_arm = 'Drug A' WHERE subject_id = 'SUBJ-001'
 SELECT
     subject_id,
@@ -124,7 +124,7 @@ ORDER BY status_count DESC;
 
 ASSERT ROW_COUNT = 6
 ASSERT VALUE treatment_arm = 'Drug A' WHERE subject_id = 'SUBJ-001'
-ASSERT VALUE ssn = '***-**-****' WHERE subject_id = 'SUBJ-003'
+ASSERT VALUE ssn_redacted = '***-**-****' WHERE subject_id = 'SUBJ-003'
 ASSERT VALUE status = 'Withdrawn' WHERE subject_id = 'SUBJ-003'
 SELECT
     subject_id,
