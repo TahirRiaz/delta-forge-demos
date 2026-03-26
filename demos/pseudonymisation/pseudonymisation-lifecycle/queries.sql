@@ -37,7 +37,7 @@
 --           description)
 
 ASSERT ROW_COUNT = 5
-SHOW PSEUDONYMISATION RULES;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.insurance_claims;
 
 
 -- ============================================================================
@@ -72,7 +72,7 @@ SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.insurance_claims;
 
 ASSERT ROW_COUNT = 5
 ASSERT VALUE claim_type = 'Auto' WHERE claim_id = 'CLM-2024-001'
-ASSERT VALUE ssn = '***-**-****' WHERE claim_id = 'CLM-2024-001'
+ASSERT VALUE ssn_redacted = '***-**-****' WHERE claim_id = 'CLM-2024-001'
 SELECT
     claim_id,
     policy_holder_id AS holder_token,
