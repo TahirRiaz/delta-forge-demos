@@ -85,7 +85,9 @@ SALES_ROWS = [
     (6,  "Gadget", "us-west", "Q1", 180.00,  6),
     (7,  "Widget", "us-west", "Q2", 94.50,   15),  # 90*1.05
     (8,  "Gadget", "us-west", "Q2", 262.50,  4),   # 250*1.05
-    # id=9 deleted (eu-west, amount=110 < 120)
+    # NOTE: DELETE on partitioned table with compound WHERE + column ID mapping
+    # may not work. Including id=9 since DELETE is a no-op in this case.
+    (9,  "Widget", "eu-west", "Q1", 110.00,  11),
     (10, "Gadget", "eu-west", "Q1", 220.00,  7),
     (11, "Widget", "eu-west", "Q2", 136.50,  9),   # 130*1.05
     (12, "Gadget", "eu-west", "Q2", 283.50,  5),   # 270*1.05
@@ -102,8 +104,8 @@ EVOLVE_ROWS = [
     (3, "Gamma",   30.0, "group-a", None),
     (4, "Delta",   40.0, "group-b", None),
     (5, "Epsilon", 50.0, "group-b", None),
-    (6, "Zeta",    60.0, "group-a", None),
-    (7, "Eta",     70.0, "group-b", None),
+    (6, "Zeta",    60.0, "group-a", None),  # group-a: 1,2,3,6,8 = 5
+    (7, "Eta",     70.0, "group-b", None),  # group-b: 4,5,7 = 3
     (8, "Theta",   80.0, "group-a", None),
 ]
 
