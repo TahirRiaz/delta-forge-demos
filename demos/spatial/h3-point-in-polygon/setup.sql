@@ -42,6 +42,9 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.zones (
     surcharge_pct DOUBLE
 ) LOCATION '{{data_path}}/pip_zones';
 
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.zones TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.zones;
+
 INSERT INTO {{zone_name}}.spatial.zones VALUES
     -- San Francisco
     (1,  'SFO Airport',      'airport',  'San Francisco', 'USA',
@@ -87,9 +90,6 @@ INSERT INTO {{zone_name}}.spatial.zones VALUES
      'POLYGON((-118.26 34.04, -118.24 34.04, -118.24 34.06, -118.26 34.06, -118.26 34.04))',
      10.0);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.zones;
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.zones TO USER {{current_user}};
-
 
 -- ============================================================================
 -- TABLE 2: driver_positions — 1,000,000 GPS pings from ride-share drivers
@@ -117,6 +117,9 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.driver_positions (
     driver_id VARCHAR,
     city VARCHAR
 ) LOCATION '{{data_path}}/pip_driver_positions';
+
+GRANT ADMIN ON TABLE {{zone_name}}.spatial.driver_positions TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.driver_positions;
 
 -- San Francisco: 150,000 points (bbox covers SFO Airport + SF Downtown)
 -- Lat: 37.58–37.82, Lng: -122.52–-122.34
@@ -205,9 +208,6 @@ SELECT
     'driver_global_' || (id % 200) AS driver_id,
     'Global' AS city
 FROM generate_series(1, 50000) AS t(id);
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.driver_positions;
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.driver_positions TO USER {{current_user}};
 
 
 -- ============================================================================
