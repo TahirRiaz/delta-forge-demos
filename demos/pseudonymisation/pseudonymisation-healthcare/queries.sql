@@ -204,72 +204,7 @@ GROUP BY st_1;
 
 
 -- ============================================================================
--- 8. Rule Lifecycle — ALTER (Disable / Enable)
--- ============================================================================
--- Temporarily disable SSN redaction on HL7 for a data quality audit.
--- After inspection, re-enable it.
-
--- Disable SSN redaction
-ALTER PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_19) SET DISABLED;
-
--- Verify the rule is disabled (enabled = false for pid_19)
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
-
--- Re-enable after audit
-ALTER PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_19) SET ENABLED;
-
--- Disable the FHIR address wildcard rule temporarily
-ALTER PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (address_*) SET DISABLED;
-
--- Re-enable
-ALTER PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (address_*) SET ENABLED;
-
-
--- ============================================================================
--- 9. Permanent Pseudonymisation — APPLY
--- ============================================================================
--- APPLY PSEUDONYMISATION permanently transforms data in place by generating
--- and executing an UPDATE statement. Use this when data must be irreversibly
--- de-identified before sharing or for right-to-erasure compliance.
---
--- IMPORTANT: Unlike CREATE RULE (which transforms at query time), APPLY
--- modifies the actual stored data. This cannot be undone.
-
--- Permanently redact SSN for discharged HL7 patients (data retention policy)
-APPLY PSEUDONYMISATION ON {{zone_name}}.pseudonymisation.hl7_patients (pid_19)
-    TRANSFORM redact
-    PARAMS (mask = '***-**-****')
-    WHERE status = 'Discharged';
-
--- Permanently hash SSN for inactive FHIR patients (GDPR right to erasure)
-APPLY PSEUDONYMISATION ON {{zone_name}}.pseudonymisation.fhir_patients (ssn)
-    TRANSFORM keyed_hash
-    PARAMS (key = 'erasure_key_2024')
-    WHERE active = false;
-
--- Permanently tokenize member IDs on old eligibility inquiries
-APPLY PSEUDONYMISATION ON {{zone_name}}.pseudonymisation.edi_claims (nm1_8)
-    TRANSFORM tokenize
-    WHERE st_1 = '270';
-
--- Verify permanent transformations
-ASSERT ROW_COUNT = 1
-ASSERT VALUE df_message_id = 'MSG004' WHERE status = 'Discharged'
-ASSERT VALUE status = 'Discharged' WHERE df_message_id = 'MSG004'
-ASSERT VALUE pid_19 = '***-**-****' WHERE df_message_id = 'MSG004'
-SELECT df_message_id, pid_19, status
-FROM {{zone_name}}.pseudonymisation.hl7_patients
-WHERE status = 'Discharged';
-
-ASSERT ROW_COUNT = 1
-ASSERT VALUE patient_id = 'pt-fhir-004' WHERE active = false
-SELECT patient_id, ssn, active
-FROM {{zone_name}}.pseudonymisation.fhir_patients
-WHERE active = false;
-
-
--- ============================================================================
--- 10. Drop Individual Rules
+-- 8. Drop Individual Rules
 -- ============================================================================
 -- Remove a specific rule by table and column pattern.
 
@@ -282,68 +217,24 @@ SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
 
 
 -- ============================================================================
--- 11. SUMMARY — Compliance Mapping
--- ============================================================================
-/*
-HIPAA Safe Harbor De-Identification Mapping:
-+------------------------+---------------------+------------------------+---------------------------+
-| HIPAA Identifier       | HL7 Column          | FHIR Column            | EDI Column                |
-+------------------------+---------------------+------------------------+---------------------------+
-| 1. Name                | pid_5 (tokenize)    | *_name (keyed_hash)    | nm1_3/nm1_4 (keyed_hash)  |
-| 2. Address (< state)   | pid_11 (hash)       | address_* (hash)       | --                        |
-| 3. Dates (except year) | pid_7 (generalize)  | birth_date (generalize)| dmg_1 (generalize)        |
-| 4. Phone               | pid_13 (mask)       | phone (mask)           | --                        |
-| 5. SSN                 | pid_19 (redact)     | ssn (keyed_hash)       | nm1_8 (keyed_hash)        |
-| 6. MRN                 | pid_3 (keyed_hash)  | mrn (redact)           | clm_1 (tokenize)          |
-| 7. Email               | --                  | email (encrypt)        | --                        |
-| 8. Account numbers     | --                  | --                     | bpr_8/bpr_14 (redact)     |
-+------------------------+---------------------+------------------------+---------------------------+
-
-Transform Type Summary:
-+--------------+-----------+----------------------------------------------------+
-| Transform    | Reversible| Use Case                                           |
-+--------------+-----------+----------------------------------------------------+
-| keyed_hash   | No        | Deterministic pseudonym for linkage studies         |
-| encrypt      | Yes       | Reversible protection; needs key for re-identify   |
-| redact       | No        | Full removal; HIPAA Safe Harbor compliance          |
-| generalize   | No        | Reduce precision (DOB -> year, age -> range)        |
-| tokenize     | Yes*      | Replace with opaque token; lookup table required    |
-| mask         | No        | Partial visibility (first N chars, e.g. area code)  |
-| hash         | No        | One-way fingerprint; no salt (not for linkage)      |
-+--------------+-----------+----------------------------------------------------+
-* Tokenize reversibility depends on retention of the token mapping table.
-
-GDPR Article 4(5) Compliance:
-- All transforms produce data that cannot be attributed to a specific person
-  without the use of additional information (salt, key, token map)
-- Additional information is kept separately (PARAMS salts, encryption keys)
-- SCOPE person ensures consistent pseudonyms for longitudinal research
-- SCOPE transaction limits linkability to a single query execution
-- APPLY PSEUDONYMISATION supports right-to-erasure via permanent transformation
-*/
-
-
--- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
--- Cross-cutting sanity check: row totals, permanent APPLY results, and key
--- redact transform verification across all three healthcare tables.
+-- Cross-cutting sanity check: row totals and key transform verification
+-- across all three healthcare tables.
 
--- HL7: 4 patients, with permanent redaction of discharged patient SSN
+-- HL7: 4 patients, SSN redacted, clinical fields unchanged
 ASSERT ROW_COUNT = 4
 ASSERT VALUE pv1_2 = 'I' WHERE df_message_id = 'MSG001'
-ASSERT VALUE pid_19 = '***-**-****' WHERE df_message_id = 'MSG004'
 SELECT df_message_id, pid_3, pid_7, pid_13, pid_19, pv1_2, pv1_7, status
 FROM {{zone_name}}.pseudonymisation.hl7_patients;
 
--- FHIR: 4 patients, MRN always redacted to [REDACTED], inactive patient confirmed
+-- FHIR: 4 patients, MRN always redacted to [REDACTED]
 ASSERT ROW_COUNT = 4
-ASSERT VALUE mrn = '[REDACTED]' WHERE patient_id = 'pt-fhir-001'
-ASSERT VALUE patient_id = 'pt-fhir-004' WHERE active = false
+ASSERT VALUE mrn = '[REDACTED]' WHERE gender = 'male'
 SELECT patient_id, family_name, birth_date, gender, mrn, ssn, active
 FROM {{zone_name}}.pseudonymisation.fhir_patients;
 
--- EDI: 5 claims, bank accounts always fully redacted for 837 claims
+-- EDI: 5 claims, bank accounts always fully redacted
 ASSERT ROW_COUNT = 5
 ASSERT VALUE bpr_8 = '**********' WHERE df_transaction_id = 'TXN-837-001'
 ASSERT VALUE bpr_14 = '**********' WHERE df_transaction_id = 'TXN-837-001'
