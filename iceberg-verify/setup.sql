@@ -56,8 +56,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_verify.sales (
 ) LOCATION '{{data_path}}/sales'
 PARTITIONED BY (region)
 TBLPROPERTIES (
-    'delta.universalFormat.enabledFormats' = 'iceberg',
-    'delta.columnMapping.mode' = 'id'
+    'delta.universalFormat.enabledFormats' = 'iceberg'
 );
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_verify.sales TO USER {{current_user}};
