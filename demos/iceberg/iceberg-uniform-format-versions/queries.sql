@@ -281,3 +281,97 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.sensors_v1 WHERE status = 'critical') AS v1_critical,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.sensors_v3 WHERE status = 'critical') AS v3_critical,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.sensors_v3 WHERE status = 'corrected') AS v3_corrected;
+
+
+-- ============================================================================
+-- ICEBERG READ-BACK VERIFICATION
+-- ============================================================================
+-- Register each table's physical location as an external Iceberg table and
+-- verify the data is readable through the Iceberg metadata chain. This
+-- proves UniForm produces valid Iceberg metadata at all three format versions.
+--
+-- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
+-- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
+-- use forward-slash paths or UNC paths for the data_path variable.
+-- ============================================================================
+
+CREATE EXTERNAL TABLE IF NOT EXISTS sensors_v1_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/sensors_v1';
+
+GRANT ADMIN ON TABLE sensors_v1_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE sensors_v1_iceberg;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS sensors_v2_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/sensors_v2';
+
+GRANT ADMIN ON TABLE sensors_v2_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE sensors_v2_iceberg;
+
+CREATE EXTERNAL TABLE IF NOT EXISTS sensors_v3_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/sensors_v3';
+
+GRANT ADMIN ON TABLE sensors_v3_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE sensors_v3_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Verify 1: Row Counts — All Three Format Versions
+-- ============================================================================
+
+ASSERT ROW_COUNT = 12
+SELECT * FROM sensors_v1_iceberg ORDER BY id;
+
+ASSERT ROW_COUNT = 12
+SELECT * FROM sensors_v2_iceberg ORDER BY id;
+
+ASSERT ROW_COUNT = 12
+SELECT * FROM sensors_v3_iceberg ORDER BY id;
+
+
+-- ============================================================================
+-- Iceberg Verify 2: V1 — Per-Location Averages Match Delta
+-- ============================================================================
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE avg_temp = 23.08 WHERE location = 'Lab-A'
+ASSERT VALUE avg_temp = 21.13 WHERE location = 'Lab-B'
+ASSERT VALUE avg_temp = 22.43 WHERE location = 'Lab-C'
+SELECT
+    location,
+    ROUND(AVG(temperature), 2) AS avg_temp
+FROM sensors_v1_iceberg
+GROUP BY location
+ORDER BY location;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: V3 — Corrected Reading Visible
+-- ============================================================================
+-- V3 had the critical reading updated to 'corrected'. The Iceberg reader
+-- should see the corrected state, not the original.
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE temperature = 22.0
+ASSERT VALUE status = 'corrected'
+SELECT
+    temperature,
+    status
+FROM sensors_v3_iceberg
+WHERE id = 8;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Cross-Version Parity
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE v1_avg = 22.21
+ASSERT VALUE v3_avg = 21.85
+ASSERT VALUE v1_total_humidity = 571.50
+SELECT
+    ROUND((SELECT AVG(temperature) FROM sensors_v1_iceberg), 2) AS v1_avg,
+    ROUND((SELECT AVG(temperature) FROM sensors_v3_iceberg), 2) AS v3_avg,
+    ROUND((SELECT SUM(humidity) FROM sensors_v1_iceberg), 2) AS v1_total_humidity;

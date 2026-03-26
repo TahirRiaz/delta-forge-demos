@@ -245,3 +245,64 @@ SELECT
     ROUND(AVG(salary) FILTER (WHERE department = 'Engineering'), 2) AS engineering_avg_salary,
     ROUND(SUM(salary), 2) AS total_payroll
 FROM {{zone_name}}.iceberg_demos.employees;
+
+
+-- ============================================================================
+-- ICEBERG READ-BACK VERIFICATION
+-- ============================================================================
+-- Register the same physical location as an external Iceberg table and
+-- query it through the Iceberg metadata chain. This proves the UniForm
+-- shadow metadata is readable by an Iceberg engine after the full CRUD
+-- lifecycle (INSERT → UPDATE → DELETE → INSERT).
+--
+-- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
+-- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
+-- use forward-slash paths or UNC paths for the data_path variable.
+-- ============================================================================
+
+CREATE EXTERNAL TABLE IF NOT EXISTS employees_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/employees';
+
+GRANT ADMIN ON TABLE employees_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE employees_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Verify 1: Row Count — 21 Employees After Full Lifecycle
+-- ============================================================================
+
+ASSERT ROW_COUNT = 21
+SELECT * FROM employees_iceberg ORDER BY id;
+
+
+-- ============================================================================
+-- Iceberg Verify 2: Department Counts — Reflect Deletes + New Hires
+-- ============================================================================
+
+ASSERT ROW_COUNT = 4
+ASSERT VALUE emp_count = 6 WHERE department = 'Engineering'
+ASSERT VALUE emp_count = 5 WHERE department = 'Sales'
+ASSERT VALUE emp_count = 5 WHERE department = 'Marketing'
+ASSERT VALUE emp_count = 5 WHERE department = 'Finance'
+SELECT
+    department,
+    COUNT(*) AS emp_count
+FROM employees_iceberg
+GROUP BY department
+ORDER BY department;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_employees = 21
+ASSERT VALUE total_payroll = 2609750.00
+ASSERT VALUE department_count = 4
+SELECT
+    COUNT(*) AS total_employees,
+    ROUND(SUM(salary), 2) AS total_payroll,
+    COUNT(DISTINCT department) AS department_count
+FROM employees_iceberg;

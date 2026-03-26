@@ -232,3 +232,63 @@ SELECT
     ROUND(SUM(CASE WHEN category = 'Electronics' THEN price * stock ELSE 0 END), 2) AS electronics_revenue,
     ROUND(AVG(rating), 2) AS avg_rating
 FROM {{zone_name}}.iceberg_demos.product_catalog;
+
+
+-- ============================================================================
+-- ICEBERG READ-BACK VERIFICATION
+-- ============================================================================
+-- Register the same physical location as an external Iceberg table and
+-- query it through the Iceberg metadata chain. This proves the UniForm
+-- shadow metadata is readable by an Iceberg engine — not just Delta.
+--
+-- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
+-- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
+-- use forward-slash paths or UNC paths for the data_path variable.
+-- ============================================================================
+
+CREATE EXTERNAL TABLE IF NOT EXISTS product_catalog_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/product_catalog';
+
+GRANT ADMIN ON TABLE product_catalog_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE product_catalog_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Verify 1: Row Count
+-- ============================================================================
+-- The Iceberg table should see all 18 products (15 original + 3 inserted).
+
+ASSERT ROW_COUNT = 18
+SELECT * FROM product_catalog_iceberg ORDER BY id;
+
+
+-- ============================================================================
+-- Iceberg Verify 2: Category Breakdown
+-- ============================================================================
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE product_count = 6 WHERE category = 'Electronics'
+ASSERT VALUE product_count = 6 WHERE category = 'Furniture'
+ASSERT VALUE product_count = 6 WHERE category = 'Audio'
+SELECT
+    category,
+    COUNT(*) AS product_count
+FROM product_catalog_iceberg
+GROUP BY category
+ORDER BY category;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_products = 18
+ASSERT VALUE total_stock = 1945
+ASSERT VALUE avg_rating = 4.39
+SELECT
+    COUNT(*) AS total_products,
+    SUM(stock) AS total_stock,
+    ROUND(AVG(rating), 2) AS avg_rating
+FROM product_catalog_iceberg;

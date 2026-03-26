@@ -260,3 +260,63 @@ SELECT
     ROUND(SUM(CASE WHEN quarter = 'Q4-2024' THEN amount ELSE 0 END), 2) AS q4_bonus_total,
     ROUND(SUM(CASE WHEN quarter = 'Q1-2025' THEN amount ELSE 0 END), 2) AS q1_2025_total
 FROM {{zone_name}}.iceberg_demos.regional_sales;
+
+
+-- ============================================================================
+-- ICEBERG READ-BACK VERIFICATION
+-- ============================================================================
+-- Register the same physical location as an external Iceberg table and
+-- query it through the Iceberg metadata chain. This proves the UniForm
+-- shadow metadata correctly represents partitioned data after cross-
+-- partition UPDATE, partition-scoped DELETE, and partition INSERT.
+--
+-- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
+-- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
+-- use forward-slash paths or UNC paths for the data_path variable.
+-- ============================================================================
+
+CREATE EXTERNAL TABLE IF NOT EXISTS regional_sales_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/regional_sales';
+
+GRANT ADMIN ON TABLE regional_sales_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE regional_sales_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Verify 1: Row Count — 26 Transactions After All Mutations
+-- ============================================================================
+
+ASSERT ROW_COUNT = 26
+SELECT * FROM regional_sales_iceberg ORDER BY id;
+
+
+-- ============================================================================
+-- Iceberg Verify 2: Per-Region Counts — Reflect Delete + Insert
+-- ============================================================================
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE txn_count = 9 WHERE region = 'us-east'
+ASSERT VALUE txn_count = 9 WHERE region = 'us-west'
+ASSERT VALUE txn_count = 8 WHERE region = 'eu-west'
+SELECT
+    region,
+    COUNT(*) AS txn_count
+FROM regional_sales_iceberg
+GROUP BY region
+ORDER BY region;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_transactions = 26
+ASSERT VALUE total_revenue = 31121.50
+ASSERT VALUE q4_bonus_total = 6751.50
+SELECT
+    COUNT(*) AS total_transactions,
+    ROUND(SUM(amount), 2) AS total_revenue,
+    ROUND(SUM(CASE WHEN quarter = 'Q4-2024' THEN amount ELSE 0 END), 2) AS q4_bonus_total
+FROM regional_sales_iceberg;

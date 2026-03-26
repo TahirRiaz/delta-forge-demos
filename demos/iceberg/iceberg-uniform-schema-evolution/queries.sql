@@ -255,3 +255,62 @@ SELECT
     ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS discounted_revenue,
     COUNT(*) FILTER (WHERE loyalty_tier = 'Platinum') AS platinum_orders
 FROM {{zone_name}}.iceberg_demos.customer_orders;
+
+
+-- ============================================================================
+-- ICEBERG READ-BACK VERIFICATION
+-- ============================================================================
+-- Register the same physical location as an external Iceberg table and
+-- query it through the Iceberg metadata chain. This proves the UniForm
+-- shadow metadata correctly represents the evolved 9-column schema
+-- (original 6 columns + loyalty_tier, discount_pct, notes).
+--
+-- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
+-- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
+-- use forward-slash paths or UNC paths for the data_path variable.
+-- ============================================================================
+
+CREATE EXTERNAL TABLE IF NOT EXISTS customer_orders_iceberg
+USING ICEBERG
+LOCATION '{{data_path}}/customer_orders';
+
+GRANT ADMIN ON TABLE customer_orders_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE customer_orders_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Verify 1: Row Count — 24 Orders (20 Original + 4 Post-Evolution)
+-- ============================================================================
+
+ASSERT ROW_COUNT = 24
+SELECT * FROM customer_orders_iceberg ORDER BY id;
+
+
+-- ============================================================================
+-- Iceberg Verify 2: Evolved Columns Are Populated
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_orders = 24
+ASSERT VALUE has_tier = 24
+ASSERT VALUE has_discount = 24
+ASSERT VALUE has_notes = 24
+SELECT
+    COUNT(*) AS total_orders,
+    COUNT(loyalty_tier) AS has_tier,
+    COUNT(discount_pct) AS has_discount,
+    COUNT(notes) AS has_notes
+FROM customer_orders_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: Revenue Totals — Must Match Delta Final State
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE gross_revenue = 13445.00
+ASSERT VALUE discounted_revenue = 12296.63
+SELECT
+    ROUND(SUM(quantity * unit_price), 2) AS gross_revenue,
+    ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS discounted_revenue
+FROM customer_orders_iceberg;
