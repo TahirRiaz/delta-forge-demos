@@ -139,7 +139,7 @@ ASSERT RESULT SET INCLUDES (14, 0), (14, 3), (14, 16), (14, 24), (14, 33), (14, 
 USE {{zone_name}}.dolphins.dolphins_social
 MATCH (a)-[]->(c)
 WHERE a.id = 14
-RETURN a.id AS hub_id, c.id AS associate_id, c.name AS associate_name
+RETURN a.id AS hub_id, c.id AS associate_id
 ORDER BY associate_id;
 
 
