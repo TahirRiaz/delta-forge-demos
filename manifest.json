@@ -5190,6 +5190,177 @@
       ]
     },
     {
+      "id": "iceberg-uniform-basics",
+      "path": "demos/iceberg/iceberg-uniform-basics",
+      "iconPath": "icons/iceberg-uniform-basics.svg",
+      "name": "Iceberg UniForm \u2014 Enable Dual-Format Metadata",
+      "summary": "Demonstrates the core Iceberg UniForm feature: enabling automatic Iceberg metadata generation on a Delta table by setting delta.universalFormat.enabledFormats = 'iceberg'. After enabling, every Delta commit produces Iceberg-compatible metadata (metadata.json, manifest lists, manifest files) alongside the Delta transaction log \u2014 making the table readable by any Iceberg engine without conversion. Uses a product catalog dataset to show property configuration, DML operations with dual metadata, and DESCRIBE commands.",
+      "categories": [
+        "iceberg",
+        "delta-table"
+      ],
+      "tags": [
+        "iceberg",
+        "intermediate",
+        "uniform",
+        "tblproperties",
+        "dual-format",
+        "metadata"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-26T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.product_catalog"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-uniform-crud-lifecycle",
+      "path": "demos/iceberg/iceberg-uniform-crud-lifecycle",
+      "iconPath": "icons/iceberg-uniform-crud-lifecycle.svg",
+      "name": "Iceberg UniForm \u2014 CRUD & Snapshot Lifecycle",
+      "summary": "Walks through the complete lifecycle of a UniForm-enabled Delta table: INSERT, UPDATE, DELETE operations, each producing a new Iceberg snapshot alongside the Delta version. Uses time travel to inspect data at each snapshot boundary. Demonstrates that Iceberg metadata stays in sync with the Delta log across all mutation types. Dataset: 20 employees across 4 departments.",
+      "categories": [
+        "iceberg",
+        "delta-table"
+      ],
+      "tags": [
+        "iceberg",
+        "intermediate",
+        "uniform",
+        "crud",
+        "time-travel",
+        "snapshots",
+        "lifecycle"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-26T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.employees"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-uniform-schema-evolution",
+      "path": "demos/iceberg/iceberg-uniform-schema-evolution",
+      "iconPath": "icons/iceberg-uniform-schema-evolution.svg",
+      "name": "Iceberg UniForm \u2014 Schema Evolution Across Formats",
+      "summary": "Demonstrates schema evolution on a UniForm-enabled Delta table. When columns are added via ALTER TABLE ADD COLUMN, both the Delta schema and the Iceberg schema evolve in lockstep. Older snapshots reference the original schema; newer snapshots reference the evolved schema. Dataset: customer orders with progressive column additions for loyalty_tier, discount_pct, and notes.",
+      "categories": [
+        "iceberg",
+        "delta-table"
+      ],
+      "tags": [
+        "iceberg",
+        "intermediate",
+        "uniform",
+        "schema-evolution",
+        "add-column",
+        "null-backfill"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-26T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.customer_orders"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-uniform-format-versions",
+      "path": "demos/iceberg/iceberg-uniform-format-versions",
+      "iconPath": "icons/iceberg-uniform-format-versions.svg",
+      "name": "Iceberg UniForm \u2014 V1, V2, V3 Format Comparison",
+      "summary": "Compares Iceberg format versions V1, V2, and V3 side by side. Creates three identical Delta tables with the same seed data, each configured with a different delta.universalFormat.icebergVersion property. Demonstrates that all three versions produce correct metadata, handle DML, and support time travel \u2014 while V3 adds nanosecond timestamp types, deletion vectors, and named references.",
+      "categories": [
+        "iceberg",
+        "delta-table"
+      ],
+      "tags": [
+        "iceberg",
+        "advanced",
+        "uniform",
+        "format-version",
+        "v1",
+        "v2",
+        "v3",
+        "comparison"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-26T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.sensors_v1"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.sensors_v2"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.sensors_v3"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-uniform-partitioned",
+      "path": "demos/iceberg/iceberg-uniform-partitioned",
+      "iconPath": "icons/iceberg-uniform-partitioned.svg",
+      "name": "Iceberg UniForm \u2014 Partitioned Tables",
+      "summary": "Demonstrates Iceberg UniForm on a partitioned Delta table. The Iceberg metadata includes partition specs that map directly from the Delta partition columns, enabling Iceberg-compatible engines to leverage partition pruning. Shows INSERT, UPDATE, DELETE across partitions with time travel verification. Dataset: 24 sales transactions across 3 regions and 4 quarters.",
+      "categories": [
+        "iceberg",
+        "delta-table"
+      ],
+      "tags": [
+        "iceberg",
+        "advanced",
+        "uniform",
+        "partitioning",
+        "partition-pruning",
+        "multi-region"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-26T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.iceberg_demos.regional_sales"
+        }
+      ]
+    },
+    {
       "id": "json-country-factbook",
       "path": "demos/json/country-factbook",
       "iconPath": "icons/json-country-factbook.svg",
