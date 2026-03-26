@@ -4385,8 +4385,8 @@
       ],
       "difficulty": "beginner",
       "estimatedTimeMinutes": 5,
-      "dataSizeBytes": 3095,
-      "fileCount": 1,
+      "dataSizeBytes": 9125,
+      "fileCount": 2,
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
@@ -4394,6 +4394,10 @@
         {
           "objectType": "graph",
           "name": "dolphins_social"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw.dolphins_vertices"
         },
         {
           "objectType": "delta_table",
@@ -4425,8 +4429,8 @@
       ],
       "difficulty": "advanced",
       "estimatedTimeMinutes": 10,
-      "dataSizeBytes": 294997,
-      "fileCount": 1,
+      "dataSizeBytes": 680951,
+      "fileCount": 2,
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
@@ -4434,6 +4438,10 @@
         {
           "objectType": "graph",
           "name": "email_eu_core"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw.email_eu_vertices"
         },
         {
           "objectType": "delta_table",
@@ -4585,8 +4593,8 @@
       ],
       "difficulty": "beginner",
       "estimatedTimeMinutes": 5,
-      "dataSizeBytes": 1449,
-      "fileCount": 1,
+      "dataSizeBytes": 4412,
+      "fileCount": 2,
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
@@ -4594,6 +4602,10 @@
         {
           "objectType": "graph",
           "name": "karate_club"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw.karate_vertices"
         },
         {
           "objectType": "delta_table",
@@ -4792,8 +4804,8 @@
       ],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 8,
-      "dataSizeBytes": 82433,
-      "fileCount": 1,
+      "dataSizeBytes": 233840,
+      "fileCount": 2,
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
@@ -4801,6 +4813,10 @@
         {
           "objectType": "graph",
           "name": "netscience_collab"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw.netscience_vertices"
         },
         {
           "objectType": "delta_table",
@@ -4831,8 +4847,8 @@
       ],
       "difficulty": "intermediate",
       "estimatedTimeMinutes": 8,
-      "dataSizeBytes": 8663,
-      "fileCount": 1,
+      "dataSizeBytes": 27088,
+      "fileCount": 2,
       "author": "Delta Forge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
@@ -4840,6 +4856,10 @@
         {
           "objectType": "graph",
           "name": "political_books"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw.polbooks_vertices"
         },
         {
           "objectType": "delta_table",
