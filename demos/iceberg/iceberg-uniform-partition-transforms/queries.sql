@@ -302,16 +302,27 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.app_events_iceberg;
 
 
 -- ============================================================================
--- Iceberg Verify 1: Row Count — 44 Events After All Mutations
+-- Iceberg Verify 1: Row Count + Spot-Check Individual Rows
 -- ============================================================================
+-- Verify specific rows survived the full mutation cycle (INSERT, UPDATE,
+-- DELETE) and are visible through the Iceberg metadata chain.
 
 ASSERT ROW_COUNT = 44
+ASSERT VALUE event_type = 'click' WHERE event_id = 1
+ASSERT VALUE source_app = 'web-app' WHERE event_id = 1
+ASSERT VALUE severity = 'info' WHERE event_id = 1
+ASSERT VALUE user_id = 'usr_134' WHERE event_id = 40
+ASSERT VALUE event_type = 'login' WHERE event_id = 40
+ASSERT VALUE source_app = 'web-app' WHERE event_id = 40
 SELECT * FROM {{zone_name}}.iceberg_demos.app_events_iceberg ORDER BY event_id;
 
 
 -- ============================================================================
 -- Iceberg Verify 2: Per-Day Counts — Reflect All Mutations
 -- ============================================================================
+-- After INSERT (existing days), INSERT (new day 2024-03-07), UPDATE
+-- (severity escalation), and DELETE (error events from 2024-03-01),
+-- per-day counts must match the Delta final state exactly.
 
 ASSERT ROW_COUNT = 7
 ASSERT VALUE event_count = 6 WHERE event_date = '2024-03-01'
@@ -330,15 +341,45 @@ ORDER BY event_date;
 
 
 -- ============================================================================
--- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- Iceberg Verify 3: Severity Distribution — Reflects UPDATE + DELETE
 -- ============================================================================
+-- The UPDATE escalated high-payload api-server errors to 'critical'.
+-- The DELETE removed the error event from 2024-03-01.
+-- Must match the Delta severity distribution exactly.
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE sev_count = 5 WHERE severity = 'critical'
+ASSERT VALUE sev_count = 38 WHERE severity = 'info'
+ASSERT VALUE sev_count = 1 WHERE severity = 'warning'
+SELECT
+    severity,
+    COUNT(*) AS sev_count
+FROM {{zone_name}}.iceberg_demos.app_events_iceberg
+GROUP BY severity
+ORDER BY severity;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Grand Totals — Must Match Delta Final State
+-- ============================================================================
+-- Cross-cutting aggregate check: total events, distinct days, distinct
+-- event types, total payload, and filtered counts must all agree with
+-- the Delta table's final state.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_events = 44
+ASSERT VALUE total_days = 7
+ASSERT VALUE total_types = 6
 ASSERT VALUE total_payload = 22784
+ASSERT VALUE error_type_count = 6
 ASSERT VALUE critical_sev_count = 5
+ASSERT VALUE march_07_count = 6
 SELECT
     COUNT(*) AS total_events,
+    COUNT(DISTINCT CAST(event_timestamp AS DATE)) AS total_days,
+    COUNT(DISTINCT event_type) AS total_types,
     SUM(payload_size) AS total_payload,
-    COUNT(*) FILTER (WHERE severity = 'critical') AS critical_sev_count
+    COUNT(*) FILTER (WHERE event_type = 'error') AS error_type_count,
+    COUNT(*) FILTER (WHERE severity = 'critical') AS critical_sev_count,
+    COUNT(*) FILTER (WHERE CAST(event_timestamp AS DATE) = '2024-03-07') AS march_07_count
 FROM {{zone_name}}.iceberg_demos.app_events_iceberg;
