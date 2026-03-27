@@ -260,12 +260,12 @@ FROM {{zone_name}}.iceberg_demos.employees;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS employees_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.employees_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/employees';
 
-GRANT ADMIN ON TABLE employees_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE employees_iceberg;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.employees_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.employees_iceberg;
 
 
 -- ============================================================================
@@ -273,7 +273,7 @@ DETECT SCHEMA FOR TABLE employees_iceberg;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 21
-SELECT * FROM employees_iceberg ORDER BY id;
+SELECT * FROM {{zone_name}}.iceberg_demos.employees_iceberg ORDER BY id;
 
 
 -- ============================================================================
@@ -288,7 +288,7 @@ ASSERT VALUE emp_count = 5 WHERE department = 'Finance'
 SELECT
     department,
     COUNT(*) AS emp_count
-FROM employees_iceberg
+FROM {{zone_name}}.iceberg_demos.employees_iceberg
 GROUP BY department
 ORDER BY department;
 
@@ -305,4 +305,4 @@ SELECT
     COUNT(*) AS total_employees,
     ROUND(SUM(salary), 2) AS total_payroll,
     COUNT(DISTINCT department) AS department_count
-FROM employees_iceberg;
+FROM {{zone_name}}.iceberg_demos.employees_iceberg;
