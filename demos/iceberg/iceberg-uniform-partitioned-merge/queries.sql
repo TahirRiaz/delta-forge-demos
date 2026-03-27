@@ -363,23 +363,107 @@ SELECT * FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg ORDER BY s
 
 
 -- ============================================================================
--- Iceberg Verify 2: Per-Warehouse Counts — Reflect Discontinuations
+-- Iceberg Verify 2: Per-Warehouse Inventory Values — Full Data Check
 -- ============================================================================
+-- Must match Delta Query 9 exactly: counts, totals, and inventory values.
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE sku_count = 12 WHERE warehouse = 'charlotte'
 ASSERT VALUE sku_count = 12 WHERE warehouse = 'dallas'
 ASSERT VALUE sku_count = 12 WHERE warehouse = 'portland'
+ASSERT VALUE inventory_value = 32321.25 WHERE warehouse = 'charlotte'
+ASSERT VALUE inventory_value = 28811.90 WHERE warehouse = 'dallas'
+ASSERT VALUE inventory_value = 32627.85 WHERE warehouse = 'portland'
 SELECT
     warehouse,
-    COUNT(*) AS sku_count
+    COUNT(*) AS sku_count,
+    SUM(quantity_on_hand) AS total_qty,
+    ROUND(SUM(quantity_on_hand * unit_cost), 2) AS inventory_value
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 GROUP BY warehouse
 ORDER BY warehouse;
 
 
 -- ============================================================================
--- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- Iceberg Verify 3: Shipment Quantities Persisted — Spot-Check via Iceberg
+-- ============================================================================
+-- Confirms MERGE 1 quantity additions are visible through Iceberg metadata.
+
+ASSERT ROW_COUNT = 6
+ASSERT VALUE quantity_on_hand = 750 WHERE sku = 'WH-P001'
+ASSERT VALUE quantity_on_hand = 120 WHERE sku = 'WH-P003'
+ASSERT VALUE quantity_on_hand = 650 WHERE sku = 'WH-D001'
+ASSERT VALUE quantity_on_hand = 105 WHERE sku = 'WH-D003'
+ASSERT VALUE quantity_on_hand = 700 WHERE sku = 'WH-C001'
+ASSERT VALUE quantity_on_hand = 135 WHERE sku = 'WH-C003'
+SELECT
+    sku,
+    warehouse,
+    quantity_on_hand,
+    last_received
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
+WHERE sku IN ('WH-P001', 'WH-P003', 'WH-D001', 'WH-D003', 'WH-C001', 'WH-C003')
+ORDER BY sku;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Audit Corrections Applied — Spot-Check via Iceberg
+-- ============================================================================
+-- Confirms MERGE 2 quantity corrections are visible through Iceberg metadata.
+
+ASSERT ROW_COUNT = 6
+ASSERT VALUE quantity_on_hand = 1150 WHERE sku = 'WH-P002'
+ASSERT VALUE quantity_on_hand = 960 WHERE sku = 'WH-D002'
+ASSERT VALUE quantity_on_hand = 1060 WHERE sku = 'WH-C002'
+ASSERT VALUE quantity_on_hand = 870 WHERE sku = 'WH-P006'
+ASSERT VALUE quantity_on_hand = 780 WHERE sku = 'WH-D006'
+ASSERT VALUE quantity_on_hand = 820 WHERE sku = 'WH-C006'
+SELECT
+    sku,
+    warehouse,
+    product_name,
+    quantity_on_hand,
+    last_received
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
+WHERE sku IN ('WH-P002', 'WH-D002', 'WH-C002', 'WH-P006', 'WH-D006', 'WH-C006')
+ORDER BY sku;
+
+
+-- ============================================================================
+-- Iceberg Verify 5: Discontinued SKUs Removed — Iceberg Reflects Deletes
+-- ============================================================================
+-- Confirms MERGE 2 DELETE action is visible through Iceberg metadata.
+
+ASSERT ROW_COUNT = 0
+SELECT *
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
+WHERE sku IN ('WH-P012', 'WH-D012', 'WH-C012', 'WH-P008', 'WH-D008', 'WH-C008');
+
+
+-- ============================================================================
+-- Iceberg Verify 6: New SKUs Present — Iceberg Reflects Inserts
+-- ============================================================================
+-- Confirms MERGE 1 INSERT of new SKUs is visible through Iceberg metadata.
+
+ASSERT ROW_COUNT = 6
+ASSERT VALUE product_name = 'Epoxy Resin 1gal' WHERE sku = 'WH-P013'
+ASSERT VALUE product_name = 'Cable Tie 12" (100pk)' WHERE sku = 'WH-P014'
+ASSERT VALUE quantity_on_hand = 75 WHERE sku = 'WH-P013'
+ASSERT VALUE quantity_on_hand = 60 WHERE sku = 'WH-D013'
+ASSERT VALUE quantity_on_hand = 65 WHERE sku = 'WH-C013'
+SELECT
+    sku,
+    warehouse,
+    product_name,
+    quantity_on_hand,
+    unit_cost
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
+WHERE sku IN ('WH-P013', 'WH-P014', 'WH-D013', 'WH-D014', 'WH-C013', 'WH-C014')
+ORDER BY sku;
+
+
+-- ============================================================================
+-- Iceberg Verify 7: Grand Totals — Must Match Delta Final State
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
