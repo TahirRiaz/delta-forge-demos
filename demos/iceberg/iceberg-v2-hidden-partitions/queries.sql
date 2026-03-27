@@ -9,13 +9,27 @@
 
 
 -- ============================================================================
--- Query 1: Baseline — Total Row Count & Spot Checks
+-- Query 1: Baseline — Total Row Count & Schema Spot Checks
 -- ============================================================================
 -- Verifies that Delta Forge discovered all 6 monthly partitioned Parquet
--- data files via the Iceberg v2 manifest chain.
+-- data files via the Iceberg v2 manifest chain. Checks total rows, distinct
+-- trip IDs, and fare/distance extremes.
 
-ASSERT ROW_COUNT = 300
-SELECT * FROM {{zone_name}}.iceberg.trips;
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_rows = 300
+ASSERT VALUE distinct_trips = 300
+ASSERT VALUE min_fare = 3.7
+ASSERT VALUE max_fare = 85.14
+ASSERT VALUE min_distance = 0.5
+ASSERT VALUE max_distance = 25.0
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(DISTINCT trip_id) AS distinct_trips,
+    ROUND(MIN(fare_amount), 2) AS min_fare,
+    ROUND(MAX(fare_amount), 2) AS max_fare,
+    ROUND(MIN(distance_miles), 2) AS min_distance,
+    ROUND(MAX(distance_miles), 2) AS max_distance
+FROM {{zone_name}}.iceberg.trips;
 
 
 -- ============================================================================
@@ -46,6 +60,13 @@ ORDER BY pickup_month;
 -- partitions. Only 1 of 6 data files needs to be read.
 
 ASSERT ROW_COUNT = 50
+ASSERT VALUE trip_id = 57 WHERE pickup_time = '08:49'
+ASSERT VALUE city = 'Chicago' WHERE trip_id = 57
+ASSERT VALUE driver_id = 'DRV-1042' WHERE trip_id = 57
+ASSERT VALUE trip_id = 33 WHERE pickup_time = '23:15'
+ASSERT VALUE city = 'San Francisco' WHERE trip_id = 33
+ASSERT VALUE fare_amount = 78.36 WHERE trip_id = 225
+ASSERT VALUE city = 'Seattle' WHERE trip_id = 225
 SELECT
     trip_id,
     driver_id,
