@@ -198,6 +198,10 @@ ORDER BY meter_type;
 -- metadata is correct after a bulk INSERT ... SELECT.
 -- ============================================================================
 
+-- Drop any leftovers from a previous run (idempotent)
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg.grid_readings_iceberg_readback WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg.grid_readings_delta WITH FILES;
+
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings_delta (
     meter_id           VARCHAR,
     region             VARCHAR,
