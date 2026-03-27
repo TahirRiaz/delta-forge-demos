@@ -275,12 +275,12 @@ FROM {{zone_name}}.iceberg_demos.regional_sales;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS regional_sales_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.regional_sales_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/regional_sales';
 
-GRANT ADMIN ON TABLE regional_sales_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE regional_sales_iceberg;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.regional_sales_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.regional_sales_iceberg;
 
 
 -- ============================================================================
@@ -288,7 +288,7 @@ DETECT SCHEMA FOR TABLE regional_sales_iceberg;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 26
-SELECT * FROM regional_sales_iceberg ORDER BY id;
+SELECT * FROM {{zone_name}}.iceberg_demos.regional_sales_iceberg ORDER BY id;
 
 
 -- ============================================================================
@@ -302,7 +302,7 @@ ASSERT VALUE txn_count = 8 WHERE region = 'eu-west'
 SELECT
     region,
     COUNT(*) AS txn_count
-FROM regional_sales_iceberg
+FROM {{zone_name}}.iceberg_demos.regional_sales_iceberg
 GROUP BY region
 ORDER BY region;
 
@@ -319,4 +319,4 @@ SELECT
     COUNT(*) AS total_transactions,
     ROUND(SUM(amount), 2) AS total_revenue,
     ROUND(SUM(CASE WHEN quarter = 'Q4-2024' THEN amount ELSE 0 END), 2) AS q4_bonus_total
-FROM regional_sales_iceberg;
+FROM {{zone_name}}.iceberg_demos.regional_sales_iceberg;
