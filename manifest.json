@@ -5419,8 +5419,8 @@
       "updatedAt": "2026-03-27T00:00:00Z",
       "targetObjects": [
         {
-          "type": "external_table",
-          "name": "{{zone_name}}.iceberg.warehouse_inventory"
+          "name": "{{zone_name}}.iceberg.warehouse_inventory",
+          "objectType": "external_table"
         }
       ]
     },
@@ -5453,8 +5453,8 @@
       "updatedAt": "2026-03-27T00:00:00Z",
       "targetObjects": [
         {
-          "type": "external_table",
-          "name": "{{zone_name}}.iceberg.fleet_telemetry"
+          "name": "{{zone_name}}.iceberg.fleet_telemetry",
+          "objectType": "external_table"
         }
       ]
     },
@@ -5486,8 +5486,8 @@
       "updatedAt": "2026-03-27T00:00:00Z",
       "targetObjects": [
         {
-          "type": "external_table",
-          "name": "{{zone_name}}.iceberg.lab_results"
+          "name": "{{zone_name}}.iceberg.lab_results",
+          "objectType": "external_table"
         }
       ]
     },
