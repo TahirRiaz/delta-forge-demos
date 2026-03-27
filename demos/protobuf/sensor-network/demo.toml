@@ -19,7 +19,6 @@ estimated_time_minutes = 8
 
 [demo.variables]
 data_path = { description = "Root path where demo protobuf data files (.pb) are stored", required = true }
-schema_path = { description = "Path to the schema directory containing .proto files", required = true }
 zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
 
 [[demo.data_files]]
@@ -39,6 +38,18 @@ path = "data/warehouse.pb"
 format = "protobuf"
 description = "Warehouse — 5 sensors (2 temperature, 2 humidity, 1 vibration), 20 readings"
 size_bytes = 839
+
+[[demo.data_files]]
+path = "schema/sensor.proto"
+format = "protobuf"
+description = "Proto3 schema — SensorNetwork message with nested Sensor and SensorReading"
+size_bytes = 479
+
+[[demo.data_files]]
+path = "schema/timestamp.proto"
+format = "protobuf"
+description = "Google well-known Timestamp type (required import for sensor.proto)"
+size_bytes = 231
 
 [[demo.target_objects]]
 type = "external_table"

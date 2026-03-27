@@ -32,7 +32,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.protobuf_iot.sensor_readings
 USING PROTOBUF
 LOCATION '{{data_path}}'
 OPTIONS (
-    proto_schema = '{{schema_path}}',
+    schema_path = '{{data_path}}/schema/sensor.proto',
     message_type = 'iot.SensorNetwork',
     proto_flatten_config = '{
         "row_path": "sensors",
@@ -77,7 +77,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.protobuf_iot.sensor_summary
 USING PROTOBUF
 LOCATION '{{data_path}}'
 OPTIONS (
-    proto_schema = '{{schema_path}}',
+    schema_path = '{{data_path}}/schema/sensor.proto',
     message_type = 'iot.SensorNetwork',
     proto_flatten_config = '{
         "row_path": "sensors",
