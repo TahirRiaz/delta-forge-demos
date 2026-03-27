@@ -241,7 +241,6 @@ ORDER BY delivery_status;
 -- which covers central Manhattan and surrounding areas.
 
 ASSERT ROW_COUNT = 10
-ASSERT VALUE total_fee = 88.94
 SELECT
     delivery_id,
     driver_id,
@@ -253,6 +252,11 @@ FROM {{zone_name}}.iceberg_demos.delivery_tracking
 WHERE latitude BETWEEN 40.65 AND 40.80
   AND longitude BETWEEN -74.05 AND -73.95
 ORDER BY delivery_id;
+
+
+-- ============================================================================
+-- Query 10b: NYC Bounding Box Aggregate
+-- ============================================================================
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE bbox_deliveries = 10
@@ -271,7 +275,8 @@ WHERE latitude BETWEEN 40.65 AND 40.80
 -- A wider bounding box covering the LA metro area (lat 33.0–35.0,
 -- lon -119.0 to -118.0).
 
-ASSERT ROW_COUNT = 12
+ASSERT ROW_COUNT = 1
+ASSERT VALUE delivery_count = 12
 ASSERT VALUE total_fee = 136.43
 SELECT
     COUNT(*) AS delivery_count,
