@@ -284,16 +284,10 @@ SELECT
 
 
 -- ============================================================================
--- ICEBERG READ-BACK VERIFICATION
+-- Iceberg Read-Back: Register V1 as External Iceberg Table
 -- ============================================================================
--- Register each table's physical location as an external Iceberg table and
--- verify the data is readable through the Iceberg metadata chain. This
--- proves UniForm produces valid Iceberg metadata at all three format versions.
---
--- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
--- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
--- use forward-slash paths or UNC paths for the data_path variable.
--- ============================================================================
+-- Register V1's physical location as an external Iceberg table and detect
+-- its schema through the Iceberg metadata chain.
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg
 USING ICEBERG
@@ -302,12 +296,24 @@ LOCATION '{{data_path}}/sensors_v1';
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v1_iceberg TO USER {{current_user}};
 DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensors_v1_iceberg;
 
+
+-- ============================================================================
+-- Iceberg Read-Back: Register V2 as External Iceberg Table
+-- ============================================================================
+-- Register V2's physical location as an external Iceberg table.
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sensors_v2';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v2_iceberg TO USER {{current_user}};
 DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensors_v2_iceberg;
+
+
+-- ============================================================================
+-- Iceberg Read-Back: Register V3 as External Iceberg Table
+-- ============================================================================
+-- Register V3's physical location as an external Iceberg table.
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg
 USING ICEBERG
