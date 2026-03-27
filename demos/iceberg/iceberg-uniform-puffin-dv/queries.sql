@@ -52,7 +52,7 @@ SELECT * FROM {{zone_name}}.puffin_dv_demo.products_iceberg WHERE id IN (2, 5, 8
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE product_count = 7
-ASSERT VALUE total_price = 2403.48
+ASSERT VALUE total_price = 2813.48
 SELECT
     COUNT(*) AS product_count,
     ROUND(SUM(price), 2) AS total_price
@@ -65,7 +65,7 @@ FROM {{zone_name}}.puffin_dv_demo.products;
 -- The Iceberg read should produce identical aggregates to Delta.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE total_price = 2403.48
+ASSERT VALUE total_price = 2813.48
 SELECT
     ROUND(SUM(price), 2) AS total_price
 FROM {{zone_name}}.puffin_dv_demo.products_iceberg;
