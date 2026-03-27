@@ -33,7 +33,7 @@ USING PROTOBUF
 LOCATION '{{data_path}}'
 OPTIONS (
     schema_path = '{{data_path}}/schema/sensor.proto',
-    message_type = 'iot.SensorNetwork',
+    message_name = 'iot.SensorNetwork',
     proto_flatten_config = '{
         "row_path": "sensors",
         "explode_paths": ["sensors.readings"],
@@ -78,7 +78,7 @@ USING PROTOBUF
 LOCATION '{{data_path}}'
 OPTIONS (
     schema_path = '{{data_path}}/schema/sensor.proto',
-    message_type = 'iot.SensorNetwork',
+    message_name = 'iot.SensorNetwork',
     proto_flatten_config = '{
         "row_path": "sensors",
         "include_paths": [
