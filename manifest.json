@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-03-25T13:13:28Z",
+  "generatedAt": "2026-03-27T00:00:00Z",
   "demos": [
     {
       "id": "avro-iot-sensors",
@@ -5388,6 +5388,73 @@
         {
           "objectType": "delta_table",
           "name": "{{zone_name}}.iceberg_demos.regional_sales"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-v1-warehouse-inventory",
+      "path": "demos/iceberg/iceberg-v1-warehouse-inventory",
+      "iconPath": "icons/iceberg-v1-warehouse-inventory.svg",
+      "name": "Iceberg V1 \u2014 Warehouse Inventory Snapshots",
+      "summary": "Demonstrates native Apache Iceberg format-version 1 table reading using a retail warehouse inventory dataset (489 SKUs across 3 warehouses). Exercises v1 metadata chain parsing, schema inference, and inventory analytics.",
+      "categories": [
+        "iceberg"
+      ],
+      "tags": [
+        "iceberg",
+        "beginner",
+        "read-only",
+        "native-format",
+        "v1",
+        "metadata-chain",
+        "warehouse",
+        "inventory"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 26383,
+      "fileCount": 9,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-27T00:00:00Z",
+      "targetObjects": [
+        {
+          "type": "external_table",
+          "name": "{{zone_name}}.iceberg.warehouse_inventory"
+        }
+      ]
+    },
+    {
+      "id": "iceberg-v2-fleet-telemetry",
+      "path": "demos/iceberg/iceberg-v2-fleet-telemetry",
+      "iconPath": "icons/iceberg-v2-fleet-telemetry.svg",
+      "name": "Iceberg V2 \u2014 Fleet Telemetry Analytics",
+      "summary": "Demonstrates native Apache Iceberg format-version 2 table reading using a commercial fleet telemetry dataset (450 GPS pings across 3 regional fleets). Exercises v2 metadata chain parsing with enhanced column statistics, safety analytics, and fuel monitoring.",
+      "categories": [
+        "iceberg"
+      ],
+      "tags": [
+        "iceberg",
+        "beginner",
+        "read-only",
+        "native-format",
+        "v2",
+        "metadata-chain",
+        "fleet",
+        "telemetry",
+        "iot"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 29080,
+      "fileCount": 9,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-27T00:00:00Z",
+      "targetObjects": [
+        {
+          "type": "external_table",
+          "name": "{{zone_name}}.iceberg.fleet_telemetry"
         }
       ]
     },
