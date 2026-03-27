@@ -285,15 +285,72 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.ad_clicks_iceberg;
 
 
 -- ============================================================================
--- Iceberg Verify 1: Row Count — 35 Clicks After Full Lifecycle
+-- Iceberg Verify 1: Row Count + Seed Data Spot-Check
 -- ============================================================================
+-- Verify total rows and spot-check original seed rows survived the lifecycle.
 
 ASSERT ROW_COUNT = 35
+ASSERT VALUE campaign_id = 'summer-sale' WHERE click_id = 1
+ASSERT VALUE cost_per_click = 1.25 WHERE click_id = 1
+ASSERT VALUE conversion_value = 12.5 WHERE click_id = 1
+ASSERT VALUE device_type = 'mobile' WHERE click_id = 1
+ASSERT VALUE campaign_id = 'holiday-promo' WHERE click_id = 27
+ASSERT VALUE cost_per_click = 4.0 WHERE click_id = 27
+ASSERT VALUE conversion_value = 55.0 WHERE click_id = 27
 SELECT * FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg ORDER BY click_id;
 
 
 -- ============================================================================
--- Iceberg Verify 2: Column Statistics Must Match Delta
+-- Iceberg Verify 2: UPDATE Mutations Persisted Through UniForm
+-- ============================================================================
+-- Clicks 2, 6, 12 were updated from NULL → filled conversion_value.
+-- The Iceberg snapshot must reflect the post-UPDATE state.
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE conversion_value = 5.0 WHERE click_id = 2
+ASSERT VALUE is_converted = true WHERE click_id = 2
+ASSERT VALUE conversion_value = 7.5 WHERE click_id = 6
+ASSERT VALUE is_converted = true WHERE click_id = 6
+ASSERT VALUE conversion_value = 11.0 WHERE click_id = 12
+ASSERT VALUE is_converted = true WHERE click_id = 12
+SELECT
+    click_id,
+    campaign_id,
+    ROUND(conversion_value, 2) AS conversion_value,
+    is_converted
+FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg
+WHERE click_id IN (2, 6, 12)
+ORDER BY click_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: INSERT Extreme Values Visible
+-- ============================================================================
+-- Clicks 31–35 were inserted in Version 2 with extreme CPC and CV values.
+-- Verify the Iceberg table contains them with correct values.
+
+ASSERT ROW_COUNT = 5
+ASSERT VALUE cost_per_click = 0.15 WHERE click_id = 31
+ASSERT VALUE cost_per_click = 5.5 WHERE click_id = 32
+ASSERT VALUE conversion_value = 120.0 WHERE click_id = 32
+ASSERT VALUE cost_per_click = 0.1 WHERE click_id = 34
+ASSERT VALUE conversion_value = 0.5 WHERE click_id = 34
+ASSERT VALUE cost_per_click = 6.0 WHERE click_id = 35
+ASSERT VALUE conversion_value = 150.0 WHERE click_id = 35
+SELECT
+    click_id,
+    campaign_id,
+    ROUND(cost_per_click, 2) AS cost_per_click,
+    ROUND(conversion_value, 2) AS conversion_value,
+    device_type,
+    is_converted
+FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg
+WHERE click_id >= 31
+ORDER BY click_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Column Statistics Must Match Delta
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
@@ -302,26 +359,32 @@ ASSERT VALUE max_cpc = 6.0
 ASSERT VALUE min_cv = 0.5
 ASSERT VALUE max_cv = 150.0
 ASSERT VALUE null_cv_count = 13
+ASSERT VALUE nonnull_cv_count = 22
 SELECT
     ROUND(MIN(cost_per_click), 2) AS min_cpc,
     ROUND(MAX(cost_per_click), 2) AS max_cpc,
     ROUND(MIN(conversion_value), 2) AS min_cv,
     ROUND(MAX(conversion_value), 2) AS max_cv,
-    COUNT(*) FILTER (WHERE conversion_value IS NULL) AS null_cv_count
+    COUNT(*) FILTER (WHERE conversion_value IS NULL) AS null_cv_count,
+    COUNT(*) FILTER (WHERE conversion_value IS NOT NULL) AS nonnull_cv_count
 FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg;
 
 
 -- ============================================================================
--- Iceberg Verify 3: Campaign Counts — Must Match Delta Final State
+-- Iceberg Verify 5: Campaign Breakdown — Must Match Delta Final State
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE click_count = 12 WHERE campaign_id = 'summer-sale'
 ASSERT VALUE click_count = 11 WHERE campaign_id = 'back-to-school'
 ASSERT VALUE click_count = 12 WHERE campaign_id = 'holiday-promo'
+ASSERT VALUE converted_count = 8 WHERE campaign_id = 'summer-sale'
+ASSERT VALUE converted_count = 8 WHERE campaign_id = 'back-to-school'
+ASSERT VALUE converted_count = 6 WHERE campaign_id = 'holiday-promo'
 SELECT
     campaign_id,
-    COUNT(*) AS click_count
+    COUNT(*) AS click_count,
+    COUNT(*) FILTER (WHERE is_converted = true) AS converted_count
 FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg
 GROUP BY campaign_id
 ORDER BY campaign_id;
