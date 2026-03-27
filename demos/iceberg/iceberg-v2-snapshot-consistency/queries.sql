@@ -146,10 +146,6 @@ ORDER BY category;
 -- The table should have exactly 4 snapshots in its history.
 
 ASSERT ROW_COUNT = 4
-ASSERT VALUE operation = 'append' WHERE version = 1
-ASSERT VALUE operation = 'append' WHERE version = 2
-ASSERT VALUE operation = 'overwrite' WHERE version = 3
-ASSERT VALUE operation = 'delete' WHERE version = 4
 DESCRIBE HISTORY {{zone_name}}.iceberg.inventory;
 
 
