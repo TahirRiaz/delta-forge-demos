@@ -244,36 +244,88 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensor_readings_iceberg;
 
 
 -- ============================================================================
--- Iceberg Verify 1: Row Count — 32 Sensors (24 Original + 4 BIGINT + 4 DOUBLE)
+-- Iceberg Verify 1: Per-Location Aggregates Match Delta Final State
 -- ============================================================================
+-- The Iceberg read-back must produce identical per-location results to
+-- the Delta table query (Query 5). This proves the UniForm metadata
+-- correctly represents both original and widened data.
 
-ASSERT ROW_COUNT = 32
-SELECT * FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg ORDER BY sensor_id;
+ASSERT ROW_COUNT = 4
+ASSERT VALUE sensor_count = 8 WHERE location = 'basement'
+ASSERT VALUE sensor_count = 8 WHERE location = 'cleanroom'
+ASSERT VALUE sensor_count = 8 WHERE location = 'rooftop'
+ASSERT VALUE sensor_count = 8 WHERE location = 'warehouse'
+ASSERT VALUE avg_temp = 18.57 WHERE location = 'basement'
+ASSERT VALUE avg_temp = 21.14 WHERE location = 'cleanroom'
+ASSERT VALUE avg_temp = 32.97 WHERE location = 'rooftop'
+ASSERT VALUE avg_temp = 22.87 WHERE location = 'warehouse'
+SELECT
+    location,
+    COUNT(*) AS sensor_count,
+    ROUND(AVG(temperature), 2) AS avg_temp,
+    ROUND(AVG(humidity), 2) AS avg_humidity,
+    MAX(reading_count) AS max_reading
+FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg
+GROUP BY location
+ORDER BY location;
 
 
 -- ============================================================================
 -- Iceberg Verify 2: BIGINT Values Readable Through Iceberg
 -- ============================================================================
+-- Verify that specific BIGINT reading_count values (> 2^31) are accessible
+-- through the Iceberg metadata chain and not truncated.
 
-ASSERT ROW_COUNT = 1
-ASSERT VALUE total_sensors = 32
-ASSERT VALUE max_reading = 3500000000
-ASSERT VALUE bigint_rows = 4
+ASSERT ROW_COUNT = 4
+ASSERT VALUE reading_count = 2500000000 WHERE sensor_id = 'S025'
+ASSERT VALUE reading_count = 3100000000 WHERE sensor_id = 'S026'
+ASSERT VALUE reading_count = 2800000000 WHERE sensor_id = 'S027'
+ASSERT VALUE reading_count = 3500000000 WHERE sensor_id = 'S028'
 SELECT
-    COUNT(*) AS total_sensors,
-    MAX(reading_count) AS max_reading,
-    COUNT(*) FILTER (WHERE reading_count > 2147483647) AS bigint_rows
-FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg;
+    sensor_id,
+    reading_count,
+    location
+FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg
+WHERE reading_count > 2147483647
+ORDER BY sensor_id;
 
 
 -- ============================================================================
--- Iceberg Verify 3: Averages Must Match Delta Final State
+-- Iceberg Verify 3: DOUBLE Precision Preserved Through Iceberg
+-- ============================================================================
+-- Verify that high-precision DOUBLE values are not truncated to FLOAT
+-- resolution when read through the Iceberg metadata.
+
+ASSERT ROW_COUNT = 4
+ASSERT VALUE temperature = 32.456789 WHERE sensor_id = 'S029'
+ASSERT VALUE temperature = 18.789012 WHERE sensor_id = 'S030'
+ASSERT VALUE temperature = 22.567890 WHERE sensor_id = 'S031'
+ASSERT VALUE temperature = 21.234567 WHERE sensor_id = 'S032'
+SELECT
+    sensor_id,
+    temperature,
+    humidity
+FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg
+WHERE sensor_id IN ('S029', 'S030', 'S031', 'S032')
+ORDER BY sensor_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Cross-Engine Totals Must Match
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
+ASSERT VALUE total_rows = 32
+ASSERT VALUE max_reading_count = 3500000000
+ASSERT VALUE distinct_locations = 4
+ASSERT VALUE bigint_rows = 4
 ASSERT VALUE avg_temp = 23.89
 ASSERT VALUE avg_humidity = 55.34
 SELECT
+    COUNT(*) AS total_rows,
+    MAX(reading_count) AS max_reading_count,
+    COUNT(DISTINCT location) AS distinct_locations,
+    COUNT(*) FILTER (WHERE reading_count > 2147483647) AS bigint_rows,
     ROUND(AVG(temperature), 2) AS avg_temp,
     ROUND(AVG(humidity), 2) AS avg_humidity
 FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg;
