@@ -16,6 +16,14 @@
 -- Position deletes from UPDATE and DELETE must all be applied.
 
 ASSERT ROW_COUNT = 90
+ASSERT VALUE product_name = 'Compression Shorts' WHERE sku = 'SKU-C-N01'
+ASSERT VALUE unit_price = 24.99 WHERE sku = 'SKU-C-N01'
+ASSERT VALUE product_name = 'USB-C Cable 3ft' WHERE sku = 'SKU-E-N01'
+ASSERT VALUE unit_price = 9.71 WHERE sku = 'SKU-E-N01'
+ASSERT VALUE product_name = 'Succulent Planter' WHERE sku = 'SKU-H-N01'
+ASSERT VALUE unit_price = 21.99 WHERE sku = 'SKU-H-N01'
+ASSERT VALUE product_name = 'Massage Gun Mini' WHERE sku = 'SKU-S-N01'
+ASSERT VALUE unit_price = 49.99 WHERE sku = 'SKU-S-N01'
 SELECT * FROM {{zone_name}}.iceberg.inventory;
 
 
@@ -62,6 +70,18 @@ WHERE category = 'Electronics';
 -- 20 new products were inserted in Snapshot 2 with SKU pattern 'SKU-%-N%'.
 
 ASSERT ROW_COUNT = 20
+ASSERT VALUE product_name = 'Compression Shorts' WHERE sku = 'SKU-C-N01'
+ASSERT VALUE unit_price = 24.99 WHERE sku = 'SKU-C-N01'
+ASSERT VALUE quantity_on_hand = 162 WHERE sku = 'SKU-C-N01'
+ASSERT VALUE product_name = 'USB-C Cable 3ft' WHERE sku = 'SKU-E-N01'
+ASSERT VALUE unit_price = 9.71 WHERE sku = 'SKU-E-N01'
+ASSERT VALUE quantity_on_hand = 12 WHERE sku = 'SKU-E-N01'
+ASSERT VALUE product_name = 'Succulent Planter' WHERE sku = 'SKU-H-N01'
+ASSERT VALUE unit_price = 21.99 WHERE sku = 'SKU-H-N01'
+ASSERT VALUE quantity_on_hand = 174 WHERE sku = 'SKU-H-N01'
+ASSERT VALUE product_name = 'Massage Gun Mini' WHERE sku = 'SKU-S-N01'
+ASSERT VALUE unit_price = 49.99 WHERE sku = 'SKU-S-N01'
+ASSERT VALUE quantity_on_hand = 194 WHERE sku = 'SKU-S-N01'
 SELECT *
 FROM {{zone_name}}.iceberg.inventory
 WHERE sku LIKE 'SKU-%-N%';
@@ -126,6 +146,10 @@ ORDER BY category;
 -- The table should have exactly 4 snapshots in its history.
 
 ASSERT ROW_COUNT = 4
+ASSERT VALUE operation = 'append' WHERE version = 1
+ASSERT VALUE operation = 'append' WHERE version = 2
+ASSERT VALUE operation = 'overwrite' WHERE version = 3
+ASSERT VALUE operation = 'delete' WHERE version = 4
 DESCRIBE HISTORY {{zone_name}}.iceberg.inventory;
 
 
