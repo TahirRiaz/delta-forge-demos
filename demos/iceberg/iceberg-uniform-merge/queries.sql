@@ -345,31 +345,88 @@ SELECT * FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg ORDER BY ord
 
 
 -- ============================================================================
--- Iceberg Verify 2: Per-Region Counts — Reflect Deletes + Inserts
+-- Iceberg Verify 2: Spot-Check Specific Rows — Updates, Inserts, Deletes
+-- ============================================================================
+-- Verify that MERGE mutations propagated correctly through UniForm:
+--   - Order 1: was pending, MERGE 1 updated to shipped
+--   - Order 2: was shipped, MERGE 1 updated to delivered
+--   - Order 31: inserted by MERGE 1 (new order)
+--   - Order 36: inserted by MERGE 2 (new order)
+--   - Orders 3,6,9: deleted by MERGE 2 (should not exist)
+
+ASSERT ROW_COUNT = 4
+ASSERT VALUE status = 'shipped' WHERE order_id = 1
+ASSERT VALUE status = 'delivered' WHERE order_id = 2
+ASSERT VALUE status = 'pending' WHERE order_id = 31
+ASSERT VALUE status = 'pending' WHERE order_id = 36
+SELECT order_id, customer_email, status, region
+FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
+WHERE order_id IN (1, 2, 31, 36)
+ORDER BY order_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: Deleted Rows Absent
+-- ============================================================================
+
+ASSERT ROW_COUNT = 0
+SELECT *
+FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
+WHERE order_id IN (3, 6, 9);
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Per-Region Revenue — Must Match Delta Final State
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE order_count = 13 WHERE region = 'eu-west'
 ASSERT VALUE order_count = 10 WHERE region = 'us-east'
 ASSERT VALUE order_count = 13 WHERE region = 'us-west'
+ASSERT VALUE total_revenue = 2905.90 WHERE region = 'eu-west'
+ASSERT VALUE total_revenue = 1553.91 WHERE region = 'us-east'
+ASSERT VALUE total_revenue = 2397.35 WHERE region = 'us-west'
 SELECT
     region,
-    COUNT(*) AS order_count
+    COUNT(*) AS order_count,
+    ROUND(SUM(quantity * unit_price), 2) AS total_revenue
 FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
 GROUP BY region
 ORDER BY region;
 
 
 -- ============================================================================
--- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- Iceberg Verify 5: Per-Status Breakdown — Must Match Delta Final State
+-- ============================================================================
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE order_count = 9 WHERE status = 'delivered'
+ASSERT VALUE order_count = 11 WHERE status = 'pending'
+ASSERT VALUE order_count = 16 WHERE status = 'shipped'
+SELECT
+    status,
+    COUNT(*) AS order_count
+FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
+GROUP BY status
+ORDER BY status;
+
+
+-- ============================================================================
+-- Iceberg Verify 6: Grand Totals — Cross-Cutting Sanity Check
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_orders = 36
-ASSERT VALUE total_revenue = 6857.16
+ASSERT VALUE pending_count = 11
+ASSERT VALUE shipped_count = 16
+ASSERT VALUE delivered_count = 9
 ASSERT VALUE region_count = 3
+ASSERT VALUE total_revenue = 6857.16
 SELECT
     COUNT(*) AS total_orders,
-    ROUND(SUM(quantity * unit_price), 2) AS total_revenue,
-    COUNT(DISTINCT region) AS region_count
+    COUNT(*) FILTER (WHERE status = 'pending') AS pending_count,
+    COUNT(*) FILTER (WHERE status = 'shipped') AS shipped_count,
+    COUNT(*) FILTER (WHERE status = 'delivered') AS delivered_count,
+    COUNT(DISTINCT region) AS region_count,
+    ROUND(SUM(quantity * unit_price), 2) AS total_revenue
 FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg;
