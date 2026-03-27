@@ -190,6 +190,100 @@ ORDER BY meter_type;
 
 
 -- ============================================================================
+-- ICEBERG READ-BACK VERIFICATION
+-- ============================================================================
+-- Write the Iceberg data into a UniForm-enabled Delta table, then register
+-- the same physical location as an external Iceberg table and query it
+-- through the Iceberg metadata chain. This proves the UniForm shadow
+-- metadata is correct after a bulk INSERT ... SELECT.
+-- ============================================================================
+
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings_delta (
+    meter_id           VARCHAR,
+    region             VARCHAR,
+    substation         VARCHAR,
+    meter_type         VARCHAR,
+    reading_timestamp  VARCHAR,
+    voltage            INT,
+    current_amps       DOUBLE,
+    power_kw           DOUBLE,
+    energy_kwh         DOUBLE,
+    power_factor       INT,
+    grid_frequency_hz  DOUBLE
+) LOCATION '{{data_path}}/grid_readings_delta'
+TBLPROPERTIES (
+    'delta.universalFormat.enabledFormats' = 'iceberg',
+    'delta.columnMapping.mode' = 'id'
+);
+
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings_delta TO USER {{current_user}};
+
+INSERT INTO {{zone_name}}.iceberg.grid_readings_delta
+SELECT * FROM {{zone_name}}.iceberg.grid_readings;
+
+
+-- Register the Delta table's location as an external Iceberg table
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings_iceberg_readback
+USING ICEBERG
+LOCATION '{{data_path}}/grid_readings_delta';
+
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings_iceberg_readback TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+
+
+-- ============================================================================
+-- Iceberg Verify 1: Row Count — All 600 Readings via Iceberg Reader
+-- ============================================================================
+
+ASSERT ROW_COUNT = 600
+SELECT * FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+
+
+-- ============================================================================
+-- Iceberg Verify 2: Per-Region Counts — Must Match Original
+-- ============================================================================
+
+ASSERT ROW_COUNT = 3
+ASSERT VALUE reading_count = 200 WHERE region = 'North'
+ASSERT VALUE reading_count = 200 WHERE region = 'South'
+ASSERT VALUE reading_count = 200 WHERE region = 'East'
+SELECT
+    region,
+    COUNT(*) AS reading_count
+FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback
+GROUP BY region
+ORDER BY region;
+
+
+-- ============================================================================
+-- Iceberg Verify 3: Energy Totals — Must Match Delta Write
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_energy_kwh = 993.2375
+SELECT
+    ROUND(SUM(energy_kwh), 4) AS total_energy_kwh
+FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Grand Totals — Cross-Format Consistency
+-- ============================================================================
+
+ASSERT ROW_COUNT = 1
+ASSERT VALUE total_rows = 600
+ASSERT VALUE region_count = 3
+ASSERT VALUE distinct_meters = 600
+ASSERT VALUE distinct_substations = 15
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(DISTINCT region) AS region_count,
+    COUNT(DISTINCT meter_id) AS distinct_meters,
+    COUNT(DISTINCT substation) AS distinct_substations
+FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+
+
+-- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
 -- Cross-cutting sanity check: total rows, grand totals, and key invariants.
