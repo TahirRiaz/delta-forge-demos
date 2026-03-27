@@ -17,6 +17,16 @@
 -- their rows unioned correctly. 10 batches x 60 rows = 600.
 
 ASSERT ROW_COUNT = 600
+ASSERT VALUE country = 'CA' WHERE session_id = 'sess-00-005-30893faf'
+ASSERT VALUE device_type = 'desktop' WHERE session_id = 'sess-00-005-30893faf'
+ASSERT VALUE event_count = 16 WHERE session_id = 'sess-00-005-30893faf'
+ASSERT VALUE referrer = 'google.com' WHERE session_id = 'sess-03-000-7894fc70'
+ASSERT VALUE country = 'DE' WHERE session_id = 'sess-03-000-7894fc70'
+ASSERT VALUE time_on_page = 370 WHERE session_id = 'sess-06-001-5680bf9b'
+ASSERT VALUE referrer = 'direct' WHERE session_id = 'sess-06-001-5680bf9b'
+ASSERT VALUE is_bounce = true WHERE session_id = 'sess-09-002-95d99666'
+ASSERT VALUE event_count = 1 WHERE session_id = 'sess-09-002-95d99666'
+ASSERT VALUE device_type = 'tablet' WHERE session_id = 'sess-09-002-95d99666'
 SELECT * FROM {{zone_name}}.iceberg.web_analytics;
 
 
