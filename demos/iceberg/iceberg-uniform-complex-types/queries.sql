@@ -351,31 +351,92 @@ SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg ORDER B
 
 
 -- ============================================================================
--- Iceberg Verify 2: Per-Category Counts
+-- Iceberg Verify 2: Per-Category Totals — Must Match Delta Final State
 -- ============================================================================
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE product_count = 7 WHERE category = 'Electronics'
 ASSERT VALUE product_count = 7 WHERE category = 'Home'
 ASSERT VALUE product_count = 7 WHERE category = 'Outdoor'
+ASSERT VALUE total_price = 674.41 WHERE category = 'Electronics'
+ASSERT VALUE total_price = 215.23 WHERE category = 'Home'
+ASSERT VALUE total_price = 449.93 WHERE category = 'Outdoor'
 SELECT
     category,
-    COUNT(*) AS product_count
+    COUNT(*) AS product_count,
+    ROUND(SUM(price), 2) AS total_price
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
 GROUP BY category
 ORDER BY category;
 
 
 -- ============================================================================
--- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
+-- Iceberg Verify 3: Struct Fields — Updated Outdoor Heights Via Iceberg
+-- ============================================================================
+-- The UPDATE added 2.0 to all Outdoor product heights. Verify Iceberg sees
+-- the updated struct field values, proving nested type fidelity through UniForm.
+
+ASSERT ROW_COUNT = 7
+ASSERT VALUE height = 122.0 WHERE product_id = 13
+ASSERT VALUE height = 5.0 WHERE product_id = 18
+ASSERT VALUE height = 37.0 WHERE product_id = 21
+SELECT
+    product_id,
+    product_name,
+    dimensions.height AS height
+FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
+WHERE category = 'Outdoor'
+ORDER BY product_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 4: Map Access — French Names Via Iceberg
+-- ============================================================================
+-- Verify MAP values survive the Delta→Iceberg round-trip.
+
+ASSERT ROW_COUNT = 21
+ASSERT VALUE french_name = 'Souris Sans Fil' WHERE product_id = 1
+ASSERT VALUE french_name = 'Casque Anti-Bruit' WHERE product_id = 19
+ASSERT VALUE french_name = 'Tapis de Yoga' WHERE product_id = 20
+ASSERT VALUE french_name = 'Grill Portable' WHERE product_id = 21
+SELECT
+    product_id,
+    product_name,
+    localized_names['fr'] AS french_name
+FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
+ORDER BY product_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 5: Array — Portable Products Via Iceberg
+-- ============================================================================
+-- Verify ARRAY filtering works through the Iceberg metadata path.
+
+ASSERT ROW_COUNT = 5
+SELECT
+    product_id,
+    product_name,
+    category,
+    tags
+FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
+WHERE ARRAY_CONTAINS(tags, 'portable')
+ORDER BY product_id;
+
+
+-- ============================================================================
+-- Iceberg Verify 6: Grand Totals — Must Match Delta Final State
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_products = 21
 ASSERT VALUE total_price = 1339.57
+ASSERT VALUE avg_price = 63.79
 ASSERT VALUE category_count = 3
+ASSERT VALUE in_stock_count = 18
 SELECT
     COUNT(*) AS total_products,
     ROUND(SUM(price), 2) AS total_price,
-    COUNT(DISTINCT category) AS category_count
+    ROUND(AVG(price), 2) AS avg_price,
+    COUNT(DISTINCT category) AS category_count,
+    COUNT(*) FILTER (WHERE in_stock = true) AS in_stock_count
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg;
