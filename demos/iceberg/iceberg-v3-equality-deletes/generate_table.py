@@ -356,37 +356,43 @@ avro_metadata = {
     "content": "deletes",
 }
 
+# Write the delete manifest with ONLY the equality delete entry
+# (the data file stays in the original data manifest)
 with open(new_manifest_path, "wb") as f:
     fastavro.writer(
         f,
         manifest_schema,
-        [existing_data_entry, delete_manifest_entry],
+        [delete_manifest_entry],
         metadata=avro_metadata,
     )
 
 new_manifest_size = os.path.getsize(new_manifest_path)
 print(f"Wrote delete manifest: {new_manifest_filename} ({new_manifest_size} bytes)")
 
-# 4e. Create a new manifest list pointing to both manifests
+# 4e. Create a new manifest list with TWO entries:
+#     1. The ORIGINAL data manifest (content=0) — carried forward from parent snapshot
+#     2. The NEW delete manifest (content=1) — contains the equality delete file
 new_ml_id = str(uuid.uuid4())
 new_snap_avro = f"snap-{new_snap_id}-1-{new_ml_id}.avro"
 new_ml_path = os.path.join(metadata_dir, new_snap_avro)
 
-# The new manifest list should reference:
-# 1. The new manifest (with data EXISTING + equality delete ADDED)
-new_ml_entry = {
+# Carry forward the original data manifest list entry (content=0)
+original_data_ml_entry = dict(manifest_list_entries[0])
+
+# Create the new delete manifest list entry (content=1)
+new_delete_ml_entry = {
     "manifest_path": f"file:{new_manifest_path}",
     "manifest_length": new_manifest_size,
     "partition_spec_id": 0,
     "content": 1,  # DELETES manifest
     "sequence_number": 2,
-    "min_sequence_number": 1,
+    "min_sequence_number": 2,
     "added_snapshot_id": new_snap_id,
     "added_files_count": 1,
-    "existing_files_count": 1,
+    "existing_files_count": 0,
     "deleted_files_count": 0,
     "added_rows_count": len(GDPR_PATIENTS),
-    "existing_rows_count": total_rows,
+    "existing_rows_count": 0,
     "deleted_rows_count": 0,
     "partitions": [],
     "key_metadata": None,
@@ -395,7 +401,7 @@ new_ml_entry = {
 # Check if manifest list schema has first_row_id
 ml_schema_str = json.dumps(ml_schema)
 if "first_row_id" in ml_schema_str:
-    new_ml_entry["first_row_id"] = None
+    new_delete_ml_entry["first_row_id"] = None
 
 avro_ml_metadata = {
     "snapshot-id": str(new_snap_id),
@@ -407,7 +413,7 @@ with open(new_ml_path, "wb") as f:
     fastavro.writer(
         f,
         ml_schema,
-        [new_ml_entry],
+        [original_data_ml_entry, new_delete_ml_entry],
         metadata=avro_ml_metadata,
     )
 

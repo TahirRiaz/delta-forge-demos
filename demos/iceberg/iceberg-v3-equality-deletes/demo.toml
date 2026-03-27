@@ -25,13 +25,13 @@ data_path = { description = "Path to the Iceberg table root (containing metadata
 zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
 
 [[demo.data_files]]
-path = "patient_visits/data/00000-12-daefad6c-fd42-474e-aa9b-5173708e46d2-0-00001.parquet"
+path = "patient_visits/data/00000-12-0ecad017-28f7-4693-9e6b-30e4373068cb-0-00001.parquet"
 format = "parquet"
 description = "All 500 patient visit records (single Parquet data file)"
 size_bytes = 8100
 
 [[demo.data_files]]
-path = "patient_visits/data/00000-0-51268237-02d8-409d-a93f-8bc04f0fe8c8-00001-eq-deletes.parquet"
+path = "patient_visits/data/00000-0-2edc2fd6-63df-47bb-8f0a-b409b08e6129-00001-eq-deletes.parquet"
 format = "parquet"
 description = "Equality delete file — 4 patient_id values for GDPR erasure (removes 55 rows)"
 size_bytes = 485
@@ -40,13 +40,13 @@ size_bytes = 485
 path = "patient_visits/metadata/v3.metadata.json"
 format = "json"
 description = "Iceberg format v3 metadata — schema, snapshots, partition specs, equality delete tracking"
-size_bytes = 3396
+size_bytes = 3387
 
 [[demo.data_files]]
 path = "patient_visits/metadata/v2.metadata.json"
 format = "json"
 description = "Iceberg format v3 metadata — intermediate snapshot after initial data load"
-size_bytes = 2335
+size_bytes = 2330
 
 [[demo.data_files]]
 path = "patient_visits/metadata/v1.metadata.json"
@@ -55,28 +55,28 @@ description = "Iceberg format v3 metadata — initial table creation"
 size_bytes = 1277
 
 [[demo.data_files]]
-path = "patient_visits/metadata/snap-3644471300907520655-1-315b6902-a2cd-4ada-b286-32737848b7f5.avro"
+path = "patient_visits/metadata/snap-504844044204044242-1-690f4e5b-f2c8-461f-9824-1ccbd010f4e3.avro"
 format = "avro"
 description = "Iceberg manifest list (Avro) — snapshot with data file"
 size_bytes = 4758
 
 [[demo.data_files]]
-path = "patient_visits/metadata/snap-3644471300907520656-1-d36a4f9c-3808-4b5f-a81e-c16ecbf48300.avro"
+path = "patient_visits/metadata/snap-504844044204044243-1-3bc929fa-a090-4a52-bbd5-b67826c208a3.avro"
 format = "avro"
 description = "Iceberg manifest list (Avro) — snapshot with equality delete applied"
-size_bytes = 2675
+size_bytes = 2816
 
 [[demo.data_files]]
-path = "patient_visits/metadata/315b6902-a2cd-4ada-b286-32737848b7f5-m0.avro"
+path = "patient_visits/metadata/690f4e5b-f2c8-461f-9824-1ccbd010f4e3-m0.avro"
 format = "avro"
 description = "Iceberg data manifest (Avro) — pointers to Parquet data file"
-size_bytes = 8513
+size_bytes = 8509
 
 [[demo.data_files]]
-path = "patient_visits/metadata/82533dfd-b927-4e0f-946a-93a8e4680429-m0.avro"
+path = "patient_visits/metadata/48bf8c85-6e67-439a-a67b-15d038308df2-m0.avro"
 format = "avro"
 description = "Iceberg delete manifest (Avro) — pointers to equality delete file"
-size_bytes = 5911
+size_bytes = 5470
 
 [[demo.target_objects]]
 type = "external_table"
