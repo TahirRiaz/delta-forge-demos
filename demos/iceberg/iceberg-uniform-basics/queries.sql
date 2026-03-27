@@ -246,12 +246,12 @@ FROM {{zone_name}}.iceberg_demos.product_catalog;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS product_catalog_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.product_catalog_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/product_catalog';
 
-GRANT ADMIN ON TABLE product_catalog_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE product_catalog_iceberg;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.product_catalog_iceberg TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.product_catalog_iceberg;
 
 
 -- ============================================================================
@@ -260,7 +260,7 @@ DETECT SCHEMA FOR TABLE product_catalog_iceberg;
 -- The Iceberg table should see all 18 products (15 original + 3 inserted).
 
 ASSERT ROW_COUNT = 18
-SELECT * FROM product_catalog_iceberg ORDER BY id;
+SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog_iceberg ORDER BY id;
 
 
 -- ============================================================================
@@ -274,7 +274,7 @@ ASSERT VALUE product_count = 6 WHERE category = 'Audio'
 SELECT
     category,
     COUNT(*) AS product_count
-FROM product_catalog_iceberg
+FROM {{zone_name}}.iceberg_demos.product_catalog_iceberg
 GROUP BY category
 ORDER BY category;
 
@@ -291,4 +291,4 @@ SELECT
     COUNT(*) AS total_products,
     SUM(stock) AS total_stock,
     ROUND(AVG(rating), 2) AS avg_rating
-FROM product_catalog_iceberg;
+FROM {{zone_name}}.iceberg_demos.product_catalog_iceberg;
