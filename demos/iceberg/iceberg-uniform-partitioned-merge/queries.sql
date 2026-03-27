@@ -105,8 +105,8 @@ USING (VALUES
 ) AS source(sku, warehouse, product_name, quantity_on_hand, reorder_point, unit_cost, last_received)
 ON t.sku = source.sku
 WHEN MATCHED THEN UPDATE SET
-    t.quantity_on_hand = t.quantity_on_hand + source.quantity_on_hand,
-    t.last_received = source.last_received
+    quantity_on_hand = t.quantity_on_hand + source.quantity_on_hand,
+    last_received = source.last_received
 WHEN NOT MATCHED THEN INSERT (sku, warehouse, product_name, quantity_on_hand, reorder_point, unit_cost, last_received)
     VALUES (source.sku, source.warehouse, source.product_name, source.quantity_on_hand, source.reorder_point, source.unit_cost, source.last_received);
 
@@ -206,8 +206,8 @@ USING (VALUES
 ON t.sku = source.sku
 WHEN MATCHED AND source.last_received = 'discontinued' THEN DELETE
 WHEN MATCHED THEN UPDATE SET
-    t.quantity_on_hand = source.quantity_on_hand,
-    t.last_received = source.last_received
+    quantity_on_hand = source.quantity_on_hand,
+    last_received = source.last_received
 WHEN NOT MATCHED THEN INSERT (sku, warehouse, product_name, quantity_on_hand, reorder_point, unit_cost, last_received)
     VALUES (source.sku, source.warehouse, source.product_name, source.quantity_on_hand, source.reorder_point, source.unit_cost, source.last_received);
 
