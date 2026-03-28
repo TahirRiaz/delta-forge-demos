@@ -5228,6 +5228,62 @@
       ]
     },
     {
+      "id": "graph-sql-cypher-mix",
+      "path": "demos/graph/graph-sql-cypher-mix",
+      "iconPath": "icons/graph-sql-cypher-mix.svg",
+      "name": "Sales Territory Optimization — SQL + Cypher Interop",
+      "summary": "40 enterprise customers (graph) with 96 referral edges, 120 orders, and 8 sales reps (relational). Demonstrates Delta Forge's unique SQL-Cypher interoperability: cypher() table function in SQL JOINs, INSERT INTO from Cypher results (PageRank, Louvain), mixed CTEs combining graph degree centrality with SQL revenue aggregation, and 4-way JOINs across Cypher-populated and relational tables.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "cypher",
+        "sql",
+        "mixed-queries",
+        "cypher-function",
+        "interop",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 10,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-28T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "graph",
+          "name": "customer_network"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.sales.customers"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.sales.referrals"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.sales.orders"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.sales.sales_reps"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.sales.influence_scores"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.sales.community_assignments"
+        }
+      ]
+    },
+    {
       "id": "graph-storage-modes",
       "path": "demos/graph/graph-storage-modes",
       "iconPath": "icons/graph-storage-modes.svg",
