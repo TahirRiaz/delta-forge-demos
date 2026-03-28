@@ -3,7 +3,7 @@
 
 import duckdb
 
-DATA_DIR = "/home/chess/delta-forge/delta-forge-demos/demos/iceberg/iceberg-v2-complex-types/orders/data"
+DATA_DIR = "/home/chess/delta-forge/delta-forge-demos/demos/iceberg/v2/iceberg-v2-complex-types/orders/data"
 
 # Find the parquet file
 import glob

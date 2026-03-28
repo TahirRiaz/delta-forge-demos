@@ -3,7 +3,7 @@
 
 import duckdb
 
-DATA_DIR = "/home/chess/delta-forge/delta-forge-demos/demos/iceberg/iceberg-native-time-travel/stock_prices/data"
+DATA_DIR = "/home/chess/delta-forge/delta-forge-demos/demos/iceberg/v2/iceberg-native-time-travel/stock_prices/data"
 
 INITIAL    = f"{DATA_DIR}/00000-0-1752b09e-560a-4a63-bf45-a389cd057a36-0-00001.parquet"
 SNAP2_DATA = f"{DATA_DIR}/00000-4-b4735b53-d586-48c7-821e-b5574e499cb4-00001.parquet"

@@ -5272,7 +5272,7 @@
     },
     {
       "id": "iceberg-energy-grid-monitoring",
-      "path": "demos/iceberg/energy-grid-monitoring",
+      "path": "demos/iceberg/v2/energy-grid-monitoring",
       "iconPath": "icons/iceberg-energy-grid-monitoring.svg",
       "name": "Iceberg Energy Grid — Native Table Reading",
       "summary": "Demonstrates native Apache Iceberg table reading using a smart energy grid monitoring dataset (600 meter readings across 3 regions). Exercises Iceberg metadata chain parsing (metadata.json → manifest list → manifest → Parquet data files), schema inference from Iceberg metadata, manifest-based file discovery, region-level aggregations, and Parquet row-group filtering — all without any conversion to Delta format.",
@@ -5304,7 +5304,7 @@
     },
     {
       "id": "iceberg-native-time-travel",
-      "path": "demos/iceberg/iceberg-native-time-travel",
+      "path": "demos/iceberg/v2/iceberg-native-time-travel",
       "iconPath": "icons/iceberg-native-time-travel.svg",
       "name": "Iceberg Native — Time Travel (Stock Prices)",
       "summary": "Demonstrates native Apache Iceberg V2 table reading after 4 snapshot-producing mutations on a stock price dataset (138 final rows, 23 tickers). Exercises merge-on-read with position delete files across UPDATE (+5% tech correction), INSERT (30 IPO rows), and DELETE (12 delisted rows). Verifies per-ticker averages, sector breakdowns, and absence of deleted data.",
@@ -5338,7 +5338,7 @@
     },
     {
       "id": "iceberg-uniform-basics",
-      "path": "demos/iceberg/iceberg-uniform-basics",
+      "path": "demos/iceberg/v1/iceberg-uniform-basics",
       "iconPath": "icons/iceberg-uniform-basics.svg",
       "name": "Iceberg UniForm — Enable Dual-Format Metadata",
       "summary": "Demonstrates the core Iceberg UniForm feature: enabling automatic Iceberg metadata generation on a Delta table by setting delta.universalFormat.enabledFormats = 'iceberg'. After enabling, every Delta commit produces Iceberg-compatible metadata (metadata.json, manifest lists, manifest files) alongside the Delta transaction log — making the table readable by any Iceberg engine without conversion. Uses a product catalog dataset to show property configuration, DML operations with dual metadata, and DESCRIBE commands.",
@@ -5370,7 +5370,7 @@
     },
     {
       "id": "iceberg-uniform-crud-lifecycle",
-      "path": "demos/iceberg/iceberg-uniform-crud-lifecycle",
+      "path": "demos/iceberg/v1/iceberg-uniform-crud-lifecycle",
       "iconPath": "icons/iceberg-uniform-crud-lifecycle.svg",
       "name": "Iceberg UniForm — CRUD & Snapshot Lifecycle",
       "summary": "Walks through the complete lifecycle of a UniForm-enabled Delta table: INSERT, UPDATE, DELETE operations, each producing a new Iceberg snapshot alongside the Delta version. Uses time travel to inspect data at each snapshot boundary. Demonstrates that Iceberg metadata stays in sync with the Delta log across all mutation types. Dataset: 20 employees across 4 departments.",
@@ -5403,7 +5403,7 @@
     },
     {
       "id": "iceberg-uniform-schema-evolution",
-      "path": "demos/iceberg/iceberg-uniform-schema-evolution",
+      "path": "demos/iceberg/v1/iceberg-uniform-schema-evolution",
       "iconPath": "icons/iceberg-uniform-schema-evolution.svg",
       "name": "Iceberg UniForm — Schema Evolution Across Formats",
       "summary": "Demonstrates schema evolution on a UniForm-enabled Delta table. When columns are added via ALTER TABLE ADD COLUMN, both the Delta schema and the Iceberg schema evolve in lockstep. Older snapshots reference the original schema; newer snapshots reference the evolved schema. Dataset: customer orders with progressive column additions for loyalty_tier, discount_pct, and notes.",
@@ -5435,7 +5435,7 @@
     },
     {
       "id": "iceberg-uniform-format-versions",
-      "path": "demos/iceberg/iceberg-uniform-format-versions",
+      "path": "demos/iceberg/v2/iceberg-uniform-format-versions",
       "iconPath": "icons/iceberg-uniform-format-versions.svg",
       "name": "Iceberg UniForm — V1, V2, V3 Format Comparison",
       "summary": "Compares Iceberg format versions V1, V2, and V3 side by side. Creates three identical Delta tables with the same seed data, each configured with a different delta.universalFormat.icebergVersion property. Demonstrates that all three versions produce correct metadata, handle DML, and support time travel — while V3 adds nanosecond timestamp types, deletion vectors, and named references.",
@@ -5477,7 +5477,7 @@
     },
     {
       "id": "iceberg-uniform-partitioned",
-      "path": "demos/iceberg/iceberg-uniform-partitioned",
+      "path": "demos/iceberg/v1/iceberg-uniform-partitioned",
       "iconPath": "icons/iceberg-uniform-partitioned.svg",
       "name": "Iceberg UniForm — Partitioned Tables",
       "summary": "Demonstrates Iceberg UniForm on a partitioned Delta table. The Iceberg metadata includes partition specs that map directly from the Delta partition columns, enabling Iceberg-compatible engines to leverage partition pruning. Shows INSERT, UPDATE, DELETE across partitions with time travel verification. Dataset: 24 sales transactions across 3 regions and 4 quarters.",
@@ -5509,7 +5509,7 @@
     },
     {
       "id": "iceberg-v1-warehouse-inventory",
-      "path": "demos/iceberg/iceberg-v1-warehouse-inventory",
+      "path": "demos/iceberg/v1/iceberg-v1-warehouse-inventory",
       "iconPath": "icons/iceberg-v1-warehouse-inventory.svg",
       "name": "Iceberg V1 — Warehouse Inventory Snapshots",
       "summary": "Demonstrates native Apache Iceberg format-version 1 table reading using a retail warehouse inventory dataset (489 SKUs across 3 warehouses). Exercises v1 metadata chain parsing, schema inference, and inventory analytics.",
@@ -5542,7 +5542,7 @@
     },
     {
       "id": "iceberg-v2-complex-types",
-      "path": "demos/iceberg/iceberg-v2-complex-types",
+      "path": "demos/iceberg/v2/iceberg-v2-complex-types",
       "iconPath": "icons/iceberg-v2-complex-types.svg",
       "name": "Iceberg V2 — Complex Types (E-Commerce Orders)",
       "summary": "Demonstrates native Iceberg V2 reading of complex column types — STRUCT for shipping addresses and ARRAY<STRUCT> for order line items. 100 e-commerce orders exercise nested field access via dot notation, UNNEST for array explosion (311 line items), and aggregations on nested struct fields across 15 cities and 12 states.",
@@ -5577,7 +5577,7 @@
     },
     {
       "id": "iceberg-v2-copy-on-write",
-      "path": "demos/iceberg/iceberg-v2-copy-on-write",
+      "path": "demos/iceberg/v2/iceberg-v2-copy-on-write",
       "iconPath": "icons/iceberg-v2-copy-on-write.svg",
       "name": "Iceberg V2 — Copy-on-Write (Logistics Shipments)",
       "summary": "Demonstrates Iceberg V2 copy-on-write mode where UPDATE and DELETE operations rewrite entire data files instead of using delete files. 120 shipments undergo delivery status updates (+20 delivered) and cancellation removals (-10 deleted), producing 110 final rows across 3 snapshots with no position delete files.",
@@ -5610,7 +5610,7 @@
     },
     {
       "id": "iceberg-v2-fleet-telemetry",
-      "path": "demos/iceberg/iceberg-v2-fleet-telemetry",
+      "path": "demos/iceberg/v2/iceberg-v2-fleet-telemetry",
       "iconPath": "icons/iceberg-v2-fleet-telemetry.svg",
       "name": "Iceberg V2 — Fleet Telemetry Analytics",
       "summary": "Demonstrates native Apache Iceberg format-version 2 table reading using a commercial fleet telemetry dataset (450 GPS pings across 3 regional fleets). Exercises v2 metadata chain parsing with enhanced column statistics, safety analytics, and fuel monitoring.",
@@ -5644,7 +5644,7 @@
     },
     {
       "id": "iceberg-v2-hidden-partitions",
-      "path": "demos/iceberg/iceberg-v2-hidden-partitions",
+      "path": "demos/iceberg/v2/iceberg-v2-hidden-partitions",
       "iconPath": "icons/iceberg-v2-hidden-partitions.svg",
       "name": "Iceberg V2 — Hidden Partitions (Ride-Share Analytics)",
       "summary": "Demonstrates Iceberg V2 hidden partitioning using months(pickup_date) transform. 300 ride-share trip records across 6 monthly partitions (Jan-Jun 2025) exercise transparent partition pruning — queries filter on pickup_date without knowing partition structure. Tests multi-city analytics, payment type breakdowns, and driver performance metrics.",
@@ -5677,7 +5677,7 @@
     },
     {
       "id": "iceberg-v2-multi-partition",
-      "path": "demos/iceberg/iceberg-v2-multi-partition",
+      "path": "demos/iceberg/v2/iceberg-v2-multi-partition",
       "iconPath": "icons/iceberg-v2-multi-partition.svg",
       "name": "Iceberg V2 — Multi-Column Partitioning (Weather Stations)",
       "summary": "Demonstrates Iceberg V2 multi-column partitioning using region (identity) and years(observation_date) transforms. 450 weather station readings across 15 partitions (5 regions × 3 years) exercise compound partition pruning, per-station aggregation, year-over-year comparisons, and extreme reading detection.",
@@ -5710,7 +5710,7 @@
     },
     {
       "id": "iceberg-v2-snapshot-consistency",
-      "path": "demos/iceberg/iceberg-v2-snapshot-consistency",
+      "path": "demos/iceberg/v2/iceberg-v2-snapshot-consistency",
       "iconPath": "icons/iceberg-v2-snapshot-consistency.svg",
       "name": "Iceberg V2 — Snapshot Consistency (Retail Inventory)",
       "summary": "Demonstrates Iceberg V2 snapshot consistency with 4 mutations on a retail inventory table: initial load (80 products), restocking (+20 INSERTs), price corrections (UPDATE Electronics +8%), and discontinuation (-10 DELETEs). Final state of 90 products verifies merge-on-read with position delete files across all mutation types.",
@@ -5744,7 +5744,7 @@
     },
     {
       "id": "iceberg-v3-clinical-trials",
-      "path": "demos/iceberg/iceberg-v3-clinical-trials",
+      "path": "demos/iceberg/v3/iceberg-v3-clinical-trials",
       "iconPath": "icons/iceberg-v3-clinical-trials.svg",
       "name": "Iceberg V3 — Clinical Trial Lab Results",
       "summary": "Demonstrates native Apache Iceberg format-version 3 table reading using a pharmaceutical clinical trial dataset (480 lab results across 3 trial sites). Generated by Spark 4.0 + Iceberg 1.10.1. Exercises V3 metadata chain parsing, abnormal result detection, and analyst workload analysis.",
