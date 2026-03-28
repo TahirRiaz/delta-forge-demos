@@ -15,8 +15,8 @@
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
-CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
-    COMMENT 'External and Delta tables — demo datasets';
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
+    COMMENT 'Delta tables — manufacturing production reporting demo';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';

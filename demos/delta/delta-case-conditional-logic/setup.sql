@@ -7,13 +7,13 @@
 -- and NULL values for unassigned adjusters and unscored fraud.
 --
 -- Counts:  auto=11, home=9, health=9, life=6
--- Status:  approved=20, denied=4, pending=5, under_review=6
+-- Status:  approved=20, denied=5, pending=5, under_review=5
 -- NULLs:   adjuster_id=7, fraud_score=4
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
-CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
-    COMMENT 'External and Delta tables — demo datasets';
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
+    COMMENT 'Delta tables — insurance claim classification demo';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
@@ -36,6 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.insurance_claims (
 ) LOCATION '{{data_path}}/insurance_claims';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.insurance_claims TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.insurance_claims;
 
 
 -- Auto claims (11 rows)

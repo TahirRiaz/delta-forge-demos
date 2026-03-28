@@ -16,8 +16,8 @@
 --   3. INSERT 50 rows in 5 batches (10 per employee)
 -- ============================================================================
 
-CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
-    COMMENT 'External and Delta tables — demo datasets';
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
+    COMMENT 'Delta tables — employee attendance tracking demo';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
@@ -38,6 +38,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.attendance_records (
 ) LOCATION '{{data_path}}/attendance_records';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.attendance_records TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.attendance_records;
 
 
 -- ============================================================================

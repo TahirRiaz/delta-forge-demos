@@ -15,8 +15,8 @@
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
-CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
-    COMMENT 'External and Delta tables — demo datasets';
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
+    COMMENT 'Delta tables — university enrollment demo';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
@@ -34,6 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.students (
 ) LOCATION '{{data_path}}/students';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.students TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.students;
 
 INSERT INTO {{zone_name}}.delta_demos.students VALUES
     (1,  'Alice Chen',       'Computer Science', 3.85, 2022),
@@ -72,6 +73,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.enrollments (
 ) LOCATION '{{data_path}}/enrollments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.enrollments TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.enrollments;
 
 -- Alice Chen (1) — CS major, takes CS + Math courses
 INSERT INTO {{zone_name}}.delta_demos.enrollments VALUES
