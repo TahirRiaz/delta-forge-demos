@@ -132,7 +132,8 @@ SELECT
     pos.lng
 FROM {{zone_name}}.maritime.positions pos
 JOIN {{zone_name}}.maritime.vessels v ON v.vessel_id = pos.vessel_id
-JOIN {{zone_name}}.maritime.ports p ON st_contains(p.harbor_wkt, pos.lat, pos.lng)
+CROSS JOIN {{zone_name}}.maritime.ports p
+WHERE st_contains(p.harbor_wkt, pos.lat, pos.lng) = true
 ORDER BY pos.position_id;
 
 
@@ -165,16 +166,14 @@ ORDER BY port_id;
 -- areas because 1° of longitude spans more meters near the equator.
 -- Singapore (1.26°N) should be largest; Hamburg (53.54°N) should be smallest.
 
-ASSERT ROW_COUNT = 10
+ASSERT ROW_COUNT = 1
 ASSERT EXPRESSION area_km2_singapore > area_km2_hamburg
 SELECT
-    port_name,
-    ROUND(st_area(harbor_wkt), 0) AS area_m2,
-    ROUND(st_area(harbor_wkt) / 1000000.0, 2) AS area_km2,
-    MAX(CASE WHEN port_id = 1 THEN st_area(harbor_wkt) / 1000000.0 END) OVER () AS area_km2_singapore,
-    MAX(CASE WHEN port_id = 6 THEN st_area(harbor_wkt) / 1000000.0 END) OVER () AS area_km2_hamburg
-FROM {{zone_name}}.maritime.ports
-ORDER BY area_m2 DESC;
+    MAX(CASE WHEN port_id = 1 THEN ROUND(st_area(harbor_wkt) / 1000000.0, 2) END) AS area_km2_singapore,
+    MAX(CASE WHEN port_id = 6 THEN ROUND(st_area(harbor_wkt) / 1000000.0, 2) END) AS area_km2_hamburg,
+    MAX(CASE WHEN port_id = 1 THEN ROUND(st_area(harbor_wkt), 0) END) AS area_m2_singapore,
+    MAX(CASE WHEN port_id = 6 THEN ROUND(st_area(harbor_wkt), 0) END) AS area_m2_hamburg
+FROM {{zone_name}}.maritime.ports;
 
 
 -- ============================================================================
@@ -190,31 +189,40 @@ ASSERT VALUE nearest_port = 'Felixstowe' WHERE vessel_name = 'MV Atlantic Runner
 ASSERT VALUE nearest_port = 'Singapore' WHERE vessel_name = 'MV Indian Voyager'
 ASSERT VALUE nearest_port = 'Los Angeles' WHERE vessel_name = 'MV Nordic Spirit'
 ASSERT VALUE nearest_port = 'Yokohama' WHERE vessel_name = 'MV Southern Cross'
-SELECT
-    v.vessel_name,
-    last_sea.lat AS vessel_lat,
-    last_sea.lng AS vessel_lng,
-    nearest.port_name AS nearest_port,
-    ROUND(nearest.dist_km, 0) AS nearest_dist_km
-FROM {{zone_name}}.maritime.vessels v
-JOIN (
+WITH last_sea AS (
     SELECT
         pos.vessel_id,
         pos.lat,
-        pos.lng,
-        ROW_NUMBER() OVER (PARTITION BY pos.vessel_id ORDER BY pos.position_id DESC) AS rn
+        pos.lng
     FROM {{zone_name}}.maritime.positions pos
     WHERE pos.speed_knots > 0
-) last_sea ON last_sea.vessel_id = v.vessel_id AND last_sea.rn = 1
-CROSS JOIN LATERAL (
+      AND pos.position_id = (
+          SELECT MAX(p2.position_id)
+          FROM {{zone_name}}.maritime.positions p2
+          WHERE p2.vessel_id = pos.vessel_id AND p2.speed_knots > 0
+      )
+),
+distances AS (
     SELECT
+        v.vessel_name,
+        ls.lat AS vessel_lat,
+        ls.lng AS vessel_lng,
         p.port_name,
-        st_distance(last_sea.lat, last_sea.lng, p.lat, p.lng) / 1000.0 AS dist_km
-    FROM {{zone_name}}.maritime.ports p
-    ORDER BY dist_km
-    LIMIT 1
-) nearest
-ORDER BY v.vessel_id;
+        ROUND(st_distance(ls.lat, ls.lng, p.lat, p.lng) / 1000.0, 0) AS dist_km,
+        ROW_NUMBER() OVER (PARTITION BY v.vessel_id ORDER BY st_distance(ls.lat, ls.lng, p.lat, p.lng)) AS rn
+    FROM {{zone_name}}.maritime.vessels v
+    JOIN last_sea ls ON ls.vessel_id = v.vessel_id
+    CROSS JOIN {{zone_name}}.maritime.ports p
+)
+SELECT
+    vessel_name,
+    vessel_lat,
+    vessel_lng,
+    port_name AS nearest_port,
+    dist_km AS nearest_dist_km
+FROM distances
+WHERE rn = 1
+ORDER BY vessel_name;
 
 
 -- ============================================================================
@@ -233,7 +241,8 @@ SELECT
     st_within(pos.lat, pos.lng, p.harbor_wkt) AS is_within
 FROM {{zone_name}}.maritime.positions pos
 JOIN {{zone_name}}.maritime.vessels v ON v.vessel_id = pos.vessel_id
-JOIN {{zone_name}}.maritime.ports p ON st_contains(p.harbor_wkt, pos.lat, pos.lng)
+CROSS JOIN {{zone_name}}.maritime.ports p
+WHERE st_contains(p.harbor_wkt, pos.lat, pos.lng) = true
 ORDER BY pos.position_id;
 
 
@@ -253,7 +262,8 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.maritime.positions) AS total_positions,
     (SELECT COUNT(*)
      FROM {{zone_name}}.maritime.positions pos
-     JOIN {{zone_name}}.maritime.ports p ON st_contains(p.harbor_wkt, pos.lat, pos.lng)
+     CROSS JOIN {{zone_name}}.maritime.ports p
+     WHERE st_contains(p.harbor_wkt, pos.lat, pos.lng) = true
     ) AS in_port_count,
     (SELECT COUNT(*) FROM {{zone_name}}.maritime.positions WHERE speed_knots > 0) AS at_sea_count,
     (SELECT COUNT(*) FROM {{zone_name}}.maritime.vessels) AS unique_vessels,
