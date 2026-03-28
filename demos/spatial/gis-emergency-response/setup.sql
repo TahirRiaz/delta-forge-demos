@@ -37,6 +37,9 @@ INSERT INTO {{zone_name}}.emergency.hospitals VALUES
     (7, 'Lenox Hill Hospital',     40.7736, -73.9620, 2,  652),
     (8, 'Staten Island Univ',      40.5830, -74.0960, 2,  714);
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.emergency.hospitals;
+
+
 -- ==========================================================================
 -- TABLE 2: incidents — 12 emergency calls across NYC boroughs
 -- ==========================================================================
@@ -66,6 +69,9 @@ INSERT INTO {{zone_name}}.emergency.incidents VALUES
     (11, 'hypothermia',          40.5500, -74.1200, 'severe',   '2026-03-15 17:00:00'),
     (12, 'respiratory',          40.8600, -73.8700, 'moderate', '2026-03-15 18:20:00');
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.emergency.incidents;
+
+
 -- ==========================================================================
 -- TABLE 3: response_zones — 4 borough-level dispatch zones with WKT polygons
 -- ==========================================================================
@@ -87,4 +93,6 @@ INSERT INTO {{zone_name}}.emergency.response_zones VALUES
     (2, 'Midtown-Uptown',     'POLYGON((-74.02 40.76, -73.93 40.76, -73.93 40.85, -74.02 40.85, -74.02 40.76))', 1),
     (3, 'Brooklyn',            'POLYGON((-74.05 40.57, -73.85 40.57, -73.85 40.70, -74.05 40.70, -74.05 40.57))', 2),
     (4, 'Queens',              'POLYGON((-73.85 40.65, -73.70 40.65, -73.70 40.80, -73.85 40.80, -73.85 40.65))', 2);
+
+DETECT SCHEMA FOR TABLE {{zone_name}}.emergency.response_zones;
 

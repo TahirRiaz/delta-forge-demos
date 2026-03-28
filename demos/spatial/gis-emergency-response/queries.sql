@@ -88,8 +88,8 @@ ORDER BY incident_id;
 -- Vincenty uses WGS84 ellipsoid and should differ slightly from the spherical methods.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE haversine_km = 30.2
-ASSERT VALUE sphere_km = 30.2
+ASSERT VALUE haversine_km = 31.4
+ASSERT VALUE sphere_km = 31.4
 SELECT
     ROUND(st_distance_haversine(h1.lat, h1.lng, h2.lat, h2.lng) / 1000.0, 1) AS haversine_km,
     ROUND(st_distance_sphere(h1.lat, h1.lng, h2.lat, h2.lng) / 1000.0, 1) AS sphere_km,

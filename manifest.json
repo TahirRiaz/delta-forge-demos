@@ -4643,6 +4643,49 @@
       ]
     },
     {
+      "id": "gis-emergency-response",
+      "path": "demos/spatial/gis-emergency-response",
+      "iconPath": "icons/gis-emergency-response.svg",
+      "name": "GIS Emergency Response Network \u2014 Multi-Step Spatial Analytics",
+      "summary": "Demonstrates complex multi-step GIS analytics using an NYC emergency dispatch scenario. 8 hospitals, 12 incidents, and 4 response zones exercise nearest-neighbor ranking (ROW_NUMBER + st_distance), multi-algorithm distance comparison (haversine/sphere/Vincenty), navigation bearings, geofencing (st_contains/st_within with zone polygons), coordinate round-trips, and geodesic area calculations in layered analytical queries.",
+      "categories": [
+        "geospatial",
+        "analytics"
+      ],
+      "tags": [
+        "spatial",
+        "gis",
+        "postgis",
+        "distance",
+        "bearing",
+        "geofencing",
+        "nearest-neighbor",
+        "delta-table",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-28T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.emergency.hospitals"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.emergency.incidents"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.emergency.response_zones"
+        }
+      ]
+    },
+    {
       "id": "gis-maritime-shipping",
       "path": "demos/spatial/gis-maritime-shipping",
       "iconPath": "icons/gis-maritime-shipping.svg",
@@ -5316,6 +5359,45 @@
         {
           "objectType": "delta_table",
           "name": "{{zone_name}}.graph.st_departments"
+        }
+      ]
+    },
+    {
+      "id": "h3-gis-delivery-optimization",
+      "path": "demos/spatial/h3-gis-delivery-optimization",
+      "iconPath": "icons/h3-gis-delivery-optimization.svg",
+      "name": "H3+GIS Delivery Optimization \u2014 Cross-Function Spatial Analytics",
+      "summary": "Combines H3 hexagonal indexing with GIS geospatial functions for US regional delivery logistics. 3 warehouses serve 15 stores with cross-function queries: H3 cell assignment + GIS distance ranking, grid topology + haversine comparison, multi-resolution hierarchy + bearing calculations, and suboptimal warehouse assignment detection using combined H3 grid_distance and st_distance metrics.",
+      "categories": [
+        "geospatial",
+        "logistics"
+      ],
+      "tags": [
+        "h3",
+        "spatial",
+        "gis",
+        "combined",
+        "distance",
+        "grid-distance",
+        "delivery",
+        "delta-table",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-28T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.logistics.warehouses"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.logistics.stores"
         }
       ]
     },
