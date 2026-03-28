@@ -79,7 +79,7 @@ ORDER BY n.name;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 189
-ASSERT VALUE type = 'mentor' WHERE src_name = 'Luca_10'
+ASSERT VALUE type = 'mentor' WHERE src_name = 'Luca_50'
 USE {{zone_name}}.graph.storage_flat
 MATCH (a)-[r]->(b)
 RETURN a.name AS src_name, b.name AS dst_name,
@@ -92,7 +92,7 @@ ORDER BY a.name, b.name;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 189
-ASSERT VALUE type = 'mentor' WHERE src_name = 'Luca_10'
+ASSERT VALUE type = 'mentor' WHERE src_name = 'Luca_50'
 USE {{zone_name}}.graph.storage_hybrid
 MATCH (a)-[r]->(b)
 RETURN a.name AS src_name, b.name AS dst_name,
@@ -105,7 +105,7 @@ ORDER BY a.name, b.name;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 189
-ASSERT VALUE type = 'mentor' WHERE src_name = 'Luca_10'
+ASSERT VALUE type = 'mentor' WHERE src_name = 'Luca_50'
 USE {{zone_name}}.graph.storage_json
 MATCH (a)-[r]->(b)
 RETURN a.name AS src_name, b.name AS dst_name,
