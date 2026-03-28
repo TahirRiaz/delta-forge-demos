@@ -30,8 +30,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -42,8 +40,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: tradacoms_messages — Compact view
 -- ============================================================================
@@ -70,10 +66,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.tradacoms_messages;
 GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_messages TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: tradacoms_materialized — Key retail fields extracted
 -- ============================================================================
@@ -104,5 +97,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.tradacoms_materialized;
 GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_materialized TO USER {{current_user}};

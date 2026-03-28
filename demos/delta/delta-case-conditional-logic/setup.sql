@@ -17,8 +17,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE: insurance_claims — 35 rows
 -- ============================================================================
@@ -36,9 +34,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.insurance_claims (
 ) LOCATION '{{data_path}}/insurance_claims';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.insurance_claims TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.insurance_claims;
-
-
 -- Auto claims (11 rows)
 INSERT INTO {{zone_name}}.delta_demos.insurance_claims VALUES
     (1,  'Alice Johnson',  'auto',  2500.00,   500.00,  '2024-01-05', '2024-01-07', 'approved',     101,  0.05),

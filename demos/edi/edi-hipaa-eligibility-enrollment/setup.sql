@@ -18,8 +18,6 @@
 --   current_user  — Username of the current logged-in user
 --   zone_name     — Target zone name (defaults to 'external')
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -30,8 +28,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: eligibility_messages — Eligibility request/response fields
 -- ============================================================================
@@ -64,12 +60,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.eligibility_messages;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.eligibility_messages TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: enrollment_details — Enrollment and plan fields
 -- ============================================================================
@@ -105,7 +96,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.enrollment_details;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.enrollment_details TO USER {{current_user}};

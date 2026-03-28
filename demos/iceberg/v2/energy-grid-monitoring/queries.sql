@@ -5,8 +5,6 @@
 -- manifest-based file discovery, aggregations, filtering, and projection.
 -- All queries are read-only — no mutations.
 -- ============================================================================
-
-
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count
 -- ============================================================================
@@ -15,8 +13,6 @@
 
 ASSERT ROW_COUNT = 600
 SELECT * FROM {{zone_name}}.iceberg.grid_readings;
-
-
 -- ============================================================================
 -- Query 2: Schema Inference from Iceberg Metadata
 -- ============================================================================
@@ -39,8 +35,6 @@ SELECT
     grid_frequency_hz
 FROM {{zone_name}}.iceberg.grid_readings
 ORDER BY meter_id;
-
-
 -- ============================================================================
 -- Query 3: Per-Region Row Counts
 -- ============================================================================
@@ -56,8 +50,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 4: Total Energy Consumption
 -- ============================================================================
@@ -69,8 +61,6 @@ ASSERT VALUE total_energy_kwh = 993.2375
 SELECT
     ROUND(SUM(energy_kwh), 4) AS total_energy_kwh
 FROM {{zone_name}}.iceberg.grid_readings;
-
-
 -- ============================================================================
 -- Query 5: Per-Region Energy Totals
 -- ============================================================================
@@ -86,8 +76,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 6: Meter Type Distribution
 -- ============================================================================
@@ -103,8 +91,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 GROUP BY meter_type
 ORDER BY meter_type;
-
-
 -- ============================================================================
 -- Query 7: Voltage Distribution
 -- ============================================================================
@@ -120,8 +106,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 GROUP BY voltage
 ORDER BY voltage;
-
-
 -- ============================================================================
 -- Query 8: Predicate Pushdown — High-Power Readings
 -- ============================================================================
@@ -138,8 +122,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 WHERE power_kw > 10
 ORDER BY power_kw DESC;
-
-
 -- ============================================================================
 -- Query 9: Low Power Factor Alert
 -- ============================================================================
@@ -156,8 +138,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 WHERE power_factor < 85
 ORDER BY power_factor ASC;
-
-
 -- ============================================================================
 -- Query 10: Distinct Meters and Substations
 -- ============================================================================
@@ -170,8 +150,6 @@ SELECT
     COUNT(DISTINCT meter_id) AS distinct_meters,
     COUNT(DISTINCT substation) AS distinct_substations
 FROM {{zone_name}}.iceberg.grid_readings;
-
-
 -- ============================================================================
 -- Query 11: Average Power by Meter Type
 -- ============================================================================
@@ -187,8 +165,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings
 GROUP BY meter_type
 ORDER BY meter_type;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -224,25 +200,18 @@ GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings_delta TO USER {{current
 
 INSERT INTO {{zone_name}}.iceberg.grid_readings_delta
 SELECT * FROM {{zone_name}}.iceberg.grid_readings;
-
-
 -- Register the Delta table's location as an external Iceberg table
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings_iceberg_readback
 USING ICEBERG
 LOCATION '{{data_path}}/grid_readings_delta';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings_iceberg_readback TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.grid_readings_iceberg_readback;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — All 600 Readings via Iceberg Reader
 -- ============================================================================
 
 ASSERT ROW_COUNT = 600
 SELECT * FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Region Counts — Must Match Original
 -- ============================================================================
@@ -257,8 +226,6 @@ SELECT
 FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Energy Totals — Must Match Delta Write
 -- ============================================================================
@@ -268,8 +235,6 @@ ASSERT VALUE total_energy_kwh = 993.2375
 SELECT
     ROUND(SUM(energy_kwh), 4) AS total_energy_kwh
 FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Grand Totals — Cross-Format Consistency
 -- ============================================================================
@@ -285,8 +250,6 @@ SELECT
     COUNT(DISTINCT meter_id) AS distinct_meters,
     COUNT(DISTINCT substation) AS distinct_substations
 FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================

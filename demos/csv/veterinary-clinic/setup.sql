@@ -25,7 +25,6 @@ OPTIONS (
     recursive = 'true'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.csv_vet.all_visits TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv_vet.all_visits;
 
 -- ============================================================================
 -- TABLE 2: north_only — File filter with wildcard for branch-north
@@ -40,7 +39,6 @@ OPTIONS (
     file_filter = '*north*'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.csv_vet.north_only TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv_vet.north_only;
 
 -- ============================================================================
 -- TABLE 3: sampled_visits — Max rows = 10 per file
@@ -55,4 +53,3 @@ OPTIONS (
     max_rows = '10'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.csv_vet.sampled_visits TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv_vet.sampled_visits;

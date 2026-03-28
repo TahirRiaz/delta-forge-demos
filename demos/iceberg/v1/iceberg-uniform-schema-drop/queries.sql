@@ -23,16 +23,12 @@
 -- After running this demo, verify schema changes in metadata with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/user_profiles -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — 20 Users, 9 Columns (Version 1)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.user_profiles ORDER BY user_id;
-
-
 -- ============================================================================
 -- Query 1: Baseline — Per-Country Distribution (5 Each)
 -- ============================================================================
@@ -48,8 +44,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles
 GROUP BY country
 ORDER BY country;
-
-
 -- ============================================================================
 -- Query 2: Baseline — Per-Tier Distribution
 -- ============================================================================
@@ -64,8 +58,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles
 GROUP BY subscription_tier
 ORDER BY subscription_tier;
-
-
 -- ============================================================================
 -- LEARN: GDPR Step 1 — Drop email Column (Version 2)
 -- ============================================================================
@@ -75,8 +67,6 @@ ORDER BY subscription_tier;
 -- no longer accessible through the current schema.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.user_profiles DROP COLUMN email;
-
-
 -- ============================================================================
 -- Query 3: Verify email Dropped — 20 Rows, 8 Columns
 -- ============================================================================
@@ -84,22 +74,16 @@ ALTER TABLE {{zone_name}}.iceberg_demos.user_profiles DROP COLUMN email;
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.user_profiles ORDER BY user_id;
-
-
 -- ============================================================================
 -- LEARN: GDPR Step 2 — Drop phone Column (Version 3)
 -- ============================================================================
 
 ALTER TABLE {{zone_name}}.iceberg_demos.user_profiles DROP COLUMN phone;
-
-
 -- ============================================================================
 -- LEARN: GDPR Step 3 — Drop ip_address Column (Version 4)
 -- ============================================================================
 
 ALTER TABLE {{zone_name}}.iceberg_demos.user_profiles DROP COLUMN ip_address;
-
-
 -- ============================================================================
 -- Query 4: Verify All PII Dropped — 20 Rows, 6 Columns Remain
 -- ============================================================================
@@ -108,8 +92,6 @@ ALTER TABLE {{zone_name}}.iceberg_demos.user_profiles DROP COLUMN ip_address;
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.user_profiles ORDER BY user_id;
-
-
 -- ============================================================================
 -- Query 5: Per-Country Counts Unchanged After PII Removal
 -- ============================================================================
@@ -125,8 +107,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles
 GROUP BY country
 ORDER BY country;
-
-
 -- ============================================================================
 -- Query 6: Per-Tier Counts Unchanged After PII Removal
 -- ============================================================================
@@ -141,8 +121,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles
 GROUP BY subscription_tier
 ORDER BY subscription_tier;
-
-
 -- ============================================================================
 -- LEARN: Insert 4 New Users With 6-Column Schema (Version 5)
 -- ============================================================================
@@ -154,8 +132,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.user_profiles VALUES
     (22, 'oconnor',   'UK', '2025-01-15', '2025-03-26', 'free'),
     (23, 'fkrause',   'DE', '2025-02-01', '2025-03-24', 'enterprise'),
     (24, 'rnakamura', 'JP', '2025-02-10', '2025-03-27', 'pro');
-
-
 -- ============================================================================
 -- Query 7: Verify 24 Total Users, 6 Per Country
 -- ============================================================================
@@ -171,8 +147,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles
 GROUP BY country
 ORDER BY country;
-
-
 -- ============================================================================
 -- Query 8: Updated Tier Distribution (24 Users)
 -- ============================================================================
@@ -187,8 +161,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles
 GROUP BY subscription_tier
 ORDER BY subscription_tier;
-
-
 -- ============================================================================
 -- Query 9: Time Travel — Version 1 Still Has All 9 Columns
 -- ============================================================================
@@ -201,8 +173,6 @@ SELECT
     user_id, username, email, phone, ip_address, country
 FROM {{zone_name}}.iceberg_demos.user_profiles VERSION AS OF 1
 ORDER BY user_id;
-
-
 -- ============================================================================
 -- VERIFY: Comprehensive Final State
 -- ============================================================================
@@ -220,8 +190,6 @@ SELECT
     COUNT(*) FILTER (WHERE subscription_tier = 'pro') AS pro_count,
     COUNT(*) FILTER (WHERE subscription_tier = 'enterprise') AS enterprise_count
 FROM {{zone_name}}.iceberg_demos.user_profiles;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -240,17 +208,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/user_profiles';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.user_profiles_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.user_profiles_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 24 Users
 -- ============================================================================
 
 ASSERT ROW_COUNT = 24
 SELECT * FROM {{zone_name}}.iceberg_demos.user_profiles_iceberg ORDER BY user_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: 24 Rows, Per-Country = 6 Each
 -- ============================================================================
@@ -266,8 +229,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.user_profiles_iceberg
 GROUP BY country
 ORDER BY country;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Tier Distribution Matches Delta Final State
 -- ============================================================================

@@ -34,4 +34,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/network_traffic';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.network_traffic TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.network_traffic;

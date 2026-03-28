@@ -26,4 +26,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/inventory';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.inventory TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.inventory;

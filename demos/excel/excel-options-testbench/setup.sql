@@ -10,12 +10,6 @@
 --   4. opt_max_rows    — max_rows='5'           (from 04_max_rows.xlsx)
 --   5. opt_file_filter — file_filter='05_target*' (from 05_target.xlsx only)
 --
--- DETECT SCHEMA notes:
---   - opt_no_header:  NO DETECT SCHEMA (would discover headers, overriding
---                     column_0..column_N naming)
---   - opt_max_rows:   NO DETECT SCHEMA (would read all 20 rows, overriding
---                     the max_rows limit)
---   - All others:     DETECT SCHEMA is safe and applied
 -- ============================================================================
 
 -- STEP 1: Zone & Schema
@@ -24,8 +18,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel_opts
     COMMENT 'Excel option validation tables — one table per option';
-
-
 -- ============================================================================
 -- TABLE 1: opt_sheet_name — Select a specific sheet from a multi-sheet workbook
 -- ============================================================================
@@ -41,10 +33,7 @@ OPTIONS (
     file_filter = '01_multi_sheet*',
     sheet_name = 'Details'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel_opts.opt_sheet_name;
 GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_sheet_name TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: opt_no_header — Read file with no header row
 -- ============================================================================
@@ -53,8 +42,6 @@ GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_sheet_name TO USER {{current_u
 -- If has_header were true (default), the first data row would be consumed as
 -- the header, giving only 4 rows with mangled column names.
 --
--- ** NO DETECT SCHEMA ** — DETECT SCHEMA would discover headers and override
--- the auto-generated column_0..column_3 names.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_opts.opt_no_header
 USING EXCEL
@@ -64,8 +51,6 @@ OPTIONS (
     has_header = 'false'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_no_header TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 3: opt_skip_rows — Skip first N data rows after the header
 -- ============================================================================
@@ -82,10 +67,7 @@ OPTIONS (
     skip_rows = '3',
     has_header = 'true'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel_opts.opt_skip_rows;
 GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_skip_rows TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 4: opt_max_rows — Limit the number of rows read
 -- ============================================================================
@@ -93,8 +75,6 @@ GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_skip_rows TO USER {{current_us
 -- sku, product, stock, price). With max_rows=5, only the first 5 data rows
 -- should be returned. Without the limit, all 20 rows appear.
 --
--- ** NO DETECT SCHEMA ** — DETECT SCHEMA would read all rows and override
--- the max_rows setting.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_opts.opt_max_rows
 USING EXCEL
@@ -105,8 +85,6 @@ OPTIONS (
     max_rows = '5'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_max_rows TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 5: opt_file_filter — Include only matching files from a directory
 -- ============================================================================
@@ -122,5 +100,4 @@ OPTIONS (
     file_filter = '05_target*',
     sheet_name = 'Data'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel_opts.opt_file_filter;
 GRANT ADMIN ON TABLE {{zone_name}}.excel_opts.opt_file_filter TO USER {{current_user}};

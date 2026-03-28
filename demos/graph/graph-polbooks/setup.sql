@@ -13,8 +13,6 @@
 -- Graph:
 --   {{zone_name}}.polbooks.political_books — All books as vertices, co-purchases as edges
 -- ============================================================================
-
-
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
@@ -27,8 +25,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.raw
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.polbooks
     COMMENT 'Political Books — Delta tables and graph definition';
-
-
 -- ############################################################################
 -- STEP 2: External Table — Raw CSV Reader (pipe-delimited)
 -- ############################################################################
@@ -38,9 +34,6 @@ USING CSV LOCATION '{{data_path}}/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.polbooks_edges TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.polbooks_edges;
-
-
 -- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
@@ -57,9 +50,6 @@ AS SELECT
 FROM {{zone_name}}.raw.polbooks_edges;
 
 GRANT ADMIN ON TABLE {{zone_name}}.polbooks.edges TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.polbooks.edges;
-
-
 -- === Vertex Table (from CSV with book titles and political leanings) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.polbooks_vertices
@@ -67,7 +57,6 @@ USING CSV LOCATION '{{data_path}}/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.polbooks_vertices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.polbooks_vertices;
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.polbooks.vertices
 LOCATION '{{data_path}}/delta/vertices'
@@ -78,9 +67,6 @@ AS SELECT
 FROM {{zone_name}}.raw.polbooks_vertices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.polbooks.vertices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.polbooks.vertices;
-
-
 -- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################

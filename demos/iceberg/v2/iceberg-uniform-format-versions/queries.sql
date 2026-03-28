@@ -24,8 +24,6 @@
 --   python3 verify_iceberg_metadata.py <table_data_path>/sensors_v2 -v
 --   python3 verify_iceberg_metadata.py <table_data_path>/sensors_v3 -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Verify Format Version Properties
 -- ============================================================================
@@ -39,8 +37,6 @@ SHOW TBLPROPERTIES {{zone_name}}.iceberg_demos.sensors_v2;
 
 ASSERT WARNING ROW_COUNT >= 2
 SHOW TBLPROPERTIES {{zone_name}}.iceberg_demos.sensors_v3;
-
-
 -- ============================================================================
 -- Query 1: Row Count Parity — All Three Tables
 -- ============================================================================
@@ -54,8 +50,6 @@ SELECT * FROM {{zone_name}}.iceberg_demos.sensors_v2 ORDER BY id;
 
 ASSERT ROW_COUNT = 12
 SELECT * FROM {{zone_name}}.iceberg_demos.sensors_v3 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 2: Per-Location Aggregation — V1
 -- ============================================================================
@@ -72,8 +66,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensors_v1
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Query 3: Per-Location Aggregation — V2
 -- ============================================================================
@@ -91,8 +83,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensors_v2
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Query 4: Per-Location Aggregation — V3
 -- ============================================================================
@@ -110,8 +100,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensors_v3
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Query 5: Status Distribution — Consistent Across All Versions
 -- ============================================================================
@@ -148,8 +136,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensors_v3
 GROUP BY status
 ORDER BY status;
-
-
 -- ============================================================================
 -- LEARN: DML on V3 — UPDATE Critical Readings
 -- ============================================================================
@@ -160,8 +146,6 @@ UPDATE {{zone_name}}.iceberg_demos.sensors_v3
 SET temperature = 22.0,
     status = 'corrected'
 WHERE status = 'critical';
-
-
 -- ============================================================================
 -- Query 6: V3 Post-Update — Verify Correction
 -- ============================================================================
@@ -175,8 +159,6 @@ SELECT
     status
 FROM {{zone_name}}.iceberg_demos.sensors_v3
 WHERE id = 8;
-
-
 -- ============================================================================
 -- Query 7: V3 Time Travel — Before vs After Correction
 -- ============================================================================
@@ -196,8 +178,6 @@ FROM {{zone_name}}.iceberg_demos.sensors_v3 curr
 JOIN {{zone_name}}.iceberg_demos.sensors_v3 VERSION AS OF 1 old
     ON curr.id = old.id
 WHERE curr.id = 8;
-
-
 -- ============================================================================
 -- LEARN: Schema Evolution on V2 — Add calibration_offset
 -- ============================================================================
@@ -212,8 +192,6 @@ SET calibration_offset = CASE
     WHEN location = 'Lab-B' THEN -0.3
     ELSE 0.2
 END;
-
-
 -- ============================================================================
 -- Query 8: V2 With Evolved Schema — Calibrated Temperature
 -- ============================================================================
@@ -228,8 +206,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensors_v2
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Query 9: Grand Totals Across All Versions
 -- ============================================================================
@@ -245,8 +221,6 @@ SELECT
     ROUND((SELECT AVG(temperature) FROM {{zone_name}}.iceberg_demos.sensors_v2), 2) AS v2_avg_temp,
     ROUND((SELECT AVG(temperature) FROM {{zone_name}}.iceberg_demos.sensors_v3), 2) AS v3_avg_temp,
     ROUND((SELECT SUM(humidity) FROM {{zone_name}}.iceberg_demos.sensors_v1), 2) AS v1_total_humidity;
-
-
 -- ============================================================================
 -- Query 10: Version History Comparison
 -- ============================================================================
@@ -260,8 +234,6 @@ DESCRIBE HISTORY {{zone_name}}.iceberg_demos.sensors_v2;
 
 ASSERT WARNING ROW_COUNT >= 2
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.sensors_v3;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -281,8 +253,6 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.sensors_v1 WHERE status = 'critical') AS v1_critical,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.sensors_v3 WHERE status = 'critical') AS v3_critical,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.sensors_v3 WHERE status = 'corrected') AS v3_corrected;
-
-
 -- ============================================================================
 -- Iceberg Read-Back: Register V1 as External Iceberg Table
 -- ============================================================================
@@ -294,9 +264,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/sensors_v1';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v1_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensors_v1_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Read-Back: Register V2 as External Iceberg Table
 -- ============================================================================
@@ -307,9 +274,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/sensors_v2';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v2_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensors_v2_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Read-Back: Register V3 as External Iceberg Table
 -- ============================================================================
@@ -320,9 +284,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/sensors_v3';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v3_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensors_v3_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Counts — All Three Format Versions
 -- ============================================================================
@@ -335,8 +296,6 @@ SELECT * FROM {{zone_name}}.iceberg_demos.sensors_v2_iceberg ORDER BY id;
 
 ASSERT ROW_COUNT = 12
 SELECT * FROM {{zone_name}}.iceberg_demos.sensors_v3_iceberg ORDER BY id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: V1 — Per-Location Averages Match Delta
 -- ============================================================================
@@ -351,8 +310,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensors_v1_iceberg
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: V3 — Corrected Reading Visible
 -- ============================================================================
@@ -367,8 +324,6 @@ SELECT
     status
 FROM {{zone_name}}.iceberg_demos.sensors_v3_iceberg
 WHERE id = 8;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Cross-Version Parity
 -- ============================================================================

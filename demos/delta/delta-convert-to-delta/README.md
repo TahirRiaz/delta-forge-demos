@@ -26,7 +26,7 @@ DELETE removes 5 duplicate records — operations impossible with raw Parquet.
 
 1. **CREATE DELTA TABLE** — explicit schema with LOCATION
 2. **INSERT INTO VALUES** — 40 migrated legacy records (migrated_flag=1)
-3. **DETECT SCHEMA + GRANT ADMIN** — register schema and permissions
+3. **GRANT ADMIN** — grant permissions
 4. **INSERT INTO VALUES** — 10 new post-migration records (migrated_flag=0)
 5. **UPDATE with WHERE** — standardize 'cc' to 'credit_card'
 6. **UPDATE with WHERE** — standardize 'pp' to 'paypal'

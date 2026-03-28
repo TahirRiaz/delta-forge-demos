@@ -24,8 +24,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.graph
     COMMENT 'Graph property storage mode demo tables';
-
-
 -- ============================================================================
 -- TABLE 1: persons_hybrid — 50 vertex nodes (core columns + JSON extras)
 -- ============================================================================
@@ -92,9 +90,6 @@ SELECT
     '}' AS extras
 FROM generate_series(1, 50) AS t(id);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.persons_hybrid;
-
-
 -- ============================================================================
 -- TABLE 2: friendships_hybrid — ~150 directed edges (core columns + JSON extras)
 -- ============================================================================
@@ -117,8 +112,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.friendships_hybrid (
 ) LOCATION '{{data_path}}/friendships_hybrid';
 
 GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_hybrid TO USER {{current_user}};
-
-
 -- Batch 1: Intra-department colleagues (~50 edges)
 INSERT INTO {{zone_name}}.graph.friendships_hybrid
 SELECT
@@ -145,8 +138,6 @@ FROM (
     FROM generate_series(1, 30) AS t(gs)
 ) sub
 WHERE src != dst;
-
-
 -- Batch 2: City cross-department social (~30 edges)
 INSERT INTO {{zone_name}}.graph.friendships_hybrid
 SELECT
@@ -174,8 +165,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND (src % 5) != (dst % 5);
-
-
 -- Batch 3: Hierarchical mentorship (~30 edges)
 INSERT INTO {{zone_name}}.graph.friendships_hybrid
 SELECT
@@ -207,8 +196,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 50;
-
-
 -- Batch 4: Bridge node connections (~20 edges)
 INSERT INTO {{zone_name}}.graph.friendships_hybrid
 SELECT
@@ -236,8 +223,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 50;
-
-
 -- Batch 5: Weak ties (~20 edges)
 INSERT INTO {{zone_name}}.graph.friendships_hybrid
 SELECT
@@ -260,9 +245,6 @@ FROM (
     FROM generate_series(1, 25) AS t(i)
 ) sub
 WHERE src != dst;
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.friendships_hybrid;
-
 
 -- ============================================================================
 -- GRAPH DEFINITION

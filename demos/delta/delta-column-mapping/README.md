@@ -33,7 +33,7 @@ deactivations, and a new location column added via ALTER TABLE.
 |-------|--------|--------|
 | 1 | CREATE TABLE with TBLPROPERTIES | 8-column table with column mapping |
 | 2 | INSERT 30 employees | 6 departments populated |
-| 3 | DETECT SCHEMA + GRANT ADMIN | Schema registered |
+| 3 | GRANT ADMIN | Permissions granted |
 | 4 | INSERT 10 more employees | 40 total rows |
 | 5 | UPDATE 5 employees | Promoted to Senior/Lead titles |
 | 6 | UPDATE 3 employees | Deactivated (is_active = 0) |

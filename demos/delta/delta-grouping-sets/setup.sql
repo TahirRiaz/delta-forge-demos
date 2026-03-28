@@ -20,8 +20,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE: production_runs — 36 rows (3 lines x 3 shifts x 4 dates)
 -- ============================================================================
@@ -37,9 +35,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.production_runs (
 ) LOCATION '{{data_path}}/production_runs';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.production_runs TO USER {{current_user}};
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.production_runs;
-
 
 -- Line-A: 12 rows (3 shifts x 4 dates)
 INSERT INTO {{zone_name}}.delta_demos.production_runs VALUES

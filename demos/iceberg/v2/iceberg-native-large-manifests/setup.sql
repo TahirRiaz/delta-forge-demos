@@ -29,4 +29,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/web_analytics';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.web_analytics TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.web_analytics;

@@ -26,16 +26,12 @@
 -- After running this demo, verify field-ID stability in metadata with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/financial_transactions -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline Data — 24 Transactions with Legacy Column Names
 -- ============================================================================
 
 ASSERT ROW_COUNT = 24
 SELECT * FROM {{zone_name}}.iceberg_demos.financial_transactions ORDER BY txn_id;
-
-
 -- ============================================================================
 -- Query 1: Baseline — Revenue by Transaction Type (Legacy Names)
 -- ============================================================================
@@ -52,8 +48,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.financial_transactions
 GROUP BY txn_type
 ORDER BY txn_type;
-
-
 -- ============================================================================
 -- Query 2: Baseline — Revenue by Currency (Legacy Names)
 -- ============================================================================
@@ -69,8 +63,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.financial_transactions
 GROUP BY ccy
 ORDER BY ccy;
-
-
 -- ============================================================================
 -- LEARN: Rename Step 1 — amt → transaction_amount (Version 2)
 -- ============================================================================
@@ -79,22 +71,16 @@ ORDER BY ccy;
 -- in both the Delta column mapping and the Iceberg schema entry.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.financial_transactions RENAME COLUMN amt TO transaction_amount;
-
-
 -- ============================================================================
 -- LEARN: Rename Step 2 — ccy → currency_code (Version 3)
 -- ============================================================================
 
 ALTER TABLE {{zone_name}}.iceberg_demos.financial_transactions RENAME COLUMN ccy TO currency_code;
-
-
 -- ============================================================================
 -- LEARN: Rename Step 3 — acct_num → account_number (Version 4)
 -- ============================================================================
 
 ALTER TABLE {{zone_name}}.iceberg_demos.financial_transactions RENAME COLUMN acct_num TO account_number;
-
-
 -- ============================================================================
 -- Query 3: Same Data, New Names — Revenue by Transaction Type
 -- ============================================================================
@@ -112,8 +98,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.financial_transactions
 GROUP BY txn_type
 ORDER BY txn_type;
-
-
 -- ============================================================================
 -- Query 4: Same Data, New Names — Revenue by Currency
 -- ============================================================================
@@ -130,8 +114,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.financial_transactions
 GROUP BY currency_code
 ORDER BY currency_code;
-
-
 -- ============================================================================
 -- Query 5: Verify All Renamed Columns Are Accessible
 -- ============================================================================
@@ -144,8 +126,6 @@ SELECT
     COUNT(DISTINCT currency_code) AS distinct_currencies,
     ROUND(SUM(transaction_amount), 2) AS grand_total
 FROM {{zone_name}}.iceberg_demos.financial_transactions;
-
-
 -- ============================================================================
 -- LEARN: Insert New Rows Using Renamed Columns (Version 5)
 -- ============================================================================
@@ -156,8 +136,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.financial_transactions VALUES
     (26, 'SAV-20004', 'savings',     3200.00, 'EUR', '2024-04-12', 'BR-LON'),
     (27, 'CRD-30004', 'credit',       410.00, 'GBP', '2024-04-15', 'BR-LON'),
     (28, 'INV-40004', 'investment',  7000.00, 'USD', '2024-04-18', 'BR-CHI');
-
-
 -- ============================================================================
 -- Query 6: All 28 Rows — Revenue by Type After Insert
 -- ============================================================================
@@ -174,8 +152,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.financial_transactions
 GROUP BY txn_type
 ORDER BY txn_type;
-
-
 -- ============================================================================
 -- Query 7: Time Travel — Read Version 1 (Original Column Names)
 -- ============================================================================
@@ -188,8 +164,6 @@ SELECT
     txn_id, acct_num, txn_type, amt, ccy, txn_date, branch_code
 FROM {{zone_name}}.iceberg_demos.financial_transactions VERSION AS OF 1
 ORDER BY txn_id;
-
-
 -- ============================================================================
 -- Query 8: Version History — Rename Operations Trail
 -- ============================================================================
@@ -197,8 +171,6 @@ ORDER BY txn_id;
 
 ASSERT WARNING ROW_COUNT >= 5
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.financial_transactions;
-
-
 -- ============================================================================
 -- VERIFY: Comprehensive Final-State Validation
 -- ============================================================================
@@ -214,8 +186,6 @@ SELECT
     COUNT(DISTINCT txn_type) AS distinct_types,
     COUNT(DISTINCT currency_code) AS distinct_currencies
 FROM {{zone_name}}.iceberg_demos.financial_transactions;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -231,9 +201,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/financial_transactions';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.financial_transactions_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.financial_transactions_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Data Integrity — Spot-Check Rows via Renamed Columns
 -- ============================================================================
@@ -254,8 +221,6 @@ ASSERT VALUE account_number = 'CHK-10004' WHERE txn_id = 25
 ASSERT VALUE transaction_amount = 7000.00 WHERE txn_id = 28
 ASSERT VALUE currency_code = 'USD' WHERE txn_id = 28
 SELECT * FROM {{zone_name}}.iceberg_demos.financial_transactions_iceberg ORDER BY txn_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Revenue Totals — Must Match Delta Final State
 -- ============================================================================
@@ -267,8 +232,6 @@ SELECT
     COUNT(*) AS total_transactions,
     ROUND(SUM(transaction_amount), 2) AS total_amount
 FROM {{zone_name}}.iceberg_demos.financial_transactions_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Per-Type Breakdown — Matches Delta Query 6
 -- ============================================================================

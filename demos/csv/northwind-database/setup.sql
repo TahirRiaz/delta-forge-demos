@@ -23,8 +23,6 @@
 --   schema = 'csv'          (the file format)
 --   table  = object name    (e.g. customers, orders)
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone
 -- ============================================================================
@@ -32,16 +30,12 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
-
-
 -- ============================================================================
 -- STEP 2: Schema
 -- ============================================================================
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
     COMMENT 'CSV-backed external tables';
-
-
 -- ============================================================================
 -- STEP 3: External Tables
 -- ============================================================================
@@ -147,25 +141,9 @@ OPTIONS (
     header = 'true',
     delimiter = ';'
 );
-
-
 -- ============================================================================
--- STEP 4: Detect Schema
 -- ============================================================================
 -- Discovers column metadata from the CSV files and saves it to the catalog.
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_customers;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_employees;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_orders;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_order_details;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_products;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_categories;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_suppliers;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_shippers;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_regions;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_territories;
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.nw_employee_territories;
-
 
 -- ============================================================================
 -- STEP 5: Table Permissions

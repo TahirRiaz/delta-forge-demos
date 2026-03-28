@@ -33,8 +33,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.graph
     COMMENT 'Graph property storage mode demo tables';
-
-
 -- ============================================================================
 -- TABLE 1: departments — 20 department lookup records
 -- ============================================================================
@@ -69,9 +67,6 @@ INSERT INTO {{zone_name}}.graph.st_departments VALUES
     (17, 'Analytics',         2, 2800, 'APAC'),
     (18, 'Mobile',            3, 3200, 'Americas'),
     (19, 'AI/ML',             5, 7000, 'APAC');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.st_departments;
-
 
 -- ============================================================================
 -- TABLE 2: st_people — 1,000,000 vertex nodes
@@ -180,9 +175,6 @@ SELECT
     (id % 21 != 0) AS active
 FROM generate_series(1, 1000000) AS t(id);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.st_people;
-
-
 -- ============================================================================
 -- TABLE 3: st_edges — ~5,000,000 directed edges (7 batches)
 -- ============================================================================
@@ -215,8 +207,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.st_edges (
 ) LOCATION '{{data_path}}/st_edges';
 
 GRANT ADMIN ON TABLE {{zone_name}}.graph.st_edges TO USER {{current_user}};
-
-
 -- ============================================================================
 -- Batch 1: Intra-department local neighborhood (~1.5M edges)
 -- ============================================================================
@@ -253,8 +243,6 @@ FROM (
 WHERE src != dst
   AND src BETWEEN 1 AND 1000000
   AND dst BETWEEN 1 AND 1000000;
-
-
 -- ============================================================================
 -- Batch 2: Intra-team project connections (~1.0M edges)
 -- ============================================================================
@@ -291,8 +279,6 @@ FROM (
 WHERE src != dst
   AND src BETWEEN 1 AND 1000000
   AND dst BETWEEN 1 AND 1000000;
-
-
 -- ============================================================================
 -- Batch 3: City-local cross-department connections (~800K edges)
 -- ============================================================================
@@ -337,8 +323,6 @@ WHERE src != dst
   AND src BETWEEN 1 AND 1000000
   AND dst BETWEEN 1 AND 1000000
   AND (src % 20) != (dst % 20);
-
-
 -- ============================================================================
 -- Batch 4: Hierarchical mentorship (~550K edges)
 -- ============================================================================
@@ -382,8 +366,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 1000000;
-
-
 -- ============================================================================
 -- Batch 5: Bridge node cross-department connections (~400K edges)
 -- ============================================================================
@@ -423,8 +405,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 1000000;
-
-
 -- ============================================================================
 -- Batch 6: Hub node extra connections (~490K edges)
 -- ============================================================================
@@ -472,8 +452,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 1000000;
-
-
 -- ============================================================================
 -- Batch 7: Weak ties — pseudo-random long-range connections (~300K edges)
 -- ============================================================================
@@ -504,9 +482,6 @@ FROM (
 ) sub
 WHERE src != dst;
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.st_edges;
-
-
 -- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
@@ -516,8 +491,6 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.graph.stress_test_network
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type
     DIRECTED;
-
-
 -- ============================================================================
 -- VIEW 4: st_people_stats — per-person degree centrality
 -- ============================================================================
@@ -539,8 +512,6 @@ LEFT JOIN (
 LEFT JOIN (
     SELECT dst, COUNT(*) AS in_degree FROM {{zone_name}}.graph.st_edges GROUP BY dst
 ) in_deg ON p.id = in_deg.dst;
-
-
 -- ============================================================================
 -- VIEW 5: st_dept_matrix — cross-department connection matrix
 -- ============================================================================

@@ -24,7 +24,6 @@ OPTIONS (
     has_header = 'true',
     delimiter = '|'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_delimiter;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_delimiter TO USER {{current_user}};
 
 -- ============================================================================
@@ -39,7 +38,6 @@ OPTIONS (
     has_header = 'true',
     null_value = 'N/A'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_null_value;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_null_value TO USER {{current_user}};
 
 -- ============================================================================
@@ -55,7 +53,6 @@ OPTIONS (
     has_header = 'true',
     comment_char = '#'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_comment;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_comment TO USER {{current_user}};
 
 -- ============================================================================
@@ -71,7 +68,6 @@ OPTIONS (
     has_header = 'true',
     skip_starting_rows = '3'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_skip_rows;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_skip_rows TO USER {{current_user}};
 
 -- ============================================================================
@@ -86,7 +82,6 @@ OPTIONS (
     has_header = 'true',
     max_rows = '5'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_max_rows;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_max_rows TO USER {{current_user}};
 
 -- ============================================================================
@@ -101,7 +96,6 @@ OPTIONS (
     has_header = 'true',
     trim_whitespace = 'true'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_trim;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_trim TO USER {{current_user}};
 
 -- ============================================================================
@@ -117,7 +111,6 @@ OPTIONS (
     delimiter = ';',
     quote = '"'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_quoted;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_quoted TO USER {{current_user}};
 
 -- ============================================================================
@@ -135,5 +128,4 @@ OPTIONS (
     null_value = 'N/A',
     trim_whitespace = 'true'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.opt_combined;
 GRANT ADMIN ON TABLE {{zone_name}}.csv.opt_combined TO USER {{current_user}};

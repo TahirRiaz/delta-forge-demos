@@ -24,8 +24,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -36,8 +34,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: customs_messages — Compact view (5 messages)
 -- ============================================================================
@@ -66,12 +62,7 @@ OPTIONS (
     edi_config = '{"ediFormat": "edifact"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.customs_messages;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.customs_messages TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: customs_materialized — Key border/customs fields extracted
 -- ============================================================================
@@ -116,7 +107,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.customs_materialized;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.customs_materialized TO USER {{current_user}};

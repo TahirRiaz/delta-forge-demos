@@ -27,4 +27,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/shipments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.shipments TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.shipments;

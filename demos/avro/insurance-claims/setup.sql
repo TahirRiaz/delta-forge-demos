@@ -35,9 +35,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.avro_insurance.all_claims TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.avro_insurance.all_claims;
-
-
 -- ============================================================================
 -- TABLE 2: auto_claims_only — Auto claims via file_filter (60 rows)
 -- ============================================================================
@@ -52,9 +49,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.avro_insurance.auto_claims_only TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.avro_insurance.auto_claims_only;
-
-
 -- ============================================================================
 -- TABLE 3: sampled_claims — Data profiling via max_rows (15 per file)
 -- ============================================================================
@@ -69,4 +63,3 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.avro_insurance.sampled_claims TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.avro_insurance.sampled_claims;

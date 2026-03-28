@@ -38,4 +38,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/shipment_manifests';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.shipment_manifests TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.shipment_manifests;

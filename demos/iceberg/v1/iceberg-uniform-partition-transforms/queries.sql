@@ -22,16 +22,12 @@
 -- After running, verify the partition spec in the Iceberg metadata:
 --   python3 verify_iceberg_metadata.py <table_data_path>/app_events -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — All 36 Events
 -- ============================================================================
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.app_events ORDER BY event_id;
-
-
 -- ============================================================================
 -- Query 1: Events Per Day
 -- ============================================================================
@@ -52,8 +48,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY CAST(event_timestamp AS DATE)
 ORDER BY event_date;
-
-
 -- ============================================================================
 -- Query 2: Events Per Type
 -- ============================================================================
@@ -71,8 +65,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY event_type
 ORDER BY event_type;
-
-
 -- ============================================================================
 -- Query 3: Severity Distribution
 -- ============================================================================
@@ -87,8 +79,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY severity
 ORDER BY severity;
-
-
 -- ============================================================================
 -- Query 4: Single-Day Partition Read — 2024-03-01 Only
 -- ============================================================================
@@ -100,8 +90,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 WHERE CAST(event_timestamp AS DATE) = '2024-03-01'
 ORDER BY event_id;
-
-
 -- ============================================================================
 -- LEARN: INSERT Into Existing Day Partitions (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -112,8 +100,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.app_events VALUES
     (37, 'usr_131', 'click',     TIMESTAMP '2024-03-01 20:00:00', 384,  'web-app',    'info'),
     (38, 'usr_132', 'purchase',  TIMESTAMP '2024-03-03 21:15:00', 640,  'mobile-app', 'info'),
     (39, 'usr_133', 'login',     TIMESTAMP '2024-03-05 06:30:00', 128,  'web-app',    'info');
-
-
 -- ============================================================================
 -- Query 5: Per-Day Counts After Insert Into Existing Days
 -- ============================================================================
@@ -131,8 +117,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY CAST(event_timestamp AS DATE)
 ORDER BY event_date;
-
-
 -- ============================================================================
 -- LEARN: INSERT New Day Partition — 2024-03-07 (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -146,8 +130,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.app_events VALUES
     (43, 'usr_137', 'error',     TIMESTAMP '2024-03-07 14:45:00', 1536, 'api-server', 'warning'),
     (44, 'usr_138', 'page_view', TIMESTAMP '2024-03-07 16:00:00', 192,  'web-app',    'info'),
     (45, 'usr_134', 'logout',    TIMESTAMP '2024-03-07 18:30:00', 64,   'mobile-app', 'info');
-
-
 -- ============================================================================
 -- Query 6: Per-Day Counts After New Partition
 -- ============================================================================
@@ -166,8 +148,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY CAST(event_timestamp AS DATE)
 ORDER BY event_date;
-
-
 -- ============================================================================
 -- LEARN: UPDATE — Escalate High-Payload Errors to Critical (Version 4)
 -- ============================================================================
@@ -177,8 +157,6 @@ ORDER BY event_date;
 UPDATE {{zone_name}}.iceberg_demos.app_events
 SET severity = 'critical'
 WHERE source_app = 'api-server' AND payload_size > 1500;
-
-
 -- ============================================================================
 -- Query 7: Severity Distribution After Update
 -- ============================================================================
@@ -194,8 +172,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY severity
 ORDER BY severity;
-
-
 -- ============================================================================
 -- LEARN: DELETE — Remove Error Events From 2024-03-01 (Version 5)
 -- ============================================================================
@@ -204,8 +180,6 @@ ORDER BY severity;
 
 DELETE FROM {{zone_name}}.iceberg_demos.app_events
 WHERE CAST(event_timestamp AS DATE) = '2024-03-01' AND event_type = 'error';
-
-
 -- ============================================================================
 -- Query 8: Per-Day Counts After Delete
 -- ============================================================================
@@ -224,8 +198,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events
 GROUP BY CAST(event_timestamp AS DATE)
 ORDER BY event_date;
-
-
 -- ============================================================================
 -- Query 9: Time Travel — Pre-Mutation vs Post-Mutation
 -- ============================================================================
@@ -241,8 +213,6 @@ SELECT
     COUNT(*) AS final_count,
     SUM(payload_size) AS final_payload
 FROM {{zone_name}}.iceberg_demos.app_events;
-
-
 -- ============================================================================
 -- Query 10: Version History
 -- ============================================================================
@@ -251,8 +221,6 @@ FROM {{zone_name}}.iceberg_demos.app_events;
 
 ASSERT WARNING ROW_COUNT >= 5
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.app_events;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -275,8 +243,6 @@ SELECT
     COUNT(*) FILTER (WHERE severity = 'critical') AS critical_sev_count,
     COUNT(*) FILTER (WHERE CAST(event_timestamp AS DATE) = '2024-03-07') AS march_07_count
 FROM {{zone_name}}.iceberg_demos.app_events;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -298,9 +264,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/app_events';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.app_events_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.app_events_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count + Spot-Check Individual Rows
 -- ============================================================================
@@ -315,8 +278,6 @@ ASSERT VALUE user_id = 'usr_134' WHERE event_id = 40
 ASSERT VALUE event_type = 'login' WHERE event_id = 40
 ASSERT VALUE source_app = 'web-app' WHERE event_id = 40
 SELECT * FROM {{zone_name}}.iceberg_demos.app_events_iceberg ORDER BY event_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Day Counts — Reflect All Mutations
 -- ============================================================================
@@ -338,8 +299,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events_iceberg
 GROUP BY CAST(event_timestamp AS DATE)
 ORDER BY event_date;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Severity Distribution — Reflects UPDATE + DELETE
 -- ============================================================================
@@ -357,8 +316,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_events_iceberg
 GROUP BY severity
 ORDER BY severity;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Grand Totals — Must Match Delta Final State
 -- ============================================================================

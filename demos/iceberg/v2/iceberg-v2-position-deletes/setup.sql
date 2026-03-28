@@ -26,4 +26,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/cold_chain_readings';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.cold_chain_readings TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.cold_chain_readings;

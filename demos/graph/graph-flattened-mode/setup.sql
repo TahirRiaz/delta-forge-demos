@@ -29,8 +29,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.graph
     COMMENT 'Graph property storage mode demo tables';
-
-
 -- ============================================================================
 -- TABLE 1: persons_flattened — 50 vertex nodes (all properties as columns)
 -- ============================================================================
@@ -85,9 +83,6 @@ SELECT
     END AS level,
     (id % 7 != 0) AS active
 FROM generate_series(1, 50) AS t(id);
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.persons_flattened;
-
-
 -- ============================================================================
 -- TABLE 2: friendships_flattened — ~150 directed edges (all properties as columns)
 -- ============================================================================
@@ -115,8 +110,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.friendships_flattened (
     rating              INT
 ) LOCATION '{{data_path}}/friendships_flattened';
 GRANT ADMIN ON TABLE {{zone_name}}.graph.friendships_flattened TO USER {{current_user}};
-
-
 -- ============================================================================
 -- Batch 1: Intra-department colleagues (~50 edges)
 -- ============================================================================
@@ -152,8 +145,6 @@ FROM (
     FROM generate_series(1, 30) AS t(gs)
 ) sub
 WHERE src != dst;
-
-
 -- ============================================================================
 -- Batch 2: City cross-department social (~30 edges)
 -- ============================================================================
@@ -190,8 +181,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND (src % 5) != (dst % 5);
-
-
 -- ============================================================================
 -- Batch 3: Hierarchical mentorship (~30 edges)
 -- ============================================================================
@@ -236,8 +225,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 50;
-
-
 -- ============================================================================
 -- Batch 4: Bridge node connections (~20 edges)
 -- ============================================================================
@@ -275,8 +262,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 50;
-
-
 -- ============================================================================
 -- Batch 5: Weak ties — pseudo-random long-range connections (~20 edges)
 -- ============================================================================
@@ -306,9 +291,6 @@ FROM (
     FROM generate_series(1, 25) AS t(i)
 ) sub
 WHERE src != dst;
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.friendships_flattened;
-
-
 -- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================

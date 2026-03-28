@@ -20,8 +20,6 @@
 -- After running this demo, verify each Iceberg snapshot with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/order_fulfillment -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (Version 1 / Snapshot 1)
 -- ============================================================================
@@ -29,8 +27,6 @@
 
 ASSERT ROW_COUNT = 30
 SELECT * FROM {{zone_name}}.iceberg_demos.order_fulfillment ORDER BY order_id;
-
-
 -- ============================================================================
 -- Query 1: Per-Region Breakdown
 -- ============================================================================
@@ -49,8 +45,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 2: Per-Status Breakdown
 -- ============================================================================
@@ -66,8 +60,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 GROUP BY status
 ORDER BY status;
-
-
 -- ============================================================================
 -- LEARN: MERGE 1 — CDC Upsert (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -99,16 +91,12 @@ ON t.order_id = source.order_id
 WHEN MATCHED THEN UPDATE SET status = source.status, order_date = source.order_date
 WHEN NOT MATCHED THEN INSERT (order_id, customer_email, product_sku, quantity, unit_price, status, region, order_date)
     VALUES (source.order_id, source.customer_email, source.product_sku, source.quantity, source.unit_price, source.status, source.region, source.order_date);
-
-
 -- ============================================================================
 -- Query 3: Post-MERGE 1 Row Count
 -- ============================================================================
 
 ASSERT ROW_COUNT = 35
 SELECT * FROM {{zone_name}}.iceberg_demos.order_fulfillment ORDER BY order_id;
-
-
 -- ============================================================================
 -- Query 4: Post-MERGE 1 — Verify Updated Statuses
 -- ============================================================================
@@ -133,8 +121,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 WHERE order_id IN (1, 2, 4, 5, 7, 8, 10, 11, 14, 17)
 ORDER BY order_id;
-
-
 -- ============================================================================
 -- Query 5: Post-MERGE 1 — Per-Region Counts
 -- ============================================================================
@@ -150,8 +136,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 6: Post-MERGE 1 — Per-Status Breakdown
 -- ============================================================================
@@ -166,8 +150,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 GROUP BY status
 ORDER BY status;
-
-
 -- ============================================================================
 -- LEARN: MERGE 2 — CDC with Cancellations (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -194,8 +176,6 @@ WHEN MATCHED AND source.status = 'cancelled' THEN DELETE
 WHEN MATCHED THEN UPDATE SET status = source.status, order_date = source.order_date
 WHEN NOT MATCHED THEN INSERT (order_id, customer_email, product_sku, quantity, unit_price, status, region, order_date)
     VALUES (source.order_id, source.customer_email, source.product_sku, source.quantity, source.unit_price, source.status, source.region, source.order_date);
-
-
 -- ============================================================================
 -- Query 7: Post-MERGE 2 Row Count
 -- ============================================================================
@@ -203,8 +183,6 @@ WHEN NOT MATCHED THEN INSERT (order_id, customer_email, product_sku, quantity, u
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.order_fulfillment ORDER BY order_id;
-
-
 -- ============================================================================
 -- Query 8: Post-MERGE 2 — Cancelled Orders Removed
 -- ============================================================================
@@ -214,8 +192,6 @@ ASSERT ROW_COUNT = 0
 SELECT *
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 WHERE order_id IN (3, 6, 9);
-
-
 -- ============================================================================
 -- Query 9: Post-MERGE 2 — Per-Region Counts
 -- ============================================================================
@@ -234,8 +210,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 10: Post-MERGE 2 — Per-Status Breakdown
 -- ============================================================================
@@ -250,8 +224,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment
 GROUP BY status
 ORDER BY status;
-
-
 -- ============================================================================
 -- Query 11: Time Travel — Row Counts Across All Versions
 -- ============================================================================
@@ -265,8 +237,6 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.order_fulfillment VERSION AS OF 1) AS v1_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.order_fulfillment VERSION AS OF 2) AS v2_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.order_fulfillment) AS v3_count;
-
-
 -- ============================================================================
 -- Query 12: Time Travel — Revenue Comparison Across Versions
 -- ============================================================================
@@ -280,8 +250,6 @@ SELECT
     ROUND((SELECT SUM(quantity * unit_price) FROM {{zone_name}}.iceberg_demos.order_fulfillment VERSION AS OF 2), 2) AS v2_revenue,
     ROUND(SUM(quantity * unit_price), 2) AS v3_revenue
 FROM {{zone_name}}.iceberg_demos.order_fulfillment;
-
-
 -- ============================================================================
 -- Query 13: Version History
 -- ============================================================================
@@ -291,8 +259,6 @@ FROM {{zone_name}}.iceberg_demos.order_fulfillment;
 
 ASSERT WARNING ROW_COUNT >= 3
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.order_fulfillment;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -313,8 +279,6 @@ SELECT
     COUNT(DISTINCT region) AS region_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
 FROM {{zone_name}}.iceberg_demos.order_fulfillment;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -333,17 +297,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/order_fulfillment';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.order_fulfillment_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.order_fulfillment_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 36 Orders After Both MERGEs
 -- ============================================================================
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg ORDER BY order_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Spot-Check Specific Rows — Updates, Inserts, Deletes
 -- ============================================================================
@@ -363,8 +322,6 @@ SELECT order_id, customer_email, status, region
 FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
 WHERE order_id IN (1, 2, 31, 36)
 ORDER BY order_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Deleted Rows Absent
 -- ============================================================================
@@ -373,8 +330,6 @@ ASSERT ROW_COUNT = 0
 SELECT *
 FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
 WHERE order_id IN (3, 6, 9);
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Per-Region Revenue — Must Match Delta Final State
 -- ============================================================================
@@ -393,8 +348,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Per-Status Breakdown — Must Match Delta Final State
 -- ============================================================================
@@ -409,8 +362,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
 GROUP BY status
 ORDER BY status;
-
-
 -- ============================================================================
 -- Iceberg Verify 6: Grand Totals — Cross-Cutting Sanity Check
 -- ============================================================================

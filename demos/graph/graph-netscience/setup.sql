@@ -14,8 +14,6 @@
 -- Graph:
 --   {{zone_name}}.netscience.netscience_collab — Authors as vertices, coauthorships as edges
 -- ============================================================================
-
-
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
@@ -28,8 +26,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.raw
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.netscience
     COMMENT 'NetScience — Delta tables and graph definition';
-
-
 -- ############################################################################
 -- STEP 2: External Table — Raw CSV Reader (pipe-delimited)
 -- ############################################################################
@@ -38,10 +34,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.netscience_edges
 USING CSV LOCATION '{{data_path}}/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.netscience_edges;
 GRANT ADMIN ON TABLE {{zone_name}}.raw.netscience_edges TO USER {{current_user}};
-
-
 -- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
@@ -57,17 +50,13 @@ AS SELECT
     CAST(edge_type AS VARCHAR) AS edge_type
 FROM {{zone_name}}.raw.netscience_edges;
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.netscience.edges;
 GRANT ADMIN ON TABLE {{zone_name}}.netscience.edges TO USER {{current_user}};
-
-
 -- === Vertex Table (from CSV with researcher names and roles) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.netscience_vertices
 USING CSV LOCATION '{{data_path}}/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.netscience_vertices;
 GRANT ADMIN ON TABLE {{zone_name}}.raw.netscience_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience.vertices
@@ -78,10 +67,7 @@ AS SELECT
     CAST(category AS VARCHAR) AS role
 FROM {{zone_name}}.raw.netscience_vertices;
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.netscience.vertices;
 GRANT ADMIN ON TABLE {{zone_name}}.netscience.vertices TO USER {{current_user}};
-
-
 -- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################

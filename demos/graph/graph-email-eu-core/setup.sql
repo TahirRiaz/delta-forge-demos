@@ -13,8 +13,6 @@
 -- Graph:
 --   {{zone_name}}.email_eu.email_eu_core — Members as vertices, emails as directed edges
 -- ============================================================================
-
-
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
@@ -27,8 +25,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.raw
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.email_eu
     COMMENT 'Email-Eu-core — Delta tables and graph definition';
-
-
 -- ############################################################################
 -- STEP 2: External Table — Raw CSV Reader (pipe-delimited)
 -- ############################################################################
@@ -37,10 +33,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.email_eu_edges
 USING CSV LOCATION '{{data_path}}/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.email_eu_edges;
 GRANT ADMIN ON TABLE {{zone_name}}.raw.email_eu_edges TO USER {{current_user}};
-
-
 -- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
@@ -56,17 +49,13 @@ AS SELECT
     CAST(edge_type AS VARCHAR) AS edge_type
 FROM {{zone_name}}.raw.email_eu_edges;
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.email_eu.edges;
 GRANT ADMIN ON TABLE {{zone_name}}.email_eu.edges TO USER {{current_user}};
-
-
 -- === Vertex Table (from CSV with member names and departments) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.email_eu_vertices
 USING CSV LOCATION '{{data_path}}/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.email_eu_vertices;
 GRANT ADMIN ON TABLE {{zone_name}}.raw.email_eu_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.email_eu.vertices
@@ -77,10 +66,7 @@ AS SELECT
     CAST(category AS VARCHAR) AS department
 FROM {{zone_name}}.raw.email_eu_vertices;
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.email_eu.vertices;
 GRANT ADMIN ON TABLE {{zone_name}}.email_eu.vertices TO USER {{current_user}};
-
-
 -- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################

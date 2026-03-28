@@ -30,4 +30,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/fleet_telemetry';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.fleet_telemetry TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.fleet_telemetry;

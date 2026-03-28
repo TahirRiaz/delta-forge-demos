@@ -26,8 +26,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.graph
     COMMENT 'Graph property storage mode demo tables';
-
-
 -- ============================================================================
 -- TABLE 1: departments — 8 department lookup records
 -- ============================================================================
@@ -49,9 +47,6 @@ INSERT INTO {{zone_name}}.graph.departments VALUES
     (5, 'Operations',   1, 2500),
     (6, 'Legal',        4, 1200),
     (7, 'Product',      3, 2200);
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.departments;
-
 
 -- ============================================================================
 -- TABLE 2: employees — 100 employee vertex nodes
@@ -122,9 +117,6 @@ SELECT
     (id % 11 != 0) AS active
 FROM generate_series(1, 100) AS t(id);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.employees;
-
-
 -- ============================================================================
 -- TABLE 3: connections — ~300 directed edges (5 batches)
 -- ============================================================================
@@ -151,8 +143,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.graph.connections (
 ) LOCATION '{{data_path}}/connections';
 
 GRANT ADMIN ON TABLE {{zone_name}}.graph.connections TO USER {{current_user}};
-
-
 -- ============================================================================
 -- Batch 1: Intra-department colleagues (~100 edges)
 -- ============================================================================
@@ -178,8 +168,6 @@ FROM (
     FROM generate_series(1, 100) AS t(gs)
 ) sub
 WHERE src != dst;
-
-
 -- ============================================================================
 -- Batch 2: City cross-department social (~60 edges)
 -- ============================================================================
@@ -215,8 +203,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND (src % 8) != (dst % 8);
-
-
 -- ============================================================================
 -- Batch 3: Hierarchical mentorship (~60 edges)
 -- ============================================================================
@@ -261,8 +247,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 100;
-
-
 -- ============================================================================
 -- Batch 4: Bridge node connections (~40 edges)
 -- ============================================================================
@@ -299,8 +283,6 @@ FROM (
 ) sub
 WHERE src != dst
   AND dst BETWEEN 1 AND 100;
-
-
 -- ============================================================================
 -- Batch 5: Weak ties — pseudo-random long-range connections (~40 edges)
 -- ============================================================================
@@ -328,9 +310,6 @@ FROM (
 ) sub
 WHERE src != dst;
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.graph.connections;
-
-
 -- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
@@ -343,8 +322,6 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.graph.social_network
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type
     DIRECTED;
-
-
 -- ============================================================================
 -- VIEW 4: employee_stats — per-employee degree centrality
 -- ============================================================================
@@ -365,8 +342,6 @@ LEFT JOIN (
 LEFT JOIN (
     SELECT dst, COUNT(*) AS in_degree FROM {{zone_name}}.graph.connections GROUP BY dst
 ) in_deg ON e.id = in_deg.dst;
-
-
 -- ============================================================================
 -- VIEW 5: dept_connections — cross-department connection matrix
 -- ============================================================================

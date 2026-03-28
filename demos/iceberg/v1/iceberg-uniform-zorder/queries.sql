@@ -17,16 +17,12 @@
 -- 5. Spatial bounding-box query to demonstrate co-location benefit
 -- 6. Cross-format verification via Iceberg read-back
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (36 seed deliveries)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.delivery_tracking ORDER BY delivery_id;
-
-
 -- ============================================================================
 -- Query 1: Per-City Delivery Counts — Baseline
 -- ============================================================================
@@ -44,8 +40,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 GROUP BY city
 ORDER BY city;
-
-
 -- ============================================================================
 -- Query 2: Per-City Total Fees — Baseline
 -- ============================================================================
@@ -63,8 +57,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 GROUP BY city
 ORDER BY city;
-
-
 -- ============================================================================
 -- LEARN: INSERT Batch 2 — Create File Fragmentation (18 more deliveries)
 -- ============================================================================
@@ -91,8 +83,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.delivery_tracking VALUES
     (52, 'DRV-607', 39.9530,  -75.1680,  'delivered',  2.5,  8.50,  '2025-02-08', 'Philadelphia'),
     (53, 'DRV-608', 40.0020,  -75.1180,  'delivered',  3.8,  11.99, '2025-02-08', 'Philadelphia'),
     (54, 'DRV-609', 39.9340,  -75.1920,  'pending',    1.5,  6.50,  '2025-02-08', 'Philadelphia');
-
-
 -- ============================================================================
 -- LEARN: INSERT Batch 3 — More Fragmentation (18 more deliveries)
 -- ============================================================================
@@ -118,16 +108,12 @@ INSERT INTO {{zone_name}}.iceberg_demos.delivery_tracking VALUES
     (70, 'DRV-610', 39.9700,  -75.1500,  'delivered',  2.0,  7.99,  '2025-02-11', 'Philadelphia'),
     (71, 'DRV-611', 39.9100,  -75.2000,  'delivered',  5.2,  14.50, '2025-02-11', 'Philadelphia'),
     (72, 'DRV-612', 39.9900,  -75.1400,  'pending',    1.0,  5.50,  '2025-02-11', 'Philadelphia');
-
-
 -- ============================================================================
 -- Query 3: Pre-ZORDER Row Count — All 72 Deliveries Present
 -- ============================================================================
 
 ASSERT ROW_COUNT = 72
 SELECT * FROM {{zone_name}}.iceberg_demos.delivery_tracking ORDER BY delivery_id;
-
-
 -- ============================================================================
 -- Query 4: Pre-ZORDER Per-City Counts — 12 Per City
 -- ============================================================================
@@ -145,8 +131,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 GROUP BY city
 ORDER BY city;
-
-
 -- ============================================================================
 -- Query 5: Pre-ZORDER Aggregates — Snapshot Before Optimization
 -- ============================================================================
@@ -160,8 +144,6 @@ SELECT
     ROUND(SUM(delivery_fee), 2) AS total_fees,
     ROUND(SUM(package_weight), 1) AS total_weight
 FROM {{zone_name}}.iceberg_demos.delivery_tracking;
-
-
 -- ============================================================================
 -- LEARN: OPTIMIZE ZORDER — Spatial Locality Optimization
 -- ============================================================================
@@ -171,8 +153,6 @@ FROM {{zone_name}}.iceberg_demos.delivery_tracking;
 -- by reducing the number of files that need to be scanned.
 
 OPTIMIZE {{zone_name}}.iceberg_demos.delivery_tracking ZORDER BY (latitude, longitude);
-
-
 -- ============================================================================
 -- Query 6: Post-ZORDER Row Count — Data Integrity Preserved
 -- ============================================================================
@@ -180,8 +160,6 @@ OPTIMIZE {{zone_name}}.iceberg_demos.delivery_tracking ZORDER BY (latitude, long
 
 ASSERT ROW_COUNT = 72
 SELECT * FROM {{zone_name}}.iceberg_demos.delivery_tracking ORDER BY delivery_id;
-
-
 -- ============================================================================
 -- Query 7: Post-ZORDER Aggregates — Values Unchanged
 -- ============================================================================
@@ -196,8 +174,6 @@ SELECT
     ROUND(SUM(delivery_fee), 2) AS total_fees,
     ROUND(SUM(package_weight), 1) AS total_weight
 FROM {{zone_name}}.iceberg_demos.delivery_tracking;
-
-
 -- ============================================================================
 -- Query 8: Post-ZORDER Per-City Fees — Still Correct
 -- ============================================================================
@@ -215,8 +191,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 GROUP BY city
 ORDER BY city;
-
-
 -- ============================================================================
 -- Query 9: Post-ZORDER Status Distribution
 -- ============================================================================
@@ -231,8 +205,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 GROUP BY delivery_status
 ORDER BY delivery_status;
-
-
 -- ============================================================================
 -- Query 10: Spatial Range Query — Manhattan / Central NYC Bounding Box
 -- ============================================================================
@@ -252,8 +224,6 @@ FROM {{zone_name}}.iceberg_demos.delivery_tracking
 WHERE latitude BETWEEN 40.65 AND 40.80
   AND longitude BETWEEN -74.05 AND -73.95
 ORDER BY delivery_id;
-
-
 -- ============================================================================
 -- Query 10b: NYC Bounding Box Aggregate
 -- ============================================================================
@@ -267,8 +237,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 WHERE latitude BETWEEN 40.65 AND 40.80
   AND longitude BETWEEN -74.05 AND -73.95;
-
-
 -- ============================================================================
 -- Query 11: Spatial Range Query — Greater Los Angeles Bounding Box
 -- ============================================================================
@@ -284,8 +252,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking
 WHERE latitude BETWEEN 33.0 AND 35.0
   AND longitude BETWEEN -119.0 AND -118.0;
-
-
 -- ============================================================================
 -- Query 12: DESCRIBE DETAIL — File Layout After Z-ORDER
 -- ============================================================================
@@ -294,8 +260,6 @@ WHERE latitude BETWEEN 33.0 AND 35.0
 
 ASSERT WARNING ROW_COUNT >= 1
 DESCRIBE DETAIL {{zone_name}}.iceberg_demos.delivery_tracking;
-
-
 -- ============================================================================
 -- VERIFY: Cross-Cutting Sanity Check
 -- ============================================================================
@@ -315,8 +279,6 @@ SELECT
     ROUND(SUM(package_weight), 1) AS total_weight,
     COUNT(*) FILTER (WHERE delivery_status = 'delivered') AS delivered_count
 FROM {{zone_name}}.iceberg_demos.delivery_tracking;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -331,9 +293,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/delivery_tracking';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.delivery_tracking_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.delivery_tracking_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Spot-Check Individual Rows — Data Fidelity
 -- ============================================================================
@@ -348,8 +307,6 @@ ASSERT VALUE delivery_fee = 8.99
 ASSERT VALUE city = 'New York'
 SELECT * FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 WHERE delivery_id = 1;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Batch 2 Row — delivery_id 37
 -- ============================================================================
@@ -362,8 +319,6 @@ ASSERT VALUE delivery_fee = 7.50
 ASSERT VALUE city = 'New York'
 SELECT * FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 WHERE delivery_id = 37;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Batch 3 Row — delivery_id 72 (last row)
 -- ============================================================================
@@ -376,8 +331,6 @@ ASSERT VALUE delivery_fee = 5.50
 ASSERT VALUE city = 'Philadelphia'
 SELECT * FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 WHERE delivery_id = 72;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Per-City Fees & Weights — Must Match Delta
 -- ============================================================================
@@ -402,8 +355,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 GROUP BY city
 ORDER BY city;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Status Distribution — Must Match Delta
 -- ============================================================================
@@ -418,8 +369,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 GROUP BY delivery_status
 ORDER BY delivery_status;
-
-
 -- ============================================================================
 -- Iceberg Verify 6: Grand Totals — Must Match Delta Final State
 -- ============================================================================
@@ -437,8 +386,6 @@ SELECT
     COUNT(DISTINCT city) AS city_count,
     COUNT(*) FILTER (WHERE delivery_status = 'delivered') AS delivered_count
 FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 7: Spatial Range Query — NYC Box via Iceberg
 -- ============================================================================
@@ -455,8 +402,6 @@ FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 WHERE latitude BETWEEN 40.65 AND 40.80
   AND longitude BETWEEN -74.05 AND -73.95
 ORDER BY delivery_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 8: NYC Box Aggregate via Iceberg
 -- ============================================================================
@@ -470,8 +415,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 WHERE latitude BETWEEN 40.65 AND 40.80
   AND longitude BETWEEN -74.05 AND -73.95;
-
-
 -- ============================================================================
 -- Iceberg Verify 9: LA Box via Iceberg — All 12 LA Deliveries
 -- ============================================================================

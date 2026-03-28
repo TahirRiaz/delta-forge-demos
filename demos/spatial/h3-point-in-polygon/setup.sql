@@ -20,8 +20,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial
     COMMENT 'H3 spatial indexing and geographic analysis tables';
-
-
 -- ============================================================================
 -- TABLE 1: zones — 12 pricing zones across 8 world cities
 -- ============================================================================
@@ -43,7 +41,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.zones (
 ) LOCATION '{{data_path}}/pip_zones';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial.zones TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.zones;
 
 INSERT INTO {{zone_name}}.spatial.zones VALUES
     -- San Francisco
@@ -89,8 +86,6 @@ INSERT INTO {{zone_name}}.spatial.zones VALUES
     (12, 'LA Downtown',      'downtown', 'Los Angeles',   'USA',
      'POLYGON((-118.26 34.04, -118.24 34.04, -118.24 34.06, -118.26 34.06, -118.26 34.04))',
      10.0);
-
-
 -- ============================================================================
 -- TABLE 2: driver_positions — 1,000,000 GPS pings from ride-share drivers
 -- ============================================================================
@@ -119,7 +114,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.driver_positions (
 ) LOCATION '{{data_path}}/pip_driver_positions';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial.driver_positions TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.driver_positions;
 
 -- San Francisco: 150,000 points (bbox covers SFO Airport + SF Downtown)
 -- Lat: 37.58–37.82, Lng: -122.52–-122.34
@@ -208,8 +202,6 @@ SELECT
     'driver_global_' || (id % 200) AS driver_id,
     'Global' AS city
 FROM generate_series(1, 50000) AS t(id);
-
-
 -- ============================================================================
 -- VIEW 3: driver_cells — Drivers enriched with H3 cell IDs (resolution 9)
 -- ============================================================================
@@ -226,8 +218,6 @@ SELECT
     city,
     h3_latlng_to_cell(lat, lng, 9) AS h3_cell
 FROM {{zone_name}}.spatial.driver_positions;
-
-
 -- ============================================================================
 -- VIEW 4: zone_cells — Zones expanded to H3 cell coverage
 -- ============================================================================

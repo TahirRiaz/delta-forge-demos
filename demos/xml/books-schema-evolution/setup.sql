@@ -5,7 +5,7 @@
 -- Each file adds or removes elements, demonstrating schema evolution.
 --
 -- The xml_flatten_config pre-selects the union of all paths across all files.
--- DETECT SCHEMA then uses this config to generate the column definitions
+-- The engine uses this config to generate the column definitions
 -- (ConfigBasedStrategy), so no file I/O is needed at schema-discovery time.
 -- ============================================================================
 
@@ -77,4 +77,3 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.xml.books_evolved TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.xml.books_evolved;

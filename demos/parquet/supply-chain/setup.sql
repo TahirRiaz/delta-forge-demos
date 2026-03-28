@@ -40,9 +40,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.parquet.all_orders TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.parquet.all_orders;
-
-
 -- ============================================================================
 -- TABLE 2: orders_2015 — Single year via file_filter (23,636 rows)
 -- ============================================================================
@@ -58,9 +55,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.parquet.orders_2015 TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.parquet.orders_2015;
-
-
 -- ============================================================================
 -- TABLE 3: orders_sample — Data profiling via max_rows (100 per file)
 -- ============================================================================
@@ -77,9 +71,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.parquet.orders_sample TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.parquet.orders_sample;
-
-
 -- ============================================================================
 -- TABLE 4: orders_q1_2014 — Single quarter drill-down (5,210 rows)
 -- ============================================================================
@@ -95,4 +86,3 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.parquet.orders_q1_2014 TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.parquet.orders_q1_2014;

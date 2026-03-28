@@ -21,8 +21,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE: attendance_records — employee clock-in/clock-out tracking
 -- ============================================================================
@@ -38,9 +36,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.attendance_records (
 ) LOCATION '{{data_path}}/attendance_records';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.attendance_records TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.attendance_records;
-
-
 -- ============================================================================
 -- INSERT: Alice Chen — Engineering (record_ids 1-10)
 -- ============================================================================
@@ -55,8 +50,6 @@ INSERT INTO {{zone_name}}.delta_demos.attendance_records VALUES
     (8,  1, 'Alice Chen', 'Engineering', '2024-03-13 08:20:00', '2024-03-13 16:50:00', '2024-03-13', false),
     (9,  1, 'Alice Chen', 'Engineering', '2024-03-14 08:10:00', '2024-03-14 17:40:00', '2024-03-14', true),
     (10, 1, 'Alice Chen', 'Engineering', '2024-03-15 08:45:00', '2024-03-15 17:00:00', '2024-03-15', false);
-
-
 -- ============================================================================
 -- INSERT: Bob Martinez — Sales (record_ids 11-20)
 -- ============================================================================
@@ -71,8 +64,6 @@ INSERT INTO {{zone_name}}.delta_demos.attendance_records VALUES
     (18, 2, 'Bob Martinez', 'Sales', '2024-03-13 09:20:00', '2024-03-13 17:50:00', '2024-03-13', false),
     (19, 2, 'Bob Martinez', 'Sales', '2024-03-14 08:00:00', '2024-03-14 17:00:00', '2024-03-14', false),
     (20, 2, 'Bob Martinez', 'Sales', '2024-03-15 08:15:00', '2024-03-15 16:30:00', '2024-03-15', false);
-
-
 -- ============================================================================
 -- INSERT: Carol Johnson — Marketing (record_ids 21-30)
 -- ============================================================================
@@ -87,8 +78,6 @@ INSERT INTO {{zone_name}}.delta_demos.attendance_records VALUES
     (28, 3, 'Carol Johnson', 'Marketing', '2024-03-13 09:00:00', '2024-03-13 17:15:00', '2024-03-13', false),
     (29, 3, 'Carol Johnson', 'Marketing', '2024-03-14 08:20:00', '2024-03-14 16:50:00', '2024-03-14', false),
     (30, 3, 'Carol Johnson', 'Marketing', '2024-03-15 08:30:00', '2024-03-15 17:00:00', '2024-03-15', true);
-
-
 -- ============================================================================
 -- INSERT: David Kim — Support (record_ids 31-40)
 -- ============================================================================
@@ -103,8 +92,6 @@ INSERT INTO {{zone_name}}.delta_demos.attendance_records VALUES
     (38, 4, 'David Kim', 'Support', '2024-03-13 08:45:00', '2024-03-13 17:15:00', '2024-03-13', false),
     (39, 4, 'David Kim', 'Support', '2024-03-14 08:15:00', '2024-03-14 16:45:00', '2024-03-14', false),
     (40, 4, 'David Kim', 'Support', '2024-03-15 09:15:00', '2024-03-15 17:15:00', '2024-03-15', true);
-
-
 -- ============================================================================
 -- INSERT: Eva Schmidt — Engineering (record_ids 41-50)
 -- ============================================================================

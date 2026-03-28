@@ -35,8 +35,6 @@
 --   FROM {{zone_name}}.csv.sales WHERE sales_rep IS NOT NULL
 --   GROUP BY sales_rep ORDER BY revenue DESC;
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone
 -- ============================================================================
@@ -44,16 +42,12 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
-
-
 -- ============================================================================
 -- STEP 2: Schema
 -- ============================================================================
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
     COMMENT 'CSV-backed external tables';
-
-
 -- ============================================================================
 -- STEP 3: External Table
 -- ============================================================================
@@ -73,17 +67,11 @@ OPTIONS (
     header = 'true',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-
-
 -- ============================================================================
--- STEP 4: Detect Schema
 -- ============================================================================
 -- Discovers column metadata from the CSV files and saves it to the catalog.
 -- This populates the external_table_columns so the engine knows what columns
 -- each file contains (crucial for schema-evolution scenarios).
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.csv.sales;
-
 
 -- ============================================================================
 -- STEP 5: Table Permission

@@ -83,10 +83,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.fhir.conditions;
 GRANT ADMIN ON TABLE {{zone_name}}.fhir.conditions TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: procedures — 8 Procedure resources
 -- ============================================================================
@@ -143,10 +140,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.fhir.procedures;
 GRANT ADMIN ON TABLE {{zone_name}}.fhir.procedures TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 3: allergies — 6 AllergyIntolerance resources
 -- ============================================================================
@@ -204,5 +198,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.fhir.allergies;
 GRANT ADMIN ON TABLE {{zone_name}}.fhir.allergies TO USER {{current_user}};

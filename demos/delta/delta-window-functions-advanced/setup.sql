@@ -17,8 +17,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE: sales_reps — 40 rows (10 reps × 4 quarters)
 -- ============================================================================
@@ -33,8 +31,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_reps (
 ) LOCATION '{{data_path}}/sales_reps';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_reps TO USER {{current_user}};
-
-
 -- Rep 1: Alice Chen — North, strong performer
 -- Rep 2: Bob Martinez — North, average
 -- Rep 3: Carol Wu — South, top performer
@@ -87,4 +83,3 @@ INSERT INTO {{zone_name}}.delta_demos.sales_reps VALUES
     (10, 'James Ortiz',    'South', 'Q3', 145000.00, 18, 170000.00),
     (10, 'James Ortiz',    'South', 'Q4', 175000.00, 20, 180000.00);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.sales_reps;

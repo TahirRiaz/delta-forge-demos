@@ -36,7 +36,6 @@ OPTIONS (
     infer_schema_rows = '100',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel.all_sales;
 GRANT ADMIN ON TABLE {{zone_name}}.excel.all_sales TO USER {{current_user}};
 
 -- ============================================================================
@@ -54,7 +53,6 @@ OPTIONS (
     infer_schema_rows = '100',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel.all_returns;
 GRANT ADMIN ON TABLE {{zone_name}}.excel.all_returns TO USER {{current_user}};
 
 -- ============================================================================
@@ -72,5 +70,4 @@ OPTIONS (
     infer_schema_rows = '100',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel.all_staff;
 GRANT ADMIN ON TABLE {{zone_name}}.excel.all_staff TO USER {{current_user}};

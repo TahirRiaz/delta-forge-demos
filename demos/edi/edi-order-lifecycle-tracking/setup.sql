@@ -37,8 +37,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = lifecycle_tracking
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -49,8 +47,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE: lifecycle_tracking — Cross-document lifecycle fields
 -- ============================================================================
@@ -84,7 +80,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.lifecycle_tracking;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.lifecycle_tracking TO USER {{current_user}};

@@ -60,4 +60,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/puffin_dv_products';
 
 GRANT ADMIN ON TABLE {{zone_name}}.puffin_dv_demo.products_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.puffin_dv_demo.products_iceberg;

@@ -20,8 +20,6 @@
 -- After running, verify partition specs in the Iceberg metadata:
 --   python3 verify_iceberg_metadata.py <table_data_path>/warehouse_inventory -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (Version 1 / Snapshot 1)
 -- ============================================================================
@@ -29,8 +27,6 @@
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.warehouse_inventory ORDER BY sku;
-
-
 -- ============================================================================
 -- Query 1: Per-Warehouse Summary
 -- ============================================================================
@@ -50,8 +46,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY warehouse
 ORDER BY warehouse;
-
-
 -- ============================================================================
 -- Query 2: Total Inventory Value
 -- ============================================================================
@@ -63,8 +57,6 @@ SELECT
     ROUND(SUM(quantity_on_hand * unit_cost), 2) AS total_value,
     SUM(quantity_on_hand) AS total_quantity
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
-
-
 -- ============================================================================
 -- LEARN: MERGE 1 — Receive Shipment (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -109,8 +101,6 @@ WHEN MATCHED THEN UPDATE SET
     last_received = source.last_received
 WHEN NOT MATCHED THEN INSERT (sku, warehouse, product_name, quantity_on_hand, reorder_point, unit_cost, last_received)
     VALUES (source.sku, source.warehouse, source.product_name, source.quantity_on_hand, source.reorder_point, source.unit_cost, source.last_received);
-
-
 -- ============================================================================
 -- Query 3: Post-Shipment Row Count
 -- ============================================================================
@@ -118,8 +108,6 @@ WHEN NOT MATCHED THEN INSERT (sku, warehouse, product_name, quantity_on_hand, re
 
 ASSERT ROW_COUNT = 42
 SELECT * FROM {{zone_name}}.iceberg_demos.warehouse_inventory ORDER BY sku;
-
-
 -- ============================================================================
 -- Query 4: Post-Shipment Per-Warehouse Summary
 -- ============================================================================
@@ -139,8 +127,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY warehouse
 ORDER BY warehouse;
-
-
 -- ============================================================================
 -- Query 5: Verify Specific Quantity Additions
 -- ============================================================================
@@ -161,8 +147,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 WHERE sku IN ('WH-P001', 'WH-P003', 'WH-D001', 'WH-D003', 'WH-C001', 'WH-C003')
 ORDER BY sku;
-
-
 -- ============================================================================
 -- Query 6: Post-Shipment Total Inventory Value
 -- ============================================================================
@@ -174,8 +158,6 @@ SELECT
     ROUND(SUM(quantity_on_hand * unit_cost), 2) AS total_value,
     SUM(quantity_on_hand) AS total_quantity
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
-
-
 -- ============================================================================
 -- LEARN: MERGE 2 — Inventory Audit (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -210,8 +192,6 @@ WHEN MATCHED THEN UPDATE SET
     last_received = source.last_received
 WHEN NOT MATCHED THEN INSERT (sku, warehouse, product_name, quantity_on_hand, reorder_point, unit_cost, last_received)
     VALUES (source.sku, source.warehouse, source.product_name, source.quantity_on_hand, source.reorder_point, source.unit_cost, source.last_received);
-
-
 -- ============================================================================
 -- Query 7: Post-Audit Row Count
 -- ============================================================================
@@ -219,8 +199,6 @@ WHEN NOT MATCHED THEN INSERT (sku, warehouse, product_name, quantity_on_hand, re
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.warehouse_inventory ORDER BY sku;
-
-
 -- ============================================================================
 -- Query 8: Discontinued SKUs Removed
 -- ============================================================================
@@ -229,8 +207,6 @@ ASSERT ROW_COUNT = 0
 SELECT *
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 WHERE sku IN ('WH-P012', 'WH-D012', 'WH-C012', 'WH-P008', 'WH-D008', 'WH-C008');
-
-
 -- ============================================================================
 -- Query 9: Post-Audit Per-Warehouse Summary
 -- ============================================================================
@@ -250,8 +226,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY warehouse
 ORDER BY warehouse;
-
-
 -- ============================================================================
 -- Query 10: Verify Audit Corrections Applied
 -- ============================================================================
@@ -272,8 +246,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 WHERE sku IN ('WH-P002', 'WH-D002', 'WH-C002', 'WH-P006', 'WH-D006', 'WH-C006')
 ORDER BY sku;
-
-
 -- ============================================================================
 -- Query 11: Time Travel — SKU Counts Across All Versions
 -- ============================================================================
@@ -287,8 +259,6 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.warehouse_inventory VERSION AS OF 1) AS v1_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.warehouse_inventory VERSION AS OF 2) AS v2_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.warehouse_inventory) AS v3_count;
-
-
 -- ============================================================================
 -- Query 12: Time Travel — Inventory Value Across Versions
 -- ============================================================================
@@ -302,8 +272,6 @@ SELECT
     ROUND((SELECT SUM(quantity_on_hand * unit_cost) FROM {{zone_name}}.iceberg_demos.warehouse_inventory VERSION AS OF 2), 2) AS v2_value,
     ROUND(SUM(quantity_on_hand * unit_cost), 2) AS v3_value
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
-
-
 -- ============================================================================
 -- Query 13: Version History
 -- ============================================================================
@@ -313,8 +281,6 @@ FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
 
 ASSERT WARNING ROW_COUNT >= 3
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.warehouse_inventory;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -331,8 +297,6 @@ SELECT
     ROUND(SUM(quantity_on_hand * unit_cost), 2) AS total_inventory_value,
     SUM(quantity_on_hand) AS total_quantity
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -351,17 +315,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/warehouse_inventory';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 36 SKUs After Both MERGEs
 -- ============================================================================
 
 ASSERT ROW_COUNT = 36
 SELECT * FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg ORDER BY sku;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Warehouse Inventory Values — Full Data Check
 -- ============================================================================
@@ -382,8 +341,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 GROUP BY warehouse
 ORDER BY warehouse;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Shipment Quantities Persisted — Spot-Check via Iceberg
 -- ============================================================================
@@ -404,8 +361,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 WHERE sku IN ('WH-P001', 'WH-P003', 'WH-D001', 'WH-D003', 'WH-C001', 'WH-C003')
 ORDER BY sku;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Audit Corrections Applied — Spot-Check via Iceberg
 -- ============================================================================
@@ -427,8 +382,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 WHERE sku IN ('WH-P002', 'WH-D002', 'WH-C002', 'WH-P006', 'WH-D006', 'WH-C006')
 ORDER BY sku;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Discontinued SKUs Removed — Iceberg Reflects Deletes
 -- ============================================================================
@@ -438,8 +391,6 @@ ASSERT ROW_COUNT = 0
 SELECT *
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 WHERE sku IN ('WH-P012', 'WH-D012', 'WH-C012', 'WH-P008', 'WH-D008', 'WH-C008');
-
-
 -- ============================================================================
 -- Iceberg Verify 6: New SKUs Present — Iceberg Reflects Inserts
 -- ============================================================================
@@ -460,8 +411,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 WHERE sku IN ('WH-P013', 'WH-P014', 'WH-D013', 'WH-D014', 'WH-C013', 'WH-C014')
 ORDER BY sku;
-
-
 -- ============================================================================
 -- Iceberg Verify 7: Grand Totals — Must Match Delta Final State
 -- ============================================================================

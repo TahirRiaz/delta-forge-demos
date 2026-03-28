@@ -30,8 +30,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -42,8 +40,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: logistics_messages -- Compact view (12 transactions)
 -- ============================================================================
@@ -61,12 +57,7 @@ OPTIONS (
     edi_config = '{"ediFormat": "x12"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.logistics_messages;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.logistics_messages TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: logistics_materialized -- Key logistics fields extracted
 -- ============================================================================
@@ -103,7 +94,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.logistics_materialized;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.logistics_materialized TO USER {{current_user}};

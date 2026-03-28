@@ -30,4 +30,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/trips';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.trips TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.trips;

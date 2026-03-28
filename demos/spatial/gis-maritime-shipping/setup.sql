@@ -12,8 +12,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.maritime
     COMMENT 'Maritime shipping — ports, vessels, and GPS positions';
-
-
 -- ==========================================================================
 -- TABLE 1: ports — 10 major world ports with harbor polygon boundaries
 -- ==========================================================================
@@ -44,9 +42,6 @@ INSERT INTO {{zone_name}}.maritime.ports VALUES
     (9,  'Yokohama',    'Japan',        35.4500,  139.6400, 'POLYGON((139.63 35.44, 139.65 35.44, 139.65 35.46, 139.63 35.46, 139.63 35.44))'),
     (10, 'Felixstowe',  'UK',           51.9500,    1.3000, 'POLYGON((1.29 51.94, 1.31 51.94, 1.31 51.96, 1.29 51.96, 1.29 51.94))');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.maritime.ports;
-
-
 -- ==========================================================================
 -- TABLE 2: vessels — 5 cargo vessels with metadata
 -- ==========================================================================
@@ -67,9 +62,6 @@ INSERT INTO {{zone_name}}.maritime.vessels VALUES
     (3, 'MV Indian Voyager',  'Tanker',         'Marshall Islands', 120000),
     (4, 'MV Nordic Spirit',   'Container Ship', 'Singapore',        58000),
     (5, 'MV Southern Cross',  'Cargo',          'Greece',           45000);
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.maritime.vessels;
-
 
 -- ==========================================================================
 -- TABLE 3: positions — 40 GPS position reports (8 per vessel)
@@ -140,4 +132,3 @@ INSERT INTO {{zone_name}}.maritime.positions VALUES
     (39, 5,  35.4400,  139.0000, 11.0, '2025-03-03 12:00:00'),
     (40, 5,  35.4500,  139.6400,  0.0, '2025-03-03 18:00:00');
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.maritime.positions;

@@ -35,4 +35,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/employee_directory';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.employee_directory TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.employee_directory;

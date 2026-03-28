@@ -37,10 +37,7 @@ OPTIONS (
     infer_schema_rows = '1000',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel.all_orders;
 GRANT ADMIN ON TABLE {{zone_name}}.excel.all_orders TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: orders_2017 — Single file only (3,312 rows)
 -- ============================================================================
@@ -56,5 +53,4 @@ OPTIONS (
     file_filter = 'sales-data-2017*',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.excel.orders_2017;
 GRANT ADMIN ON TABLE {{zone_name}}.excel.orders_2017 TO USER {{current_user}};

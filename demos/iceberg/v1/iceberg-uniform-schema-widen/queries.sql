@@ -21,16 +21,12 @@
 -- After running this demo, verify type widening in metadata with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/sensor_readings -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — 24 Sensors (Version 1)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 24
 SELECT * FROM {{zone_name}}.iceberg_demos.sensor_readings ORDER BY sensor_id;
-
-
 -- ============================================================================
 -- Query 1: Baseline Aggregation — Per-Location Averages
 -- ============================================================================
@@ -53,8 +49,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensor_readings
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- LEARN: Type Widening Step 1 — INT→BIGINT for reading_count (Version 2)
 -- ============================================================================
@@ -63,8 +57,6 @@ ORDER BY location;
 -- entry with the reading_count field type changed from int to long.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.sensor_readings ALTER COLUMN reading_count TYPE BIGINT;
-
-
 -- ============================================================================
 -- Query 2: Verify Column Still Works After Widening
 -- ============================================================================
@@ -78,8 +70,6 @@ SELECT
     MAX(reading_count) AS max_reading,
     SUM(reading_count) AS total_readings
 FROM {{zone_name}}.iceberg_demos.sensor_readings;
-
-
 -- ============================================================================
 -- LEARN: Insert Rows With Large Values > 2 Billion (Version 3)
 -- ============================================================================
@@ -91,8 +81,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.sensor_readings VALUES
     ('S026', 'basement',   3100000000, 18.6, 71.8, 86, '2025-02-01'),
     ('S027', 'warehouse',  2800000000, 22.9, 55.0, 73, '2025-02-01'),
     ('S028', 'cleanroom',  3500000000, 21.1, 50.2, 87, '2025-02-01');
-
-
 -- ============================================================================
 -- Query 3: Verify BIGINT Values Stored Correctly
 -- ============================================================================
@@ -106,8 +94,6 @@ SELECT
     MAX(reading_count) AS max_reading,
     COUNT(*) FILTER (WHERE reading_count > 2000000000) AS rows_over_2b
 FROM {{zone_name}}.iceberg_demos.sensor_readings;
-
-
 -- ============================================================================
 -- LEARN: Type Widening Step 2 — FLOAT→DOUBLE for temperature (Version 4)
 -- ============================================================================
@@ -116,15 +102,11 @@ FROM {{zone_name}}.iceberg_demos.sensor_readings;
 -- type change from float to double.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.sensor_readings ALTER COLUMN temperature TYPE DOUBLE;
-
-
 -- ============================================================================
 -- LEARN: Type Widening Step 3 — FLOAT→DOUBLE for humidity (Version 5)
 -- ============================================================================
 
 ALTER TABLE {{zone_name}}.iceberg_demos.sensor_readings ALTER COLUMN humidity TYPE DOUBLE;
-
-
 -- ============================================================================
 -- LEARN: Insert High-Precision Readings (Version 6)
 -- ============================================================================
@@ -136,8 +118,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.sensor_readings VALUES
     ('S030', 'basement',   29000, 18.789012, 72.345678, 88, '2025-02-15'),
     ('S031', 'warehouse',  43000, 22.567890, 55.678901, 75, '2025-02-15'),
     ('S032', 'cleanroom',  54000, 21.234567, 50.890123, 86, '2025-02-15');
-
-
 -- ============================================================================
 -- Query 4: Verify Precision Is Preserved
 -- ============================================================================
@@ -155,8 +135,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensor_readings
 WHERE sensor_id IN ('S029', 'S030', 'S031', 'S032')
 ORDER BY sensor_id;
-
-
 -- ============================================================================
 -- Query 5: Final Per-Location Summary
 -- ============================================================================
@@ -179,8 +157,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensor_readings
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Query 6: Time Travel — Read Version 1 (Original INT/FLOAT Schema)
 -- ============================================================================
@@ -191,16 +167,12 @@ SELECT
     sensor_id, location, reading_count, temperature, humidity, battery_pct, reading_date
 FROM {{zone_name}}.iceberg_demos.sensor_readings VERSION AS OF 1
 ORDER BY sensor_id;
-
-
 -- ============================================================================
 -- Query 7: Version History — Type Widening Trail
 -- ============================================================================
 
 ASSERT WARNING ROW_COUNT >= 6
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.sensor_readings;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -220,8 +192,6 @@ SELECT
     ROUND(AVG(temperature), 2) AS avg_temp,
     ROUND(AVG(humidity), 2) AS avg_humidity
 FROM {{zone_name}}.iceberg_demos.sensor_readings;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -240,9 +210,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/sensor_readings';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensor_readings_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sensor_readings_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Per-Location Aggregates Match Delta Final State
 -- ============================================================================
@@ -268,8 +235,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg
 GROUP BY location
 ORDER BY location;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: BIGINT Values Readable Through Iceberg
 -- ============================================================================
@@ -288,8 +253,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg
 WHERE reading_count > 2147483647
 ORDER BY sensor_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: DOUBLE Precision Preserved Through Iceberg
 -- ============================================================================
@@ -308,8 +271,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.sensor_readings_iceberg
 WHERE sensor_id IN ('S029', 'S030', 'S031', 'S032')
 ORDER BY sensor_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Cross-Engine Totals Must Match
 -- ============================================================================

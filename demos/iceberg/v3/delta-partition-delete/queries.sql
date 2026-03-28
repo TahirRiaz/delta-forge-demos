@@ -12,8 +12,6 @@
 -- HOW:  Each step filters on the partition key (region) and/or data columns.
 --       Time-travel queries (VERSION AS OF) compare state before and after.
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — Order Distribution Across Warehouses
 -- ============================================================================
@@ -39,8 +37,6 @@ SELECT
 FROM {{zone_name}}.delta_demos.warehouse_orders
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- LEARN: Partition-Scoped DELETE (Version 5 / Snapshot 5)
 -- ============================================================================
@@ -51,8 +47,6 @@ ORDER BY region;
 
 DELETE FROM {{zone_name}}.delta_demos.warehouse_orders
 WHERE region = 'us-west' AND status = 'cancelled';
-
-
 -- ============================================================================
 -- Query 2: Post-Delete — us-west Cancelled Orders Purged
 -- ============================================================================
@@ -68,8 +62,6 @@ SELECT
 FROM {{zone_name}}.delta_demos.warehouse_orders
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 3: Time Travel — Compare Before and After
 -- ============================================================================
@@ -83,8 +75,6 @@ ASSERT VALUE removed = 3
 SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.warehouse_orders VERSION AS OF 4) -
     (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.warehouse_orders) AS removed;
-
-
 -- ============================================================================
 -- LEARN: Cross-Partition DELETE (Version 6 / Snapshot 6)
 -- ============================================================================
@@ -95,8 +85,6 @@ SELECT
 
 DELETE FROM {{zone_name}}.delta_demos.warehouse_orders
 WHERE status = 'returned';
-
-
 -- ============================================================================
 -- Query 4: Post-Delete — No Returned Orders Remain
 -- ============================================================================
@@ -116,8 +104,6 @@ SELECT
 FROM {{zone_name}}.delta_demos.warehouse_orders
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 5: Confirm Zero Returned Orders
 -- ============================================================================
@@ -126,8 +112,6 @@ ASSERT VALUE returned_count = 0
 SELECT COUNT(*) AS returned_count
 FROM {{zone_name}}.delta_demos.warehouse_orders
 WHERE status = 'returned';
-
-
 -- ============================================================================
 -- LEARN: Conditional Partition DELETE (Version 7 / Snapshot 7)
 -- ============================================================================
@@ -145,8 +129,6 @@ DELETE FROM {{zone_name}}.delta_demos.warehouse_orders
 WHERE region = 'us-east'
   AND status = 'pending'
   AND id IN (38, 43, 45);
-
-
 -- ============================================================================
 -- Query 6: Post-Delete — us-east Low-Value Pending Purged
 -- ============================================================================
@@ -162,8 +144,6 @@ SELECT
 FROM {{zone_name}}.delta_demos.warehouse_orders
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 7: Verify Surviving us-east Pending Order
 -- ============================================================================
@@ -177,8 +157,6 @@ SELECT id, product, quantity, unit_price,
        ROUND(quantity * unit_price, 2) AS line_total
 FROM {{zone_name}}.delta_demos.warehouse_orders
 WHERE region = 'us-east' AND status = 'pending';
-
-
 -- ============================================================================
 -- EXPLORE: Version History — Row Counts Over Time
 -- ============================================================================
@@ -200,8 +178,6 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.warehouse_orders VERSION AS OF 5) AS v5_rows,
     (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.warehouse_orders VERSION AS OF 6) AS v6_rows,
     (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.warehouse_orders) AS v7_rows;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -250,8 +226,6 @@ FROM {{zone_name}}.delta_demos.warehouse_orders WHERE status = 'fulfilled';
 ASSERT VALUE total_value = 19696.33
 SELECT ROUND(SUM(quantity * unit_price), 2) AS total_value
 FROM {{zone_name}}.delta_demos.warehouse_orders;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -270,17 +244,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/warehouse_orders';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.warehouse_orders_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.warehouse_orders_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 33 Orders After All Deletes
 -- ============================================================================
 
 ASSERT ROW_COUNT = 33
 SELECT * FROM {{zone_name}}.delta_demos.warehouse_orders_iceberg ORDER BY id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Region Counts Match Delta Final State
 -- ============================================================================
@@ -295,8 +264,6 @@ SELECT
 FROM {{zone_name}}.delta_demos.warehouse_orders_iceberg
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Deleted Rows Are Absent
 -- ============================================================================
@@ -305,8 +272,6 @@ ASSERT VALUE cnt = 0
 SELECT COUNT(*) AS cnt
 FROM {{zone_name}}.delta_demos.warehouse_orders_iceberg
 WHERE id IN (4, 8, 13, 6, 10, 21, 24, 36, 39, 38, 43, 45);
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Status Breakdown — No Returned Orders
 -- ============================================================================
@@ -321,8 +286,6 @@ SELECT
 FROM {{zone_name}}.delta_demos.warehouse_orders_iceberg
 GROUP BY status
 ORDER BY status;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Grand Total Value — Must Match Delta
 -- ============================================================================

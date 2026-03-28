@@ -24,8 +24,6 @@
 --   schema = 'hl7'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -36,8 +34,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7
     COMMENT 'HL7 v2 message-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: lab_orders — ORM messages, compact view (3 messages)
 -- ============================================================================
@@ -53,9 +49,6 @@ OPTIONS (
 );
 
 GRANT ADMIN ON TABLE {{zone_name}}.hl7.lab_orders TO USER {{current_user}};
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.hl7.lab_orders;
-
 
 -- ============================================================================
 -- TABLE 2: lab_results — All messages with materialized observation fields
@@ -89,4 +82,3 @@ OPTIONS (
 
 GRANT ADMIN ON TABLE {{zone_name}}.hl7.lab_results TO USER {{current_user}};
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.hl7.lab_results;

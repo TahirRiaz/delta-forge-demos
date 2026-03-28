@@ -31,4 +31,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/weather_readings';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.weather_readings TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.weather_readings;

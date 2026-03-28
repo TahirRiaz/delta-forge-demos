@@ -28,8 +28,6 @@
 -- Graph:
 --   {{zone_name}}.ldbc.ldbc_social_network — Person vertices + KNOWS edges (core social graph)
 -- ============================================================================
-
-
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
@@ -48,8 +46,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.raw
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.ldbc
     COMMENT 'LDBC SNB — Delta tables, graph definition, and queries';
-
-
 -- ############################################################################
 -- STEP 2: External Tables — Raw CSV Readers (pipe-delimited)
 -- ############################################################################
@@ -58,8 +54,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.ldbc
 -- duplicate column names have been renamed for compatibility.
 -- Column names are auto-sanitized by the CSV handler (camelCase → snake_case).
 -- ############################################################################
-
-
 -- === Static Entities ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.place
@@ -77,8 +71,6 @@ OPTIONS (header = 'true', delimiter = '|');
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.tagclass
 USING CSV LOCATION '{{data_path}}/tagclass.csv'
 OPTIONS (header = 'true', delimiter = '|');
-
-
 -- === Static Edges ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.organisation_is_located_in_place
@@ -96,8 +88,6 @@ OPTIONS (header = 'true', delimiter = '|');
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.tagclass_is_subclass_of_tagclass
 USING CSV LOCATION '{{data_path}}/tagclass_is_subclass_of_tagclass.csv'
 OPTIONS (header = 'true', delimiter = '|');
-
-
 -- === Dynamic Entities ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person
@@ -115,8 +105,6 @@ OPTIONS (header = 'true', delimiter = '|');
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.forum
 USING CSV LOCATION '{{data_path}}/forum.csv'
 OPTIONS (header = 'true', delimiter = '|');
-
-
 -- === Dynamic Edges ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.person_knows_person
@@ -202,119 +190,81 @@ OPTIONS (header = 'true', delimiter = '|');
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.post_is_located_in_place
 USING CSV LOCATION '{{data_path}}/post_is_located_in_place.csv'
 OPTIONS (header = 'true', delimiter = '|');
-
-
 -- ############################################################################
--- STEP 2b: Detect Schema & Permissions — External Tables
+-- STEP 2b: Permissions — External Tables
 -- ############################################################################
--- Discovers column metadata from the CSV files and saves it to the catalog.
 -- Grants the current user admin access on each external table.
 -- ############################################################################
 
 -- Static entities
 GRANT ADMIN ON TABLE {{zone_name}}.raw.place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.organisation TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.organisation;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.tagclass TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tagclass;
 
 -- Static edges
 GRANT ADMIN ON TABLE {{zone_name}}.raw.organisation_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.organisation_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.place_is_part_of_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.place_is_part_of_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.tag_has_type_tagclass TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tag_has_type_tagclass;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.tagclass_is_subclass_of_tagclass TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.tagclass_is_subclass_of_tagclass;
 
 -- Dynamic entities
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.comment TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.forum TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum;
 
 -- Dynamic edges
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_knows_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_knows_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_has_creator_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_has_creator_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_has_tag_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_has_tag_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_reply_of_comment TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_reply_of_comment;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.comment_reply_of_post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.comment_reply_of_post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_container_of_post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_container_of_post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_has_member_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_has_member_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_has_moderator_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_has_moderator_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.forum_has_tag_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.forum_has_tag_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_email TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_email;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_has_interest_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_has_interest_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_likes_comment TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_likes_comment;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_likes_post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_likes_post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_speaks_language TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_speaks_language;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_study_at_organisation TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_study_at_organisation;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.person_work_at_organisation TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.person_work_at_organisation;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.post_has_creator_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_has_creator_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.post_has_tag_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_has_tag_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.post_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_is_located_in_place;
-
-
 -- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
@@ -323,8 +273,6 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.raw.post_is_located_in_place;
 -- Column names from CSV headers are auto-sanitized: camelCase → snake_case.
 -- e.g. firstName → first_name, creationDate → creation_date
 -- ############################################################################
-
-
 -- === Static Entity Tables ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.place
@@ -337,9 +285,6 @@ AS SELECT
 FROM {{zone_name}}.raw.place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.place;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.organisation
 LOCATION '{{data_path}}/delta/organisation'
 AS SELECT
@@ -350,9 +295,6 @@ AS SELECT
 FROM {{zone_name}}.raw.organisation;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.organisation TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.organisation;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.tag
 LOCATION '{{data_path}}/delta/tag'
 AS SELECT
@@ -362,9 +304,6 @@ AS SELECT
 FROM {{zone_name}}.raw.tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.tag;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.tagclass
 LOCATION '{{data_path}}/delta/tagclass'
 AS SELECT
@@ -374,9 +313,6 @@ AS SELECT
 FROM {{zone_name}}.raw.tagclass;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.tagclass TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.tagclass;
-
-
 -- === Static Edge Tables ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.organisation_is_located_in_place
@@ -387,9 +323,6 @@ AS SELECT
 FROM {{zone_name}}.raw.organisation_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.organisation_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.organisation_is_located_in_place;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.place_is_part_of_place
 LOCATION '{{data_path}}/delta/place_is_part_of_place'
 AS SELECT
@@ -398,9 +331,6 @@ AS SELECT
 FROM {{zone_name}}.raw.place_is_part_of_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.place_is_part_of_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.place_is_part_of_place;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.tag_has_type_tagclass
 LOCATION '{{data_path}}/delta/tag_has_type_tagclass'
 AS SELECT
@@ -409,9 +339,6 @@ AS SELECT
 FROM {{zone_name}}.raw.tag_has_type_tagclass;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.tag_has_type_tagclass TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.tag_has_type_tagclass;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.tagclass_is_subclass_of_tagclass
 LOCATION '{{data_path}}/delta/tagclass_is_subclass_of_tagclass'
 AS SELECT
@@ -420,9 +347,6 @@ AS SELECT
 FROM {{zone_name}}.raw.tagclass_is_subclass_of_tagclass;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.tagclass_is_subclass_of_tagclass TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.tagclass_is_subclass_of_tagclass;
-
-
 -- === Dynamic Entity Tables ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person
@@ -439,9 +363,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.comment
 LOCATION '{{data_path}}/delta/comment'
 AS SELECT
@@ -454,9 +375,6 @@ AS SELECT
 FROM {{zone_name}}.raw.comment;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.comment TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.comment;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.post
 LOCATION '{{data_path}}/delta/post'
 AS SELECT
@@ -471,9 +389,6 @@ AS SELECT
 FROM {{zone_name}}.raw.post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.post;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.forum
 LOCATION '{{data_path}}/delta/forum'
 AS SELECT
@@ -483,9 +398,6 @@ AS SELECT
 FROM {{zone_name}}.raw.forum;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.forum TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.forum;
-
-
 -- === Dynamic Edge Tables ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_knows_person
@@ -497,9 +409,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_knows_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_knows_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_knows_person;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.comment_has_creator_person
 LOCATION '{{data_path}}/delta/comment_has_creator_person'
 AS SELECT
@@ -508,9 +417,6 @@ AS SELECT
 FROM {{zone_name}}.raw.comment_has_creator_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.comment_has_creator_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.comment_has_creator_person;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.comment_has_tag_tag
 LOCATION '{{data_path}}/delta/comment_has_tag_tag'
 AS SELECT
@@ -519,9 +425,6 @@ AS SELECT
 FROM {{zone_name}}.raw.comment_has_tag_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.comment_has_tag_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.comment_has_tag_tag;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.comment_is_located_in_place
 LOCATION '{{data_path}}/delta/comment_is_located_in_place'
 AS SELECT
@@ -530,9 +433,6 @@ AS SELECT
 FROM {{zone_name}}.raw.comment_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.comment_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.comment_is_located_in_place;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.comment_reply_of_comment
 LOCATION '{{data_path}}/delta/comment_reply_of_comment'
 AS SELECT
@@ -541,9 +441,6 @@ AS SELECT
 FROM {{zone_name}}.raw.comment_reply_of_comment;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.comment_reply_of_comment TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.comment_reply_of_comment;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.comment_reply_of_post
 LOCATION '{{data_path}}/delta/comment_reply_of_post'
 AS SELECT
@@ -552,9 +449,6 @@ AS SELECT
 FROM {{zone_name}}.raw.comment_reply_of_post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.comment_reply_of_post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.comment_reply_of_post;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.forum_container_of_post
 LOCATION '{{data_path}}/delta/forum_container_of_post'
 AS SELECT
@@ -563,9 +457,6 @@ AS SELECT
 FROM {{zone_name}}.raw.forum_container_of_post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.forum_container_of_post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.forum_container_of_post;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.forum_has_member_person
 LOCATION '{{data_path}}/delta/forum_has_member_person'
 AS SELECT
@@ -575,9 +466,6 @@ AS SELECT
 FROM {{zone_name}}.raw.forum_has_member_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.forum_has_member_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.forum_has_member_person;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.forum_has_moderator_person
 LOCATION '{{data_path}}/delta/forum_has_moderator_person'
 AS SELECT
@@ -586,9 +474,6 @@ AS SELECT
 FROM {{zone_name}}.raw.forum_has_moderator_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.forum_has_moderator_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.forum_has_moderator_person;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.forum_has_tag_tag
 LOCATION '{{data_path}}/delta/forum_has_tag_tag'
 AS SELECT
@@ -597,9 +482,6 @@ AS SELECT
 FROM {{zone_name}}.raw.forum_has_tag_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.forum_has_tag_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.forum_has_tag_tag;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_email
 LOCATION '{{data_path}}/delta/person_email'
 AS SELECT
@@ -608,9 +490,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_email;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_email TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_email;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_has_interest_tag
 LOCATION '{{data_path}}/delta/person_has_interest_tag'
 AS SELECT
@@ -619,9 +498,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_has_interest_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_has_interest_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_has_interest_tag;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_is_located_in_place
 LOCATION '{{data_path}}/delta/person_is_located_in_place'
 AS SELECT
@@ -630,9 +506,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_is_located_in_place;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_likes_comment
 LOCATION '{{data_path}}/delta/person_likes_comment'
 AS SELECT
@@ -642,9 +515,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_likes_comment;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_likes_comment TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_likes_comment;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_likes_post
 LOCATION '{{data_path}}/delta/person_likes_post'
 AS SELECT
@@ -654,9 +524,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_likes_post;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_likes_post TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_likes_post;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_speaks_language
 LOCATION '{{data_path}}/delta/person_speaks_language'
 AS SELECT
@@ -665,9 +532,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_speaks_language;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_speaks_language TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_speaks_language;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_study_at_organisation
 LOCATION '{{data_path}}/delta/person_study_at_organisation'
 AS SELECT
@@ -677,9 +541,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_study_at_organisation;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_study_at_organisation TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_study_at_organisation;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.person_work_at_organisation
 LOCATION '{{data_path}}/delta/person_work_at_organisation'
 AS SELECT
@@ -689,9 +550,6 @@ AS SELECT
 FROM {{zone_name}}.raw.person_work_at_organisation;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.person_work_at_organisation TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.person_work_at_organisation;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.post_has_creator_person
 LOCATION '{{data_path}}/delta/post_has_creator_person'
 AS SELECT
@@ -700,9 +558,6 @@ AS SELECT
 FROM {{zone_name}}.raw.post_has_creator_person;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.post_has_creator_person TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.post_has_creator_person;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.post_has_tag_tag
 LOCATION '{{data_path}}/delta/post_has_tag_tag'
 AS SELECT
@@ -711,9 +566,6 @@ AS SELECT
 FROM {{zone_name}}.raw.post_has_tag_tag;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.post_has_tag_tag TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.post_has_tag_tag;
-
-
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.ldbc.post_is_located_in_place
 LOCATION '{{data_path}}/delta/post_is_located_in_place'
 AS SELECT
@@ -722,9 +574,6 @@ AS SELECT
 FROM {{zone_name}}.raw.post_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc.post_is_located_in_place TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.ldbc.post_is_located_in_place;
-
-
 -- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################

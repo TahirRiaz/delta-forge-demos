@@ -76,10 +76,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.fhir.prescriptions;
 GRANT ADMIN ON TABLE {{zone_name}}.fhir.prescriptions TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: coverage — 4 Coverage resources (insurance plans)
 -- ============================================================================
@@ -125,5 +122,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.fhir.coverage;
 GRANT ADMIN ON TABLE {{zone_name}}.fhir.coverage TO USER {{current_user}};

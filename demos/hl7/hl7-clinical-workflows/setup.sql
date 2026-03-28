@@ -20,8 +20,6 @@
 --   schema = 'hl7'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -32,8 +30,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7
     COMMENT 'HL7 v2 message-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: clinical_messages — All 4 messages, compact view
 -- ============================================================================
@@ -50,9 +46,6 @@ OPTIONS (
 );
 
 GRANT ADMIN ON TABLE {{zone_name}}.hl7.clinical_messages TO USER {{current_user}};
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.hl7.clinical_messages;
-
 
 -- ============================================================================
 -- TABLE 2: clinical_materialized — Key fields extracted
@@ -80,4 +73,3 @@ OPTIONS (
 
 GRANT ADMIN ON TABLE {{zone_name}}.hl7.clinical_materialized TO USER {{current_user}};
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.hl7.clinical_materialized;

@@ -19,8 +19,6 @@
 -- After running this demo, verify each Iceberg snapshot with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/ad_clicks -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (Version 1 / Snapshot 1)
 -- ============================================================================
@@ -29,8 +27,6 @@
 
 ASSERT ROW_COUNT = 30
 SELECT * FROM {{zone_name}}.iceberg_demos.ad_clicks ORDER BY click_id;
-
-
 -- ============================================================================
 -- Query 1: Per-Campaign Breakdown — Version 1
 -- ============================================================================
@@ -45,8 +41,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks
 GROUP BY campaign_id
 ORDER BY campaign_id;
-
-
 -- ============================================================================
 -- Query 2: Per-Device Breakdown — Version 1
 -- ============================================================================
@@ -62,8 +56,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks
 GROUP BY device_type
 ORDER BY device_type;
-
-
 -- ============================================================================
 -- Query 3: Baseline Column Statistics
 -- ============================================================================
@@ -87,8 +79,6 @@ SELECT
     COUNT(*) FILTER (WHERE conversion_value IS NOT NULL) AS nonnull_cv_count,
     ROUND(AVG(cost_per_click), 2) AS avg_cpc
 FROM {{zone_name}}.iceberg_demos.ad_clicks;
-
-
 -- ============================================================================
 -- LEARN: INSERT — New Clicks With Extreme Values (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -102,16 +92,12 @@ INSERT INTO {{zone_name}}.iceberg_demos.ad_clicks VALUES
     (33, 'holiday-promo',  'video-pre-roll',   '2025-11-25 08:00:00', '2025-11-25 08:01:00', 4.25,  NULL,    'tablet',   'DE', false),
     (34, 'holiday-promo',  'shopping',         '2025-11-25 12:00:00', '2025-11-25 12:01:00', 0.10,  0.50,    'smart-tv', 'CA', true),
     (35, 'summer-sale',    'search-generic',   '2025-06-07 09:00:00', '2025-06-07 09:01:00', 6.00,  150.00,  'desktop',  'FR', true);
-
-
 -- ============================================================================
 -- Query 4: Row Count After INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT = 35
 SELECT * FROM {{zone_name}}.iceberg_demos.ad_clicks ORDER BY click_id;
-
-
 -- ============================================================================
 -- Query 5: Re-Verify Column Statistics After INSERT
 -- ============================================================================
@@ -137,8 +123,6 @@ SELECT
     COUNT(*) FILTER (WHERE conversion_value IS NULL) AS null_cv_count,
     COUNT(*) FILTER (WHERE conversion_value IS NOT NULL) AS nonnull_cv_count
 FROM {{zone_name}}.iceberg_demos.ad_clicks;
-
-
 -- ============================================================================
 -- LEARN: UPDATE — Late Conversions (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -156,8 +140,6 @@ WHERE click_id = 6;
 UPDATE {{zone_name}}.iceberg_demos.ad_clicks
 SET conversion_value = 11.00, is_converted = true
 WHERE click_id = 12;
-
-
 -- ============================================================================
 -- Query 6: Post-UPDATE Statistics — NULL Count Decreased
 -- ============================================================================
@@ -179,8 +161,6 @@ SELECT
     COUNT(*) FILTER (WHERE conversion_value IS NULL) AS null_cv_count,
     COUNT(*) FILTER (WHERE conversion_value IS NOT NULL) AS nonnull_cv_count
 FROM {{zone_name}}.iceberg_demos.ad_clicks;
-
-
 -- ============================================================================
 -- Query 7: Verify Updated Rows
 -- ============================================================================
@@ -197,8 +177,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks
 WHERE click_id IN (2, 6, 12)
 ORDER BY click_id;
-
-
 -- ============================================================================
 -- Query 8: Data-Skipping — High Cost Clicks
 -- ============================================================================
@@ -215,8 +193,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks
 WHERE cost_per_click > 3.0
 ORDER BY click_id;
-
-
 -- ============================================================================
 -- Query 9: Campaign Summary — Final State
 -- ============================================================================
@@ -233,8 +209,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks
 GROUP BY campaign_id
 ORDER BY campaign_id;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -261,8 +235,6 @@ SELECT
     COUNT(DISTINCT campaign_id) AS campaign_count,
     COUNT(DISTINCT device_type) AS device_type_count
 FROM {{zone_name}}.iceberg_demos.ad_clicks;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -281,9 +253,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/ad_clicks';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.ad_clicks_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.ad_clicks_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count + Seed Data Spot-Check
 -- ============================================================================
@@ -298,8 +267,6 @@ ASSERT VALUE campaign_id = 'holiday-promo' WHERE click_id = 27
 ASSERT VALUE cost_per_click = 4.0 WHERE click_id = 27
 ASSERT VALUE conversion_value = 55.0 WHERE click_id = 27
 SELECT * FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg ORDER BY click_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: UPDATE Mutations Persisted Through UniForm
 -- ============================================================================
@@ -321,8 +288,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg
 WHERE click_id IN (2, 6, 12)
 ORDER BY click_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: INSERT Extreme Values Visible
 -- ============================================================================
@@ -347,8 +312,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg
 WHERE click_id >= 31
 ORDER BY click_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Column Statistics Must Match Delta
 -- ============================================================================
@@ -368,8 +331,6 @@ SELECT
     COUNT(*) FILTER (WHERE conversion_value IS NULL) AS null_cv_count,
     COUNT(*) FILTER (WHERE conversion_value IS NOT NULL) AS nonnull_cv_count
 FROM {{zone_name}}.iceberg_demos.ad_clicks_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Campaign Breakdown — Must Match Delta Final State
 -- ============================================================================

@@ -20,16 +20,12 @@
 -- 7. Post-VACUUM verification: data still accessible
 -- 8. Cross-format verification via Iceberg read-back
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (40 seed rows)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 40
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs ORDER BY log_id;
-
-
 -- ============================================================================
 -- Query 1: Per-Service Log Counts — Baseline
 -- ============================================================================
@@ -45,8 +41,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs
 GROUP BY service_name
 ORDER BY service_name;
-
-
 -- ============================================================================
 -- Query 2: Per-Level Log Counts — Baseline
 -- ============================================================================
@@ -63,8 +57,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs
 GROUP BY log_level
 ORDER BY log_level;
-
-
 -- ============================================================================
 -- LEARN: INSERT Batch 2 — Create File Fragmentation (20 more rows)
 -- ============================================================================
@@ -92,8 +84,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.app_logs VALUES
     (58, 'api-gateway',          'INFO',  'Cache purge completed',             150,  '/api/cache/purge',      '2025-01-20'),
     (59, 'payment-service',      'DEBUG', 'Exchange rate updated',             5,    '/api/payments/fx',      '2025-01-20'),
     (60, 'notification-service', 'INFO',  'Unsubscribe processed',            30,   '/api/notify/unsub',     '2025-01-20');
-
-
 -- ============================================================================
 -- LEARN: INSERT Batch 3 — More Fragmentation (20 more rows)
 -- ============================================================================
@@ -121,16 +111,12 @@ INSERT INTO {{zone_name}}.iceberg_demos.app_logs VALUES
     (78, 'notification-service', 'INFO',  'Slack integration active',        55,   '/api/notify/slack',     '2025-01-22'),
     (79, 'api-gateway',          'DEBUG', 'Metrics endpoint scraped',        3,    '/api/metrics/scrape',   '2025-01-22'),
     (80, 'payment-service',      'FATAL', 'Double-spend detected',          0,    '/api/payments/verify',  '2025-01-22');
-
-
 -- ============================================================================
 -- Query 3: Pre-OPTIMIZE Row Count — All 80 Rows Present
 -- ============================================================================
 
 ASSERT ROW_COUNT = 80
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs ORDER BY log_id;
-
-
 -- ============================================================================
 -- Query 4: Pre-OPTIMIZE Aggregates — Snapshot Before Compaction
 -- ============================================================================
@@ -144,8 +130,6 @@ SELECT
     SUM(response_time_ms) AS total_response_ms,
     ROUND(AVG(response_time_ms), 2) AS avg_response_ms
 FROM {{zone_name}}.iceberg_demos.app_logs;
-
-
 -- ============================================================================
 -- LEARN: OPTIMIZE — Compact Small Files
 -- ============================================================================
@@ -154,8 +138,6 @@ FROM {{zone_name}}.iceberg_demos.app_logs;
 -- improves. The Iceberg metadata must reflect the compacted manifests.
 
 OPTIMIZE {{zone_name}}.iceberg_demos.app_logs;
-
-
 -- ============================================================================
 -- Query 5: Post-OPTIMIZE Row Count — Data Integrity Preserved
 -- ============================================================================
@@ -163,8 +145,6 @@ OPTIMIZE {{zone_name}}.iceberg_demos.app_logs;
 
 ASSERT ROW_COUNT = 80
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs ORDER BY log_id;
-
-
 -- ============================================================================
 -- Query 6: Post-OPTIMIZE Aggregates — Values Unchanged
 -- ============================================================================
@@ -179,8 +159,6 @@ SELECT
     SUM(response_time_ms) AS total_response_ms,
     ROUND(AVG(response_time_ms), 2) AS avg_response_ms
 FROM {{zone_name}}.iceberg_demos.app_logs;
-
-
 -- ============================================================================
 -- Query 7: Post-OPTIMIZE Per-Service Counts — Still Balanced
 -- ============================================================================
@@ -196,8 +174,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs
 GROUP BY service_name
 ORDER BY service_name;
-
-
 -- ============================================================================
 -- LEARN: DELETE — Remove Old DEBUG Logs
 -- ============================================================================
@@ -205,16 +181,12 @@ ORDER BY service_name;
 -- store long-term. This deletes all 20 DEBUG-level log entries.
 
 DELETE FROM {{zone_name}}.iceberg_demos.app_logs WHERE log_level = 'DEBUG';
-
-
 -- ============================================================================
 -- Query 8: Post-Delete Row Count — 20 DEBUG Rows Removed
 -- ============================================================================
 
 ASSERT ROW_COUNT = 60
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs ORDER BY log_id;
-
-
 -- ============================================================================
 -- Query 9: Post-Delete Level Counts — No More DEBUG
 -- ============================================================================
@@ -230,8 +202,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs
 GROUP BY log_level
 ORDER BY log_level;
-
-
 -- ============================================================================
 -- Query 10: Post-Delete Per-Service Counts
 -- ============================================================================
@@ -247,8 +217,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs
 GROUP BY service_name
 ORDER BY service_name;
-
-
 -- ============================================================================
 -- LEARN: VACUUM — Remove Obsolete Files
 -- ============================================================================
@@ -260,8 +228,6 @@ ORDER BY service_name;
 -- use a longer retention period to allow concurrent readers to finish.
 
 VACUUM {{zone_name}}.iceberg_demos.app_logs RETAIN 0 HOURS;
-
-
 -- ============================================================================
 -- Query 11: Post-VACUUM Row Count — Current Data Still Accessible
 -- ============================================================================
@@ -269,8 +235,6 @@ VACUUM {{zone_name}}.iceberg_demos.app_logs RETAIN 0 HOURS;
 
 ASSERT ROW_COUNT = 60
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs ORDER BY log_id;
-
-
 -- ============================================================================
 -- Query 12: Post-VACUUM Aggregates
 -- ============================================================================
@@ -284,16 +248,12 @@ SELECT
     SUM(response_time_ms) AS total_response_ms,
     ROUND(AVG(response_time_ms), 2) AS avg_response_ms
 FROM {{zone_name}}.iceberg_demos.app_logs;
-
-
 -- ============================================================================
 -- Query 13: Post-VACUUM — No DEBUG Rows Exist
 -- ============================================================================
 
 ASSERT ROW_COUNT = 0
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs WHERE log_level = 'DEBUG';
-
-
 -- ============================================================================
 -- VERIFY: Cross-Cutting Sanity Check
 -- ============================================================================
@@ -313,8 +273,6 @@ SELECT
     ROUND(AVG(response_time_ms), 2) AS avg_response_ms,
     COUNT(*) FILTER (WHERE log_level IN ('ERROR', 'FATAL')) AS error_and_fatal
 FROM {{zone_name}}.iceberg_demos.app_logs;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -328,25 +286,18 @@ USING ICEBERG
 LOCATION '{{data_path}}/app_logs';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.app_logs_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.app_logs_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 60 Logs After Full Maintenance Lifecycle
 -- ============================================================================
 
 ASSERT ROW_COUNT = 60
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs_iceberg ORDER BY log_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: No DEBUG Logs Visible Through Iceberg
 -- ============================================================================
 
 ASSERT ROW_COUNT = 0
 SELECT * FROM {{zone_name}}.iceberg_demos.app_logs_iceberg WHERE log_level = 'DEBUG';
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Spot-Check Seed Row (Batch 1) — Data Fidelity
 -- ============================================================================
@@ -363,8 +314,6 @@ ASSERT VALUE log_date = '2025-01-15' WHERE log_id = 1
 SELECT *
 FROM {{zone_name}}.iceberg_demos.app_logs_iceberg
 WHERE log_id = 1;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Spot-Check Batch 2 & 3 Rows — Cross-Batch Fidelity
 -- ============================================================================
@@ -385,8 +334,6 @@ SELECT *
 FROM {{zone_name}}.iceberg_demos.app_logs_iceberg
 WHERE log_id IN (43, 48, 67)
 ORDER BY log_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Per-Level Counts — Must Match Delta
 -- ============================================================================
@@ -402,8 +349,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs_iceberg
 GROUP BY log_level
 ORDER BY log_level;
-
-
 -- ============================================================================
 -- Iceberg Verify 6: Per-Service Aggregates — Must Match Delta
 -- ============================================================================
@@ -426,8 +371,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs_iceberg
 GROUP BY service_name
 ORDER BY service_name;
-
-
 -- ============================================================================
 -- Iceberg Verify 7: Filtered Data — ERROR Payments via Iceberg
 -- ============================================================================
@@ -441,8 +384,6 @@ SELECT log_id, service_name, log_level, message, response_time_ms
 FROM {{zone_name}}.iceberg_demos.app_logs_iceberg
 WHERE log_level = 'ERROR' AND service_name = 'payment-service'
 ORDER BY log_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 8: Max Response Time — Extreme Value Preserved
 -- ============================================================================
@@ -458,8 +399,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.app_logs_iceberg
 ORDER BY response_time_ms DESC
 LIMIT 1;
-
-
 -- ============================================================================
 -- Iceberg Verify 9: Grand Totals — Must Match Delta Final State
 -- ============================================================================

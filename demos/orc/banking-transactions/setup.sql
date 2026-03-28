@@ -32,9 +32,6 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.orc_bank.all_transactions TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.orc_bank.all_transactions;
-
-
 -- ============================================================================
 -- TABLE 2: downtown_only — Single branch file (50 rows)
 -- ============================================================================
@@ -47,4 +44,3 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 GRANT ADMIN ON TABLE {{zone_name}}.orc_bank.downtown_only TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.orc_bank.downtown_only;

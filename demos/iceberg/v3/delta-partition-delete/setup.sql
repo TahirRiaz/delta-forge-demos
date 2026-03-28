@@ -17,8 +17,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE: warehouse_orders — E-commerce fulfillment orders
 -- ============================================================================
@@ -35,9 +33,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.warehouse_orders (
 ) LOCATION '{{data_path}}/warehouse_orders'
 PARTITIONED BY (region);
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.warehouse_orders TO USER {{current_user}};
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.warehouse_orders;
-
 ALTER TABLE {{zone_name}}.delta_demos.warehouse_orders SET TBLPROPERTIES (
   'delta.universalFormat.enabledFormats' = 'iceberg',
   'delta.universalFormat.icebergVersion' = '3'

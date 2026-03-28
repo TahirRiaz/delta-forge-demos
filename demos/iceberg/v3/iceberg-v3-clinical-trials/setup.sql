@@ -32,4 +32,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/iceberg_warehouse/trials/lab_results';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.lab_results TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.lab_results;

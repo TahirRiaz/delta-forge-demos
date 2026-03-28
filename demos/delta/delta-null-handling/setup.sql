@@ -20,8 +20,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE: survey_responses — 30 rows with deliberate NULL patterns
 -- ============================================================================
@@ -39,9 +37,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.survey_responses (
 ) LOCATION '{{data_path}}/survey_responses';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.survey_responses TO USER {{current_user}};
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.survey_responses;
-
 
 -- ============================================================================
 -- INSERT: 30 survey responses (rows 1-15)
@@ -62,8 +57,6 @@ INSERT INTO {{zone_name}}.delta_demos.survey_responses VALUES
     (13, 'Mia Santos',      'mia@example.com',      '555-0113', 'Globex',       5,    10,   'Absolutely fantastic!',        '2024-03-07', 'Google Search'),
     (14, 'Noah Davis',      'noah@example.com',     NULL,       NULL,           1,    2,    'Very disappointed',            '2024-03-07', NULL),
     (15, 'Olivia Chang',    'olivia@example.com',   '555-0115', 'PixelWorks',   4,    8,    'Great customer support',       '2024-03-08', 'LinkedIn');
-
-
 -- ============================================================================
 -- INSERT: 30 survey responses (rows 16-30)
 -- ============================================================================

@@ -31,8 +31,6 @@
 -- This script reads ONLY through the Iceberg metadata chain (not Delta)
 -- and confirms the data is accessible to external Iceberg engines.
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Verify UniForm Properties
 -- ============================================================================
@@ -43,8 +41,6 @@
 
 ASSERT WARNING ROW_COUNT >= 2
 SHOW TBLPROPERTIES {{zone_name}}.iceberg_demos.product_catalog;
-
-
 -- ============================================================================
 -- Query 1: Baseline — Full Table Scan
 -- ============================================================================
@@ -55,8 +51,6 @@ SHOW TBLPROPERTIES {{zone_name}}.iceberg_demos.product_catalog;
 ASSERT ROW_COUNT = 15
 SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 2: Category Breakdown
 -- ============================================================================
@@ -74,8 +68,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- Query 3: Total Revenue Potential (price × stock)
 -- ============================================================================
@@ -87,8 +79,6 @@ ASSERT VALUE total_revenue_potential = 219884.85
 SELECT
     ROUND(SUM(price * stock), 2) AS total_revenue_potential
 FROM {{zone_name}}.iceberg_demos.product_catalog;
-
-
 -- ============================================================================
 -- Query 4: Category Revenue Breakdown
 -- ============================================================================
@@ -104,8 +94,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- LEARN: DML With UniForm — INSERT New Products
 -- ============================================================================
@@ -116,8 +104,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.product_catalog VALUES
     (16, 'Webcam HD',        'Electronics', 69.99,   85,  4.3),
     (17, 'Cable Management', 'Furniture',   24.99,   300, 3.8),
     (18, 'DAC Amplifier',    'Audio',       149.99,  45,  4.7);
-
-
 -- ============================================================================
 -- Query 5: Post-Insert Row Count
 -- ============================================================================
@@ -126,8 +112,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.product_catalog VALUES
 ASSERT ROW_COUNT = 18
 SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 6: Updated Category Totals After Insert
 -- ============================================================================
@@ -143,8 +127,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- LEARN: DML With UniForm — UPDATE Prices
 -- ============================================================================
@@ -154,8 +136,6 @@ ORDER BY category;
 UPDATE {{zone_name}}.iceberg_demos.product_catalog
 SET price = ROUND(price * 1.10, 2)
 WHERE category = 'Electronics';
-
-
 -- ============================================================================
 -- Query 7: Verify Price Update
 -- ============================================================================
@@ -171,8 +151,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog
 WHERE category = 'Electronics'
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 8: Time Travel — Compare Pre- and Post-Update
 -- ============================================================================
@@ -193,8 +171,6 @@ JOIN {{zone_name}}.iceberg_demos.product_catalog VERSION AS OF 2 old
     ON c.id = old.id
 WHERE c.category = 'Electronics'
 ORDER BY c.id;
-
-
 -- ============================================================================
 -- LEARN: Inspect Table History
 -- ============================================================================
@@ -203,8 +179,6 @@ ORDER BY c.id;
 
 ASSERT WARNING ROW_COUNT >= 3
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.product_catalog;
-
-
 -- ============================================================================
 -- LEARN: Inspect Table Detail
 -- ============================================================================
@@ -213,8 +187,6 @@ DESCRIBE HISTORY {{zone_name}}.iceberg_demos.product_catalog;
 
 ASSERT WARNING ROW_COUNT >= 1
 DESCRIBE DETAIL {{zone_name}}.iceberg_demos.product_catalog;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -232,8 +204,6 @@ SELECT
     ROUND(SUM(CASE WHEN category = 'Electronics' THEN price * stock ELSE 0 END), 2) AS electronics_revenue,
     ROUND(AVG(rating), 2) AS avg_rating
 FROM {{zone_name}}.iceberg_demos.product_catalog;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -251,9 +221,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/product_catalog';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.product_catalog_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.product_catalog_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count
 -- ============================================================================
@@ -261,8 +228,6 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.product_catalog_iceberg;
 
 ASSERT ROW_COUNT = 18
 SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog_iceberg ORDER BY id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Category Breakdown
 -- ============================================================================
@@ -277,8 +242,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_iceberg
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
 -- ============================================================================

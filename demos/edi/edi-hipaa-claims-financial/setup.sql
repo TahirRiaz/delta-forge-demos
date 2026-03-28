@@ -21,8 +21,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -33,8 +31,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: claims_header — Claim charges + first service line (4 transactions)
 -- ============================================================================
@@ -66,12 +62,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.claims_header;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.claims_header TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: claims_remittance — Payment + adjustment detail (4 transactions)
 -- ============================================================================
@@ -106,7 +97,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.claims_remittance;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.claims_remittance TO USER {{current_user}};

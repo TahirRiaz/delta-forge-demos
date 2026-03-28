@@ -22,16 +22,12 @@
 --   python3 verify_iceberg_metadata.py <table_data_path>/customer_orders -v
 -- The --verbose flag shows the schema versions in the Iceberg metadata.
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline Schema — 6 Columns (Version 1)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.customer_orders ORDER BY id;
-
-
 -- ============================================================================
 -- Query 1: Baseline Aggregation — Per-Customer Revenue
 -- ============================================================================
@@ -48,8 +44,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.customer_orders
 GROUP BY customer_name
 ORDER BY customer_name;
-
-
 -- ============================================================================
 -- LEARN: Schema Evolution Step 1 — Add loyalty_tier (Version 2)
 -- ============================================================================
@@ -58,8 +52,6 @@ ORDER BY customer_name;
 -- return NULL for the new column (standard Iceberg schema evolution).
 
 ALTER TABLE {{zone_name}}.iceberg_demos.customer_orders ADD COLUMN loyalty_tier VARCHAR;
-
-
 -- ============================================================================
 -- Query 2: Verify NULL Backfill on New Column
 -- ============================================================================
@@ -74,8 +66,6 @@ SELECT
     COUNT(loyalty_tier) AS has_tier,
     COUNT(*) - COUNT(loyalty_tier) AS missing_tier
 FROM {{zone_name}}.iceberg_demos.customer_orders;
-
-
 -- ============================================================================
 -- LEARN: Backfill loyalty_tier (Version 3)
 -- ============================================================================
@@ -90,8 +80,6 @@ SET loyalty_tier = CASE
     WHEN customer_name = 'Acme Corp' THEN 'Silver'
     ELSE 'Bronze'
 END;
-
-
 -- ============================================================================
 -- Query 3: Verify Tier Assignment
 -- ============================================================================
@@ -107,8 +95,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.customer_orders
 GROUP BY loyalty_tier
 ORDER BY loyalty_tier;
-
-
 -- ============================================================================
 -- LEARN: Schema Evolution Step 2 — Add discount_pct and notes (Version 4)
 -- ============================================================================
@@ -116,8 +102,6 @@ ORDER BY loyalty_tier;
 
 ALTER TABLE {{zone_name}}.iceberg_demos.customer_orders ADD COLUMN discount_pct DOUBLE;
 ALTER TABLE {{zone_name}}.iceberg_demos.customer_orders ADD COLUMN notes VARCHAR;
-
-
 -- ============================================================================
 -- LEARN: Populate New Columns for Platinum Customers (Version 6)
 -- ============================================================================
@@ -134,8 +118,6 @@ notes = CASE
     WHEN loyalty_tier = 'Gold' THEN 'Preferred customer discount'
     ELSE 'Standard discount'
 END;
-
-
 -- ============================================================================
 -- Query 4: Discounted Revenue by Customer
 -- ============================================================================
@@ -154,8 +136,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.customer_orders
 GROUP BY customer_name, loyalty_tier
 ORDER BY customer_name;
-
-
 -- ============================================================================
 -- Query 5: New Inserts With Full Schema (Version 7)
 -- ============================================================================
@@ -168,8 +148,6 @@ SELECT * FROM (VALUES
     (23, 'Global Foods',  'Gadget Z',  10, 150.00, '2024-04-10', 'Platinum', 10.0, 'VIP discount applied'),
     (24, 'DataFlow LLC',  'Gadget Z',  6,  150.00, '2024-04-15', 'Platinum', 10.0, 'VIP discount applied')
 ) AS t(id, customer_name, product, quantity, unit_price, order_date, loyalty_tier, discount_pct, notes);
-
-
 -- ============================================================================
 -- Query 6: Three Row Groups — Schema Evolution Shape
 -- ============================================================================
@@ -198,8 +176,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.customer_orders
 GROUP BY row_group
 ORDER BY row_group;
-
-
 -- ============================================================================
 -- Query 7: Time Travel — Read Version 1 (Original Schema)
 -- ============================================================================
@@ -211,8 +187,6 @@ SELECT
     id, customer_name, product, quantity, unit_price, order_date
 FROM {{zone_name}}.iceberg_demos.customer_orders VERSION AS OF 1
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 8: Version History — Schema Evolution Trail
 -- ============================================================================
@@ -220,8 +194,6 @@ ORDER BY id;
 
 ASSERT WARNING ROW_COUNT >= 7
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.customer_orders;
-
-
 -- ============================================================================
 -- Query 9: Grand Total Revenue (All 24 Orders)
 -- ============================================================================
@@ -233,8 +205,6 @@ SELECT
     ROUND(SUM(quantity * unit_price), 2) AS gross_total,
     ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS discounted_total
 FROM {{zone_name}}.iceberg_demos.customer_orders;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -255,8 +225,6 @@ SELECT
     ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS discounted_revenue,
     COUNT(*) FILTER (WHERE loyalty_tier = 'Platinum') AS platinum_orders
 FROM {{zone_name}}.iceberg_demos.customer_orders;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -275,17 +243,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/customer_orders';
 
 GRANT ADMIN ON TABLE customer_orders_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE customer_orders_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 24 Orders (20 Original + 4 Post-Evolution)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 24
 SELECT * FROM customer_orders_iceberg ORDER BY id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Evolved Columns Are Populated
 -- ============================================================================
@@ -301,8 +264,6 @@ SELECT
     COUNT(discount_pct) AS has_discount,
     COUNT(notes) AS has_notes
 FROM customer_orders_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Revenue Totals — Must Match Delta Final State
 -- ============================================================================

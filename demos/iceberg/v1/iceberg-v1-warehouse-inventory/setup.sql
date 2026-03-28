@@ -28,4 +28,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/warehouse_inventory';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.warehouse_inventory TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.warehouse_inventory;

@@ -63,10 +63,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.protobuf.contacts;
 GRANT ADMIN ON TABLE {{zone_name}}.protobuf.contacts TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: contact_phones — One row per phone number (22 total)
 -- ============================================================================
@@ -106,5 +103,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-DETECT SCHEMA FOR TABLE {{zone_name}}.protobuf.contact_phones;
 GRANT ADMIN ON TABLE {{zone_name}}.protobuf.contact_phones TO USER {{current_user}};

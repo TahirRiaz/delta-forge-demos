@@ -31,4 +31,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/stock_prices';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.stock_prices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.stock_prices;

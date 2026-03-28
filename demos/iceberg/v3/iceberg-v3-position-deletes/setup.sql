@@ -32,4 +32,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/equity_trades';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.equity_trades TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.equity_trades;

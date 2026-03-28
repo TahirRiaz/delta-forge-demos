@@ -60,4 +60,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/eq_del_products';
 
 GRANT ADMIN ON TABLE {{zone_name}}.eq_del_demo.products_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.eq_del_demo.products_iceberg;

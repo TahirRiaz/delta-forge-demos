@@ -19,8 +19,6 @@
 -- After running this demo, verify each Iceberg snapshot with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/employees -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (Version 1 / Snapshot 1)
 -- ============================================================================
@@ -28,8 +26,6 @@
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.employees ORDER BY id;
-
-
 -- ============================================================================
 -- Query 1: Department Summary — Version 1
 -- ============================================================================
@@ -51,8 +47,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.employees
 GROUP BY department
 ORDER BY department;
-
-
 -- ============================================================================
 -- LEARN: UPDATE — Salary Adjustment (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -62,8 +56,6 @@ ORDER BY department;
 UPDATE {{zone_name}}.iceberg_demos.employees
 SET salary = ROUND(salary * 1.15, 2)
 WHERE department = 'Engineering';
-
-
 -- ============================================================================
 -- Query 2: Verify Salary Update
 -- ============================================================================
@@ -80,8 +72,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.employees
 WHERE department = 'Engineering'
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 3: Time Travel — Compare Version 1 vs Version 2
 -- ============================================================================
@@ -102,8 +92,6 @@ JOIN {{zone_name}}.iceberg_demos.employees VERSION AS OF 1 old
     ON c.id = old.id
 WHERE c.department = 'Engineering'
 ORDER BY c.id;
-
-
 -- ============================================================================
 -- LEARN: DELETE — Remove Inactive Employees (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -116,16 +104,12 @@ WHERE id IN (8, 13);
 -- Version 4 / Snapshot 4
 DELETE FROM {{zone_name}}.iceberg_demos.employees
 WHERE is_active = false;
-
-
 -- ============================================================================
 -- Query 4: Post-Delete Row Count
 -- ============================================================================
 
 ASSERT ROW_COUNT = 18
 SELECT * FROM {{zone_name}}.iceberg_demos.employees ORDER BY id;
-
-
 -- ============================================================================
 -- Query 5: Department Counts After Deletion
 -- ============================================================================
@@ -142,8 +126,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.employees
 GROUP BY department
 ORDER BY department;
-
-
 -- ============================================================================
 -- LEARN: INSERT — New Hires (Version 5 / Snapshot 5)
 -- ============================================================================
@@ -153,16 +135,12 @@ INSERT INTO {{zone_name}}.iceberg_demos.employees VALUES
     (21, 'Uma Foster',    'Sales',       'Sales Rep',        76000.00,  true),
     (22, 'Victor Reyes',  'Marketing',   'SEO Specialist',   82000.00,  true),
     (23, 'Wendy Chang',   'Engineering', 'ML Engineer',      145000.00, true);
-
-
 -- ============================================================================
 -- Query 6: Final Row Count
 -- ============================================================================
 
 ASSERT ROW_COUNT = 21
 SELECT * FROM {{zone_name}}.iceberg_demos.employees ORDER BY id;
-
-
 -- ============================================================================
 -- Query 7: Final Department Summary
 -- ============================================================================
@@ -179,8 +157,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.employees
 GROUP BY department
 ORDER BY department;
-
-
 -- ============================================================================
 -- Query 8: Full Version History
 -- ============================================================================
@@ -193,8 +169,6 @@ ORDER BY department;
 
 ASSERT WARNING ROW_COUNT >= 5
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.employees;
-
-
 -- ============================================================================
 -- Query 9: Time Travel Across All Versions
 -- ============================================================================
@@ -211,8 +185,6 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.employees VERSION AS OF 2) AS v2_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.employees VERSION AS OF 4) AS v4_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.employees) AS v5_count;
-
-
 -- ============================================================================
 -- Query 10: Grand Total Salary — Current vs Original
 -- ============================================================================
@@ -225,8 +197,6 @@ SELECT
     ROUND((SELECT SUM(salary) FROM {{zone_name}}.iceberg_demos.employees VERSION AS OF 1), 2) AS original_total,
     ROUND(SUM(salary), 2) AS current_total
 FROM {{zone_name}}.iceberg_demos.employees;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -245,8 +215,6 @@ SELECT
     ROUND(AVG(salary) FILTER (WHERE department = 'Engineering'), 2) AS engineering_avg_salary,
     ROUND(SUM(salary), 2) AS total_payroll
 FROM {{zone_name}}.iceberg_demos.employees;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -265,17 +233,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/employees';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.employees_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.employees_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 21 Employees After Full Lifecycle
 -- ============================================================================
 
 ASSERT ROW_COUNT = 21
 SELECT * FROM {{zone_name}}.iceberg_demos.employees_iceberg ORDER BY id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Department Counts — Reflect Deletes + New Hires
 -- ============================================================================
@@ -291,8 +254,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.employees_iceberg
 GROUP BY department
 ORDER BY department;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
 -- ============================================================================

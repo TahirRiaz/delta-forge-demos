@@ -21,16 +21,12 @@
 -- After running, verify partition specs in the Iceberg metadata:
 --   python3 verify_iceberg_metadata.py <table_data_path>/regional_sales -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — All 24 Transactions
 -- ============================================================================
 
 ASSERT ROW_COUNT = 24
 SELECT * FROM {{zone_name}}.iceberg_demos.regional_sales ORDER BY id;
-
-
 -- ============================================================================
 -- Query 1: Per-Region Summary
 -- ============================================================================
@@ -52,8 +48,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 2: Per-Quarter Summary
 -- ============================================================================
@@ -71,8 +65,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 GROUP BY quarter
 ORDER BY quarter;
-
-
 -- ============================================================================
 -- Query 3: Product Revenue by Region
 -- ============================================================================
@@ -92,8 +84,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 GROUP BY region, product
 ORDER BY region, product;
-
-
 -- ============================================================================
 -- Query 4: Single-Partition Read — us-east Only
 -- ============================================================================
@@ -105,8 +95,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 WHERE region = 'us-east'
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 5: Top Sales Rep by Region
 -- ============================================================================
@@ -130,8 +118,6 @@ HAVING SUM(amount) = (
     )
 )
 ORDER BY region;
-
-
 -- ============================================================================
 -- LEARN: Cross-Partition UPDATE (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -141,8 +127,6 @@ ORDER BY region;
 UPDATE {{zone_name}}.iceberg_demos.regional_sales
 SET amount = ROUND(amount * 1.05, 2)
 WHERE quarter = 'Q4-2024';
-
-
 -- ============================================================================
 -- Query 6: Post-Update Q4 Amounts
 -- ============================================================================
@@ -162,8 +146,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 WHERE quarter = 'Q4-2024'
 ORDER BY id;
-
-
 -- ============================================================================
 -- Query 7: Time Travel — Pre-Bonus vs Post-Bonus Totals
 -- ============================================================================
@@ -175,8 +157,6 @@ SELECT
     ROUND((SELECT SUM(amount) FROM {{zone_name}}.iceberg_demos.regional_sales VERSION AS OF 1), 2) AS pre_bonus_total,
     ROUND(SUM(amount), 2) AS post_bonus_total
 FROM {{zone_name}}.iceberg_demos.regional_sales;
-
-
 -- ============================================================================
 -- LEARN: Partition-Scoped DELETE (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -185,8 +165,6 @@ FROM {{zone_name}}.iceberg_demos.regional_sales;
 
 DELETE FROM {{zone_name}}.iceberg_demos.regional_sales
 WHERE region = 'eu-west' AND amount < 700;
-
-
 -- ============================================================================
 -- Query 8: Post-Delete Region Counts
 -- ============================================================================
@@ -202,8 +180,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- LEARN: INSERT Into Specific Partition (Version 4 / Snapshot 4)
 -- ============================================================================
@@ -213,8 +189,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.regional_sales VALUES
     (25, 'Widget Pro',  'us-east', 'Q1-2025', 2100.00, 21, 'Alice'),
     (26, 'Gadget Max',  'us-west', 'Q1-2025', 1800.00, 10, 'Carol'),
     (27, 'Widget Pro',  'eu-west', 'Q1-2025', 1600.00, 16, 'Eve');
-
-
 -- ============================================================================
 -- Query 9: Final Region Summary
 -- ============================================================================
@@ -231,8 +205,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Query 10: Version History
 -- ============================================================================
@@ -240,8 +212,6 @@ ORDER BY region;
 
 ASSERT WARNING ROW_COUNT >= 4
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.regional_sales;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -260,8 +230,6 @@ SELECT
     ROUND(SUM(CASE WHEN quarter = 'Q4-2024' THEN amount ELSE 0 END), 2) AS q4_bonus_total,
     ROUND(SUM(CASE WHEN quarter = 'Q1-2025' THEN amount ELSE 0 END), 2) AS q1_2025_total
 FROM {{zone_name}}.iceberg_demos.regional_sales;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -280,17 +248,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/regional_sales';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.regional_sales_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.regional_sales_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 26 Transactions After All Mutations
 -- ============================================================================
 
 ASSERT ROW_COUNT = 26
 SELECT * FROM {{zone_name}}.iceberg_demos.regional_sales_iceberg ORDER BY id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Region Counts — Reflect Delete + Insert
 -- ============================================================================
@@ -305,8 +268,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.regional_sales_iceberg
 GROUP BY region
 ORDER BY region;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
 -- ============================================================================

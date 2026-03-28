@@ -19,16 +19,12 @@
 -- After running, verify the schema in the Iceberg metadata:
 --   python3 verify_iceberg_metadata.py <table_data_path>/product_catalog_nested -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — All 18 Products
 -- ============================================================================
 
 ASSERT ROW_COUNT = 18
 SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog_nested ORDER BY product_id;
-
-
 -- ============================================================================
 -- Query 1: Per-Category Summary
 -- ============================================================================
@@ -48,8 +44,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- Query 2: Stock Status
 -- ============================================================================
@@ -63,8 +57,6 @@ SELECT
     COUNT(*) FILTER (WHERE in_stock = true) AS in_stock_count,
     COUNT(*) FILTER (WHERE in_stock = false) AS out_of_stock_count
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested;
-
-
 -- ============================================================================
 -- Query 3: Struct Fields — Large Products (length > 50)
 -- ============================================================================
@@ -82,8 +74,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 WHERE dimensions.length > 50
 ORDER BY dimensions.length DESC;
-
-
 -- ============================================================================
 -- Query 4: Struct Fields — Tall Products (height > 20)
 -- ============================================================================
@@ -97,8 +87,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 WHERE dimensions.height > 20
 ORDER BY dimensions.height DESC;
-
-
 -- ============================================================================
 -- Query 5: Array — Tag Count Per Product
 -- ============================================================================
@@ -111,8 +99,6 @@ SELECT
     ARRAY_LENGTH(tags) AS tag_count
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Query 6: Array — Products With 'portable' Tag
 -- ============================================================================
@@ -126,8 +112,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 WHERE ARRAY_CONTAINS(tags, 'portable')
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Query 7: Array — Products With 'eco-friendly' Tag
 -- ============================================================================
@@ -141,8 +125,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 WHERE ARRAY_CONTAINS(tags, 'eco-friendly')
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Query 8: Map — French Product Names
 -- ============================================================================
@@ -158,8 +140,6 @@ SELECT
     localized_names['fr'] AS french_name
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Query 9: Map — German Product Names
 -- ============================================================================
@@ -175,8 +155,6 @@ SELECT
     localized_names['de'] AS german_name
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- LEARN: INSERT — New Products With Complex Nested Values (Version 2)
 -- ============================================================================
@@ -198,8 +176,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.product_catalog_nested VALUES
         ARRAY('cooking', 'portable', 'camping'),
         MAP('en', 'Portable Grill', 'fr', 'Grill Portable', 'de', 'Tragbarer Grill'),
         true);
-
-
 -- ============================================================================
 -- Query 10: Per-Category Counts After Insert
 -- ============================================================================
@@ -215,8 +191,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- LEARN: UPDATE — Adjust Outdoor Product Heights (Version 3)
 -- ============================================================================
@@ -226,8 +200,6 @@ ORDER BY category;
 UPDATE {{zone_name}}.iceberg_demos.product_catalog_nested
 SET dimensions = STRUCT(dimensions.length, dimensions.width, dimensions.height + 2.0, dimensions.unit)
 WHERE category = 'Outdoor';
-
-
 -- ============================================================================
 -- Query 11: Updated Outdoor Dimensions
 -- ============================================================================
@@ -247,8 +219,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 WHERE category = 'Outdoor'
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Query 12: Average Dimensions By Category
 -- ============================================================================
@@ -268,8 +238,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- Query 13: Time Travel — Original vs Current Price Totals
 -- ============================================================================
@@ -285,8 +253,6 @@ SELECT
     ROUND(SUM(price), 2) AS current_total,
     COUNT(*) AS current_count
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested;
-
-
 -- ============================================================================
 -- Query 14: Version History
 -- ============================================================================
@@ -294,8 +260,6 @@ FROM {{zone_name}}.iceberg_demos.product_catalog_nested;
 
 ASSERT WARNING ROW_COUNT >= 3
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.product_catalog_nested;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -314,8 +278,6 @@ SELECT
     ROUND(AVG(price), 2) AS avg_price,
     COUNT(*) FILTER (WHERE in_stock = true) AS in_stock_count
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -339,17 +301,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/product_catalog_nested';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 21 Products After All Mutations
 -- ============================================================================
 
 ASSERT ROW_COUNT = 21
 SELECT * FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg ORDER BY product_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Category Totals — Must Match Delta Final State
 -- ============================================================================
@@ -368,8 +325,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
 GROUP BY category
 ORDER BY category;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Struct Fields — Updated Outdoor Heights Via Iceberg
 -- ============================================================================
@@ -387,8 +342,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
 WHERE category = 'Outdoor'
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Map Access — French Names Via Iceberg
 -- ============================================================================
@@ -405,8 +358,6 @@ SELECT
     localized_names['fr'] AS french_name
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 5: Array — Portable Products Via Iceberg
 -- ============================================================================
@@ -421,8 +372,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
 WHERE ARRAY_CONTAINS(tags, 'portable')
 ORDER BY product_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 6: Grand Totals — Must Match Delta Final State
 -- ============================================================================

@@ -50,7 +50,7 @@ ORDER BY check_name;
 
 ## What This Tests
 
-1. **XML flatten config persistence** — DETECT SCHEMA discovers all paths across 5 files and saves the `xml_flatten_config` JSON blob to the catalog database
+1. **XML flatten config persistence** — The engine discovers all paths across 5 files and saves the `xml_flatten_config` JSON blob to the catalog database
 2. **Schema union** — The provider produces a single schema that is the union of all element paths
 3. **NULL filling** — Books from older files get NULL for columns added in later files
 4. **Attribute extraction** — `@id` and `@format` attributes are correctly extracted as columns

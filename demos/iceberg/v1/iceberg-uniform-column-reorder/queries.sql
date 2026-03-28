@@ -21,8 +21,6 @@
 -- After running this demo, verify column order in metadata with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/patient_records -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline — 20 Patient Records (Version 1)
 -- ============================================================================
@@ -31,8 +29,6 @@
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 1: Baseline — Per-Diagnosis-Code Breakdown
 -- ============================================================================
@@ -56,8 +52,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.patient_records
 GROUP BY diagnosis_code
 ORDER BY diagnosis_code;
-
-
 -- ============================================================================
 -- Query 2: Baseline Summary Stats
 -- ============================================================================
@@ -71,8 +65,6 @@ SELECT
     COUNT(DISTINCT diagnosis_code) AS distinct_codes,
     COUNT(DISTINCT attending_physician) AS distinct_physicians
 FROM {{zone_name}}.iceberg_demos.patient_records;
-
-
 -- ============================================================================
 -- LEARN: Column Reorder Step 1 — Move MRN to First Position (Version 2)
 -- ============================================================================
@@ -81,16 +73,12 @@ FROM {{zone_name}}.iceberg_demos.patient_records;
 -- metadata-only operation — no data files are rewritten.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.patient_records ALTER COLUMN mrn FIRST;
-
-
 -- ============================================================================
 -- LEARN: Column Reorder Step 2 — Move first_name After MRN (Version 3)
 -- ============================================================================
 -- FHIR ordering: identifier → name (given, family) → demographics.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.patient_records ALTER COLUMN first_name AFTER mrn;
-
-
 -- ============================================================================
 -- LEARN: Column Reorder Step 3 — Move last_name After first_name (Version 4)
 -- ============================================================================
@@ -98,8 +86,6 @@ ALTER TABLE {{zone_name}}.iceberg_demos.patient_records ALTER COLUMN first_name 
 -- diagnosis_code, admission_date, discharge_date, attending_physician.
 
 ALTER TABLE {{zone_name}}.iceberg_demos.patient_records ALTER COLUMN last_name AFTER first_name;
-
-
 -- ============================================================================
 -- Query 3: Verify Column Order Changed but Data Intact
 -- ============================================================================
@@ -116,8 +102,6 @@ SELECT
     COUNT(DISTINCT diagnosis_code) AS distinct_codes,
     COUNT(DISTINCT attending_physician) AS distinct_physicians
 FROM {{zone_name}}.iceberg_demos.patient_records;
-
-
 -- ============================================================================
 -- Query 4: Verify New Column Order — SELECT * Shows Reordered Layout
 -- ============================================================================
@@ -126,8 +110,6 @@ FROM {{zone_name}}.iceberg_demos.patient_records;
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records ORDER BY record_id;
-
-
 -- ============================================================================
 -- LEARN: Insert New Records in New Column Order (Version 5)
 -- ============================================================================
@@ -138,8 +120,6 @@ INSERT INTO {{zone_name}}.iceberg_demos.patient_records VALUES
     ('MRN-1022', 'Sarah',    'Walker',   22, '1976-09-30', 'M54.5',   '2025-02-03', '2025-02-06', 'Dr. Lopez'),
     ('MRN-1023', 'George',   'Hall',     23, '1959-01-18', 'G30.9',   '2025-02-05', '2025-02-19', 'Dr. Singh'),
     ('MRN-1024', 'Margaret', 'Allen',    24, '1966-10-07', 'C18.9',   '2025-02-07', '2025-02-21', 'Dr. Reeves');
-
-
 -- ============================================================================
 -- Query 5: Verify Combined Data — Original + New Records
 -- ============================================================================
@@ -151,8 +131,6 @@ SELECT
     COUNT(*) AS total_records,
     COUNT(DISTINCT mrn) AS distinct_mrns
 FROM {{zone_name}}.iceberg_demos.patient_records;
-
-
 -- ============================================================================
 -- Query 6: Updated Per-Diagnosis-Code Breakdown
 -- ============================================================================
@@ -168,8 +146,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.patient_records
 GROUP BY diagnosis_code
 ORDER BY diagnosis_code;
-
-
 -- ============================================================================
 -- Query 7: Time Travel — Read Version 1 (Original Column Order)
 -- ============================================================================
@@ -182,16 +158,12 @@ SELECT
     diagnosis_code, admission_date, discharge_date, attending_physician
 FROM {{zone_name}}.iceberg_demos.patient_records VERSION AS OF 1
 ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 8: Version History — Column Reorder Trail
 -- ============================================================================
 
 ASSERT WARNING ROW_COUNT >= 5
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.patient_records;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -207,8 +179,6 @@ SELECT
     COUNT(DISTINCT attending_physician) AS distinct_physicians,
     COUNT(DISTINCT mrn) AS distinct_mrns
 FROM {{zone_name}}.iceberg_demos.patient_records;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -227,9 +197,6 @@ USING ICEBERG
 LOCATION '{{data_path}}/patient_records';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.patient_records_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.patient_records_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Full Row Count and Aggregates
 -- ============================================================================
@@ -245,8 +212,6 @@ SELECT
     COUNT(DISTINCT diagnosis_code) AS distinct_codes,
     COUNT(DISTINCT attending_physician) AS distinct_physicians
 FROM {{zone_name}}.iceberg_demos.patient_records_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 2a: Pre-Reorder Record — Patient #1 (Smith, John)
 -- ============================================================================
@@ -260,8 +225,6 @@ ASSERT VALUE dob = '1955-03-12'
 ASSERT VALUE diagnosis_code = 'I25.10'
 ASSERT VALUE attending_physician = 'Dr. Chen'
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records_iceberg WHERE record_id = 1;
-
-
 -- ============================================================================
 -- Iceberg Verify 2b: Pre-Reorder Record — Patient #10 (Taylor, Susan)
 -- ============================================================================
@@ -275,8 +238,6 @@ ASSERT VALUE admission_date = '2025-01-18'
 ASSERT VALUE discharge_date = '2025-02-01'
 ASSERT VALUE attending_physician = 'Dr. Kim'
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records_iceberg WHERE record_id = 10;
-
-
 -- ============================================================================
 -- Iceberg Verify 2c: Pre-Reorder Record — Patient #20 (Clark, Elizabeth)
 -- ============================================================================
@@ -288,8 +249,6 @@ ASSERT VALUE last_name = 'Clark'
 ASSERT VALUE diagnosis_code = 'C50.911'
 ASSERT VALUE attending_physician = 'Dr. Okafor'
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records_iceberg WHERE record_id = 20;
-
-
 -- ============================================================================
 -- Iceberg Verify 3a: Post-Reorder Insert — Patient #21 (Lee, Andrew)
 -- ============================================================================
@@ -304,8 +263,6 @@ ASSERT VALUE diagnosis_code = 'I25.10'
 ASSERT VALUE admission_date = '2025-02-01'
 ASSERT VALUE attending_physician = 'Dr. Chen'
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records_iceberg WHERE record_id = 21;
-
-
 -- ============================================================================
 -- Iceberg Verify 3b: Post-Reorder Insert — Patient #24 (Allen, Margaret)
 -- ============================================================================
@@ -318,8 +275,6 @@ ASSERT VALUE diagnosis_code = 'C18.9'
 ASSERT VALUE discharge_date = '2025-02-21'
 ASSERT VALUE attending_physician = 'Dr. Reeves'
 SELECT * FROM {{zone_name}}.iceberg_demos.patient_records_iceberg WHERE record_id = 24;
-
-
 -- ============================================================================
 -- Iceberg Verify 4: Diagnosis Counts Must Match Delta Final State
 -- ============================================================================

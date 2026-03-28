@@ -28,8 +28,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -40,8 +38,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: hipaa_messages — Compact view (11 transactions)
 -- ============================================================================
@@ -59,12 +55,7 @@ OPTIONS (
     edi_config = '{"ediFormat": "x12"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.hipaa_messages;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.hipaa_messages TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: hipaa_materialized — Key healthcare fields extracted (11 transactions)
 -- ============================================================================
@@ -99,7 +90,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.hipaa_materialized;
-
 GRANT ADMIN ON TABLE {{zone_name}}.edi.hipaa_materialized TO USER {{current_user}};

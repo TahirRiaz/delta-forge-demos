@@ -13,8 +13,6 @@
 -- Graph:
 --   {{zone_name}}.dolphins.dolphins_social — All dolphins as vertices, associations as edges
 -- ============================================================================
-
-
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
@@ -27,8 +25,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.raw
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.dolphins
     COMMENT 'Dolphins — Delta tables and graph definition';
-
-
 -- ############################################################################
 -- STEP 2: External Table — Raw CSV Reader (pipe-delimited)
 -- ############################################################################
@@ -38,9 +34,6 @@ USING CSV LOCATION '{{data_path}}/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.dolphins_edges TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.dolphins_edges;
-
-
 -- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
@@ -57,9 +50,6 @@ AS SELECT
 FROM {{zone_name}}.raw.dolphins_edges;
 
 GRANT ADMIN ON TABLE {{zone_name}}.dolphins.edges TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.dolphins.edges;
-
-
 -- === Vertex Table (from CSV with dolphin names) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.dolphins_vertices
@@ -67,7 +57,6 @@ USING CSV LOCATION '{{data_path}}/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.dolphins_vertices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.dolphins_vertices;
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.dolphins.vertices
 LOCATION '{{data_path}}/delta/vertices'
@@ -78,9 +67,6 @@ AS SELECT
 FROM {{zone_name}}.raw.dolphins_vertices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.dolphins.vertices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.dolphins.vertices;
-
-
 -- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################

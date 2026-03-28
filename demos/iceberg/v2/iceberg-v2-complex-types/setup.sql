@@ -29,4 +29,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/orders';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.orders TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.orders;

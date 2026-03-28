@@ -13,8 +13,6 @@
 -- Graph:
 --   {{zone_name}}.karate.karate_club — All members as vertices, friendships as edges
 -- ============================================================================
-
-
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
@@ -27,8 +25,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.raw
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.karate
     COMMENT 'Karate Club — Delta tables and graph definition';
-
-
 -- ############################################################################
 -- STEP 2: External Table — Raw CSV Reader (pipe-delimited)
 -- ############################################################################
@@ -38,9 +34,6 @@ USING CSV LOCATION '{{data_path}}/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.karate_edges TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.karate_edges;
-
-
 -- ############################################################################
 -- STEP 3: Delta Tables — Materialized with Proper Types
 -- ############################################################################
@@ -57,9 +50,6 @@ AS SELECT
 FROM {{zone_name}}.raw.karate_edges;
 
 GRANT ADMIN ON TABLE {{zone_name}}.karate.edges TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.karate.edges;
-
-
 -- === Vertex Table (from CSV with member names and roles) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.raw.karate_vertices
@@ -67,7 +57,6 @@ USING CSV LOCATION '{{data_path}}/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 GRANT ADMIN ON TABLE {{zone_name}}.raw.karate_vertices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.raw.karate_vertices;
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate.vertices
 LOCATION '{{data_path}}/delta/vertices'
@@ -78,9 +67,6 @@ AS SELECT
 FROM {{zone_name}}.raw.karate_vertices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.karate.vertices TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.karate.vertices;
-
-
 -- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################

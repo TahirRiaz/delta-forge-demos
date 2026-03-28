@@ -20,8 +20,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
     COMMENT 'Delta table management tutorial demos';
-
-
 -- ============================================================================
 -- TABLE 1: students — 15 rows
 -- ============================================================================
@@ -34,7 +32,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.students (
 ) LOCATION '{{data_path}}/students';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.students TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.students;
 
 INSERT INTO {{zone_name}}.delta_demos.students VALUES
     (1,  'Alice Chen',       'Computer Science', 3.85, 2022),
@@ -52,8 +49,6 @@ INSERT INTO {{zone_name}}.delta_demos.students VALUES
     (13, 'Maria Garcia',     'Biology',          3.77, 2021),
     (14, 'Nathan Clark',     'Mathematics',      3.20, 2023),
     (15, 'Olivia Scott',     'Computer Science', 3.95, 2022);
-
-
 -- ============================================================================
 -- TABLE 2: enrollments — 60 rows (4 per student across 2 semesters)
 -- ============================================================================
@@ -73,7 +68,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.enrollments (
 ) LOCATION '{{data_path}}/enrollments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.enrollments TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.delta_demos.enrollments;
 
 -- Alice Chen (1) — CS major, takes CS + Math courses
 INSERT INTO {{zone_name}}.delta_demos.enrollments VALUES

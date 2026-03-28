@@ -25,8 +25,6 @@
 --   schema = 'edi'          (the file format)
 --   table  = object name
 -- ============================================================================
-
-
 -- ============================================================================
 -- STEP 1: Zone & Schema
 -- ============================================================================
@@ -37,8 +35,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
     COMMENT 'EDI transaction-backed external tables';
-
-
 -- ============================================================================
 -- TABLE 1: tradacoms_order_compact — Default TRADACOMS output
 -- ============================================================================
@@ -65,10 +61,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.tradacoms_order_compact;
 GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_order_compact TO USER {{current_user}};
-
-
 -- ============================================================================
 -- TABLE 2: tradacoms_order_lines — Deep field extraction via materialized_paths
 -- ============================================================================
@@ -107,5 +100,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.edi.tradacoms_order_lines;
 GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_order_lines TO USER {{current_user}};

@@ -25,8 +25,6 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial
     COMMENT 'H3 spatial indexing and geographic analysis tables';
-
-
 -- ============================================================================
 -- TABLE 1: landmarks — 10 famous world landmarks with known coordinates
 -- ============================================================================
@@ -57,9 +55,6 @@ INSERT INTO {{zone_name}}.spatial.landmarks VALUES
     (9,  'Tower of London',       'London',        'UK',        51.5081,   -0.0759),
     (10, 'Shibuya Crossing',      'Tokyo',         'Japan',     35.6595,  139.7004);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.landmarks;
-
-
 -- ============================================================================
 -- TABLE 2: regions — 5 city boundaries as WKT polygons
 -- ============================================================================
@@ -83,9 +78,6 @@ INSERT INTO {{zone_name}}.spatial.regions VALUES
     (3, 'Central Paris', 'France', 'POLYGON((2.25 48.83, 2.42 48.83, 2.42 48.90, 2.25 48.90, 2.25 48.83))',               'Europe/Paris'),
     (4, 'Central London','UK',     'POLYGON((-0.20 51.48, 0.05 51.48, 0.05 51.55, -0.20 51.55, -0.20 51.48))',             'Europe/London'),
     (5, 'Central Tokyo', 'Japan',  'POLYGON((139.65 35.63, 139.80 35.63, 139.80 35.73, 139.65 35.73, 139.65 35.63))',      'Asia/Tokyo');
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.regions;
-
 
 -- ============================================================================
 -- TABLE 3: gps_points — 10,000 GPS pings across 5 cities
@@ -155,9 +147,6 @@ SELECT
     'Central Tokyo' AS city
 FROM generate_series(1, 2000) AS t(id);
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.spatial.gps_points;
-
-
 -- ============================================================================
 -- VIEW 4: points_h3 — GPS points enriched with H3 cell IDs (resolution 9)
 -- ============================================================================
@@ -174,8 +163,6 @@ SELECT
     city,
     h3_latlng_to_cell(lat, lng, 9) AS h3_cell
 FROM {{zone_name}}.spatial.gps_points;
-
-
 -- ============================================================================
 -- VIEW 5: region_cells — Regions expanded to H3 cell coverage
 -- ============================================================================

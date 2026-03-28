@@ -20,8 +20,6 @@
 -- After running this demo, verify each Iceberg snapshot with:
 --   python3 verify_iceberg_metadata.py <table_data_path>/ingestion_log -v
 -- ============================================================================
-
-
 -- ============================================================================
 -- EXPLORE: Baseline State (Version 1 / Snapshot 1)
 -- ============================================================================
@@ -29,8 +27,6 @@
 
 ASSERT ROW_COUNT = 20
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 1: Baseline Pipeline Summary
 -- ============================================================================
@@ -44,8 +40,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 GROUP BY pipeline_name
 ORDER BY pipeline_name;
-
-
 -- ============================================================================
 -- LEARN: INSERT — Batch From etl-team-beta (Version 2 / Snapshot 2)
 -- ============================================================================
@@ -68,16 +62,12 @@ INSERT INTO {{zone_name}}.iceberg_demos.ingestion_log VALUES
     (33, 'etl-team-beta', 'erp-finance', 'transaction', '7aa46c3057458c97', '2025-09-01 11:13:00', 'batch-002'),
     (34, 'etl-team-beta', 'erp-finance', 'customer',    'd2b239f004f1e9c7', '2025-09-01 11:14:00', 'batch-002'),
     (35, 'etl-team-beta', 'erp-finance', 'shipment',    'db1956e30f5af2eb', '2025-09-01 11:15:00', 'batch-002');
-
-
 -- ============================================================================
 -- Query 2: Row Count After Beta INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT = 35
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log ORDER BY record_id;
-
-
 -- ============================================================================
 -- LEARN: INSERT — Batch From etl-team-gamma (Version 3 / Snapshot 3)
 -- ============================================================================
@@ -100,16 +90,12 @@ INSERT INTO {{zone_name}}.iceberg_demos.ingestion_log VALUES
     (48, 'etl-team-gamma', 'iot-sensors', 'event',  '5e59582c52bcc1a0', '2025-09-01 12:13:00', 'batch-003'),
     (49, 'etl-team-gamma', 'iot-sensors', 'metric', '3f0552b96cf3d0cd', '2025-09-01 12:14:00', 'batch-003'),
     (50, 'etl-team-gamma', 'iot-sensors', 'log',    'de1b8d8c103d6930', '2025-09-01 12:15:00', 'batch-003');
-
-
 -- ============================================================================
 -- Query 3: All Three Pipelines Coexist
 -- ============================================================================
 
 ASSERT ROW_COUNT = 50
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 4: Per-Pipeline Counts
 -- ============================================================================
@@ -124,8 +110,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 GROUP BY pipeline_name
 ORDER BY pipeline_name;
-
-
 -- ============================================================================
 -- Query 5: Per-Batch Counts
 -- ============================================================================
@@ -140,8 +124,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 GROUP BY batch_id
 ORDER BY batch_id;
-
-
 -- ============================================================================
 -- LEARN: UPDATE — Reprocess Alpha Records (Version 4 / Snapshot 4)
 -- ============================================================================
@@ -167,8 +149,6 @@ WHERE record_id = 15;
 UPDATE {{zone_name}}.iceberg_demos.ingestion_log
 SET record_type = 'reprocessed', payload_hash = '26da0b8419fb678d'
 WHERE record_id = 19;
-
-
 -- ============================================================================
 -- Query 6: Verify Reprocessed Records
 -- ============================================================================
@@ -181,16 +161,12 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 WHERE record_type = 'reprocessed'
 ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 7: Total Count Unchanged After UPDATE
 -- ============================================================================
 
 ASSERT ROW_COUNT = 50
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log ORDER BY record_id;
-
-
 -- ============================================================================
 -- LEARN: MERGE — Beta Team Corrections (Version 5 / Snapshot 5)
 -- ============================================================================
@@ -221,16 +197,12 @@ WHEN NOT MATCHED THEN
     INSERT (record_id, pipeline_name, source_system, record_type, payload_hash, ingested_at, batch_id)
     VALUES (source.record_id, source.pipeline_name, source.source_system,
             source.record_type, source.payload_hash, source.ingested_at, source.batch_id);
-
-
 -- ============================================================================
 -- Query 8: Post-MERGE Row Count — 50 + 5 New = 55
 -- ============================================================================
 
 ASSERT ROW_COUNT = 55
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 9: Verify Corrected Records
 -- ============================================================================
@@ -247,8 +219,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 WHERE record_id IN (21, 25, 30)
 ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 10: Beta Total After MERGE
 -- ============================================================================
@@ -259,8 +229,6 @@ SELECT
     COUNT(*) AS beta_count
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 WHERE pipeline_name = 'etl-team-beta';
-
-
 -- ============================================================================
 -- LEARN: DELETE — Remove Failed Gamma Records (Version 6 / Snapshot 6)
 -- ============================================================================
@@ -268,16 +236,12 @@ WHERE pipeline_name = 'etl-team-beta';
 
 DELETE FROM {{zone_name}}.iceberg_demos.ingestion_log
 WHERE record_id IN (36, 37, 38, 39, 40);
-
-
 -- ============================================================================
 -- Query 11: Post-DELETE Row Count — 55 - 5 = 50
 -- ============================================================================
 
 ASSERT ROW_COUNT = 50
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log ORDER BY record_id;
-
-
 -- ============================================================================
 -- Query 12: Final Per-Pipeline Counts
 -- ============================================================================
@@ -292,8 +256,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 GROUP BY pipeline_name
 ORDER BY pipeline_name;
-
-
 -- ============================================================================
 -- Query 13: Final Per-Batch Counts
 -- ============================================================================
@@ -309,8 +271,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log
 GROUP BY batch_id
 ORDER BY batch_id;
-
-
 -- ============================================================================
 -- Query 14: Time Travel — State at Each Version Boundary
 -- ============================================================================
@@ -329,8 +289,6 @@ SELECT
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.ingestion_log VERSION AS OF 2) AS v2_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.ingestion_log VERSION AS OF 3) AS v3_count,
     (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.ingestion_log) AS current_count;
-
-
 -- ============================================================================
 -- Query 15: Version History
 -- ============================================================================
@@ -345,8 +303,6 @@ SELECT
 
 ASSERT WARNING ROW_COUNT >= 5
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.ingestion_log;
-
-
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -373,8 +329,6 @@ SELECT
     COUNT(*) FILTER (WHERE record_type = 'reprocessed') AS reprocessed_count,
     COUNT(*) FILTER (WHERE record_type = 'corrected') AS corrected_count
 FROM {{zone_name}}.iceberg_demos.ingestion_log;
-
-
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
@@ -393,17 +347,12 @@ USING ICEBERG
 LOCATION '{{data_path}}/ingestion_log';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.ingestion_log_iceberg TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.ingestion_log_iceberg;
-
-
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 50 Records After Full Lifecycle
 -- ============================================================================
 
 ASSERT ROW_COUNT = 50
 SELECT * FROM {{zone_name}}.iceberg_demos.ingestion_log_iceberg ORDER BY record_id;
-
-
 -- ============================================================================
 -- Iceberg Verify 2: Per-Pipeline Counts — Must Match Delta
 -- ============================================================================
@@ -418,8 +367,6 @@ SELECT
 FROM {{zone_name}}.iceberg_demos.ingestion_log_iceberg
 GROUP BY pipeline_name
 ORDER BY pipeline_name;
-
-
 -- ============================================================================
 -- Iceberg Verify 3: Grand Totals — Must Match Delta Final State
 -- ============================================================================

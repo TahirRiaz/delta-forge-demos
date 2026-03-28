@@ -37,4 +37,3 @@ USING ICEBERG
 LOCATION '{{data_path}}/patient_visits';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg.patient_visits TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg.patient_visits;
