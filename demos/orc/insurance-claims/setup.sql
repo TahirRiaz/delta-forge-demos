@@ -21,8 +21,8 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc_insurance.policies
 USING ORC
 LOCATION '{{data_path}}/policies.orc';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.orc_insurance.policies;
 GRANT ADMIN ON TABLE {{zone_name}}.orc_insurance.policies TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.orc_insurance.policies;
 
 -- --------------------------------------------------------------------------
 -- Table 2: claims — 200 claims (180 reference valid policies, 20 orphaned)
@@ -32,5 +32,5 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc_insurance.claims
 USING ORC
 LOCATION '{{data_path}}/claims.orc';
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.orc_insurance.claims;
 GRANT ADMIN ON TABLE {{zone_name}}.orc_insurance.claims TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.orc_insurance.claims;
