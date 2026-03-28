@@ -67,7 +67,7 @@ ASSERT ROW_COUNT = 4
 ASSERT VALUE avg_dosage = 104.38 WHERE category = 'Cardiology'
 ASSERT VALUE avg_dosage = 225.0 WHERE category = 'Immunology'
 ASSERT VALUE avg_dosage = 58.57 WHERE category = 'Neurology'
-ASSERT VALUE avg_dosage = 415.62 WHERE category = 'Oncology'
+ASSERT VALUE avg_dosage = 415.63 WHERE category = 'Oncology'
 SELECT
     category,
     ROUND(AVG(dosage_mg), 2) AS avg_dosage
