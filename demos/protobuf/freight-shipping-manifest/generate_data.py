@@ -96,12 +96,10 @@ def encode_package(package_id, description, weight_kg, dims, package_class, requ
     msg += encode_float_field(3, weight_kg)
     dims_msg = encode_dimensions(*dims)
     msg += encode_embedded(4, dims_msg)
-    if package_class != 0:  # proto3: skip default value 0
-        msg += encode_varint_field(5, package_class)
-    if requires_signature:
-        msg += encode_bool_field(6, True)
-    if declared_value_cents != 0:
-        msg += encode_int64_field(7, declared_value_cents)
+    # Always encode all fields (don't skip proto3 defaults) so reader gets non-NULL values
+    msg += encode_varint_field(5, package_class)
+    msg += encode_bool_field(6, requires_signature)
+    msg += encode_int64_field(7, declared_value_cents)
     return msg
 
 def encode_tracking_event(event_time_seconds, location, description):
@@ -125,14 +123,11 @@ def encode_shipment(shipment_id, origin, destination, status, is_express, is_ins
     msg = encode_string(1, shipment_id)
     msg += encode_string(2, origin)
     msg += encode_string(3, destination)
-    if status != 0:  # proto3: skip default
-        msg += encode_varint_field(4, status)
-    if is_express:
-        msg += encode_bool_field(5, True)
-    if is_insured:
-        msg += encode_bool_field(6, True)
-    if total_cost_cents != 0:
-        msg += encode_int64_field(7, total_cost_cents)
+    # Always encode all fields (don't skip proto3 defaults) so reader gets non-NULL values
+    msg += encode_varint_field(4, status)
+    msg += encode_bool_field(5, is_express)
+    msg += encode_bool_field(6, is_insured)
+    msg += encode_int64_field(7, total_cost_cents)
     for pkg in packages:
         pkg_msg = encode_package(*pkg)
         msg += encode_embedded(8, pkg_msg)
