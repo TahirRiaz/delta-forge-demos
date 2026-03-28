@@ -55,13 +55,7 @@ GROUP BY
         WHEN claim_amount < 50000 THEN 'Major'
         ELSE 'Catastrophic'
     END
-ORDER BY
-    CASE
-        WHEN claim_amount < 1000 THEN 1
-        WHEN claim_amount < 10000 THEN 2
-        WHEN claim_amount < 50000 THEN 3
-        ELSE 4
-    END;
+ORDER BY MIN(claim_amount);
 
 
 -- ============================================================================

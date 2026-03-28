@@ -116,27 +116,27 @@ ASSERT VALUE best_grade = 'A' WHERE student_name = 'Alice Chen'
 ASSERT VALUE best_course = 'CS101' WHERE student_name = 'Alice Chen'
 ASSERT VALUE best_grade = 'C' WHERE student_name = 'David Kim'
 ASSERT VALUE best_course = 'MATH101' WHERE student_name = 'David Kim'
+WITH best_grades AS (
+    SELECT student_id,
+           MIN(grade) AS best_grade
+    FROM {{zone_name}}.delta_demos.enrollments
+    WHERE grade IS NOT NULL
+    GROUP BY student_id
+),
+best_courses AS (
+    SELECT e.student_id,
+           e.course_code AS best_course,
+           ROW_NUMBER() OVER (PARTITION BY e.student_id ORDER BY e.course_code) AS rn
+    FROM {{zone_name}}.delta_demos.enrollments e
+    INNER JOIN best_grades bg ON e.student_id = bg.student_id AND e.grade = bg.best_grade
+)
 SELECT s.student_id,
        s.student_name,
-       (SELECT MIN(e.grade)
-        FROM {{zone_name}}.delta_demos.enrollments e
-        WHERE e.student_id = s.student_id
-          AND e.grade IS NOT NULL) AS best_grade,
-       (SELECT e2.course_code
-        FROM {{zone_name}}.delta_demos.enrollments e2
-        WHERE e2.student_id = s.student_id
-          AND e2.grade = (SELECT MIN(e3.grade)
-                          FROM {{zone_name}}.delta_demos.enrollments e3
-                          WHERE e3.student_id = s.student_id
-                            AND e3.grade IS NOT NULL)
-        LIMIT 1) AS best_course
+       bg.best_grade,
+       bc.best_course
 FROM {{zone_name}}.delta_demos.students s
-WHERE EXISTS (
-    SELECT 1
-    FROM {{zone_name}}.delta_demos.enrollments e
-    WHERE e.student_id = s.student_id
-      AND e.grade IS NOT NULL
-)
+INNER JOIN best_grades bg ON bg.student_id = s.student_id
+INNER JOIN best_courses bc ON bc.student_id = s.student_id AND bc.rn = 1
 ORDER BY s.student_name;
 
 

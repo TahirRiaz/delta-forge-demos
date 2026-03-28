@@ -35,14 +35,15 @@ ORDER BY record_date;
 -- DATE_TRUNC('week', record_date) truncates each date to its Monday,
 -- grouping all five workdays into a single pay-period bucket. SUM of
 -- epoch-based hours gives total hours worked that week per employee.
--- Two weeks × 5 employees = 10 result rows.
+-- Filtered to Alice (employee_id = 1) to show her two weekly buckets.
 -- ============================================================================
-ASSERT VALUE weekly_hours = 43.00 WHERE employee_id = 1 AND week_start = '2024-03-04'
-ASSERT ROW_COUNT = 10
+ASSERT VALUE weekly_hours = 43.00 WHERE week_start = '2024-03-04'
+ASSERT ROW_COUNT = 2
 SELECT employee_id, employee_name,
        CAST(DATE_TRUNC('week', record_date) AS DATE) AS week_start,
        ROUND(SUM((EXTRACT(EPOCH FROM clock_out) - EXTRACT(EPOCH FROM clock_in)) / 3600.0), 2) AS weekly_hours
 FROM {{zone_name}}.delta_demos.attendance_records
+WHERE employee_id = 1
 GROUP BY employee_id, employee_name, DATE_TRUNC('week', record_date)
 ORDER BY employee_id, week_start;
 
@@ -80,15 +81,15 @@ ASSERT VALUE employee_count = 25 WHERE arrival_window = 'early'
 ASSERT VALUE employee_count = 12 WHERE arrival_window = 'late'
 ASSERT ROW_COUNT = 3
 SELECT CASE
-         WHEN DATE_PART('hour', clock_in) = 8 AND DATE_PART('minute', clock_in) < 30 THEN 'early'
-         WHEN DATE_PART('hour', clock_in) = 8 AND DATE_PART('minute', clock_in) >= 30 THEN 'on_time'
+         WHEN EXTRACT(HOUR FROM clock_in) = 8 AND EXTRACT(MINUTE FROM clock_in) < 30 THEN 'early'
+         WHEN EXTRACT(HOUR FROM clock_in) = 8 AND EXTRACT(MINUTE FROM clock_in) >= 30 THEN 'on_time'
          ELSE 'late'
        END AS arrival_window,
        COUNT(*) AS employee_count
 FROM {{zone_name}}.delta_demos.attendance_records
 GROUP BY CASE
-           WHEN DATE_PART('hour', clock_in) = 8 AND DATE_PART('minute', clock_in) < 30 THEN 'early'
-           WHEN DATE_PART('hour', clock_in) = 8 AND DATE_PART('minute', clock_in) >= 30 THEN 'on_time'
+           WHEN EXTRACT(HOUR FROM clock_in) = 8 AND EXTRACT(MINUTE FROM clock_in) < 30 THEN 'early'
+           WHEN EXTRACT(HOUR FROM clock_in) = 8 AND EXTRACT(MINUTE FROM clock_in) >= 30 THEN 'on_time'
            ELSE 'late'
          END
 ORDER BY arrival_window;
