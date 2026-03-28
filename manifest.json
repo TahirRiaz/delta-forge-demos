@@ -4643,6 +4643,48 @@
       ]
     },
     {
+      "id": "gis-maritime-shipping",
+      "path": "demos/spatial/gis-maritime-shipping",
+      "iconPath": "icons/gis-maritime-shipping.svg",
+      "name": "GIS Maritime Shipping \u2014 PostGIS-Compatible Geospatial Functions",
+      "summary": "Tests all 18 PostGIS-compatible st_* functions using a global maritime shipping scenario. 5 cargo vessels navigate between 10 world ports with 40 GPS position records. Exercises st_distance (haversine, Vincenty, spherical), st_bearing, st_azimuth, st_final_bearing, st_contains, st_within, st_make_point, st_x, st_y, and st_area with independently computed proof values.",
+      "categories": [
+        "geospatial",
+        "analytics"
+      ],
+      "tags": [
+        "spatial",
+        "gis",
+        "postgis",
+        "distance",
+        "bearing",
+        "point-in-polygon",
+        "delta-table",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-28T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.maritime.ports"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.maritime.vessels"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.maritime.positions"
+        }
+      ]
+    },
+    {
       "id": "graph-cypher-queries",
       "path": "demos/graph/graph-cypher-queries",
       "iconPath": "icons/graph-cypher-queries.svg",
