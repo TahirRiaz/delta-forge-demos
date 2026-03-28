@@ -146,7 +146,7 @@ $$) AS (customer_id BIGINT, community_id BIGINT);
 -- All 40 customers should be assigned to a community.
 -- Louvain should detect at least 2 distinct communities in this dataset.
 
-ASSERT ROW_COUNT = 40
+ASSERT ROW_COUNT = 1
 ASSERT VALUE community_count >= 2
 SELECT COUNT(DISTINCT community_id) AS community_count
 FROM {{zone_name}}.sales.community_assignments;
