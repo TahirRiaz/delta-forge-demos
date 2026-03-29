@@ -42,7 +42,7 @@ size_bytes = 35766
 
 [[demo.target_objects]]
 type = "graph"
-name = "email_eu_core"
+name = "{{zone_name}}.email_eu.email_eu_core"
 
 [[demo.target_objects]]
 type = "delta_table"

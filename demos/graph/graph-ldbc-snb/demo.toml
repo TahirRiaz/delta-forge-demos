@@ -237,7 +237,7 @@ size_bytes = 2162688
 
 [[demo.target_objects]]
 type = "graph"
-name = "ldbc_social_network"
+name = "{{zone_name}}.ldbc.ldbc_social_network"
 
 [[demo.target_objects]]
 type = "delta_table"

@@ -26,7 +26,7 @@ zone_name = { description = "Target zone name for tables (defaults to 'external'
 
 [[demo.target_objects]]
 type = "graph"
-name = "stress_test_network"
+name = "{{zone_name}}.graph.stress_test_network"
 
 [[demo.target_objects]]
 type = "delta_table"

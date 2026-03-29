@@ -4795,7 +4795,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "research_network"
+          "name": "{{zone_name}}.graph.research_network"
         },
         {
           "objectType": "delta_table",
@@ -4833,7 +4833,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "movie_recs"
+          "name": "{{zone_name}}.graph.movie_recs"
         },
         {
           "objectType": "delta_table",
@@ -4873,7 +4873,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "email_eu_core"
+          "name": "{{zone_name}}.email_eu.email_eu_core"
         },
         {
           "objectType": "external_table",
@@ -4917,7 +4917,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "karate_club"
+          "name": "{{zone_name}}.karate.karate_club"
         },
         {
           "objectType": "external_table",
@@ -4964,7 +4964,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "ldbc_social_network"
+          "name": "{{zone_name}}.ldbc.ldbc_social_network"
         },
         {
           "objectType": "delta_table",
@@ -5128,7 +5128,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "hospital_referrals"
+          "name": "{{zone_name}}.graph.hospital_referrals"
         },
         {
           "objectType": "delta_table",
@@ -5168,7 +5168,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "netscience_collab"
+          "name": "{{zone_name}}.netscience.netscience_collab"
         },
         {
           "objectType": "external_table",
@@ -5211,7 +5211,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "political_books"
+          "name": "{{zone_name}}.polbooks.political_books"
         },
         {
           "objectType": "external_table",
@@ -5255,7 +5255,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "customer_network"
+          "name": "{{zone_name}}.sales.customer_network"
         },
         {
           "objectType": "delta_table",
@@ -5311,15 +5311,15 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "storage_flat"
+          "name": "{{zone_name}}.graph.storage_flat"
         },
         {
           "objectType": "graph",
-          "name": "storage_hybrid"
+          "name": "{{zone_name}}.graph.storage_hybrid"
         },
         {
           "objectType": "graph",
-          "name": "storage_json"
+          "name": "{{zone_name}}.graph.storage_json"
         },
         {
           "objectType": "delta_table",
@@ -5377,7 +5377,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "stress_test_network"
+          "name": "{{zone_name}}.graph.stress_test_network"
         },
         {
           "objectType": "delta_table",
@@ -5420,7 +5420,7 @@
       "targetObjects": [
         {
           "objectType": "graph",
-          "name": "shipping_network"
+          "name": "{{zone_name}}.graph.shipping_network"
         },
         {
           "objectType": "delta_table",

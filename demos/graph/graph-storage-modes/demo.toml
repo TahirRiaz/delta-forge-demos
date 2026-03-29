@@ -23,15 +23,15 @@ zone_name = { description = "Target zone name for tables (defaults to 'external'
 
 [[demo.target_objects]]
 type = "graph"
-name = "storage_flat"
+name = "{{zone_name}}.graph.storage_flat"
 
 [[demo.target_objects]]
 type = "graph"
-name = "storage_hybrid"
+name = "{{zone_name}}.graph.storage_hybrid"
 
 [[demo.target_objects]]
 type = "graph"
-name = "storage_json"
+name = "{{zone_name}}.graph.storage_json"
 
 [[demo.target_objects]]
 type = "delta_table"

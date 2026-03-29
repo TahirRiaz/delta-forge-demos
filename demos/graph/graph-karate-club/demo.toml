@@ -38,7 +38,7 @@ size_bytes = 640
 
 [[demo.target_objects]]
 type = "graph"
-name = "karate_club"
+name = "{{zone_name}}.karate.karate_club"
 
 [[demo.target_objects]]
 type = "delta_table"

@@ -42,7 +42,7 @@ size_bytes = 44699
 
 [[demo.target_objects]]
 type = "graph"
-name = "netscience_collab"
+name = "{{zone_name}}.netscience.netscience_collab"
 
 [[demo.target_objects]]
 type = "delta_table"
