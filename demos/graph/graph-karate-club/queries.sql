@@ -150,11 +150,11 @@ ORDER BY friend_id;
 -- ============================================================================
 -- 10. TWO-HOP REACHABILITY FROM NODE 0 — How far does influence reach?
 -- ============================================================================
--- Expected: 25 distinct nodes reachable within 2 hops (excludes source node 0).
--- Cypher variable-length paths do not include cycles back to the source.
--- 9 unreachable nodes (including node 0 itself): [0, 14, 15, 18, 20, 22, 23, 26, 29].
+-- Expected: 26 distinct nodes reachable within 2 hops (includes source node 0
+-- via 2-hop cycles such as 0->1->0).
+-- 8 unreachable nodes: [14, 15, 18, 20, 22, 23, 26, 29].
 
-ASSERT VALUE reachable_in_2_hops = 25
+ASSERT VALUE reachable_in_2_hops = 26
 USE {{zone_name}}.karate.karate_club
 MATCH (a)-[*1..2]->(b)
 WHERE a.id = 0
