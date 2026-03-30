@@ -5190,6 +5190,53 @@
       ]
     },
     {
+      "id": "graph-manual-csr",
+      "path": "demos/graph/graph-manual-csr",
+      "iconPath": "icons/graph-manual-csr.svg",
+      "name": "Manual CSR Cache Management — Graph Performance Control",
+      "summary": "Demonstrates the NO AUTO CACHE CSR graph attribute using the Zachary Karate Club dataset (34 vertices, 156 edges). Creates a graph with automatic CSR disk caching disabled, runs Cypher queries via the slow rebuild path, then manually builds the cache with CREATE GRAPHCSR and re-runs the same queries to prove identical results via the fast cached path.",
+      "categories": [
+        "graph"
+      ],
+      "tags": [
+        "graph",
+        "csr",
+        "cache",
+        "performance",
+        "manual-csr",
+        "intermediate"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 4412,
+      "fileCount": 2,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-03-30T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "graph",
+          "name": "{{zone_name}}.mcsr.karate_manual"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw_mcsr.karate_edges"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.raw_mcsr.karate_vertices"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.mcsr.vertices"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.mcsr.edges"
+        }
+      ]
+    },
+    {
       "id": "graph-mutations",
       "path": "demos/graph/graph-mutations",
       "iconPath": "icons/graph-mutations.svg",
