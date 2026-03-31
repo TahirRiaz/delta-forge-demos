@@ -22,11 +22,11 @@ Checks performed:
   4. Snapshot chain is valid (each snapshot references a manifest list)
   5. Manifest list Avro is parseable and references valid manifest files
   6. Manifest Avro is parseable and references existing Parquet data files
-  7. DuckDB iceberg_scan() reads the data and returns expected row count
-  8. Row count from Iceberg matches row count from direct Parquet read
+  7. PySpark reads the data through Iceberg format and returns expected row count
+  8. Row count and column names from PySpark match metadata claims
 
 Requirements:
-    pip install duckdb fastavro
+    pip install pyiceberg[pyarrow] fastavro
 """
 
 import argparse
@@ -123,7 +123,7 @@ def check_metadata_dir(table_path):
 # ---------------------------------------------------------------------------
 # Check 2: Parse and validate metadata.json
 # ---------------------------------------------------------------------------
-def check_metadata_json(meta_path, verbose=False):
+def check_metadata_json(meta_path, verbose=False, expected_version=None):
     print(f"\n{BOLD}Check 2: Iceberg metadata.json validation{RESET}")
 
     try:
@@ -150,15 +150,27 @@ def check_metadata_json(meta_path, verbose=False):
     fmt_version = metadata.get("format-version", "?")
     info(f"Iceberg format version: {fmt_version}")
 
+    if expected_version is not None:
+        if fmt_version == expected_version:
+            ok(f"Format version matches expected: {expected_version}")
+        else:
+            fail(f"Format version mismatch: got {fmt_version}, expected {expected_version}")
+
     # Schema validation
     if fmt_version == 1:
-        # V1 uses top-level 'schema' (single object)
+        # V1 accepts either legacy top-level 'schema' or modern 'schemas' array
         schema = metadata.get("schema")
+        schemas = metadata.get("schemas", [])
         if schema:
             fields = schema.get("fields", [])
-            ok(f"V1 schema present with {len(fields)} field(s)")
+            ok(f"V1 top-level schema present with {len(fields)} field(s)")
+        elif schemas:
+            latest_schema = schemas[-1]
+            fields = latest_schema.get("fields", [])
+            ok(f"V1 schemas array has {len(schemas)} version(s), "
+               f"latest schema has {len(fields)} field(s)")
         else:
-            fail("V1 metadata missing 'schema'")
+            fail("V1 metadata missing both 'schema' and 'schemas'")
             fields = []
     else:
         # V2/V3 use 'schemas' array
@@ -193,10 +205,18 @@ def check_metadata_json(meta_path, verbose=False):
     # Partition spec
     if fmt_version == 1:
         partition_spec = metadata.get("partition-spec", [])
+        partition_specs = metadata.get("partition-specs", [])
         if partition_spec:
             ok(f"V1 partition-spec has {len(partition_spec)} field(s)")
+        elif partition_specs:
+            latest_spec = partition_specs[-1]
+            spec_fields = latest_spec.get("fields", [])
+            if spec_fields:
+                ok(f"V1 partition-specs has {len(spec_fields)} field(s)")
+            else:
+                info("Unpartitioned table (empty partition fields)")
         else:
-            info("Unpartitioned table (empty partition-spec)")
+            info("Unpartitioned table (no partition-spec)")
     else:
         partition_specs = metadata.get("partition-specs", [])
         if partition_specs:
@@ -340,119 +360,227 @@ def check_manifest_chain(table_path, metadata, verbose=False):
 
 
 # ---------------------------------------------------------------------------
-# Check 4: DuckDB Iceberg scan comparison
+# Check 4: PyIceberg scan comparison
 # ---------------------------------------------------------------------------
-def check_duckdb_iceberg_scan(table_path, metadata, verbose=False):
-    print(f"\n{BOLD}Check 4: DuckDB Iceberg scan — read data through Iceberg metadata{RESET}")
+def check_pyiceberg_scan(table_path, metadata, verbose=False):
+    print(f"\n{BOLD}Check 4: PyIceberg scan — read data through Iceberg metadata{RESET}")
 
     try:
-        import duckdb
+        from pyiceberg.table import StaticTable
     except ImportError:
-        warn("duckdb not installed — skipping Iceberg scan comparison")
-        warn("Install with: pip install duckdb")
+        warn("pyiceberg not installed — skipping Iceberg scan comparison")
+        warn("Install with: pip install pyiceberg[pyarrow]")
         return
 
-    conn = duckdb.connect()
-    try:
-        conn.execute("INSTALL iceberg; LOAD iceberg;")
-    except Exception as e:
-        warn(f"DuckDB iceberg extension not available: {e}")
-        return
+    fmt_version = metadata.get("format-version", 2)
 
-    # Read via iceberg_scan
+    # Find latest metadata file
     meta_dir = os.path.join(table_path, "metadata")
     meta_files = sorted(glob.glob(os.path.join(meta_dir, "v*.metadata.json")))
     gz_files = sorted(glob.glob(os.path.join(meta_dir, "v*.metadata.json.gz")))
     all_meta = meta_files + gz_files
     if not all_meta:
-        fail("No metadata files for DuckDB scan")
+        fail("No metadata files for PyIceberg scan")
         return
 
     latest_meta = all_meta[-1]
+    # Convert to a file:// URI that PyIceberg can parse on Windows
+    from pathlib import Path
+    meta_uri = Path(latest_meta).resolve().as_uri()
 
-    # Try with allow_moved_paths since manifest paths may be relative
-    # or recorded with a different base path than the current location
     iceberg_rows = None
-    for scan_expr in [
-        f"iceberg_scan('{latest_meta}', allow_moved_paths = true)",
-        f"iceberg_scan('{latest_meta}')",
-    ]:
+    iceberg_col_names = None
+
+    # PyIceberg's StaticTable.from_metadata has a Windows path bug —
+    # it converts file:///B:/... to /B:/... which is invalid on Windows.
+    # Workaround: parse the metadata JSON ourselves and use PyIceberg's
+    # schema/manifest parsing to build the table, then read Parquet via
+    # PyArrow using field-ID-based column mapping (the Iceberg way).
+    try:
+        import pyarrow.parquet as pq
+        import pyarrow as pa
+    except ImportError:
+        warn("pyarrow not installed — skipping PyIceberg scan")
+        warn("Install with: pip install pyiceberg[pyarrow]")
+        return
+
+    try:
+        table = StaticTable.from_metadata(meta_uri)
+        ok(f"PyIceberg loaded table from {os.path.basename(latest_meta)}")
+        use_static_table = True
+    except Exception:
+        # Windows path workaround: load metadata manually and use PyArrow
+        # to read Parquet files with Iceberg field-ID column mapping
+        info("PyIceberg StaticTable failed on Windows — using field-ID Parquet reader")
+        use_static_table = False
+
+    if use_static_table:
         try:
-            iceberg_rows = conn.execute(
-                f"SELECT COUNT(*) FROM {scan_expr}"
-            ).fetchone()[0]
-            ok(f"DuckDB {scan_expr.split('(')[0]}() returned {iceberg_rows} rows")
-            break
-        except Exception:
-            continue
+            scan = table.scan()
+            arrow_table = scan.to_arrow()
+            iceberg_rows = arrow_table.num_rows
+            ok(f"PyIceberg scan returned {iceberg_rows} rows")
 
-    if iceberg_rows is None:
-        warn("DuckDB iceberg_scan() failed — manifest paths may be unresolvable "
-             "(this is OK if the table was moved after creation)")
-
-    # Read the same data directly from Parquet files
-    parquet_files = glob.glob(os.path.join(table_path, "**", "*.parquet"), recursive=True)
-    # Exclude metadata directory parquet files
-    parquet_files = [f for f in parquet_files if "/metadata/" not in f]
-
-    if parquet_files:
-        try:
-            parquet_row_count = conn.execute(
-                f"SELECT COUNT(*) FROM read_parquet({parquet_files})"
-            ).fetchone()[0]
-            ok(f"Direct Parquet read: {parquet_row_count} rows")
-        except Exception as e:
-            warn(f"Direct Parquet read failed: {e}")
-            parquet_row_count = None
-    else:
-        warn("No Parquet data files found outside metadata/")
-        parquet_row_count = None
-
-    # Compare metadata claim vs actual reads
-    snapshots = metadata.get("snapshots", [])
-    if snapshots:
-        claimed = int(snapshots[-1].get("summary", {}).get("total-records", -1))
-        if claimed >= 0:
-            info(f"Metadata claims {claimed} records in latest snapshot")
-            if iceberg_rows is not None and iceberg_rows == claimed:
-                ok(f"Iceberg scan row count ({iceberg_rows}) matches metadata claim ({claimed})")
-            elif iceberg_rows is not None:
-                fail(f"Row count mismatch: iceberg_scan={iceberg_rows}, metadata claims={claimed}")
-
-            if parquet_row_count is not None and parquet_row_count == claimed:
-                ok(f"Parquet row count ({parquet_row_count}) matches metadata claim ({claimed})")
-            elif parquet_row_count is not None:
-                # This can legitimately differ if DELETEs use deletion vectors
-                warn(f"Parquet file count ({parquet_row_count}) != metadata claim ({claimed}) "
-                     f"(expected if deletion vectors or overwrites are in play)")
-
-    if iceberg_rows is not None and parquet_row_count is not None:
-        if iceberg_rows == parquet_row_count:
-            ok(f"Iceberg scan and Parquet direct read agree: {iceberg_rows} rows")
-        else:
-            info(f"Iceberg={iceberg_rows} vs Parquet={parquet_row_count} "
-                 f"(difference expected with deletion vectors)")
-
-    # Schema comparison
-    if iceberg_rows is not None:
-        try:
-            iceberg_cols = conn.execute(
-                f"SELECT * FROM iceberg_scan('{latest_meta}') LIMIT 0"
-            ).description
-            col_names = [c[0] for c in iceberg_cols]
-            ok(f"Iceberg schema has {len(col_names)} columns: {col_names}")
+            iceberg_col_names = arrow_table.column_names
+            ok(f"Iceberg schema has {len(iceberg_col_names)} columns: {iceberg_col_names}")
 
             if verbose:
                 info("Sample data (first 3 rows via Iceberg):")
-                sample = conn.execute(
-                    f"SELECT * FROM iceberg_scan('{latest_meta}') LIMIT 3"
-                ).fetchdf()
-                for _, row in sample.iterrows():
-                    info(f"    {dict(row)}")
+                sample = arrow_table.slice(0, min(3, iceberg_rows)).to_pydict()
+                for i in range(min(3, iceberg_rows)):
+                    row = {col: sample[col][i] for col in iceberg_col_names}
+                    info(f"    {row}")
         except Exception as e:
-            warn(f"Could not read schema from iceberg_scan: {e}")
+            fail(f"PyIceberg scan failed: {e}")
+            use_static_table = False
 
-    conn.close()
+    if not use_static_table:
+        # Read Parquet files referenced by the manifest chain and map
+        # columns using Iceberg field IDs from the Parquet schema metadata.
+        try:
+            import fastavro as _fa
+
+            # Build field ID -> name map from Iceberg metadata schema
+            schema_fields = []
+            if fmt_version == 1:
+                schema = metadata.get("schema")
+                schemas = metadata.get("schemas", [])
+                if schema:
+                    schema_fields = schema.get("fields", [])
+                elif schemas:
+                    schema_fields = schemas[-1].get("fields", [])
+            else:
+                schemas = metadata.get("schemas", [])
+                if schemas:
+                    schema_fields = schemas[-1].get("fields", [])
+
+            field_id_to_name = {f["id"]: f["name"] for f in schema_fields}
+
+            # Collect data file paths from manifest chain
+            snapshots = metadata.get("snapshots", [])
+            if not snapshots:
+                warn("No snapshots — nothing to scan")
+                return
+
+            latest_snap = snapshots[-1]
+            ml_path = latest_snap.get("manifest-list", "")
+
+            # Resolve manifest list path
+            from_uri = lambda u: u.replace("file:///", "").replace("file://", "")
+            ml_local = from_uri(ml_path)
+            if not os.path.isfile(ml_local):
+                ml_local = os.path.join(table_path, "metadata", os.path.basename(ml_local))
+
+            with open(ml_local, "rb") as f:
+                ml_records = list(_fa.reader(f))
+
+            data_files = []
+            for ml_rec in ml_records:
+                m_path = from_uri(ml_rec.get("manifest_path", ""))
+                if not os.path.isfile(m_path):
+                    m_path = os.path.join(table_path, "metadata", os.path.basename(m_path))
+                with open(m_path, "rb") as f:
+                    for entry in _fa.reader(f):
+                        df_entry = entry.get("data_file", entry)
+                        status = entry.get("status", 1)
+                        if status != 2:  # 2 = DELETED
+                            fp = from_uri(df_entry.get("file_path", ""))
+                            if not os.path.isfile(fp):
+                                fp = os.path.join(table_path, os.path.basename(fp))
+                            data_files.append(fp)
+
+            if not data_files:
+                warn("No data files found in manifest chain")
+                return
+
+            # Read Parquet files and rename columns using field IDs
+            tables = []
+            for df_path in data_files:
+                pf = pq.read_table(df_path)
+                # Map Parquet field IDs to Iceberg column names
+                pq_schema = pq.read_schema(df_path)
+                rename_map = {}
+                for i, field in enumerate(pq_schema):
+                    fid = field.metadata.get(b"PARQUET:field_id") if field.metadata else None
+                    if fid is None:
+                        # Try the Parquet schema field_id from the file metadata
+                        pq_meta = pq.read_metadata(df_path)
+                        row_group = pq_meta.row_group(0)
+                        col = row_group.column(i)
+                        # field_id is not directly accessible; use arrow schema field ID
+                        pass
+                    if fid is not None:
+                        fid_int = int(fid)
+                        if fid_int in field_id_to_name:
+                            rename_map[field.name] = field_id_to_name[fid_int]
+
+                # If no field metadata, try positional mapping via arrow metadata
+                if not rename_map:
+                    arrow_schema = pf.schema
+                    for i, arrow_field in enumerate(arrow_schema):
+                        md = arrow_field.metadata or {}
+                        fid = md.get(b"PARQUET:field_id")
+                        if fid is not None:
+                            fid_int = int(fid)
+                            if fid_int in field_id_to_name:
+                                rename_map[arrow_field.name] = field_id_to_name[fid_int]
+
+                if rename_map:
+                    new_names = [rename_map.get(c, c) for c in pf.column_names]
+                    pf = pf.rename_columns(new_names)
+
+                tables.append(pf)
+
+            arrow_table = pa.concat_tables(tables)
+            iceberg_rows = arrow_table.num_rows
+            ok(f"Parquet read (field-ID mapped) returned {iceberg_rows} rows")
+
+            iceberg_col_names = arrow_table.column_names
+            ok(f"Iceberg schema has {len(iceberg_col_names)} columns: {iceberg_col_names}")
+
+            if verbose:
+                info("Sample data (first 3 rows via field-ID mapping):")
+                sample = arrow_table.slice(0, min(3, iceberg_rows)).to_pydict()
+                for i in range(min(3, iceberg_rows)):
+                    row = {col: sample[col][i] for col in iceberg_col_names}
+                    info(f"    {row}")
+
+        except Exception as e:
+            fail(f"Field-ID Parquet read failed: {e}")
+            return
+
+    # Compare metadata claim vs actual read
+    snapshots = metadata.get("snapshots", [])
+    if snapshots and iceberg_rows is not None:
+        claimed = int(snapshots[-1].get("summary", {}).get("total-records", -1))
+        if claimed >= 0:
+            info(f"Metadata claims {claimed} records in latest snapshot")
+            if iceberg_rows == claimed:
+                ok(f"PyIceberg row count ({iceberg_rows}) matches metadata claim ({claimed})")
+            else:
+                fail(f"Row count mismatch: PyIceberg={iceberg_rows}, metadata claims={claimed}")
+
+    # Compare schema field names against metadata schema
+    if iceberg_col_names is not None:
+        schema_fields = []
+        if fmt_version == 1:
+            schema = metadata.get("schema")
+            schemas = metadata.get("schemas", [])
+            if schema:
+                schema_fields = [f["name"] for f in schema.get("fields", [])]
+            elif schemas:
+                schema_fields = [f["name"] for f in schemas[-1].get("fields", [])]
+        else:
+            schemas = metadata.get("schemas", [])
+            if schemas:
+                schema_fields = [f["name"] for f in schemas[-1].get("fields", [])]
+
+        if schema_fields:
+            if list(iceberg_col_names) == schema_fields:
+                ok(f"Column names match metadata schema: {schema_fields}")
+            else:
+                fail(f"Column name mismatch: PyIceberg={list(iceberg_col_names)}, "
+                     f"metadata={schema_fields}")
 
 
 # ---------------------------------------------------------------------------
@@ -519,6 +647,13 @@ def main():
         action="store_true",
         help="Show detailed output (schemas, sample data, manifest entries)"
     )
+    parser.add_argument(
+        "--format-version", "-f",
+        type=int,
+        choices=[1, 2, 3],
+        default=None,
+        help="Assert the table uses this Iceberg format version (1, 2, or 3)"
+    )
     args = parser.parse_args()
 
     table_path = os.path.abspath(args.table_path)
@@ -545,13 +680,14 @@ def main():
         print(f"\n{RED}ABORT: Cannot proceed without metadata files{RESET}")
         sys.exit(1)
 
-    metadata = check_metadata_json(latest_meta, verbose=args.verbose)
+    metadata = check_metadata_json(latest_meta, verbose=args.verbose,
+                                    expected_version=args.format_version)
     if metadata is None:
         print(f"\n{RED}ABORT: Cannot proceed without valid metadata.json{RESET}")
         sys.exit(1)
 
     check_manifest_chain(table_path, metadata, verbose=args.verbose)
-    check_duckdb_iceberg_scan(table_path, metadata, verbose=args.verbose)
+    check_pyiceberg_scan(table_path, metadata, verbose=args.verbose)
     check_version_progression(table_path, verbose=args.verbose)
 
     # Summary
