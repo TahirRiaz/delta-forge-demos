@@ -12,7 +12,7 @@
 
 ASSERT ROW_COUNT = 10
 SELECT *
-FROM {{zone_name}}.json.countries;
+FROM {{zone_name}}.json_demos.countries;
 
 
 -- ============================================================================
@@ -24,7 +24,7 @@ ASSERT VALUE government_capital_name_text = 'Cairo' WHERE government_country_nam
 ASSERT VALUE government_capital_name_text = 'Accra' WHERE government_country_name_conventional_short_form_text = 'Ghana'
 ASSERT VALUE government_capital_name_text = 'Kigali' WHERE government_country_name_conventional_short_form_text = 'Rwanda'
 SELECT government_country_name_conventional_short_form_text, government_capital_name_text, government_government_type_text, geography_area_total_text, people_and_society_population_total_text, geography_climate_text
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 ORDER BY government_country_name_conventional_short_form_text;
 
 
@@ -36,7 +36,7 @@ ORDER BY government_country_name_conventional_short_form_text;
 
 ASSERT VALUE egypt_count = 1
 SELECT COUNT(*) AS egypt_count
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 
@@ -52,7 +52,7 @@ ASSERT VALUE terrorism_status = 'NO DATA' WHERE government_country_name_conventi
 ASSERT VALUE terrorism_status = 'HAS DATA' WHERE government_country_name_conventional_short_form_text = 'Egypt'
 SELECT government_country_name_conventional_short_form_text,
        CASE WHEN terrorism_terrorist_group_s_text IS NULL THEN 'NO DATA' ELSE 'HAS DATA' END AS terrorism_status
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 ORDER BY government_country_name_conventional_short_form_text;
 
 
@@ -67,7 +67,7 @@ ASSERT VALUE space_status = 'NO DATA' WHERE government_country_name_conventional
 ASSERT VALUE space_status = 'HAS DATA' WHERE government_country_name_conventional_short_form_text = 'Egypt'
 SELECT government_country_name_conventional_short_form_text,
        CASE WHEN space_space_agency_agencies_text IS NULL THEN 'NO DATA' ELSE 'HAS DATA' END AS space_status
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 ORDER BY government_country_name_conventional_short_form_text;
 
 
@@ -92,7 +92,7 @@ ASSERT VALUE government_country_name_conventional_short_form_text IS NOT NULL
 ASSERT VALUE df_file_name LIKE '%eg.json%' WHERE government_country_name_conventional_short_form_text = 'Egypt'
 ASSERT VALUE df_file_name LIKE '%gh.json%' WHERE government_country_name_conventional_short_form_text = 'Ghana'
 SELECT df_file_name, government_country_name_conventional_short_form_text
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 ORDER BY df_file_name;
 
 
@@ -102,7 +102,7 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 10
 SELECT *
-FROM {{zone_name}}.json.country_economy;
+FROM {{zone_name}}.json_demos.country_economy;
 
 
 -- ============================================================================
@@ -114,7 +114,7 @@ ASSERT VALUE economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_
 ASSERT VALUE economy_gdp_composition_by_sector_of_origin_agriculture_text IS NOT NULL WHERE government_country_name_conventional_short_form_text = 'Egypt'
 SELECT government_country_name_conventional_short_form_text, economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text, economy_real_gdp_growth_rate_real_gdp_growth_rate_2023_text, economy_real_gdp_per_capita_real_gdp_per_capita_2023_text,
        economy_gdp_composition_by_sector_of_origin_agriculture_text, economy_gdp_composition_by_sector_of_origin_industry_text, economy_gdp_composition_by_sector_of_origin_services_text
-FROM {{zone_name}}.json.country_economy
+FROM {{zone_name}}.json_demos.country_economy
 ORDER BY government_country_name_conventional_short_form_text;
 
 
@@ -127,7 +127,7 @@ ORDER BY government_country_name_conventional_short_form_text;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text IS NOT NULL
 SELECT government_country_name_conventional_short_form_text, economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text
-FROM {{zone_name}}.json.country_economy
+FROM {{zone_name}}.json_demos.country_economy
 WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 
@@ -139,7 +139,7 @@ WHERE government_country_name_conventional_short_form_text = 'Egypt';
 ASSERT ROW_COUNT = 1
 ASSERT VALUE government_capital_name_text = 'Cairo'
 SELECT government_country_name_conventional_short_form_text, government_capital_name_text, geography_area_total_text
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 
@@ -149,7 +149,7 @@ WHERE government_country_name_conventional_short_form_text = 'Egypt';
 
 ASSERT ROW_COUNT = 7
 SELECT government_country_name_conventional_short_form_text, space_space_agency_agencies_text
-FROM {{zone_name}}.json.countries
+FROM {{zone_name}}.json_demos.countries
 WHERE space_space_agency_agencies_text IS NOT NULL
 ORDER BY government_country_name_conventional_short_form_text;
 
@@ -165,21 +165,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: Country count = 10
     SELECT 'country_count_10' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries) = 10
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Economy count = 10
     SELECT 'economy_count_10' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.country_economy) = 10
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.country_economy) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: Deep nesting — Egypt found
     SELECT 'deep_nesting_egypt' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE government_country_name_conventional_short_form_text = 'Egypt') = 1
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries WHERE government_country_name_conventional_short_form_text = 'Egypt') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -187,7 +187,7 @@ SELECT check_name, result FROM (
     -- Check 4: Schema evolution — Ghana has no terrorism data (NULL)
     SELECT 'schema_evolution_terrorism_null' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.json.countries
+               SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries
                WHERE government_country_name_conventional_short_form_text = 'Ghana' AND terrorism_terrorist_group_s_text IS NULL
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -196,7 +196,7 @@ SELECT check_name, result FROM (
     -- Check 5: Schema evolution — Egypt HAS terrorism data (non-NULL)
     SELECT 'schema_evolution_terrorism_present' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.json.countries
+               SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries
                WHERE government_country_name_conventional_short_form_text = 'Egypt' AND terrorism_terrorist_group_s_text IS NOT NULL
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -204,21 +204,21 @@ SELECT check_name, result FROM (
 
     -- Check 6: Schema evolution — Space: 7 with data, 3 without
     SELECT 'schema_evolution_space' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE space_space_agency_agencies_text IS NOT NULL) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries WHERE space_space_agency_agencies_text IS NOT NULL) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: Column mappings — country_name populated for all
     SELECT 'column_mapping_country_name' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE government_country_name_conventional_short_form_text IS NOT NULL) = 10
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries WHERE government_country_name_conventional_short_form_text IS NOT NULL) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 9: File metadata populated
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.countries WHERE df_file_name IS NOT NULL) = 10
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries WHERE df_file_name IS NOT NULL) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -226,7 +226,7 @@ SELECT check_name, result FROM (
     -- Check 10: Spot check — Egypt capital is Cairo
     SELECT 'spot_check_egypt_cairo' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.json.countries
+               SELECT COUNT(*) FROM {{zone_name}}.json_demos.countries
                WHERE government_country_name_conventional_short_form_text = 'Egypt' AND government_capital_name_text = 'Cairo'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -235,7 +235,7 @@ SELECT check_name, result FROM (
     -- Check 11: Economy — Egypt GDP populated
     SELECT 'economy_gdp_populated' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.json.country_economy
+               SELECT COUNT(*) FROM {{zone_name}}.json_demos.country_economy
                WHERE government_country_name_conventional_short_form_text = 'Egypt' AND economy_real_gdp_purchasing_power_parity_real_gdp_purchasing_power_parity_2023_text IS NOT NULL
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -243,7 +243,7 @@ SELECT check_name, result FROM (
 
     -- Check 12: Multi-file — 10 distinct source files
     SELECT 'multi_file_10_sources' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.json.countries) = 10
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.json_demos.countries) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

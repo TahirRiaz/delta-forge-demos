@@ -62,7 +62,7 @@ SELECT
     stx_4 AS tx_date,
     mhd_1 AS msg_ref,
     mhd_2 AS msg_type
-FROM {{zone_name}}.edi.tradacoms_messages
+FROM {{zone_name}}.edi_demos.tradacoms_messages
 ORDER BY df_file_name, mhd_1;
 
 
@@ -89,7 +89,7 @@ ASSERT VALUE message_count = 1 WHERE message_type = 'PPRDET:2'
 SELECT
     mhd_2 AS message_type,
     COUNT(*) AS message_count
-FROM {{zone_name}}.edi.tradacoms_messages
+FROM {{zone_name}}.edi_demos.tradacoms_messages
 GROUP BY mhd_2
 ORDER BY mhd_2;
 
@@ -114,7 +114,7 @@ ASSERT VALUE messages = 4 WHERE source_file = 'tradacoms_utility_bill_escape.edi
 SELECT
     df_file_name AS source_file,
     COUNT(*) AS messages
-FROM {{zone_name}}.edi.tradacoms_messages
+FROM {{zone_name}}.edi_demos.tradacoms_messages
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -139,7 +139,7 @@ SELECT
     stx_2 AS sender,
     stx_3 AS receiver,
     COUNT(*) AS tx_count
-FROM {{zone_name}}.edi.tradacoms_messages
+FROM {{zone_name}}.edi_demos.tradacoms_messages
 GROUP BY stx_2, stx_3
 ORDER BY tx_count DESC;
 
@@ -170,7 +170,7 @@ SELECT
     typ_1 AS typ_code,
     typ_2 AS typ_version,
     sdt_2 AS supplier_name
-FROM {{zone_name}}.edi.tradacoms_materialized
+FROM {{zone_name}}.edi_demos.tradacoms_materialized
 ORDER BY df_file_name, mhd_1;
 
 
@@ -195,7 +195,7 @@ SELECT DISTINCT
     df_file_name AS source_file,
     stx_4 AS tx_date,
     stx_5 AS tx_reference
-FROM {{zone_name}}.edi.tradacoms_messages
+FROM {{zone_name}}.edi_demos.tradacoms_messages
 ORDER BY stx_4;
 
 
@@ -219,7 +219,7 @@ SELECT
     mhd_2 AS msg_type,
     cdt_2 AS customer_name,
     sdt_2 AS supplier_name
-FROM {{zone_name}}.edi.tradacoms_materialized
+FROM {{zone_name}}.edi_demos.tradacoms_materialized
 WHERE df_file_name LIKE '%escape%'
 ORDER BY mhd_1;
 
@@ -246,7 +246,7 @@ SELECT
     df_file_name,
     mhd_2 AS msg_type,
     df_transaction_json
-FROM {{zone_name}}.edi.tradacoms_messages
+FROM {{zone_name}}.edi_demos.tradacoms_messages
 ORDER BY df_file_name, mhd_1
 LIMIT 3;
 
@@ -268,35 +268,35 @@ SELECT check_name, result FROM (
 
     -- Check 1: Exact total message count = 15 (4+3+4+4 rows across 4 files)
     SELECT 'message_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_messages) = 15
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_messages) = 15
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 4 distinct source files in df_file_name
     SELECT 'source_files_4' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi.tradacoms_messages) = 4
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi_demos.tradacoms_messages) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: Exactly 10 distinct message types in MHD_2
     SELECT 'message_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT mhd_2) FROM {{zone_name}}.edi.tradacoms_messages) = 10
+           CASE WHEN (SELECT COUNT(DISTINCT mhd_2) FROM {{zone_name}}.edi_demos.tradacoms_messages) = 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: Materialized table has same 15 rows (same files, additional columns)
     SELECT 'materialized_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_materialized) = 15
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_materialized) = 15
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: df_transaction_json is populated for all 15 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_messages
                        WHERE df_transaction_json IS NOT NULL) = 15
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

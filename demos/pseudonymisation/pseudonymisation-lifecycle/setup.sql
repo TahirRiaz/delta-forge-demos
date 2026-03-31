@@ -31,7 +31,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation_demos
     COMMENT 'Pseudonymisation demo — insurance claims with protection rules';
 
 
@@ -43,7 +43,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
 -- transform types to demonstrate lifecycle management.
 -- ============================================================================
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.insurance_claims (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.insurance_claims (
     claim_id        VARCHAR,
     policy_holder_id VARCHAR,
     claimant_name   VARCHAR,
@@ -56,11 +56,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.insurance_claims
     filed_date      VARCHAR
 ) LOCATION '{{data_path}}/insurance_claims';
 
-GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation.insurance_claims TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.insurance_claims TO USER {{current_user}};
 
-DELETE FROM {{zone_name}}.pseudonymisation.insurance_claims WHERE 1=1;
+DELETE FROM {{zone_name}}.pseudonymisation_demos.insurance_claims WHERE 1=1;
 
-INSERT INTO {{zone_name}}.pseudonymisation.insurance_claims VALUES
+INSERT INTO {{zone_name}}.pseudonymisation_demos.insurance_claims VALUES
     ('CLM-2024-001', 'P-1001', 'John Smith', '1978-04-12', '555-12-3456', 'Auto', 'Collision damage to front bumper', 4500.00, 'approved', '2024-01-15'),
     ('CLM-2024-002', 'P-1002', 'Sarah Connor', '1985-09-30', '555-23-4567', 'Home', 'Water damage from pipe burst', 12800.00, 'approved', '2024-02-20'),
     ('CLM-2024-003', 'P-1003', 'James Wilson', '1992-07-18', '555-34-5678', 'Auto', 'Rear-end collision repair', 3200.00, 'pending', '2024-03-10'),
@@ -74,27 +74,27 @@ INSERT INTO {{zone_name}}.pseudonymisation.insurance_claims VALUES
 -- Five rules covering different PII columns with different transform types.
 -- These rules will be managed throughout the demo lifecycle.
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims (ssn)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims (ssn)
     TRANSFORM redact
     PRIORITY 20
     PARAMS (mask = '***-**-****');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims (claimant_name)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims (claimant_name)
     TRANSFORM keyed_hash
     SCOPE person
     PRIORITY 10
     PARAMS (salt = 'insurance_name_salt');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims (date_of_birth)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims (date_of_birth)
     TRANSFORM generalize
     SCOPE relationship
     PARAMS (range = 10);
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims (policy_holder_id)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims (policy_holder_id)
     TRANSFORM tokenize
     SCOPE person
     PRIORITY 5;
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims (description)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims (description)
     TRANSFORM mask
     PARAMS (show = 10);

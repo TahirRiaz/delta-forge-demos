@@ -15,7 +15,7 @@
 -- all data files. This is the first test of V3 format compatibility.
 
 ASSERT ROW_COUNT = 480
-SELECT * FROM {{zone_name}}.iceberg.lab_results;
+SELECT * FROM {{zone_name}}.iceberg_demos.lab_results;
 
 
 -- ============================================================================
@@ -39,7 +39,7 @@ SELECT
     is_abnormal,
     collection_date,
     analyst
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 ORDER BY sample_id;
 
 
@@ -55,7 +55,7 @@ ASSERT VALUE sample_count = 160 WHERE site = 'Seattle-UW'
 SELECT
     site,
     COUNT(*) AS sample_count
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 GROUP BY site
 ORDER BY site;
 
@@ -73,7 +73,7 @@ ASSERT VALUE sample_count = 120 WHERE test_name = 'Platelet-Count'
 SELECT
     test_name,
     COUNT(*) AS sample_count
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 GROUP BY test_name
 ORDER BY test_name;
 
@@ -91,7 +91,7 @@ ASSERT VALUE avg_result = 243.14 WHERE test_name = 'Platelet-Count'
 SELECT
     test_name,
     ROUND(AVG(result_value), 2) AS avg_result
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 GROUP BY test_name
 ORDER BY test_name;
 
@@ -110,7 +110,7 @@ ASSERT VALUE abnormal_count = 19 WHERE test_name = 'Platelet-Count'
 SELECT
     test_name,
     SUM(CASE WHEN is_abnormal THEN 1 ELSE 0 END) AS abnormal_count
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 GROUP BY test_name
 ORDER BY test_name;
 
@@ -127,7 +127,7 @@ ASSERT VALUE abnormal_count = 27 WHERE site = 'Seattle-UW'
 SELECT
     site,
     SUM(CASE WHEN is_abnormal THEN 1 ELSE 0 END) AS abnormal_count
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 GROUP BY site
 ORDER BY site;
 
@@ -145,7 +145,7 @@ SELECT
     test_name,
     result_value,
     reference_high
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 WHERE result_value > reference_high
 ORDER BY result_value DESC;
 
@@ -162,7 +162,7 @@ SELECT
     test_name,
     result_value,
     reference_low
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 WHERE result_value < reference_low
 ORDER BY result_value ASC;
 
@@ -181,7 +181,7 @@ ASSERT VALUE sample_count = 91 WHERE analyst = 'Dr. Reyes'
 SELECT
     analyst,
     COUNT(*) AS sample_count
-FROM {{zone_name}}.iceberg.lab_results
+FROM {{zone_name}}.iceberg_demos.lab_results
 GROUP BY analyst
 ORDER BY analyst;
 
@@ -199,7 +199,7 @@ SELECT
     COUNT(DISTINCT sample_id) AS distinct_samples,
     COUNT(DISTINCT patient_id) AS distinct_patients,
     COUNT(DISTINCT analyst) AS distinct_analysts
-FROM {{zone_name}}.iceberg.lab_results;
+FROM {{zone_name}}.iceberg_demos.lab_results;
 
 
 -- ============================================================================
@@ -224,4 +224,4 @@ SELECT
     SUM(CASE WHEN result_value > reference_high THEN 1 ELSE 0 END) AS above_range,
     SUM(CASE WHEN result_value < reference_low THEN 1 ELSE 0 END) AS below_range,
     COUNT(DISTINCT patient_id) AS distinct_patients
-FROM {{zone_name}}.iceberg.lab_results;
+FROM {{zone_name}}.iceberg_demos.lab_results;

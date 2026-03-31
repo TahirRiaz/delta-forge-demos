@@ -31,7 +31,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7_demos
     COMMENT 'HL7 v2 message-backed external tables';
 -- ============================================================================
 -- TABLE 1: adt_messages — Compact view (8 messages)
@@ -41,14 +41,14 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7
 -- Use df_message_json with JSON functions for deep segment access.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7.adt_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7_demos.adt_messages
 USING HL7
 LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.hl7.adt_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.hl7_demos.adt_messages TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 2: adt_materialized — Key patient fields extracted (8 messages)
@@ -67,7 +67,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.hl7.adt_messages TO USER {{current_user}};
 --   PV1_7  — Attending physician
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7.adt_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7_demos.adt_materialized
 USING HL7
 LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
@@ -81,5 +81,5 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.hl7.adt_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.hl7_demos.adt_materialized TO USER {{current_user}};
 

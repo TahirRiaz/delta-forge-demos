@@ -17,7 +17,7 @@
 -- manifest -> files). 5 regions x 3 years x 30 readings = 450 rows.
 
 ASSERT ROW_COUNT = 450
-SELECT * FROM {{zone_name}}.iceberg.weather_readings;
+SELECT * FROM {{zone_name}}.iceberg_demos.weather_readings;
 
 
 -- ============================================================================
@@ -35,7 +35,7 @@ ASSERT VALUE reading_count = 90 WHERE region = 'South America'
 SELECT
     region,
     COUNT(*) AS reading_count
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 GROUP BY region
 ORDER BY region;
 
@@ -58,7 +58,7 @@ SELECT
     wind_speed_kmh,
     precipitation_mm,
     condition
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 WHERE region = 'Europe'
   AND observation_date >= '2024-01-01'
   AND observation_date < '2025-01-01'
@@ -82,7 +82,7 @@ SELECT
     COUNT(*) AS reading_count,
     ROUND(AVG(temperature_c), 2) AS avg_temp,
     ROUND(AVG(humidity_pct), 2) AS avg_humidity
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 GROUP BY station_id
 ORDER BY station_id;
 
@@ -102,7 +102,7 @@ ASSERT VALUE cnt = 83 WHERE condition = 'Storm'
 SELECT
     condition,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 GROUP BY condition
 ORDER BY condition;
 
@@ -121,7 +121,7 @@ SELECT
     YEAR(observation_date) AS obs_year,
     ROUND(AVG(temperature_c), 2) AS avg_temp,
     COUNT(*) AS reading_count
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 GROUP BY YEAR(observation_date)
 ORDER BY obs_year;
 
@@ -141,7 +141,7 @@ SELECT
     observation_date,
     temperature_c,
     condition
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 WHERE temperature_c > 35 OR temperature_c < -5
 ORDER BY temperature_c DESC;
 
@@ -183,7 +183,7 @@ SELECT
     ROUND(AVG(precipitation_mm), 2) AS avg_precip,
     CAST(MIN(observation_date) AS VARCHAR) AS earliest_date,
     CAST(MAX(observation_date) AS VARCHAR) AS latest_date
-FROM {{zone_name}}.iceberg.weather_readings;
+FROM {{zone_name}}.iceberg_demos.weather_readings;
 
 
 -- ============================================================================
@@ -208,6 +208,6 @@ SELECT
     observation_date,
     temperature_c,
     condition
-FROM {{zone_name}}.iceberg.weather_readings
+FROM {{zone_name}}.iceberg_demos.weather_readings
 WHERE reading_id IN (439, 53)
 ORDER BY temperature_c DESC;

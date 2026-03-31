@@ -11,7 +11,7 @@
 -- Verify the seed data loaded correctly with all 5 statuses represented.
 
 ASSERT ROW_COUNT = 30
-SELECT * FROM {{zone_name}}.iceberg_cdf.orders ORDER BY order_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.orders ORDER BY order_id;
 
 -- ============================================================================
 -- Query 2: Revenue by Status — Baseline Snapshot
@@ -28,7 +28,7 @@ SELECT
     status,
     COUNT(*) AS order_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM {{zone_name}}.iceberg_cdf.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY status
 ORDER BY status;
 
@@ -46,7 +46,7 @@ SELECT
     customer_name,
     COUNT(*) AS order_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM {{zone_name}}.iceberg_cdf.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY customer_name
 ORDER BY customer_name;
 
@@ -57,7 +57,7 @@ ORDER BY customer_name;
 -- With CDF enabled, this creates pre-image and post-image records in the
 -- change feed that track exactly which rows changed and how.
 
-UPDATE {{zone_name}}.iceberg_cdf.orders
+UPDATE {{zone_name}}.iceberg_demos.orders
 SET status = 'processing'
 WHERE order_id IN (1, 2, 3, 4, 5);
 
@@ -74,7 +74,7 @@ ASSERT VALUE order_count = 5 WHERE status = 'delivered'
 SELECT
     status,
     COUNT(*) AS order_count
-FROM {{zone_name}}.iceberg_cdf.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY status
 ORDER BY status;
 
@@ -88,7 +88,7 @@ ASSERT VALUE status = 'processing' WHERE order_id = 1
 ASSERT VALUE customer_name = 'Alice Johnson' WHERE order_id = 1
 ASSERT VALUE unit_price = 1299.99 WHERE order_id = 1
 SELECT *
-FROM {{zone_name}}.iceberg_cdf.orders
+FROM {{zone_name}}.iceberg_demos.orders
 WHERE order_id = 1;
 
 -- ============================================================================
@@ -97,7 +97,7 @@ WHERE order_id = 1;
 -- Remove the 2 cancelled orders (id 25, 26). With CDF, the delete event
 -- is recorded so downstream consumers know which rows were removed.
 
-DELETE FROM {{zone_name}}.iceberg_cdf.orders
+DELETE FROM {{zone_name}}.iceberg_demos.orders
 WHERE status = 'cancelled';
 
 -- ============================================================================
@@ -105,7 +105,7 @@ WHERE status = 'cancelled';
 -- ============================================================================
 
 ASSERT ROW_COUNT = 28
-SELECT * FROM {{zone_name}}.iceberg_cdf.orders ORDER BY order_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.orders ORDER BY order_id;
 
 -- ============================================================================
 -- Query 7: Post-Delete Status Distribution — No Cancelled
@@ -119,7 +119,7 @@ ASSERT VALUE order_count = 5 WHERE status = 'delivered'
 SELECT
     status,
     COUNT(*) AS order_count
-FROM {{zone_name}}.iceberg_cdf.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY status
 ORDER BY status;
 
@@ -137,7 +137,7 @@ SELECT
     product,
     COUNT(*) AS order_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM {{zone_name}}.iceberg_cdf.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY product
 ORDER BY total_revenue DESC;
 
@@ -148,7 +148,7 @@ ORDER BY total_revenue DESC;
 -- All 30 rows should be present with original statuses.
 
 ASSERT ROW_COUNT = 30
-SELECT * FROM {{zone_name}}.iceberg_cdf.orders VERSION AS OF 1 ORDER BY order_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.orders VERSION AS OF 1 ORDER BY order_id;
 
 -- ============================================================================
 -- ICEBERG READ-BACK VERIFICATION
@@ -158,25 +158,25 @@ SELECT * FROM {{zone_name}}.iceberg_cdf.orders VERSION AS OF 1 ORDER BY order_id
 -- updated statuses, no cancelled) must match the Delta reader exactly.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_cdf.orders_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.orders_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/orders';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_cdf.orders_iceberg TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.orders_iceberg TO USER {{current_user}};
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 28 Orders After CDF Mutations
 -- ============================================================================
 
 ASSERT ROW_COUNT = 28
-SELECT * FROM {{zone_name}}.iceberg_cdf.orders_iceberg ORDER BY order_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.orders_iceberg ORDER BY order_id;
 
 -- ============================================================================
 -- Iceberg Verify 2: No Cancelled Orders Visible
 -- ============================================================================
 
 ASSERT ROW_COUNT = 0
-SELECT * FROM {{zone_name}}.iceberg_cdf.orders_iceberg WHERE status = 'cancelled';
+SELECT * FROM {{zone_name}}.iceberg_demos.orders_iceberg WHERE status = 'cancelled';
 
 -- ============================================================================
 -- Iceberg Verify 3: Updated Row Spot-Check
@@ -186,7 +186,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE status = 'processing' WHERE order_id = 1
 ASSERT VALUE product = 'Laptop Pro' WHERE order_id = 1
 SELECT *
-FROM {{zone_name}}.iceberg_cdf.orders_iceberg
+FROM {{zone_name}}.iceberg_demos.orders_iceberg
 WHERE order_id = 1;
 
 -- ============================================================================
@@ -201,7 +201,7 @@ SELECT
     product,
     COUNT(*) AS order_count,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM {{zone_name}}.iceberg_cdf.orders_iceberg
+FROM {{zone_name}}.iceberg_demos.orders_iceberg
 GROUP BY product
 ORDER BY total_revenue DESC;
 
@@ -222,4 +222,4 @@ SELECT
     COUNT(DISTINCT product) AS product_count,
     COUNT(DISTINCT customer_name) AS customer_count,
     ROUND(AVG(quantity * unit_price), 2) AS avg_order_value
-FROM {{zone_name}}.iceberg_cdf.orders;
+FROM {{zone_name}}.iceberg_demos.orders;

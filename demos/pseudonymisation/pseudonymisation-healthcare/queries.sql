@@ -42,7 +42,7 @@
 -- Use per-table SHOW to avoid counting rules from other demos
 
 ASSERT ROW_COUNT = 6
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.hl7_patients;
 
 
 -- ============================================================================
@@ -51,13 +51,13 @@ SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
 -- Filter rules to a single table for focused review.
 
 ASSERT ROW_COUNT = 6
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.hl7_patients;
 
 ASSERT ROW_COUNT = 8
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.fhir_patients;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.fhir_patients;
 
 ASSERT ROW_COUNT = 8
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.edi_claims;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.edi_claims;
 
 
 -- ============================================================================
@@ -92,7 +92,7 @@ SELECT
     pv1_2,
     pv1_7  AS physician,
     status
-FROM {{zone_name}}.pseudonymisation.hl7_patients;
+FROM {{zone_name}}.pseudonymisation_demos.hl7_patients;
 
 
 -- ============================================================================
@@ -127,7 +127,7 @@ SELECT
     mrn          AS mrn_redacted,
     ssn          AS ssn_hash,
     active
-FROM {{zone_name}}.pseudonymisation.fhir_patients;
+FROM {{zone_name}}.pseudonymisation_demos.fhir_patients;
 
 
 -- ============================================================================
@@ -145,7 +145,7 @@ SELECT
     address_city  AS city_hash,
     address_state AS state_hash,
     address_postal AS zip_hash
-FROM {{zone_name}}.pseudonymisation.fhir_patients;
+FROM {{zone_name}}.pseudonymisation_demos.fhir_patients;
 
 
 -- ============================================================================
@@ -177,7 +177,7 @@ SELECT
     clm_2           AS amount_masked,
     bpr_8           AS bank_acct_redacted,
     bpr_14          AS bank_acct2_redacted
-FROM {{zone_name}}.pseudonymisation.edi_claims
+FROM {{zone_name}}.pseudonymisation_demos.edi_claims
 WHERE st_1 = '837';
 
 
@@ -199,7 +199,7 @@ SELECT
     COUNT(*) AS claim_count,
     SUM(CAST(clm_2 AS DOUBLE)) AS total_charges,
     AVG(CAST(bpr_2 AS DOUBLE)) AS avg_payment
-FROM {{zone_name}}.pseudonymisation.edi_claims
+FROM {{zone_name}}.pseudonymisation_demos.edi_claims
 WHERE st_1 IN ('837', '835')
 GROUP BY st_1;
 
@@ -210,11 +210,11 @@ GROUP BY st_1;
 -- Remove a specific rule by table and column pattern.
 
 -- Remove the phone masking rule from HL7
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_13);
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_13);
 
 -- Verify HL7 rules (note: DROP takes effect after catalog sync)
 ASSERT ROW_COUNT <= 6
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.hl7_patients;
 
 
 -- ============================================================================
@@ -227,17 +227,17 @@ SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.hl7_patients;
 ASSERT ROW_COUNT = 4
 ASSERT VALUE pv1_2 = 'I' WHERE df_message_id = 'MSG001'
 SELECT df_message_id, pid_3, pid_7, pid_13, pid_19, pv1_2, pv1_7, status
-FROM {{zone_name}}.pseudonymisation.hl7_patients;
+FROM {{zone_name}}.pseudonymisation_demos.hl7_patients;
 
 -- FHIR: 4 patients, MRN always redacted to [REDACTED]
 ASSERT ROW_COUNT = 4
 ASSERT VALUE mrn = '[REDACTED]' WHERE gender = 'male'
 SELECT patient_id, family_name, birth_date, gender, mrn, ssn, active
-FROM {{zone_name}}.pseudonymisation.fhir_patients;
+FROM {{zone_name}}.pseudonymisation_demos.fhir_patients;
 
 -- EDI: 5 claims, bank accounts always fully redacted
 ASSERT ROW_COUNT = 5
 ASSERT VALUE bpr_8 = '**********' WHERE df_transaction_id = 'TXN-837-001'
 ASSERT VALUE bpr_14 = '**********' WHERE df_transaction_id = 'TXN-837-001'
 SELECT df_transaction_id, st_1, nm1_3, nm1_4, clm_2, bpr_8, bpr_14
-FROM {{zone_name}}.pseudonymisation.edi_claims;
+FROM {{zone_name}}.pseudonymisation_demos.edi_claims;

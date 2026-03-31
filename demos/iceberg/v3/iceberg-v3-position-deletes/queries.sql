@@ -16,7 +16,7 @@
 -- Original table has 480 rows; 24 are marked for deletion, leaving 456.
 
 ASSERT ROW_COUNT = 456
-SELECT * FROM {{zone_name}}.iceberg.equity_trades;
+SELECT * FROM {{zone_name}}.iceberg_demos.equity_trades;
 
 
 -- ============================================================================
@@ -27,7 +27,7 @@ SELECT * FROM {{zone_name}}.iceberg.equity_trades;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 WHERE trader = 'ALGO-X99';
 
 
@@ -44,7 +44,7 @@ ASSERT VALUE trade_count = 120 WHERE exchange = 'TSE'
 SELECT
     exchange,
     COUNT(*) AS trade_count
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 GROUP BY exchange
 ORDER BY exchange;
 
@@ -58,7 +58,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE trader_count = 10
 SELECT
     COUNT(DISTINCT trader) AS trader_count
-FROM {{zone_name}}.iceberg.equity_trades;
+FROM {{zone_name}}.iceberg_demos.equity_trades;
 
 
 -- ============================================================================
@@ -74,7 +74,7 @@ ASSERT VALUE total_notional = 82249678.63 WHERE exchange = 'TSE'
 SELECT
     exchange,
     ROUND(SUM(notional), 2) AS total_notional
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 GROUP BY exchange
 ORDER BY exchange;
 
@@ -90,7 +90,7 @@ ASSERT VALUE trade_count = 219 WHERE side = 'SELL'
 SELECT
     side,
     COUNT(*) AS trade_count
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 GROUP BY side
 ORDER BY side;
 
@@ -108,7 +108,7 @@ ASSERT VALUE avg_price = 256.13 WHERE exchange = 'TSE'
 SELECT
     exchange,
     ROUND(AVG(price), 2) AS avg_price
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 GROUP BY exchange
 ORDER BY exchange;
 
@@ -126,7 +126,7 @@ SELECT
     ROUND(MIN(price), 2) AS min_price,
     ROUND(MAX(price), 2) AS max_price,
     ROUND(AVG(price), 2) AS avg_price
-FROM {{zone_name}}.iceberg.equity_trades;
+FROM {{zone_name}}.iceberg_demos.equity_trades;
 
 
 -- ============================================================================
@@ -146,7 +146,7 @@ ASSERT VALUE trade_count = 54 WHERE exchange_side = 'TSE/SELL'
 SELECT
     exchange || '/' || side AS exchange_side,
     COUNT(*) AS trade_count
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 GROUP BY exchange, side
 ORDER BY exchange, side;
 
@@ -158,7 +158,7 @@ ORDER BY exchange, side;
 
 ASSERT ROW_COUNT = 385
 SELECT *
-FROM {{zone_name}}.iceberg.equity_trades
+FROM {{zone_name}}.iceberg_demos.equity_trades
 WHERE notional > 100000
 ORDER BY notional DESC;
 
@@ -178,7 +178,7 @@ SELECT
     COUNT(DISTINCT exchange) AS distinct_exchanges,
     COUNT(DISTINCT symbol) AS distinct_symbols,
     COUNT(DISTINCT trader) AS distinct_traders
-FROM {{zone_name}}.iceberg.equity_trades;
+FROM {{zone_name}}.iceberg_demos.equity_trades;
 
 
 -- ============================================================================
@@ -204,4 +204,4 @@ SELECT
     SUM(CASE WHEN trader = 'ALGO-X99' THEN 1 ELSE 0 END) AS erroneous_rows,
     SUM(CASE WHEN side = 'BUY' THEN 1 ELSE 0 END) AS buy_count,
     SUM(CASE WHEN side = 'SELL' THEN 1 ELSE 0 END) AS sell_count
-FROM {{zone_name}}.iceberg.equity_trades;
+FROM {{zone_name}}.iceberg_demos.equity_trades;

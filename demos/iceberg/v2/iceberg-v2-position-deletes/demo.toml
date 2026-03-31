@@ -67,4 +67,4 @@ size_bytes = 7877
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.cold_chain_readings"
+name = "{{zone_name}}.iceberg_demos.cold_chain_readings"

@@ -7,14 +7,14 @@
 -- ============================================================================
 
 -- STEP 1: Drop views (depend on tables, so drop first)
-DROP VIEW IF EXISTS {{zone_name}}.spatial.region_cells;
-DROP VIEW IF EXISTS {{zone_name}}.spatial.points_h3;
+DROP VIEW IF EXISTS {{zone_name}}.spatial_demos.region_cells;
+DROP VIEW IF EXISTS {{zone_name}}.spatial_demos.points_h3;
 
 -- STEP 2: Drop Delta tables (WITH FILES removes physical data too)
-DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.gps_points WITH FILES;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.regions WITH FILES;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial.landmarks WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial_demos.gps_points WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial_demos.regions WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.spatial_demos.landmarks WITH FILES;
 
 -- STEP 3: Shared resources (safe — will warn if other demos still use them)
-DROP SCHEMA IF EXISTS {{zone_name}}.spatial;
+DROP SCHEMA IF EXISTS {{zone_name}}.spatial_demos;
 DROP ZONE IF EXISTS {{zone_name}};

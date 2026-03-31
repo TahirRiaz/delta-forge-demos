@@ -9,17 +9,17 @@
 -- ============================================================================
 
 -- STEP 1: Drop Pseudonymisation Rules
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients;
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients;
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims;
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients;
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients;
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims;
 
 -- STEP 2: Drop Tables
-DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation.edi_claims;
-DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation.fhir_patients;
-DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation.hl7_patients;
+DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation_demos.edi_claims;
+DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation_demos.fhir_patients;
+DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation_demos.hl7_patients;
 
 -- STEP 3: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.pseudonymisation;
+DROP SCHEMA IF EXISTS {{zone_name}}.pseudonymisation_demos;
 
 -- STEP 4: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

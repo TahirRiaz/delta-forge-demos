@@ -15,14 +15,14 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg v2 table with position deletes
 -- The table root contains both data/ and metadata/ directories.
 -- metadata.json v3 has the current snapshot with delete manifest references.
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.cold_chain_readings
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.cold_chain_readings
 USING ICEBERG
 LOCATION '{{data_path}}/cold_chain_readings';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.cold_chain_readings TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.cold_chain_readings TO USER {{current_user}};

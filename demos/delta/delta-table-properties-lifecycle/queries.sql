@@ -25,7 +25,7 @@ SELECT category,
        COUNT(*) AS items,
        SUM(quantity) AS total_qty,
        ROUND(AVG(unit_price), 2) AS avg_price
-FROM {{zone_name}}.props_demos.inventory_items
+FROM {{zone_name}}.delta_demos.inventory_items
 GROUP BY category
 ORDER BY total_qty DESC;
 
@@ -41,7 +41,7 @@ ASSERT VALUE items = 5 WHERE warehouse = 'warehouse-north'
 SELECT warehouse,
        COUNT(*) AS items,
        SUM(quantity) AS total_qty
-FROM {{zone_name}}.props_demos.inventory_items
+FROM {{zone_name}}.delta_demos.inventory_items
 GROUP BY warehouse
 ORDER BY total_qty DESC;
 
@@ -53,7 +53,7 @@ ORDER BY total_qty DESC;
 -- and adjust the target file size for this table. These are recorded in the
 -- transaction log just like data operations.
 
-ALTER TABLE {{zone_name}}.props_demos.inventory_items
+ALTER TABLE {{zone_name}}.delta_demos.inventory_items
 SET TBLPROPERTIES (
     'delta.enableDeletionVectors' = 'true',
     'delta.targetFileSize' = '67108864'
@@ -65,7 +65,7 @@ SET TBLPROPERTIES (
 -- ============================================================================
 -- Properties can also be removed. Let's remove the auto-optimize setting.
 
-ALTER TABLE {{zone_name}}.props_demos.inventory_items
+ALTER TABLE {{zone_name}}.delta_demos.inventory_items
 UNSET TBLPROPERTIES ('delta.autoOptimize.optimizeWrite');
 
 
@@ -79,7 +79,7 @@ UNSET TBLPROPERTIES ('delta.autoOptimize.optimizeWrite');
 
 -- Non-deterministic: timestamps set at write time
 ASSERT WARNING ROW_COUNT >= 5
-DESCRIBE HISTORY {{zone_name}}.props_demos.inventory_items;
+DESCRIBE HISTORY {{zone_name}}.delta_demos.inventory_items;
 
 
 -- ============================================================================
@@ -90,7 +90,7 @@ DESCRIBE HISTORY {{zone_name}}.props_demos.inventory_items;
 
 -- Non-deterministic: file sizes depend on engine and compression
 ASSERT WARNING ROW_COUNT >= 1
-DESCRIBE DETAIL {{zone_name}}.props_demos.inventory_items;
+DESCRIBE DETAIL {{zone_name}}.delta_demos.inventory_items;
 
 
 -- ============================================================================
@@ -102,7 +102,7 @@ DESCRIBE DETAIL {{zone_name}}.props_demos.inventory_items;
 
 ASSERT VALUE cnt = 15
 SELECT COUNT(*) AS cnt
-FROM {{zone_name}}.props_demos.inventory_items VERSION AS OF 1;
+FROM {{zone_name}}.delta_demos.inventory_items VERSION AS OF 1;
 
 
 -- ============================================================================
@@ -111,20 +111,20 @@ FROM {{zone_name}}.props_demos.inventory_items VERSION AS OF 1;
 
 -- Verify total rows: 13 items after discontinuation
 ASSERT VALUE cnt = 13
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.props_demos.inventory_items;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.inventory_items;
 
 -- Verify distinct categories: 5 categories remain
 ASSERT VALUE cnt = 5
-SELECT COUNT(DISTINCT category) AS cnt FROM {{zone_name}}.props_demos.inventory_items;
+SELECT COUNT(DISTINCT category) AS cnt FROM {{zone_name}}.delta_demos.inventory_items;
 
 -- Verify distinct warehouses: 3 warehouses
 ASSERT VALUE cnt = 3
-SELECT COUNT(DISTINCT warehouse) AS cnt FROM {{zone_name}}.props_demos.inventory_items;
+SELECT COUNT(DISTINCT warehouse) AS cnt FROM {{zone_name}}.delta_demos.inventory_items;
 
 -- Verify total quantity across all items
 ASSERT VALUE total = 2655
-SELECT SUM(quantity) AS total FROM {{zone_name}}.props_demos.inventory_items;
+SELECT SUM(quantity) AS total FROM {{zone_name}}.delta_demos.inventory_items;
 
 -- Verify items with unit_price > 30 (post price increase)
 ASSERT VALUE cnt = 4
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.props_demos.inventory_items WHERE unit_price > 30;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.inventory_items WHERE unit_price > 30;

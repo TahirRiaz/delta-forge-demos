@@ -65,7 +65,7 @@ SELECT
     st_1 AS transaction_type,
     gs_8 AS impl_guide,
     isa_12 AS edi_version
-FROM {{zone_name}}.edi.hipaa_messages
+FROM {{zone_name}}.edi_demos.hipaa_messages
 ORDER BY df_file_name;
 
 
@@ -105,7 +105,7 @@ SELECT
         ELSE 'Unknown'
     END AS type_name,
     COUNT(*) AS transaction_count
-FROM {{zone_name}}.edi.hipaa_messages
+FROM {{zone_name}}.edi_demos.hipaa_messages
 GROUP BY st_1
 ORDER BY st_1;
 
@@ -141,7 +141,7 @@ ASSERT VALUE transaction_count = 1 WHERE impl_guide = '005010X221A1'
 SELECT
     gs_8 AS impl_guide,
     COUNT(*) AS transaction_count
-FROM {{zone_name}}.edi.hipaa_messages
+FROM {{zone_name}}.edi_demos.hipaa_messages
 GROUP BY gs_8
 ORDER BY gs_8;
 
@@ -182,7 +182,7 @@ SELECT
         ELSE 'Other'
     END AS category,
     COUNT(*) AS transaction_count
-FROM {{zone_name}}.edi.hipaa_messages
+FROM {{zone_name}}.edi_demos.hipaa_messages
 GROUP BY category
 ORDER BY transaction_count DESC;
 
@@ -215,7 +215,7 @@ SELECT
     clm_2 AS claim_amount,
     nm1_3 AS patient_name,
     st_1 AS transaction_type
-FROM {{zone_name}}.edi.hipaa_materialized
+FROM {{zone_name}}.edi_demos.hipaa_materialized
 WHERE clm_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -245,7 +245,7 @@ SELECT
     bpr_1 AS handling_code,
     bpr_2 AS payment_amount,
     st_1 AS transaction_type
-FROM {{zone_name}}.edi.hipaa_materialized
+FROM {{zone_name}}.edi_demos.hipaa_materialized
 WHERE bpr_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -273,7 +273,7 @@ SELECT
         ELSE 'Other'
     END AS group_name,
     COUNT(*) AS transaction_count
-FROM {{zone_name}}.edi.hipaa_messages
+FROM {{zone_name}}.edi_demos.hipaa_messages
 GROUP BY gs_1
 ORDER BY transaction_count DESC;
 
@@ -300,7 +300,7 @@ SELECT
     df_file_name,
     st_1 AS transaction_type,
     df_transaction_json
-FROM {{zone_name}}.edi.hipaa_messages
+FROM {{zone_name}}.edi_demos.hipaa_messages
 ORDER BY df_file_name
 LIMIT 3;
 
@@ -319,35 +319,35 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 11 (one per .edi file)
     SELECT 'transaction_count_11' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.hipaa_messages) = 11
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.hipaa_messages) = 11
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 11 distinct source files in df_file_name
     SELECT 'source_files_11' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi.hipaa_messages) = 11
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi_demos.hipaa_messages) = 11
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: At least 7 distinct transaction types (actual: 9)
     SELECT 'transaction_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi.hipaa_messages) >= 7
+           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi_demos.hipaa_messages) >= 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: Materialized table also has 11 rows (same files, different columns)
     SELECT 'materialized_count_11' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.hipaa_materialized) = 11
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.hipaa_materialized) = 11
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: BHT_2 (transaction purpose code) is populated in at least some rows
     SELECT 'bht_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.hipaa_materialized
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.hipaa_materialized
                        WHERE bht_2 IS NOT NULL AND bht_2 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -355,7 +355,7 @@ SELECT check_name, result FROM (
 
     -- Check 6: df_transaction_json is populated for all 11 transactions
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.hipaa_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.hipaa_messages
                        WHERE df_transaction_json IS NOT NULL) = 11
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

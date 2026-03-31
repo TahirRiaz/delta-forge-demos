@@ -17,7 +17,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml_demos
     COMMENT 'XML-backed external tables';
 
 -- ============================================================================
@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
 -- flattened normally. This is useful when subtree contents need to be
 -- parsed downstream (e.g., JSON functions in SQL).
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.products_json
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.products_json
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -68,7 +68,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.products_json TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.products_json TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: products_xml — Subtrees captured as raw XML strings
 -- ============================================================================
@@ -76,7 +76,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.xml.products_json TO USER {{current_user}};
 -- raw XML fragment strings. This preserves the original XML structure
 -- including element names, nesting, and attributes.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.products_xml
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.products_xml
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -116,4 +116,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.products_xml TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.products_xml TO USER {{current_user}};

@@ -20,4 +20,4 @@ zone_name = { description = "Target zone name for tables", required = false }
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.iceberg_restore.compliance_records"
+name = "{{zone_name}}.iceberg_demos.compliance_records"

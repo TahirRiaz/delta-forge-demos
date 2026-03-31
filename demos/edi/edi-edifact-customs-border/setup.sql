@@ -32,7 +32,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: customs_messages — Compact view (5 messages)
@@ -55,14 +55,14 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   UNH_2 = Message type (CUSCAR, PAXLST, PNRGOV, BAPLIE — or NULL if malformed)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.customs_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.customs_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
     edi_config = '{"ediFormat": "edifact"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.customs_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.customs_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: customs_materialized — Key border/customs fields extracted
 -- ============================================================================
@@ -88,7 +88,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.customs_messages TO USER {{current_user}}
 --   DOC_2  — Document identifier (passport/document number)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.customs_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.customs_materialized
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -107,4 +107,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.customs_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.customs_materialized TO USER {{current_user}};

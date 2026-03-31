@@ -30,7 +30,7 @@ ASSERT VALUE region = 'North' WHERE id = '1'
 ASSERT VALUE product_name = 'Widget B' WHERE id = '15'
 ASSERT VALUE sales_rep = 'Alice' WHERE id = '15'
 SELECT *
-FROM {{zone_name}}.csv.sales
+FROM {{zone_name}}.csv_demos.sales
 ORDER BY id;
 
 
@@ -60,7 +60,7 @@ SELECT
     product_name,
     SUM(CAST(quantity AS INT)) AS total_quantity,
     ROUND(SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)), 2) AS total_revenue
-FROM {{zone_name}}.csv.sales
+FROM {{zone_name}}.csv_demos.sales
 GROUP BY product_name
 ORDER BY total_revenue DESC;
 
@@ -89,7 +89,7 @@ SELECT
     sales_rep,
     COUNT(*) AS sale_count,
     ROUND(SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)), 2) AS total_revenue
-FROM {{zone_name}}.csv.sales
+FROM {{zone_name}}.csv_demos.sales
 GROUP BY sales_rep
 ORDER BY total_revenue DESC;
 
@@ -117,7 +117,7 @@ SELECT
     CAST(EXTRACT(YEAR FROM sale_date) AS INT) || '-Q' || CAST(EXTRACT(QUARTER FROM sale_date) AS INT) AS period,
     COUNT(*) AS sale_count,
     ROUND(SUM(CAST(quantity AS INT) * CAST(unit_price AS DOUBLE)), 2) AS total_revenue
-FROM {{zone_name}}.csv.sales
+FROM {{zone_name}}.csv_demos.sales
 GROUP BY period
 ORDER BY period;
 
@@ -152,7 +152,7 @@ SELECT
     sale_date,
     region,
     territory
-FROM {{zone_name}}.csv.sales
+FROM {{zone_name}}.csv_demos.sales
 ORDER BY id;
 
 
@@ -181,7 +181,7 @@ SELECT
     product_name,
     df_file_name,
     df_row_number
-FROM {{zone_name}}.csv.sales
+FROM {{zone_name}}.csv_demos.sales
 ORDER BY id;
 
 
@@ -204,4 +204,4 @@ SELECT
     MAX(CASE WHEN id = '1' THEN territory END) AS q1_territory,
     MAX(CASE WHEN id = '10' THEN region END) AS q4_region,
     MAX(CASE WHEN id = '13' THEN channel END) AS q1_2025_channel
-FROM {{zone_name}}.csv.sales;
+FROM {{zone_name}}.csv_demos.sales;

@@ -52,7 +52,7 @@ SELECT
     df_file_name,
     st_1 AS txn_type,
     json_array_length(df_transaction_json) AS body_segment_count
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 ORDER BY json_array_length(df_transaction_json) DESC, df_file_name;
 
 
@@ -82,7 +82,7 @@ SELECT
         ELSE 'Complex'
     END AS size_class,
     COUNT(*) AS txn_count
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 GROUP BY size_class
 ORDER BY
     CASE size_class
@@ -115,7 +115,7 @@ SELECT
     st_1 AS txn_type,
     json_typeof(df_transaction_json) AS root_json_type,
     json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment_name
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 ORDER BY df_file_name;
 
 
@@ -149,7 +149,7 @@ SELECT
     df_file_name,
     st_1 AS txn_type,
     json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 ORDER BY df_file_name;
 
 
@@ -186,7 +186,7 @@ SELECT
     json_extract_path_text(df_transaction_json, '0', 'elements', '0', 'value') AS purpose_code,
     json_extract_path_text(df_transaction_json, '0', 'elements', '2', 'value') AS po_number,
     json_extract_path_text(df_transaction_json, '0', 'elements', '4', 'value') AS po_date
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 WHERE st_1 = '850'
 ORDER BY df_file_name;
 
@@ -219,7 +219,7 @@ SELECT
     json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment,
     json_extract_path_text(df_transaction_json, '0', 'elements', '0', 'value') AS invoice_date,
     json_extract_path_text(df_transaction_json, '0', 'elements', '1', 'value') AS invoice_number
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 WHERE st_1 = '810'
 ORDER BY df_file_name;
 
@@ -251,7 +251,7 @@ SELECT
     json_extract_path_text(df_transaction_json, '0', 'name') AS first_segment_description,
     json_extract_path_text(df_transaction_json, '1', 'segment') AS second_segment_name,
     json_extract_path_text(df_transaction_json, '1', 'name') AS second_segment_description
-FROM {{zone_name}}.edi.json_extraction_messages
+FROM {{zone_name}}.edi_demos.json_extraction_messages
 WHERE df_file_name = 'x12_850_purchase_order.edi';
 
 
@@ -272,14 +272,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 14 (one per .edi file)
     SELECT 'transaction_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.json_extraction_messages) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: df_transaction_json is populated for all 14 transactions
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.json_extraction_messages
                        WHERE df_transaction_json IS NOT NULL) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -287,7 +287,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: json_typeof confirms all are arrays
     SELECT 'json_is_array' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.json_extraction_messages
                        WHERE json_typeof(df_transaction_json) = 'array') = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -295,7 +295,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: json_array_length returns > 0 for all transactions
     SELECT 'segments_have_length' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.json_extraction_messages
                        WHERE json_array_length(df_transaction_json) > 0) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -303,7 +303,7 @@ SELECT check_name, result FROM (
 
     -- Check 5: First body segment of 850s is BEG
     SELECT 'first_850_segment_beg' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.json_extraction_messages
                        WHERE st_1 = '850'
                          AND json_extract_path_text(df_transaction_json, '0', 'segment') = 'BEG') = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
@@ -312,7 +312,7 @@ SELECT check_name, result FROM (
 
     -- Check 6: First body segment of 810s is BIG
     SELECT 'first_810_segment_big' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.json_extraction_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.json_extraction_messages
                        WHERE st_1 = '810'
                          AND json_extract_path_text(df_transaction_json, '0', 'segment') = 'BIG') = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result

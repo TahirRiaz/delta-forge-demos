@@ -13,7 +13,7 @@
 
 ASSERT ROW_COUNT = 2500
 SELECT *
-FROM {{zone_name}}.orc.all_requests;
+FROM {{zone_name}}.orc_demos.all_requests;
 
 
 -- ============================================================================
@@ -24,7 +24,7 @@ ASSERT ROW_COUNT = 20
 SELECT request_id, server_name, timestamp, method, endpoint,
        status_code, response_time_ms, response_bytes,
        request_body_bytes, cache_hit
-FROM {{zone_name}}.orc.all_requests
+FROM {{zone_name}}.orc_demos.all_requests
 LIMIT 20;
 
 
@@ -36,7 +36,7 @@ ASSERT ROW_COUNT = 5
 ASSERT VALUE row_count = 500 WHERE df_file_name LIKE '%api-01%'
 ASSERT VALUE row_count = 500 WHERE df_file_name LIKE '%web-01%'
 SELECT df_file_name, COUNT(*) AS row_count
-FROM {{zone_name}}.orc.all_requests
+FROM {{zone_name}}.orc_demos.all_requests
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -55,7 +55,7 @@ SELECT server_name,
        COUNT(*) AS total_rows,
        COUNT(request_body_bytes) AS body_bytes_non_null,
        COUNT(cache_hit) AS cache_hit_non_null
-FROM {{zone_name}}.orc.all_requests
+FROM {{zone_name}}.orc_demos.all_requests
 GROUP BY server_name
 ORDER BY server_name;
 
@@ -66,7 +66,7 @@ ORDER BY server_name;
 
 ASSERT ROW_COUNT = 500
 SELECT *
-FROM {{zone_name}}.orc.api01_only;
+FROM {{zone_name}}.orc_demos.api01_only;
 
 
 -- ============================================================================
@@ -75,11 +75,11 @@ FROM {{zone_name}}.orc.api01_only;
 
 ASSERT VALUE body_bytes_non_null = 500
 SELECT COUNT(request_body_bytes) AS body_bytes_non_null
-FROM {{zone_name}}.orc.api01_only;
+FROM {{zone_name}}.orc_demos.api01_only;
 
 ASSERT VALUE cache_hit_non_null = 500
 SELECT COUNT(cache_hit) AS cache_hit_non_null
-FROM {{zone_name}}.orc.api01_only;
+FROM {{zone_name}}.orc_demos.api01_only;
 
 
 -- ============================================================================
@@ -88,7 +88,7 @@ FROM {{zone_name}}.orc.api01_only;
 
 ASSERT VALUE metadata_count = 2500
 SELECT COUNT(*) AS metadata_count
-FROM {{zone_name}}.orc.all_requests
+FROM {{zone_name}}.orc_demos.all_requests
 WHERE df_file_name IS NOT NULL;
 
 
@@ -102,7 +102,7 @@ SELECT status_code,
        COUNT(*) AS request_count,
        ROUND(AVG(CAST(response_time_ms AS DOUBLE)), 0) AS avg_response_ms,
        ROUND(AVG(CAST(response_bytes AS DOUBLE)), 0) AS avg_response_bytes
-FROM {{zone_name}}.orc.all_requests
+FROM {{zone_name}}.orc_demos.all_requests
 GROUP BY status_code
 ORDER BY request_count DESC;
 
@@ -117,7 +117,7 @@ SELECT endpoint,
        COUNT(*) AS request_count,
        SUM(CASE WHEN status_code >= 400 THEN 1 ELSE 0 END) AS error_count,
        ROUND(AVG(CAST(response_time_ms AS DOUBLE)), 0) AS avg_response_ms
-FROM {{zone_name}}.orc.all_requests
+FROM {{zone_name}}.orc_demos.all_requests
 GROUP BY endpoint
 ORDER BY request_count DESC
 LIMIT 10;
@@ -139,14 +139,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total row count = 2,500
     SELECT 'total_count_2500' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc.all_requests) = 2500
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc_demos.all_requests) = 2500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 5 distinct source files
     SELECT 'five_source_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.orc.all_requests) = 5
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.orc_demos.all_requests) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -154,7 +154,7 @@ SELECT check_name, result FROM (
     -- Check 3: Schema evolution — request_body_bytes NULL for web servers (1,500 rows)
     SELECT 'schema_v1_null_body_bytes' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.orc.all_requests
+               SELECT COUNT(*) FROM {{zone_name}}.orc_demos.all_requests
                WHERE server_name LIKE 'web-%' AND request_body_bytes IS NULL
            ) = 1500 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -163,7 +163,7 @@ SELECT check_name, result FROM (
     -- Check 4: Schema evolution — request_body_bytes non-NULL for api servers (1,000 rows)
     SELECT 'schema_v2_has_body_bytes' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.orc.all_requests
+               SELECT COUNT(*) FROM {{zone_name}}.orc_demos.all_requests
                WHERE server_name LIKE 'api-%' AND request_body_bytes IS NOT NULL
            ) = 1000 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -171,14 +171,14 @@ SELECT check_name, result FROM (
 
     -- Check 5: LOCATION glob — api01_only has 500 rows
     SELECT 'glob_api01_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc.api01_only) = 500
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc_demos.api01_only) = 500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: File metadata populated for all rows
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc.all_requests WHERE df_file_name IS NOT NULL) = 2500
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.orc_demos.all_requests WHERE df_file_name IS NOT NULL) = 2500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -187,7 +187,7 @@ SELECT check_name, result FROM (
     SELECT 'schema_request_id_exists' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
-               WHERE table_schema = 'orc' AND table_name = 'all_requests'
+               WHERE table_schema = 'orc_demos' AND table_name = 'all_requests'
                AND column_name = 'request_id'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -197,7 +197,7 @@ SELECT check_name, result FROM (
     SELECT 'column_count_15' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
-               WHERE table_schema = 'orc' AND table_name = 'all_requests'
+               WHERE table_schema = 'orc_demos' AND table_name = 'all_requests'
            ) = 15 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

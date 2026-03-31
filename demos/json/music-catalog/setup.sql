@@ -19,7 +19,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json_demos
     COMMENT 'JSON-backed external tables';
 
 -- ============================================================================
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- fields (id, name, sku, vendor, price, status) are duplicated on each row.
 -- The vendor nested object is flattened to vendor_id and vendor_name.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.album_tracks
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.album_tracks
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -71,7 +71,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.album_tracks TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.album_tracks TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: album_summary — One row per album (347 total)
 -- ============================================================================
@@ -79,7 +79,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.json.album_tracks TO USER {{current_user}};
 -- flattened). The vendor subtree is kept as a JSON string blob via json_paths,
 -- useful for downstream JSON processing or API responses.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.album_summary
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.album_summary
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -108,4 +108,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.album_summary TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.album_summary TO USER {{current_user}};

@@ -13,7 +13,7 @@
 -- Verify the Delta table correctly shows 7 rows after deleting 3 products.
 
 ASSERT ROW_COUNT = 7
-SELECT * FROM {{zone_name}}.eq_del_demo.products;
+SELECT * FROM {{zone_name}}.iceberg_demos.products;
 
 
 -- ============================================================================
@@ -23,7 +23,7 @@ SELECT * FROM {{zone_name}}.eq_del_demo.products;
 -- equality delete file. It should also show exactly 7 rows.
 
 ASSERT ROW_COUNT = 7
-SELECT * FROM {{zone_name}}.eq_del_demo.products_iceberg;
+SELECT * FROM {{zone_name}}.iceberg_demos.products_iceberg;
 
 
 -- ============================================================================
@@ -32,7 +32,7 @@ SELECT * FROM {{zone_name}}.eq_del_demo.products_iceberg;
 -- Confirm that the 3 deleted products (id 2, 5, 8) are gone from Delta.
 
 ASSERT ROW_COUNT = 0
-SELECT * FROM {{zone_name}}.eq_del_demo.products WHERE id IN (2, 5, 8);
+SELECT * FROM {{zone_name}}.iceberg_demos.products WHERE id IN (2, 5, 8);
 
 
 -- ============================================================================
@@ -42,7 +42,7 @@ SELECT * FROM {{zone_name}}.eq_del_demo.products WHERE id IN (2, 5, 8);
 -- when reading through Iceberg metadata.
 
 ASSERT ROW_COUNT = 0
-SELECT * FROM {{zone_name}}.eq_del_demo.products_iceberg WHERE id IN (2, 5, 8);
+SELECT * FROM {{zone_name}}.iceberg_demos.products_iceberg WHERE id IN (2, 5, 8);
 
 
 -- ============================================================================
@@ -56,7 +56,7 @@ ASSERT VALUE total_price = 2813.48
 SELECT
     COUNT(*) AS product_count,
     ROUND(SUM(price), 2) AS total_price
-FROM {{zone_name}}.eq_del_demo.products;
+FROM {{zone_name}}.iceberg_demos.products;
 
 
 -- ============================================================================
@@ -68,7 +68,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE total_price = 2813.48
 SELECT
     ROUND(SUM(price), 2) AS total_price
-FROM {{zone_name}}.eq_del_demo.products_iceberg;
+FROM {{zone_name}}.iceberg_demos.products_iceberg;
 
 
 -- ============================================================================
@@ -84,7 +84,7 @@ ASSERT VALUE product_count = 1 WHERE category = 'Science'
 SELECT
     category,
     COUNT(*) AS product_count
-FROM {{zone_name}}.eq_del_demo.products
+FROM {{zone_name}}.iceberg_demos.products
 GROUP BY category
 ORDER BY category;
 
@@ -102,7 +102,7 @@ ASSERT VALUE product_count = 1 WHERE category = 'Science'
 SELECT
     category,
     COUNT(*) AS product_count
-FROM {{zone_name}}.eq_del_demo.products_iceberg
+FROM {{zone_name}}.iceberg_demos.products_iceberg
 GROUP BY category
 ORDER BY category;
 
@@ -119,7 +119,7 @@ ASSERT VALUE iceberg_rows = 7
 ASSERT VALUE delta_deleted = 0
 ASSERT VALUE iceberg_deleted = 0
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.eq_del_demo.products) AS delta_rows,
-    (SELECT COUNT(*) FROM {{zone_name}}.eq_del_demo.products_iceberg) AS iceberg_rows,
-    (SELECT COUNT(*) FROM {{zone_name}}.eq_del_demo.products WHERE id IN (2, 5, 8)) AS delta_deleted,
-    (SELECT COUNT(*) FROM {{zone_name}}.eq_del_demo.products_iceberg WHERE id IN (2, 5, 8)) AS iceberg_deleted;
+    (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.products) AS delta_rows,
+    (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.products_iceberg) AS iceberg_rows,
+    (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.products WHERE id IN (2, 5, 8)) AS delta_deleted,
+    (SELECT COUNT(*) FROM {{zone_name}}.iceberg_demos.products_iceberg WHERE id IN (2, 5, 8)) AS iceberg_deleted;

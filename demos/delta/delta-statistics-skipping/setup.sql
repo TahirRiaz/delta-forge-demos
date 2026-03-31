@@ -19,14 +19,14 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.skipping_demos
-    COMMENT 'Data skipping and statistics tutorial demos';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 
 -- ============================================================================
 -- TABLE: orders — e-commerce orders with monthly price tiers
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.skipping_demos.orders (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.orders (
     id              INT,
     order_ref       VARCHAR,
     customer_id     VARCHAR,
@@ -37,13 +37,13 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.skipping_demos.orders (
     order_date      VARCHAR
 ) LOCATION '{{data_path}}/orders';
 
-GRANT ADMIN ON TABLE {{zone_name}}.skipping_demos.orders TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.orders TO USER {{current_user}};
 
 
 -- ============================================================================
 -- STEP 2: Batch 1 — January 2025, unit_price range [10.99 - 95.00]
 -- ============================================================================
-INSERT INTO {{zone_name}}.skipping_demos.orders VALUES
+INSERT INTO {{zone_name}}.delta_demos.orders VALUES
     (1,  'ORD-1001', 'C-200', 'electronics', 45.99,  2, 91.98,  '2025-01-03'),
     (2,  'ORD-1002', 'C-201', 'clothing',    29.50,  1, 29.50,  '2025-01-05'),
     (3,  'ORD-1003', 'C-202', 'groceries',   12.75,  4, 51.00,  '2025-01-07'),
@@ -64,7 +64,7 @@ INSERT INTO {{zone_name}}.skipping_demos.orders VALUES
 -- ============================================================================
 -- STEP 3: Batch 2 — February 2025, unit_price range [100.00 - 475.00]
 -- ============================================================================
-INSERT INTO {{zone_name}}.skipping_demos.orders
+INSERT INTO {{zone_name}}.delta_demos.orders
 SELECT * FROM (VALUES
     (16, 'ORD-2001', 'C-211', 'electronics', 249.99, 1, 249.99, '2025-02-02'),
     (17, 'ORD-2002', 'C-212', 'home',        175.00, 2, 350.00, '2025-02-04'),
@@ -87,7 +87,7 @@ SELECT * FROM (VALUES
 -- ============================================================================
 -- STEP 4: Batch 3 — March 2025, unit_price range [500.00 - 2000.00]
 -- ============================================================================
-INSERT INTO {{zone_name}}.skipping_demos.orders
+INSERT INTO {{zone_name}}.delta_demos.orders
 SELECT * FROM (VALUES
     (31, 'ORD-3001', 'C-222', 'electronics', 999.99,  1, 999.99,  '2025-03-02'),
     (32, 'ORD-3002', 'C-223', 'home',        750.00,  1, 750.00,  '2025-03-04'),

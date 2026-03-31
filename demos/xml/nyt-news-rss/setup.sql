@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml_demos
     COMMENT 'XML-backed external tables';
 
 -- ============================================================================
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
 -- media:, atom:) are stripped so columns get clean path-based names like
 -- "rss_channel_item_creator" instead of "rss_channel_item_dc_creator".
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.news_articles
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.news_articles
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -80,7 +80,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.news_articles TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.news_articles TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: news_categories — Exploded: one row per <category> per article
 -- ============================================================================
@@ -92,7 +92,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.xml.news_articles TO USER {{current_user}};
 --   - .../keywords/nyt_org → organizations
 -- This enables keyword frequency analysis across all 231 articles.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.news_categories
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.news_categories
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -129,4 +129,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.news_categories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.news_categories TO USER {{current_user}};

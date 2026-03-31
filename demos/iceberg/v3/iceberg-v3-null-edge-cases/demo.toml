@@ -55,4 +55,4 @@ size_bytes = 8658
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.lab_results"
+name = "{{zone_name}}.iceberg_demos.lab_results"

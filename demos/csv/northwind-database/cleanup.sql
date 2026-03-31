@@ -10,20 +10,20 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_employee_territories WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_territories WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_regions WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_shippers WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_suppliers WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_categories WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_products WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_order_details WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_orders WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_employees WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.nw_customers WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_employee_territories WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_territories WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_regions WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_shippers WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_suppliers WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_categories WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_products WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_order_details WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_orders WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_employees WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.nw_customers WITH FILES;
 
 -- STEP 2: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.csv;
+DROP SCHEMA IF EXISTS {{zone_name}}.csv_demos;
 
 -- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

@@ -6,13 +6,13 @@
 -- ============================================================================
 
 -- STEP 1: Drop Pseudonymisation Rules
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.bank_customers;
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.bank_customers;
 
 -- STEP 2: Drop Table
-DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation.bank_customers;
+DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation_demos.bank_customers;
 
 -- STEP 3: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.pseudonymisation;
+DROP SCHEMA IF EXISTS {{zone_name}}.pseudonymisation_demos;
 
 -- STEP 4: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

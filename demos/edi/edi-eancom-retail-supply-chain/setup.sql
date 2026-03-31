@@ -40,7 +40,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: eancom_messages — Compact view
@@ -63,7 +63,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   UNH_2 = Message identifier (e.g. DESADV:D:96A:UN:EAN007)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.eancom_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.eancom_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -71,7 +71,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.eancom_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.eancom_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: eancom_materialized — Key retail fields extracted
 -- ============================================================================
@@ -93,7 +93,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.eancom_messages TO USER {{current_user}};
 -- NAD or LIN segments), the materialized column contains the LAST occurrence.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.eancom_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.eancom_materialized
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -111,4 +111,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.eancom_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.eancom_materialized TO USER {{current_user}};

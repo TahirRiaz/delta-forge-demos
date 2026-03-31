@@ -54,7 +54,7 @@ SELECT
     unb_2 AS sender,
     unb_3 AS recipient,
     unh_2 AS msg_type
-FROM {{zone_name}}.edi.commerce_messages
+FROM {{zone_name}}.edi_demos.commerce_messages
 ORDER BY df_file_name;
 
 
@@ -88,7 +88,7 @@ SELECT
         ELSE bgm_1
     END AS bgm_decoded,
     bgm_2 AS doc_number
-FROM {{zone_name}}.edi.commerce_materialized
+FROM {{zone_name}}.edi_demos.commerce_materialized
 ORDER BY df_file_name;
 
 
@@ -113,7 +113,7 @@ SELECT
         ELSE 'Response'
     END AS doc_type,
     COUNT(*) AS doc_count
-FROM {{zone_name}}.edi.commerce_materialized
+FROM {{zone_name}}.edi_demos.commerce_materialized
 GROUP BY
     CASE
         WHEN bgm_1 = '220' THEN 'Order'
@@ -154,7 +154,7 @@ SELECT
     END AS party_role,
     nad_1 AS party_code,
     nad_2 AS party_id
-FROM {{zone_name}}.edi.commerce_materialized
+FROM {{zone_name}}.edi_demos.commerce_materialized
 WHERE nad_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -181,7 +181,7 @@ ASSERT VALUE dtm_composite = '137:20251008:102' WHERE df_file_name = 'edifact_D0
 SELECT
     df_file_name,
     dtm_1 AS dtm_composite
-FROM {{zone_name}}.edi.commerce_materialized
+FROM {{zone_name}}.edi_demos.commerce_materialized
 WHERE dtm_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -210,7 +210,7 @@ SELECT
     df_file_name,
     unh_2 AS msg_type,
     moa_1 AS moa_composite
-FROM {{zone_name}}.edi.commerce_materialized
+FROM {{zone_name}}.edi_demos.commerce_materialized
 ORDER BY df_file_name;
 
 
@@ -239,7 +239,7 @@ SELECT
         WHEN '7' THEN 'Value Added Tax (VAT)'
         ELSE tax_1
     END AS tax_decoded
-FROM {{zone_name}}.edi.commerce_materialized
+FROM {{zone_name}}.edi_demos.commerce_materialized
 WHERE tax_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -259,14 +259,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total message count = 4 (one per .edi file)
     SELECT 'message_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.commerce_messages) = 4
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.commerce_messages) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: All 4 messages have BGM_1 populated
     SELECT 'all_have_bgm' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.commerce_materialized
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.commerce_materialized
                        WHERE bgm_1 IS NOT NULL) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -274,7 +274,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: All 4 messages have MOA_1 populated
     SELECT 'moa_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.commerce_materialized
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.commerce_materialized
                        WHERE moa_1 IS NOT NULL) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -282,7 +282,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: df_transaction_json is populated for all 4 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.commerce_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.commerce_messages
                        WHERE df_transaction_json IS NOT NULL) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

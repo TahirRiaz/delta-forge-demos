@@ -19,7 +19,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.avro
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.avro_demos
     COMMENT 'Avro-backed external tables';
 
 -- ============================================================================
@@ -31,27 +31,27 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.avro
 -- V2-only columns (battery_pct, firmware_version) require file_filter
 -- to isolate v2 files — see floor4_only below.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro.all_readings
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro_demos.all_readings
 USING AVRO
 LOCATION '{{data_path}}'
 OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.avro.all_readings TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.avro_demos.all_readings TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: floor4_only — Single floor via file_filter (500 rows)
 -- ============================================================================
 -- Uses file_filter to read only floor4_sensors.avro, which uses schema v2
 -- (includes battery_pct and firmware_version) with deflate compression.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro.floor4_only
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro_demos.floor4_only
 USING AVRO
 LOCATION '{{data_path}}'
 OPTIONS (
     file_filter = 'floor4*',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.avro.floor4_only TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.avro_demos.floor4_only TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 3: readings_sample — Data profiling via max_rows (50 per file)
 -- ============================================================================
@@ -59,11 +59,11 @@ GRANT ADMIN ON TABLE {{zone_name}}.avro.floor4_only TO USER {{current_user}};
 -- produces approximately 250 rows — enough to inspect data quality
 -- without reading the full 2,500-row dataset.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro.readings_sample
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.avro_demos.readings_sample
 USING AVRO
 LOCATION '{{data_path}}'
 OPTIONS (
     max_rows = '50',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.avro.readings_sample TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.avro_demos.readings_sample TO USER {{current_user}};

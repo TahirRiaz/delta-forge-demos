@@ -78,4 +78,4 @@ size_bytes = 8397
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.shipment_manifests"
+name = "{{zone_name}}.iceberg_demos.shipment_manifests"

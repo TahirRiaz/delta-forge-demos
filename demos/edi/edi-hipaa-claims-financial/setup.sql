@@ -29,7 +29,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: claims_header — Claim charges + first service line (4 transactions)
@@ -47,7 +47,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 -- SV1/SV2/SV3 populate only for their respective claim types; others are NULL.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.claims_header
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.claims_header
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -62,7 +62,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.claims_header TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.claims_header TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: claims_remittance — Payment + adjustment detail (4 transactions)
 -- ============================================================================
@@ -82,7 +82,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.claims_header TO USER {{current_user}};
 -- Only the 835 remittance file populates BPR/CLP/CAS/SVC; others are NULL.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.claims_remittance
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.claims_remittance
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -97,4 +97,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.claims_remittance TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.claims_remittance TO USER {{current_user}};

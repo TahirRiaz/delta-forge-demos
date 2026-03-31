@@ -85,4 +85,4 @@ size_bytes = 7573
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.equity_trades"
+name = "{{zone_name}}.iceberg_demos.equity_trades"

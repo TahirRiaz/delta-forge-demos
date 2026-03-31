@@ -23,14 +23,14 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.cleansing_demos
-    COMMENT 'String cleansing and data normalization demos';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 
 -- ============================================================================
 -- TABLE: customer_imports — Legacy CRM data with quality issues
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.cleansing_demos.customer_imports (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_imports (
     id             INT,
     first_name     VARCHAR,
     last_name      VARCHAR,
@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.cleansing_demos.customer_imports 
     country_code   VARCHAR
 ) LOCATION '{{data_path}}/customer_imports';
 
-GRANT ADMIN ON TABLE {{zone_name}}.cleansing_demos.customer_imports TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_imports TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -54,7 +54,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.cleansing_demos.customer_imports TO USER {{cu
 --   - account_code is unpadded (e.g. '42', '7', '1')
 --   - full_name is empty string (needs concatenation)
 --   - country_code is lowercase (e.g. 'us', 'uk', 'de')
-INSERT INTO {{zone_name}}.cleansing_demos.customer_imports VALUES
+INSERT INTO {{zone_name}}.delta_demos.customer_imports VALUES
     (1,  '  Alice  ',  'Johnson ',  '', 'Alice.Johnson@GMAIL.COM',    '42',    '555-0101', 'New York',      'us'),
     (2,  'Bob',        '  Smith',   '', 'BOB.SMITH@yahoo.com',        '7',     '555-0102', 'Los Angeles',   'us'),
     (3,  ' Charlie ',  'Williams',  '', 'charlie.W@OUTLOOK.COM',      '123',   '555-0103', 'Chicago',       'uk'),
@@ -88,7 +88,7 @@ INSERT INTO {{zone_name}}.cleansing_demos.customer_imports VALUES
 -- Names like '  Alice  ' and 'Johnson ' become 'Alice' and 'Johnson'.
 -- TRIM strips both leading and trailing spaces in one pass.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.cleansing_demos.customer_imports
+UPDATE {{zone_name}}.delta_demos.customer_imports
 SET first_name = TRIM(first_name),
     last_name  = TRIM(last_name);
 
@@ -99,7 +99,7 @@ SET first_name = TRIM(first_name),
 -- Mixed-case emails like 'Alice.Johnson@GMAIL.COM' become
 -- 'alice.johnson@gmail.com'. Critical for deduplication and lookups.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.cleansing_demos.customer_imports
+UPDATE {{zone_name}}.delta_demos.customer_imports
 SET email = LOWER(email);
 
 
@@ -109,7 +109,7 @@ SET email = LOWER(email);
 -- Unpadded codes like '42', '7', '1' become '000042', '000007', '000001'.
 -- Ensures uniform formatting for downstream system integration.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.cleansing_demos.customer_imports
+UPDATE {{zone_name}}.delta_demos.customer_imports
 SET account_code = LPAD(account_code, 6, '0');
 
 
@@ -119,7 +119,7 @@ SET account_code = LPAD(account_code, 6, '0');
 -- The full_name column was empty on import. Now that names are trimmed,
 -- we can safely concatenate: 'Alice' || ' ' || 'Johnson' = 'Alice Johnson'.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.cleansing_demos.customer_imports
+UPDATE {{zone_name}}.delta_demos.customer_imports
 SET full_name = first_name || ' ' || last_name;
 
 
@@ -129,5 +129,5 @@ SET full_name = first_name || ' ' || last_name;
 -- Lowercase codes like 'us', 'uk', 'de' become 'US', 'UK', 'DE'.
 -- ISO 3166-1 alpha-2 codes are uppercase by convention.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.cleansing_demos.customer_imports
+UPDATE {{zone_name}}.delta_demos.customer_imports
 SET country_code = UPPER(country_code);

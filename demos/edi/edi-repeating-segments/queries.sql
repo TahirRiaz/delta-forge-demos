@@ -47,7 +47,7 @@ SELECT
     df_file_name,
     n1_1 AS entity_code,
     n1_2 AS party_name
-FROM {{zone_name}}.edi.repeating_indexed
+FROM {{zone_name}}.edi_demos.repeating_indexed
 ORDER BY df_file_name;
 
 
@@ -80,7 +80,7 @@ SELECT
     po1_2 AS quantity,
     po1_3 AS uom,
     po1_4 AS unit_price
-FROM {{zone_name}}.edi.repeating_indexed
+FROM {{zone_name}}.edi_demos.repeating_indexed
 WHERE st_1 = '850'
 ORDER BY df_file_name;
 
@@ -105,7 +105,7 @@ SELECT
     df_file_name,
     n1_1 AS entity_code,
     n1_2 AS party_name
-FROM {{zone_name}}.edi.repeating_concat
+FROM {{zone_name}}.edi_demos.repeating_concat
 ORDER BY df_file_name;
 
 
@@ -127,7 +127,7 @@ SELECT
     df_file_name,
     n1_1 AS entity_code,
     n1_2 AS party_name
-FROM {{zone_name}}.edi.repeating_json
+FROM {{zone_name}}.edi_demos.repeating_json
 ORDER BY df_file_name;
 
 
@@ -148,7 +148,7 @@ SELECT
     'indexed' AS mode,
     n1_2 AS party_name,
     po1_2 AS po_quantity
-FROM {{zone_name}}.edi.repeating_indexed
+FROM {{zone_name}}.edi_demos.repeating_indexed
 WHERE df_file_name = 'x12_850_purchase_order_a.edi'
 
 UNION ALL
@@ -157,7 +157,7 @@ SELECT
     'concatenate' AS mode,
     n1_2 AS party_name,
     po1_2 AS po_quantity
-FROM {{zone_name}}.edi.repeating_concat
+FROM {{zone_name}}.edi_demos.repeating_concat
 WHERE df_file_name = 'x12_850_purchase_order_a.edi'
 
 UNION ALL
@@ -166,7 +166,7 @@ SELECT
     'to_json' AS mode,
     n1_2 AS party_name,
     po1_2 AS po_quantity
-FROM {{zone_name}}.edi.repeating_json
+FROM {{zone_name}}.edi_demos.repeating_json
 WHERE df_file_name = 'x12_850_purchase_order_a.edi';
 
 
@@ -198,7 +198,7 @@ SELECT
     po1_3 AS uom,
     po1_4 AS unit_price,
     CAST(po1_2 AS DOUBLE) * CAST(po1_4 AS DOUBLE) AS line_total
-FROM {{zone_name}}.edi.repeating_indexed
+FROM {{zone_name}}.edi_demos.repeating_indexed
 WHERE po1_4 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -224,7 +224,7 @@ ASSERT VALUE doc_count = 3 WHERE txn_type = '850'
 SELECT
     st_1 AS txn_type,
     COUNT(*) AS doc_count
-FROM {{zone_name}}.edi.repeating_indexed
+FROM {{zone_name}}.edi_demos.repeating_indexed
 GROUP BY st_1
 ORDER BY doc_count DESC, st_1;
 
@@ -246,38 +246,38 @@ SELECT check_name, result FROM (
 
     -- Check 1: Indexed table has 14 rows (one per .edi file)
     SELECT 'indexed_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_indexed) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_indexed) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Concatenate table has 14 rows
     SELECT 'concat_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_concat) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_concat) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: ToJson table has 14 rows
     SELECT 'json_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_json) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_json) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: All three tables have the same row count
     SELECT 'three_tables_same_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_indexed)
-                   = (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_concat)
-                AND (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_concat)
-                   = (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_json)
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_indexed)
+                   = (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_concat)
+                AND (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_concat)
+                   = (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_json)
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: N1 party name column is populated in at least some rows
     SELECT 'n1_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.repeating_indexed
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.repeating_indexed
                        WHERE n1_2 IS NOT NULL) > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

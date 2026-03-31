@@ -21,15 +21,15 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.props_demos
-    COMMENT 'Table properties and configuration lifecycle demos';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 
 -- ============================================================================
 -- TABLE: inventory_items — Building supply warehouse inventory
 -- ============================================================================
 -- Created with TBLPROPERTIES to demonstrate configuration at table creation.
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.props_demos.inventory_items (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_items (
     item_id       INT,
     sku           VARCHAR,
     product_name  VARCHAR,
@@ -45,13 +45,13 @@ TBLPROPERTIES (
     'delta.checkpointInterval' = '5'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.props_demos.inventory_items TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_items TO USER {{current_user}};
 
 
 -- ============================================================================
 -- VERSION 1: Initial inventory — 15 items across 5 categories, 3 warehouses
 -- ============================================================================
-INSERT INTO {{zone_name}}.props_demos.inventory_items VALUES
+INSERT INTO {{zone_name}}.delta_demos.inventory_items VALUES
     (1,  'SKU-A100', 'Industrial Valve 3-inch',      'plumbing',    120, 45.99,  'warehouse-north', '2024-01-10 08:00:00'),
     (2,  'SKU-A101', 'Copper Fitting 1/2-inch',      'plumbing',    500, 3.25,   'warehouse-north', '2024-01-10 08:05:00'),
     (3,  'SKU-A102', 'PVC Pipe 10ft Schedule 40',    'plumbing',    250, 12.50,  'warehouse-south', '2024-01-10 08:10:00'),
@@ -73,7 +73,7 @@ INSERT INTO {{zone_name}}.props_demos.inventory_items VALUES
 -- VERSION 2: Price increase — electrical category +10%
 -- ============================================================================
 -- Supplier cost increase passed through to inventory pricing.
-UPDATE {{zone_name}}.props_demos.inventory_items
+UPDATE {{zone_name}}.delta_demos.inventory_items
 SET unit_price = ROUND(unit_price * 1.10, 2),
     last_updated = '2024-02-01 09:00:00'
 WHERE category = 'electrical';
@@ -83,7 +83,7 @@ WHERE category = 'electrical';
 -- VERSION 3: Restock — lumber category +50 units each
 -- ============================================================================
 -- Seasonal restock for spring building season.
-UPDATE {{zone_name}}.props_demos.inventory_items
+UPDATE {{zone_name}}.delta_demos.inventory_items
 SET quantity = quantity + 50,
     last_updated = '2024-02-15 10:00:00'
 WHERE category = 'lumber';
@@ -93,5 +93,5 @@ WHERE category = 'lumber';
 -- VERSION 4: Discontinue — remove items with quantity < 50
 -- ============================================================================
 -- Items below minimum stock threshold are discontinued and removed.
-DELETE FROM {{zone_name}}.props_demos.inventory_items
+DELETE FROM {{zone_name}}.delta_demos.inventory_items
 WHERE quantity < 50;

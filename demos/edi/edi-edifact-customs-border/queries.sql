@@ -61,7 +61,7 @@ SELECT
     unb_2 AS sender,
     unb_3 AS recipient,
     unh_2 AS msg_type
-FROM {{zone_name}}.edi.customs_messages
+FROM {{zone_name}}.edi_demos.customs_messages
 ORDER BY df_file_name;
 
 
@@ -95,7 +95,7 @@ SELECT
     cni_2 AS cni_ref,
     gid_1 AS goods_item,
     gid_2 AS goods_pkg
-FROM {{zone_name}}.edi.customs_materialized
+FROM {{zone_name}}.edi_demos.customs_materialized
 WHERE unh_2 = 'CUSCAR' OR df_file_name LIKE '%D95B%CUSCAR%'
 ORDER BY df_file_name;
 
@@ -123,7 +123,7 @@ SELECT
     tdt_1 AS transport_stage,
     tdt_2 AS conveyance_ref,
     COALESCE(unh_2, 'CUSCAR') AS msg_type
-FROM {{zone_name}}.edi.customs_materialized
+FROM {{zone_name}}.edi_demos.customs_materialized
 WHERE tdt_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -161,7 +161,7 @@ SELECT
         ELSE loc_1
     END AS qualifier_name,
     COUNT(*) AS msg_count
-FROM {{zone_name}}.edi.customs_materialized
+FROM {{zone_name}}.edi_demos.customs_materialized
 WHERE loc_1 IS NOT NULL
 GROUP BY loc_1
 ORDER BY loc_1;
@@ -190,7 +190,7 @@ SELECT
     eqd_1 AS equip_qualifier,
     eqd_2 AS equip_id,
     COALESCE(unh_2, 'CUSCAR') AS msg_type
-FROM {{zone_name}}.edi.customs_materialized
+FROM {{zone_name}}.edi_demos.customs_materialized
 WHERE eqd_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -222,7 +222,7 @@ SELECT
     doc_2 AS doc_number,
     bgm_1 AS bgm_code,
     bgm_2 AS bgm_ref
-FROM {{zone_name}}.edi.customs_materialized
+FROM {{zone_name}}.edi_demos.customs_materialized
 WHERE doc_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -259,7 +259,7 @@ SELECT
         ELSE nad_1
     END AS qualifier_name,
     COUNT(*) AS msg_count
-FROM {{zone_name}}.edi.customs_materialized
+FROM {{zone_name}}.edi_demos.customs_materialized
 WHERE nad_1 IS NOT NULL
 GROUP BY nad_1
 ORDER BY nad_1;
@@ -280,21 +280,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total message count = 5 (one per .edi file)
     SELECT 'message_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.customs_messages) = 5
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.customs_messages) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 5 distinct source files in df_file_name
     SELECT 'source_files_5' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi.customs_messages) = 5
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi_demos.customs_messages) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: At least 2 CUSCAR cargo reports (detected by file name pattern)
     SELECT 'cargo_reports' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.customs_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.customs_messages
                        WHERE df_file_name LIKE '%CUSCAR%') >= 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -302,7 +302,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: df_transaction_json is populated for all 5 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.customs_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.customs_messages
                        WHERE df_transaction_json IS NOT NULL) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

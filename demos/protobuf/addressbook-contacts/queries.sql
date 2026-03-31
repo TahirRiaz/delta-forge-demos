@@ -13,7 +13,7 @@
 
 ASSERT ROW_COUNT = 13
 SELECT *
-FROM {{zone_name}}.protobuf.contacts;
+FROM {{zone_name}}.protobuf_demos.contacts;
 
 
 -- ============================================================================
@@ -25,7 +25,7 @@ ASSERT VALUE contact_name = 'Alice Chen' WHERE contact_id = 1001
 ASSERT VALUE contact_name = 'Luis Hernandez' WHERE contact_id = 3002
 ASSERT VALUE email = 'bob.martinez@example.com' WHERE contact_id = 1002
 SELECT contact_id, contact_name, email, phone_numbers, phone_types, last_updated
-FROM {{zone_name}}.protobuf.contacts
+FROM {{zone_name}}.protobuf_demos.contacts
 ORDER BY contact_id;
 
 
@@ -36,7 +36,7 @@ ORDER BY contact_id;
 
 ASSERT ROW_COUNT = 22
 SELECT *
-FROM {{zone_name}}.protobuf.contact_phones;
+FROM {{zone_name}}.protobuf_demos.contact_phones;
 
 
 -- ============================================================================
@@ -45,7 +45,7 @@ FROM {{zone_name}}.protobuf.contact_phones;
 
 ASSERT ROW_COUNT = 22
 SELECT contact_id, contact_name, phone_number, phone_type
-FROM {{zone_name}}.protobuf.contact_phones
+FROM {{zone_name}}.protobuf_demos.contact_phones
 ORDER BY contact_id, phone_type;
 
 
@@ -56,7 +56,7 @@ ORDER BY contact_id, phone_type;
 
 ASSERT VALUE distinct_types = 3
 SELECT COUNT(DISTINCT phone_type) AS distinct_types
-FROM {{zone_name}}.protobuf.contact_phones;
+FROM {{zone_name}}.protobuf_demos.contact_phones;
 
 
 -- ============================================================================
@@ -69,7 +69,7 @@ ASSERT VALUE count = 8 WHERE phone_type = 'WORK'
 ASSERT VALUE count = 3 WHERE phone_type = 'HOME'
 SELECT phone_type,
        COUNT(*) AS count
-FROM {{zone_name}}.protobuf.contact_phones
+FROM {{zone_name}}.protobuf_demos.contact_phones
 GROUP BY phone_type
 ORDER BY count DESC;
 
@@ -81,7 +81,7 @@ ORDER BY count DESC;
 
 ASSERT VALUE multi_phone_contacts = 7
 SELECT COUNT(*) FILTER (WHERE phone_numbers LIKE '%,%') AS multi_phone_contacts
-FROM {{zone_name}}.protobuf.contacts;
+FROM {{zone_name}}.protobuf_demos.contacts;
 
 
 -- ============================================================================
@@ -92,7 +92,7 @@ FROM {{zone_name}}.protobuf.contacts;
 
 ASSERT VALUE luis_phone_count = 0
 SELECT COUNT(*) AS luis_phone_count
-FROM {{zone_name}}.protobuf.contact_phones
+FROM {{zone_name}}.protobuf_demos.contact_phones
 WHERE contact_id = 3002;
 
 
@@ -102,7 +102,7 @@ WHERE contact_id = 3002;
 
 ASSERT VALUE maria_no_email = 1
 SELECT COUNT(*) AS maria_no_email
-FROM {{zone_name}}.protobuf.contacts
+FROM {{zone_name}}.protobuf_demos.contacts
 WHERE contact_id = 3003
   AND (email IS NULL OR email = '');
 
@@ -115,7 +115,7 @@ WHERE contact_id = 3003
 
 ASSERT VALUE timestamp_count = 13
 SELECT COUNT(*) FILTER (WHERE last_updated IS NOT NULL) AS timestamp_count
-FROM {{zone_name}}.protobuf.contacts;
+FROM {{zone_name}}.protobuf_demos.contacts;
 
 
 -- ============================================================================
@@ -124,7 +124,7 @@ FROM {{zone_name}}.protobuf.contacts;
 
 ASSERT VALUE file_count = 3
 SELECT COUNT(DISTINCT df_file_name) AS file_count
-FROM {{zone_name}}.protobuf.contacts;
+FROM {{zone_name}}.protobuf_demos.contacts;
 
 
 -- ============================================================================
@@ -136,7 +136,7 @@ ASSERT VALUE contact_count = 5 WHERE df_file_name LIKE '%engineering%'
 ASSERT VALUE contact_count = 5 WHERE df_file_name LIKE '%sales%'
 ASSERT VALUE contact_count = 3 WHERE df_file_name LIKE '%executives%'
 SELECT df_file_name, COUNT(*) AS contact_count
-FROM {{zone_name}}.protobuf.contacts
+FROM {{zone_name}}.protobuf_demos.contacts
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -152,7 +152,7 @@ ASSERT VALUE phone_count = 3 WHERE contact_name = 'Katherine Park'
 ASSERT VALUE phone_count = 1 WHERE contact_name = 'Carol Nakamura'
 ASSERT VALUE phone_count = 1 WHERE contact_name = 'Maria Schmidt'
 SELECT contact_name, COUNT(*) AS phone_count
-FROM {{zone_name}}.protobuf.contact_phones
+FROM {{zone_name}}.protobuf_demos.contact_phones
 GROUP BY contact_name
 ORDER BY phone_count DESC, contact_name;
 
@@ -177,21 +177,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total contacts = 13
     SELECT 'contact_count_13' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.protobuf.contacts) = 13
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contacts) = 13
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Exploded phone rows = 22
     SELECT 'phone_rows_22' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.protobuf.contact_phones) = 22
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contact_phones) = 22
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: 3 distinct phone types (enum decoding)
     SELECT 'enum_three_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT phone_type) FROM {{zone_name}}.protobuf.contact_phones) = 3
+           CASE WHEN (SELECT COUNT(DISTINCT phone_type) FROM {{zone_name}}.protobuf_demos.contact_phones) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -199,7 +199,7 @@ SELECT check_name, result FROM (
     -- Check 4: Multi-phone contacts have commas (repeated join)
     SELECT 'repeated_join_commas' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.protobuf.contacts
+               SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contacts
                WHERE phone_numbers LIKE '%,%'
            ) = 7 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -208,7 +208,7 @@ SELECT check_name, result FROM (
     -- Check 5: Sparse — Luis has no phone rows
     SELECT 'sparse_no_phones_luis' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.protobuf.contact_phones
+               SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contact_phones
                WHERE contact_id = 3002
            ) = 0 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -217,7 +217,7 @@ SELECT check_name, result FROM (
     -- Check 6: Sparse — Maria has no email
     SELECT 'sparse_no_email_maria' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.protobuf.contacts
+               SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contacts
                WHERE contact_id = 3003 AND (email IS NULL OR email = '')
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -226,7 +226,7 @@ SELECT check_name, result FROM (
     -- Check 7: Timestamps populated for all contacts
     SELECT 'timestamps_populated' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.protobuf.contacts
+               SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contacts
                WHERE last_updated IS NOT NULL
            ) = 13 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -235,7 +235,7 @@ SELECT check_name, result FROM (
     -- Check 8: 3 source files
     SELECT 'three_source_files' AS check_name,
            CASE WHEN (
-               SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.protobuf.contacts
+               SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.protobuf_demos.contacts
            ) = 3 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -243,7 +243,7 @@ SELECT check_name, result FROM (
     -- Check 9: File metadata populated for all rows
     SELECT 'file_metadata_populated' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.protobuf.contacts
+               SELECT COUNT(*) FROM {{zone_name}}.protobuf_demos.contacts
                WHERE df_file_name IS NOT NULL
            ) = 13 THEN 'PASS' ELSE 'FAIL' END AS result
 

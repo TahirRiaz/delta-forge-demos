@@ -27,14 +27,14 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.backfill_demos
-    COMMENT 'NULL backfill and sentinel cleanup pattern demos';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 
 -- ============================================================================
 -- TABLE: patient_records — Hospital migration data (messy)
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.backfill_demos.patient_records (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.patient_records (
     id                INT,
     patient_name      VARCHAR,
     age               INT,
@@ -46,7 +46,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.backfill_demos.patient_records (
     notes             VARCHAR
 ) LOCATION '{{data_path}}/patient_records';
 
-GRANT ADMIN ON TABLE {{zone_name}}.backfill_demos.patient_records TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.patient_records TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -61,7 +61,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.backfill_demos.patient_records TO USER {{curr
 -- Some fields are genuinely NULL (never populated in source).
 --
 -- Mix: ~8 fully clean, ~10 with 1-2 issues, ~7 with 3+ issues
-INSERT INTO {{zone_name}}.backfill_demos.patient_records VALUES
+INSERT INTO {{zone_name}}.delta_demos.patient_records VALUES
     -- Fully clean rows (ids 1-8)
     (1,  'Alice Martin',       34,   'A+',   'Bob Martin',       'INS-1001', '2025-11-15', 98.60,    'Annual checkup'),
     (2,  'James Rodriguez',    45,   'O-',   'Maria Rodriguez',  'INS-1002', '2025-10-22', 98.40,    'Follow-up visit'),
@@ -98,7 +98,7 @@ INSERT INTO {{zone_name}}.backfill_demos.patient_records VALUES
 -- Legacy system used -999 for "unknown age". NULLIF(age, -999) returns NULL
 -- when age equals -999, leaving valid ages unchanged.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET age = NULLIF(age, -999);
 
 
@@ -107,7 +107,7 @@ SET age = NULLIF(age, -999);
 -- ============================================================================
 -- Same pattern: -999.00 meant "no reading taken" in the legacy system.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET temperature = NULLIF(temperature, -999.00);
 
 
@@ -117,7 +117,7 @@ SET temperature = NULLIF(temperature, -999.00);
 -- The string 'N/A' was used when the patient declined to provide a contact.
 -- We convert to proper NULL so IS NULL checks work correctly downstream.
 ASSERT ROW_COUNT = 8
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET emergency_contact = NULL
 WHERE emergency_contact = 'N/A';
 
@@ -128,7 +128,7 @@ WHERE emergency_contact = 'N/A';
 -- Empty strings are semantically NULL. Converting them allows consistent
 -- IS NULL filtering and avoids false matches on string comparisons.
 ASSERT ROW_COUNT = 8
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET insurance_code = NULL
 WHERE insurance_code = '';
 
@@ -138,7 +138,7 @@ WHERE insurance_code = '';
 -- ============================================================================
 -- Same pattern as emergency_contact: 'N/A' sentinel → proper NULL.
 ASSERT ROW_COUNT = 5
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET notes = NULL
 WHERE notes = 'N/A';
 
@@ -150,7 +150,7 @@ WHERE notes = 'N/A';
 -- so lab orders can flag them for testing. COALESCE returns the first
 -- non-NULL argument: existing values pass through, NULLs become 'PENDING'.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET blood_type = COALESCE(blood_type, 'PENDING');
 
 
@@ -160,7 +160,7 @@ SET blood_type = COALESCE(blood_type, 'PENDING');
 -- Regulatory compliance requires a non-NULL emergency contact field.
 -- 'UNKNOWN' flags records for follow-up by the admissions team.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET emergency_contact = COALESCE(emergency_contact, 'UNKNOWN');
 
 
@@ -170,5 +170,5 @@ SET emergency_contact = COALESCE(emergency_contact, 'UNKNOWN');
 -- Age = 0 is a recognized "needs verification" marker in the hospital system.
 -- CASE WHEN provides conditional logic: only NULL ages are overwritten.
 ASSERT ROW_COUNT = 25
-UPDATE {{zone_name}}.backfill_demos.patient_records
+UPDATE {{zone_name}}.delta_demos.patient_records
 SET age = CASE WHEN age IS NULL THEN 0 ELSE age END;

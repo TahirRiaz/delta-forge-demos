@@ -45,7 +45,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE: lifecycle_tracking — Cross-document lifecycle fields
@@ -60,7 +60,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 -- a unified table enables lifecycle tracking with simple WHERE/GROUP BY/CASE.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.lifecycle_tracking
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.lifecycle_tracking
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -80,4 +80,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.lifecycle_tracking TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.lifecycle_tracking TO USER {{current_user}};

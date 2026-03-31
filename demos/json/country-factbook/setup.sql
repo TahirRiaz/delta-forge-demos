@@ -20,7 +20,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json_demos
     COMMENT 'JSON-backed external tables';
 
 -- ============================================================================
@@ -30,7 +30,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- Terrorism/Space sections. The verbose Introduction.Background HTML text
 -- is excluded.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.countries
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.countries
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -77,7 +77,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.countries TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.countries TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: country_economy — Economy-focused extraction (10 total)
 -- ============================================================================
@@ -86,7 +86,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.json.countries TO USER {{current_user}};
 -- Introduction.Background is excluded (verbose HTML). Uses column_mappings
 -- for clean analytics-ready names.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.country_economy
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.country_economy
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -135,4 +135,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.country_economy TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.country_economy TO USER {{current_user}};

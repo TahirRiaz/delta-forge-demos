@@ -59,4 +59,4 @@ size_bytes = 711
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.grid_readings"
+name = "{{zone_name}}.iceberg_demos.grid_readings"

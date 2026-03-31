@@ -10,7 +10,7 @@
 -- ============================================================================
 
 ASSERT ROW_COUNT = 40
-SELECT * FROM {{zone_name}}.iceberg_bloom.members ORDER BY member_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.members ORDER BY member_id;
 
 -- ============================================================================
 -- Query 2: Per-Tier Summary
@@ -30,7 +30,7 @@ SELECT
     COUNT(*) AS member_count,
     SUM(points) AS total_points,
     ROUND(SUM(lifetime_spend), 2) AS total_spend
-FROM {{zone_name}}.iceberg_bloom.members
+FROM {{zone_name}}.iceberg_demos.members
 GROUP BY tier
 ORDER BY CASE tier
     WHEN 'Bronze' THEN 1
@@ -51,7 +51,7 @@ ASSERT VALUE tier = 'Platinum' WHERE member_id = 4
 ASSERT VALUE points = 28000 WHERE member_id = 4
 ASSERT VALUE lifetime_spend = 8500.00 WHERE member_id = 4
 SELECT *
-FROM {{zone_name}}.iceberg_bloom.members
+FROM {{zone_name}}.iceberg_demos.members
 WHERE member_id = 4;
 
 -- ============================================================================
@@ -64,7 +64,7 @@ ASSERT VALUE tier = 'Platinum' WHERE full_name = 'Brian Wright'
 ASSERT VALUE points = 35000 WHERE full_name = 'Brian Wright'
 ASSERT VALUE lifetime_spend = 10500.00 WHERE full_name = 'Brian Wright'
 SELECT *
-FROM {{zone_name}}.iceberg_bloom.members
+FROM {{zone_name}}.iceberg_demos.members
 WHERE full_name = 'Brian Wright';
 
 -- ============================================================================
@@ -76,7 +76,7 @@ ASSERT VALUE lifetime_spend = 10500.00 WHERE member_id = 24
 ASSERT VALUE lifetime_spend = 9800.00 WHERE member_id = 8
 ASSERT VALUE lifetime_spend = 9500.25 WHERE member_id = 39
 SELECT member_id, full_name, points, lifetime_spend
-FROM {{zone_name}}.iceberg_bloom.members
+FROM {{zone_name}}.iceberg_demos.members
 WHERE tier = 'Platinum'
 ORDER BY lifetime_spend DESC;
 
@@ -90,7 +90,7 @@ ASSERT VALUE gold_plus_spend = 119904.50
 SELECT
     COUNT(*) AS gold_plus_count,
     ROUND(SUM(lifetime_spend), 2) AS gold_plus_spend
-FROM {{zone_name}}.iceberg_bloom.members
+FROM {{zone_name}}.iceberg_demos.members
 WHERE tier IN ('Gold', 'Platinum');
 
 -- ============================================================================
@@ -109,7 +109,7 @@ SELECT
     MIN(points) AS min_points,
     MAX(points) AS max_points,
     ROUND(AVG(points), 2) AS avg_points
-FROM {{zone_name}}.iceberg_bloom.members
+FROM {{zone_name}}.iceberg_demos.members
 GROUP BY tier
 ORDER BY CASE tier
     WHEN 'Bronze' THEN 1
@@ -122,18 +122,18 @@ END;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_bloom.members_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.members_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/members';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_bloom.members_iceberg TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.members_iceberg TO USER {{current_user}};
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count
 -- ============================================================================
 
 ASSERT ROW_COUNT = 40
-SELECT * FROM {{zone_name}}.iceberg_bloom.members_iceberg ORDER BY member_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.members_iceberg ORDER BY member_id;
 
 -- ============================================================================
 -- Iceberg Verify 2: Per-Tier Totals — Must Match Delta
@@ -146,7 +146,7 @@ SELECT
     tier,
     COUNT(*) AS member_count,
     SUM(points) AS total_points
-FROM {{zone_name}}.iceberg_bloom.members_iceberg
+FROM {{zone_name}}.iceberg_demos.members_iceberg
 GROUP BY tier
 ORDER BY total_points DESC;
 
@@ -159,7 +159,7 @@ ASSERT VALUE full_name = 'James Wilson' WHERE member_id = 8
 ASSERT VALUE points = 32000 WHERE member_id = 8
 ASSERT VALUE lifetime_spend = 9800.00 WHERE member_id = 8
 SELECT *
-FROM {{zone_name}}.iceberg_bloom.members_iceberg
+FROM {{zone_name}}.iceberg_demos.members_iceberg
 WHERE member_id = 8;
 
 -- ============================================================================
@@ -182,4 +182,4 @@ SELECT
     ROUND(AVG(points), 2) AS avg_points,
     MAX(lifetime_spend) AS max_spend,
     MIN(lifetime_spend) AS min_spend
-FROM {{zone_name}}.iceberg_bloom.members;
+FROM {{zone_name}}.iceberg_demos.members;

@@ -12,7 +12,7 @@
 
 ASSERT ROW_COUNT = 9994
 SELECT *
-FROM {{zone_name}}.excel.all_orders;
+FROM {{zone_name}}.excel_demos.all_orders;
 
 
 -- ============================================================================
@@ -22,7 +22,7 @@ FROM {{zone_name}}.excel.all_orders;
 ASSERT ROW_COUNT = 20
 SELECT order_id, order_date, ship_date, customer_name,
        category, sales, quantity, profit
-FROM {{zone_name}}.excel.all_orders
+FROM {{zone_name}}.excel_demos.all_orders
 LIMIT 20;
 
 
@@ -37,7 +37,7 @@ ASSERT VALUE row_count = 2102 WHERE df_file_name LIKE '%2015%'
 ASSERT VALUE row_count = 2587 WHERE df_file_name LIKE '%2016%'
 ASSERT VALUE row_count = 3312 WHERE df_file_name LIKE '%2017%'
 SELECT df_file_name, COUNT(*) AS row_count
-FROM {{zone_name}}.excel.all_orders
+FROM {{zone_name}}.excel_demos.all_orders
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -64,7 +64,7 @@ SELECT df_file_name AS source_file,
        COUNT(*) AS orders,
        ROUND(SUM(CAST(sales AS DOUBLE)), 2) AS total_sales,
        ROUND(SUM(CAST(profit AS DOUBLE)), 2) AS total_profit
-FROM {{zone_name}}.excel.all_orders
+FROM {{zone_name}}.excel_demos.all_orders
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -75,7 +75,7 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 3312
 SELECT *
-FROM {{zone_name}}.excel.orders_2017;
+FROM {{zone_name}}.excel_demos.orders_2017;
 
 
 -- ============================================================================
@@ -84,7 +84,7 @@ FROM {{zone_name}}.excel.orders_2017;
 
 ASSERT VALUE region_count = 4
 SELECT COUNT(DISTINCT region) AS region_count
-FROM {{zone_name}}.excel.all_orders;
+FROM {{zone_name}}.excel_demos.all_orders;
 
 
 -- ============================================================================
@@ -94,7 +94,7 @@ FROM {{zone_name}}.excel.all_orders;
 ASSERT ROW_COUNT = 4
 ASSERT VALUE df_file_name LIKE '%sales-data-2014%' WHERE rows = 1993
 SELECT df_file_name, COUNT(*) AS rows
-FROM {{zone_name}}.excel.all_orders
+FROM {{zone_name}}.excel_demos.all_orders
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -127,7 +127,7 @@ SELECT region,
        ROUND(SUM(CAST(sales AS DOUBLE)), 2) AS total_sales,
        ROUND(SUM(CAST(profit AS DOUBLE)), 2) AS total_profit,
        ROUND(AVG(CAST(discount AS DOUBLE)), 3) AS avg_discount
-FROM {{zone_name}}.excel.all_orders
+FROM {{zone_name}}.excel_demos.all_orders
 GROUP BY region
 ORDER BY total_sales DESC;
 
@@ -151,7 +151,7 @@ SELECT category, sub_category,
        COUNT(*) AS orders,
        ROUND(SUM(CAST(sales AS DOUBLE)), 2) AS total_sales,
        ROUND(SUM(CAST(profit AS DOUBLE)), 2) AS total_profit
-FROM {{zone_name}}.excel.all_orders
+FROM {{zone_name}}.excel_demos.all_orders
 GROUP BY category, sub_category
 ORDER BY total_profit DESC
 LIMIT 10;
@@ -173,28 +173,28 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total row count = 9,994
     SELECT 'total_count_9994' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_orders) = 9994
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_orders) = 9994
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 4 distinct source files
     SELECT 'four_source_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.excel.all_orders) = 4
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.excel_demos.all_orders) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: 2017 file has 3,312 rows
     SELECT 'file_2017_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.orders_2017) = 3312
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.orders_2017) = 3312
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: File metadata populated (all rows have df_file_name)
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_orders WHERE df_file_name IS NOT NULL) = 9994
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_orders WHERE df_file_name IS NOT NULL) = 9994
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -202,7 +202,7 @@ SELECT check_name, result FROM (
     -- Check 5: Type inference — sales column exists and is castable
     SELECT 'type_inference_numeric' AS check_name,
            CASE WHEN (SELECT COUNT(*) FROM information_schema.columns
-                       WHERE table_schema = 'excel' AND table_name = 'all_orders'
+                       WHERE table_schema = 'excel_demos' AND table_name = 'all_orders'
                        AND column_name = 'sales') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -210,14 +210,14 @@ SELECT check_name, result FROM (
 
     -- Check 6: 4 regions present (Central, East, South, West)
     SELECT 'four_regions' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT region) FROM {{zone_name}}.excel.all_orders) = 4
+           CASE WHEN (SELECT COUNT(DISTINCT region) FROM {{zone_name}}.excel_demos.all_orders) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: orders_2017 file_filter works correctly
     SELECT 'orders_2017_filter' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.excel.orders_2017) = 1
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.excel_demos.orders_2017) = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

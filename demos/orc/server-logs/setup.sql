@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.orc
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.orc_demos
     COMMENT 'ORC-backed external tables';
 
 -- ============================================================================
@@ -29,23 +29,23 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.orc
 --   v2 (api-01, api-02): 13 fields (adds request_body_bytes, cache_hit)
 -- The union schema merges both versions; v1 rows get NULL for new columns.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc.all_requests
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc_demos.all_requests
 USING ORC
 LOCATION '{{data_path}}'
 OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.orc.all_requests TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.orc_demos.all_requests TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: api01_only — Single server via LOCATION glob (500 rows)
 -- ============================================================================
 -- Uses a wildcard in LOCATION to read only api-01_access.orc, which uses
 -- schema v2 (includes request_body_bytes and cache_hit).
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc.api01_only
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.orc_demos.api01_only
 USING ORC
 LOCATION '{{data_path}}/api-01*.orc'
 OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.orc.api01_only TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.orc_demos.api01_only TO USER {{current_user}};

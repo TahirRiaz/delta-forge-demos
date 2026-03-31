@@ -10,10 +10,10 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Table
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv.sales WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.csv_demos.sales WITH FILES;
 
 -- STEP 2: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.csv;
+DROP SCHEMA IF EXISTS {{zone_name}}.csv_demos;
 
 -- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

@@ -28,7 +28,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7_demos
     COMMENT 'HL7 v2 message-backed external tables';
 -- ============================================================================
 -- TABLE 1: clinical_messages — All 4 messages, compact view
@@ -38,14 +38,14 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7
 -- Use df_message_json for deep access to TXA, SCH, OBX, etc.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7.clinical_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7_demos.clinical_messages
 USING HL7
 LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.hl7.clinical_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.hl7_demos.clinical_messages TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 2: clinical_materialized — Key fields extracted
@@ -55,7 +55,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.hl7.clinical_messages TO USER {{current_user}
 -- TXA and OBX segment data is accessible via df_message_json.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7.clinical_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7_demos.clinical_materialized
 USING HL7
 LOCATION '{{data_path}}/*.hl7'
 OPTIONS (
@@ -71,5 +71,5 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.hl7.clinical_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.hl7_demos.clinical_materialized TO USER {{current_user}};
 

@@ -22,14 +22,14 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.audit_demos
-    COMMENT 'Audit trail and compliance versioning demos';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 
 -- ============================================================================
 -- TABLE: compliance_events — Financial account event log
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.audit_demos.compliance_events (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.compliance_events (
     event_id        INT,
     account_id      VARCHAR,
     account_name    VARCHAR,
@@ -44,7 +44,7 @@ TBLPROPERTIES (
     'delta.enableChangeDataFeed' = 'true'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.audit_demos.compliance_events TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.compliance_events TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -52,7 +52,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.audit_demos.compliance_events TO USER {{curre
 -- ============================================================================
 -- 10 commercial accounts opened across 4 branches by 4 officers.
 -- Each account has an 'open' event (zero balance) followed by an initial deposit.
-INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
+INSERT INTO {{zone_name}}.delta_demos.compliance_events VALUES
     (1,  'ACCT-1001', 'Meridian Holdings LLC',    'open',       NULL,      0.00,       'j.chen',     'downtown',  '2024-01-02 09:00:00'),
     (2,  'ACCT-1001', 'Meridian Holdings LLC',    'deposit',    250000.00, 250000.00,  'j.chen',     'downtown',  '2024-01-02 09:05:00'),
     (3,  'ACCT-1002', 'Northstar Ventures Inc',   'open',       NULL,      0.00,       'r.patel',    'midtown',   '2024-01-03 10:00:00'),
@@ -80,7 +80,7 @@ INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
 -- ============================================================================
 -- Normal banking activity across February. Withdrawals and transfers move
 -- funds between accounts; each event captures the resulting balance.
-INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
+INSERT INTO {{zone_name}}.delta_demos.compliance_events VALUES
     (21, 'ACCT-1001', 'Meridian Holdings LLC',    'withdrawal', 75000.00,  175000.00,  'j.chen',     'downtown',  '2024-02-01 14:00:00'),
     (22, 'ACCT-1001', 'Meridian Holdings LLC',    'deposit',    30000.00,  205000.00,  'j.chen',     'downtown',  '2024-02-05 10:30:00'),
     (23, 'ACCT-1002', 'Northstar Ventures Inc',   'transfer',   50000.00,  125000.00,  'r.patel',    'midtown',   '2024-02-03 11:00:00'),
@@ -100,7 +100,7 @@ INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
 -- ============================================================================
 -- March: compliance officer freezes two accounts under investigation,
 -- one account is closed, and two large movements are recorded.
-INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
+INSERT INTO {{zone_name}}.delta_demos.compliance_events VALUES
     (33, 'ACCT-1009', 'Granite Partners',         'freeze',     NULL,      70000.00,   'compliance', 'downtown',  '2024-03-01 08:00:00'),
     (34, 'ACCT-1010', 'Apex Consulting Group',    'close',      55000.00,  0.00,       'r.patel',    'midtown',   '2024-03-05 16:00:00'),
     (35, 'ACCT-1002', 'Northstar Ventures Inc',   'freeze',     NULL,      125000.00,  'compliance', 'midtown',   '2024-03-08 09:30:00'),
@@ -113,7 +113,7 @@ INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
 -- ============================================================================
 -- April: a batch of 5 events arrives from a branch system that was offline.
 -- Each creates a new Delta version entry that auditors can trace.
-INSERT INTO {{zone_name}}.audit_demos.compliance_events VALUES
+INSERT INTO {{zone_name}}.delta_demos.compliance_events VALUES
     (38, 'ACCT-1001', 'Meridian Holdings LLC',    'deposit',    100000.00, 305000.00,  'j.chen',     'downtown',  '2024-04-01 09:00:00'),
     (39, 'ACCT-1003', 'Cascade Financial Group',  'withdrawal', 75000.00,  350000.00,  's.williams', 'westside',  '2024-04-02 10:30:00'),
     (40, 'ACCT-1006', 'Ironclad Securities',      'transfer',   100000.00, 400000.00,  's.williams', 'westside',  '2024-04-03 15:00:00'),

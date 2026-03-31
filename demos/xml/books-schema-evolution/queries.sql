@@ -17,7 +17,7 @@
 
 ASSERT ROW_COUNT = 15
 SELECT *
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -33,7 +33,7 @@ ASSERT VALUE catalog_book_author = 'Galos, Mike' WHERE catalog_book_attr_id = 'b
 ASSERT VALUE catalog_book_title = 'Visual Studio 7: A Comprehensive Guide' WHERE catalog_book_attr_id = 'bk114'
 ASSERT VALUE catalog_book_attr_format = 'paperback' WHERE catalog_book_attr_id = 'bk114'
 SELECT *
-FROM {{zone_name}}.xml.books_evolved
+FROM {{zone_name}}.xml_demos.books_evolved
 ORDER BY catalog_book_attr_id;
 
 
@@ -45,7 +45,7 @@ ORDER BY catalog_book_attr_id;
 
 ASSERT VALUE isbn_null_count = 3
 SELECT COUNT(*) FILTER (WHERE catalog_book_isbn IS NULL) AS isbn_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -54,7 +54,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE language_null_count = 3
 SELECT COUNT(*) FILTER (WHERE catalog_book_language IS NULL) AS language_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -63,7 +63,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE publisher_null_count = 6
 SELECT COUNT(*) FILTER (WHERE catalog_book_publisher IS NULL) AS publisher_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -72,7 +72,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE rating_null_count = 6
 SELECT COUNT(*) FILTER (WHERE catalog_book_rating IS NULL) AS rating_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -83,7 +83,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE description_null_count = 6
 SELECT COUNT(*) FILTER (WHERE catalog_book_description IS NULL) AS description_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -92,7 +92,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE edition_null_count = 9
 SELECT COUNT(*) FILTER (WHERE catalog_book_edition IS NULL) AS edition_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -101,7 +101,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE pages_null_count = 9
 SELECT COUNT(*) FILTER (WHERE catalog_book_pages IS NULL) AS pages_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -110,7 +110,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE series_null_count = 12
 SELECT COUNT(*) FILTER (WHERE catalog_book_series IS NULL) AS series_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -120,7 +120,7 @@ FROM {{zone_name}}.xml.books_evolved;
 
 ASSERT VALUE attr_format_null_count = 12
 SELECT COUNT(*) FILTER (WHERE catalog_book_attr_format IS NULL) AS attr_format_null_count
-FROM {{zone_name}}.xml.books_evolved;
+FROM {{zone_name}}.xml_demos.books_evolved;
 
 
 -- ============================================================================
@@ -139,7 +139,7 @@ ASSERT VALUE catalog_book_attr_format = 'hardcover' WHERE catalog_book_attr_id =
 ASSERT VALUE catalog_book_series = 'Maeve Saga' WHERE catalog_book_attr_id = 'bk113'
 SELECT catalog_book_attr_id, catalog_book_author, catalog_book_title, catalog_book_genre, catalog_book_price,
        catalog_book_rating, catalog_book_attr_format, catalog_book_series
-FROM {{zone_name}}.xml.books_evolved
+FROM {{zone_name}}.xml_demos.books_evolved
 WHERE catalog_book_attr_id IN ('bk101', 'bk108', 'bk113')
 ORDER BY catalog_book_attr_id;
 
@@ -156,7 +156,7 @@ ASSERT VALUE book_count = 2 WHERE catalog_book_genre = 'Science Fiction'
 ASSERT VALUE book_count = 2 WHERE catalog_book_genre = 'Romance'
 ASSERT VALUE book_count = 2 WHERE catalog_book_genre = 'Horror'
 SELECT catalog_book_genre, COUNT(*) AS book_count
-FROM {{zone_name}}.xml.books_evolved
+FROM {{zone_name}}.xml_demos.books_evolved
 GROUP BY catalog_book_genre
 ORDER BY book_count DESC;
 
@@ -168,23 +168,23 @@ ORDER BY book_count DESC;
 -- invariant (NULL counts by wave) confirmed in a single query.
 
 ASSERT ROW_COUNT = 10
-SELECT 'total_rows' AS check_name, CASE WHEN COUNT(*) = 15 THEN 'PASS' ELSE 'FAIL' END AS result FROM {{zone_name}}.xml.books_evolved
+SELECT 'total_rows' AS check_name, CASE WHEN COUNT(*) = 15 THEN 'PASS' ELSE 'FAIL' END AS result FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'isbn_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_isbn IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'isbn_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_isbn IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'language_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_language IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'language_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_language IS NULL) = 3 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'publisher_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_publisher IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'publisher_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_publisher IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'rating_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_rating IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'rating_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_rating IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'description_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_description IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'description_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_description IS NULL) = 6 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'edition_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_edition IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'edition_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_edition IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_pages IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'pages_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_pages IS NULL) = 9 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'series_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_series IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 UNION ALL
-SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml.books_evolved
+SELECT 'attr_format_nulls', CASE WHEN COUNT(*) FILTER (WHERE catalog_book_attr_format IS NULL) = 12 THEN 'PASS' ELSE 'FAIL' END FROM {{zone_name}}.xml_demos.books_evolved
 ORDER BY check_name;

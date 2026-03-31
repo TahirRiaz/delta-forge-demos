@@ -13,7 +13,7 @@
 
 ASSERT ROW_COUNT = 2500
 SELECT *
-FROM {{zone_name}}.avro.all_readings;
+FROM {{zone_name}}.avro_demos.all_readings;
 
 
 -- ============================================================================
@@ -23,7 +23,7 @@ FROM {{zone_name}}.avro.all_readings;
 ASSERT ROW_COUNT = 20
 SELECT sensor_id, floor, zone, timestamp, temperature_c, humidity_pct,
        co2_ppm, occupancy
-FROM {{zone_name}}.avro.all_readings
+FROM {{zone_name}}.avro_demos.all_readings
 LIMIT 20;
 
 
@@ -38,7 +38,7 @@ ASSERT VALUE row_count = 500 WHERE df_file_name LIKE '%floor3%'
 ASSERT VALUE row_count = 500 WHERE df_file_name LIKE '%floor4%'
 ASSERT VALUE row_count = 500 WHERE df_file_name LIKE '%floor5%'
 SELECT df_file_name, COUNT(*) AS row_count
-FROM {{zone_name}}.avro.all_readings
+FROM {{zone_name}}.avro_demos.all_readings
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -52,7 +52,7 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 10
 SELECT sensor_id, floor, zone, battery_pct, firmware_version
-FROM {{zone_name}}.avro.floor4_only
+FROM {{zone_name}}.avro_demos.floor4_only
 LIMIT 10;
 
 
@@ -62,7 +62,7 @@ LIMIT 10;
 
 ASSERT ROW_COUNT = 500
 SELECT *
-FROM {{zone_name}}.avro.floor4_only;
+FROM {{zone_name}}.avro_demos.floor4_only;
 
 
 -- ============================================================================
@@ -71,11 +71,11 @@ FROM {{zone_name}}.avro.floor4_only;
 
 ASSERT VALUE battery_non_null = 500
 SELECT COUNT(battery_pct) AS battery_non_null
-FROM {{zone_name}}.avro.floor4_only;
+FROM {{zone_name}}.avro_demos.floor4_only;
 
 ASSERT VALUE firmware_non_null = 500
 SELECT COUNT(firmware_version) AS firmware_non_null
-FROM {{zone_name}}.avro.floor4_only;
+FROM {{zone_name}}.avro_demos.floor4_only;
 
 
 -- ============================================================================
@@ -84,7 +84,7 @@ FROM {{zone_name}}.avro.floor4_only;
 
 ASSERT ROW_COUNT = 250
 SELECT *
-FROM {{zone_name}}.avro.readings_sample;
+FROM {{zone_name}}.avro_demos.readings_sample;
 
 
 -- ============================================================================
@@ -93,7 +93,7 @@ FROM {{zone_name}}.avro.readings_sample;
 
 ASSERT VALUE metadata_count = 2500
 SELECT COUNT(*) AS metadata_count
-FROM {{zone_name}}.avro.all_readings
+FROM {{zone_name}}.avro_demos.all_readings
 WHERE df_file_name IS NOT NULL;
 
 
@@ -106,7 +106,7 @@ SELECT floor, zone,
        ROUND(AVG(CAST(temperature_c AS DOUBLE)), 1) AS avg_temp_c,
        ROUND(AVG(CAST(humidity_pct AS DOUBLE)), 1) AS avg_humidity,
        ROUND(AVG(CAST(co2_ppm AS DOUBLE)), 0) AS avg_co2
-FROM {{zone_name}}.avro.all_readings
+FROM {{zone_name}}.avro_demos.all_readings
 GROUP BY floor, zone
 ORDER BY floor, zone;
 
@@ -129,7 +129,7 @@ SELECT floor,
        COUNT(*) AS total_readings,
        SUM(CASE WHEN CAST(occupancy AS BOOLEAN) THEN 1 ELSE 0 END) AS occupied_readings,
        ROUND(SUM(CASE WHEN CAST(occupancy AS BOOLEAN) THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) AS occupancy_pct
-FROM {{zone_name}}.avro.all_readings
+FROM {{zone_name}}.avro_demos.all_readings
 GROUP BY floor
 ORDER BY floor;
 
@@ -148,14 +148,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total row count = 2,500
     SELECT 'total_count_2500' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro.all_readings) = 2500
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro_demos.all_readings) = 2500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 5 distinct source files
     SELECT 'five_source_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.avro.all_readings) = 5
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.avro_demos.all_readings) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -163,7 +163,7 @@ SELECT check_name, result FROM (
     -- Check 3: V2 columns — floor4_only has battery_pct for all 500 rows
     SELECT 'floor4_has_battery' AS check_name,
            CASE WHEN (
-               SELECT COUNT(battery_pct) FROM {{zone_name}}.avro.floor4_only
+               SELECT COUNT(battery_pct) FROM {{zone_name}}.avro_demos.floor4_only
            ) = 500 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -171,28 +171,28 @@ SELECT check_name, result FROM (
     -- Check 4: V2 columns — floor4_only has firmware_version for all 500 rows
     SELECT 'floor4_has_firmware' AS check_name,
            CASE WHEN (
-               SELECT COUNT(firmware_version) FROM {{zone_name}}.avro.floor4_only
+               SELECT COUNT(firmware_version) FROM {{zone_name}}.avro_demos.floor4_only
            ) = 500 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: File filter — floor4_only has 500 rows
     SELECT 'filter_floor4_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro.floor4_only) = 500
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro_demos.floor4_only) = 500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Max rows — sample has 250 rows (50 x 5)
     SELECT 'max_rows_250' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro.readings_sample) = 250
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro_demos.readings_sample) = 250
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: File metadata populated for all rows
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro.all_readings WHERE df_file_name IS NOT NULL) = 2500
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.avro_demos.all_readings WHERE df_file_name IS NOT NULL) = 2500
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -201,7 +201,7 @@ SELECT check_name, result FROM (
     SELECT 'schema_sensor_id_exists' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
-               WHERE table_schema = 'avro' AND table_name = 'all_readings'
+               WHERE table_schema = 'avro_demos' AND table_name = 'all_readings'
                AND column_name = 'sensor_id'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -211,14 +211,14 @@ SELECT check_name, result FROM (
     SELECT 'column_count_12' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
-               WHERE table_schema = 'avro' AND table_name = 'all_readings'
+               WHERE table_schema = 'avro_demos' AND table_name = 'all_readings'
            ) = 12 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 10: Sample covers all 5 files
     SELECT 'sample_all_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.avro.readings_sample) = 5
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.avro_demos.readings_sample) = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

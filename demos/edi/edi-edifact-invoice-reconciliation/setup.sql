@@ -33,7 +33,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: commerce_messages — Compact view (4 messages)
@@ -56,14 +56,14 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   UNH_2 = Message type (ORDERS, ORDRSP, INVOIC)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.commerce_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.commerce_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
     edi_config = '{"ediFormat": "edifact"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.commerce_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.commerce_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: commerce_materialized — Key commerce fields extracted
 -- ============================================================================
@@ -84,7 +84,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.commerce_messages TO USER {{current_user}
 --   TAX_1  — Duty/tax/fee type qualifier (7=Value Added Tax)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.commerce_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.commerce_materialized
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -101,4 +101,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.commerce_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.commerce_materialized TO USER {{current_user}};

@@ -9,13 +9,13 @@
 
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm window analytics demo zone';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_window COMMENT 'Window functions with UniForm';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'Window functions with UniForm';
 
 -- --------------------------------------------------------------------------
 -- Sales Table
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_window.sales (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales (
     sale_id          INT,
     rep_name         VARCHAR,
     region           VARCHAR,
@@ -33,7 +33,7 @@ TBLPROPERTIES (
 -- Seed Data — 40 sales across 7 reps, 4 regions, 3 categories
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.iceberg_window.sales VALUES
+INSERT INTO {{zone_name}}.iceberg_demos.sales VALUES
     (1,  'Emma Clark',    'Northeast', 'Electronics', 4500.00,  8.5,  '2025-01-05'),
     (2,  'Liam Foster',   'Southeast', 'Furniture',   3200.00,  7.0,  '2025-01-07'),
     (3,  'Sophia Grant',  'West',      'Electronics', 5100.00,  9.0,  '2025-01-08'),
@@ -79,5 +79,5 @@ INSERT INTO {{zone_name}}.iceberg_window.sales VALUES
 -- Schema Detection & Permissions
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_window.sales;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_window.sales TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sales;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sales TO USER {{current_user}};

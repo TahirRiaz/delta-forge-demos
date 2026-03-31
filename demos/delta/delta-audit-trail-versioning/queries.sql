@@ -24,7 +24,7 @@ ASSERT VALUE event_count = 18 WHERE event_type = 'deposit'
 ASSERT VALUE event_count = 10 WHERE event_type = 'open'
 SELECT event_type,
        COUNT(*) AS event_count
-FROM {{zone_name}}.audit_demos.compliance_events
+FROM {{zone_name}}.delta_demos.compliance_events
 GROUP BY event_type
 ORDER BY event_count DESC;
 
@@ -40,7 +40,7 @@ ASSERT ROW_COUNT = 5
 ASSERT VALUE event_type = 'open' WHERE event_id = 1
 ASSERT VALUE balance = 305000.00 WHERE event_id = 38
 SELECT event_id, account_id, event_type, amount, balance, officer, event_date
-FROM {{zone_name}}.audit_demos.compliance_events
+FROM {{zone_name}}.delta_demos.compliance_events
 WHERE account_id = 'ACCT-1001'
 ORDER BY event_date;
 
@@ -61,7 +61,7 @@ ORDER BY event_date;
 
 -- Non-deterministic: commit timestamps are set at write time
 ASSERT WARNING ROW_COUNT >= 5
-DESCRIBE HISTORY {{zone_name}}.audit_demos.compliance_events;
+DESCRIBE HISTORY {{zone_name}}.delta_demos.compliance_events;
 
 
 -- ============================================================================
@@ -74,7 +74,7 @@ DESCRIBE HISTORY {{zone_name}}.audit_demos.compliance_events;
 
 ASSERT VALUE cnt = 20
 SELECT COUNT(*) AS cnt
-FROM {{zone_name}}.audit_demos.compliance_events VERSION AS OF 1;
+FROM {{zone_name}}.delta_demos.compliance_events VERSION AS OF 1;
 
 
 -- ============================================================================
@@ -86,9 +86,9 @@ FROM {{zone_name}}.audit_demos.compliance_events VERSION AS OF 1;
 
 ASSERT VALUE new_events = 22
 SELECT COUNT(*) AS new_events
-FROM {{zone_name}}.audit_demos.compliance_events current_state
+FROM {{zone_name}}.delta_demos.compliance_events current_state
 WHERE current_state.event_id NOT IN (
-    SELECT event_id FROM {{zone_name}}.audit_demos.compliance_events VERSION AS OF 1
+    SELECT event_id FROM {{zone_name}}.delta_demos.compliance_events VERSION AS OF 1
 );
 
 
@@ -105,7 +105,7 @@ SELECT branch,
        COUNT(*) AS total_events,
        COUNT(DISTINCT account_id) AS accounts,
        SUM(CASE WHEN amount IS NOT NULL THEN amount ELSE 0 END) AS total_amount
-FROM {{zone_name}}.audit_demos.compliance_events
+FROM {{zone_name}}.delta_demos.compliance_events
 GROUP BY branch
 ORDER BY total_events DESC;
 
@@ -122,7 +122,7 @@ ASSERT ROW_COUNT = 5
 SELECT officer,
        COUNT(*) AS actions,
        COUNT(DISTINCT account_id) AS accounts_handled
-FROM {{zone_name}}.audit_demos.compliance_events
+FROM {{zone_name}}.delta_demos.compliance_events
 GROUP BY officer
 ORDER BY actions DESC;
 
@@ -138,7 +138,7 @@ ASSERT VALUE latest_balance = 250000.00 WHERE account_id = 'ACCT-1001'
 ASSERT VALUE latest_balance = 1200000.00 WHERE account_id = 'ACCT-1008'
 SELECT account_id,
        MAX(balance) AS latest_balance
-FROM {{zone_name}}.audit_demos.compliance_events VERSION AS OF 1
+FROM {{zone_name}}.delta_demos.compliance_events VERSION AS OF 1
 GROUP BY account_id
 ORDER BY account_id;
 
@@ -149,24 +149,24 @@ ORDER BY account_id;
 
 -- Verify total rows: 42 events across all versions
 ASSERT VALUE cnt = 42
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.audit_demos.compliance_events;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.compliance_events;
 
 -- Verify distinct accounts: 10 commercial accounts
 ASSERT VALUE cnt = 10
-SELECT COUNT(DISTINCT account_id) AS cnt FROM {{zone_name}}.audit_demos.compliance_events;
+SELECT COUNT(DISTINCT account_id) AS cnt FROM {{zone_name}}.delta_demos.compliance_events;
 
 -- Verify event type count: 6 distinct event types
 ASSERT VALUE cnt = 6
-SELECT COUNT(DISTINCT event_type) AS cnt FROM {{zone_name}}.audit_demos.compliance_events;
+SELECT COUNT(DISTINCT event_type) AS cnt FROM {{zone_name}}.delta_demos.compliance_events;
 
 -- Verify events with monetary amounts: 30 events have non-null amount
 ASSERT VALUE cnt = 30
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.audit_demos.compliance_events WHERE amount IS NOT NULL;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.compliance_events WHERE amount IS NOT NULL;
 
 -- Verify Version 1 snapshot: 20 rows at the opening state
 ASSERT VALUE cnt = 20
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.audit_demos.compliance_events VERSION AS OF 1;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.compliance_events VERSION AS OF 1;
 
 -- Verify total monetary flow: sum of all amounts
 ASSERT VALUE total = 6935000.00
-SELECT SUM(amount) AS total FROM {{zone_name}}.audit_demos.compliance_events;
+SELECT SUM(amount) AS total FROM {{zone_name}}.delta_demos.compliance_events;

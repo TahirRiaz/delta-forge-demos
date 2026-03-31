@@ -37,7 +37,7 @@
 --           description)
 
 ASSERT ROW_COUNT = 5
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.insurance_claims;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 
 -- ============================================================================
@@ -49,7 +49,7 @@ SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.insurance_claims;
 -- Expected: 5 rows
 
 ASSERT ROW_COUNT = 5
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.insurance_claims;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 
 -- ============================================================================
@@ -83,7 +83,7 @@ SELECT
     description      AS desc_masked,
     amount,
     status
-FROM {{zone_name}}.pseudonymisation.insurance_claims;
+FROM {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 
 -- ============================================================================
@@ -102,7 +102,7 @@ SELECT
     claim_type,
     COUNT(*)    AS claim_count,
     SUM(amount) AS total_amount
-FROM {{zone_name}}.pseudonymisation.insurance_claims
+FROM {{zone_name}}.pseudonymisation_demos.insurance_claims
 GROUP BY claim_type;
 
 
@@ -112,11 +112,11 @@ GROUP BY claim_type;
 -- The description masking rule is no longer needed after a policy review.
 -- DROP removes it permanently; SHOW confirms the updated rule count.
 
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims (description);
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims (description);
 
 -- Verify rule count after drop (note: DROP takes effect after catalog sync)
 ASSERT ROW_COUNT <= 5
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.insurance_claims;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 
 -- ============================================================================
@@ -137,12 +137,12 @@ SELECT
     description,
     amount,
     status
-FROM {{zone_name}}.pseudonymisation.insurance_claims;
+FROM {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 ASSERT ROW_COUNT = 3
 SELECT
     claim_id,
     status,
     amount
-FROM {{zone_name}}.pseudonymisation.insurance_claims
+FROM {{zone_name}}.pseudonymisation_demos.insurance_claims
 WHERE status = 'approved';

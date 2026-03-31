@@ -5,11 +5,11 @@
 -- ============================================================================
 
 -- STEP 1: Drop external tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet.all_orders WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet.orders_2015 WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet.orders_sample WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet.orders_q1_2014 WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet_demos.all_orders WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet_demos.orders_2015 WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet_demos.orders_sample WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.parquet_demos.orders_q1_2014 WITH FILES;
 
 -- STEP 2: Shared resources (safe — will warn if other demos still use them)
-DROP SCHEMA IF EXISTS {{zone_name}}.parquet;
+DROP SCHEMA IF EXISTS {{zone_name}}.parquet_demos;
 DROP ZONE IF EXISTS {{zone_name}};

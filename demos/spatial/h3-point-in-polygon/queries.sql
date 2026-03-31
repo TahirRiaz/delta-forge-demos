@@ -71,7 +71,7 @@ SELECT
     z.zone_name,
     z.zone_type,
     COUNT(*) AS h3_cells_covering_zone
-FROM {{zone_name}}.spatial.zone_cells z
+FROM {{zone_name}}.spatial_demos.zone_cells z
 WHERE z.city = 'San Francisco'
 GROUP BY z.zone_name, z.zone_type
 ORDER BY h3_cells_covering_zone DESC;
@@ -89,7 +89,7 @@ ORDER BY h3_cells_covering_zone DESC;
 -- ============================================================================
 ASSERT VALUE total_drivers = 1000000
 SELECT COUNT(*) AS total_drivers
-FROM {{zone_name}}.spatial.driver_positions;
+FROM {{zone_name}}.spatial_demos.driver_positions;
 
 
 -- ============================================================================
@@ -109,7 +109,7 @@ SELECT
     city,
     country,
     surcharge_pct
-FROM {{zone_name}}.spatial.zones
+FROM {{zone_name}}.spatial_demos.zones
 ORDER BY zone_id;
 
 
@@ -132,7 +132,7 @@ ASSERT VALUE driver_count = 50000 WHERE city = 'Global'
 SELECT
     city,
     COUNT(*) AS driver_count
-FROM {{zone_name}}.spatial.driver_positions
+FROM {{zone_name}}.spatial_demos.driver_positions
 GROUP BY city
 ORDER BY driver_count DESC;
 
@@ -152,7 +152,7 @@ SELECT
     z.zone_type,
     z.city,
     COUNT(*) AS h3_cells
-FROM {{zone_name}}.spatial.zone_cells z
+FROM {{zone_name}}.spatial_demos.zone_cells z
 GROUP BY z.zone_name, z.zone_type, z.city
 ORDER BY h3_cells DESC;
 
@@ -194,8 +194,8 @@ SELECT
     z.city,
     z.surcharge_pct,
     COUNT(*) AS drivers_in_zone
-FROM {{zone_name}}.spatial.driver_cells d
-INNER JOIN {{zone_name}}.spatial.zone_cells z ON d.h3_cell = z.h3_cell
+FROM {{zone_name}}.spatial_demos.driver_cells d
+INNER JOIN {{zone_name}}.spatial_demos.zone_cells z ON d.h3_cell = z.h3_cell
 GROUP BY z.zone_name, z.zone_type, z.city, z.surcharge_pct
 ORDER BY drivers_in_zone DESC;
 
@@ -210,10 +210,10 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE drivers_outside_zones = 892764
 SELECT
     COUNT(*) AS drivers_outside_zones
-FROM {{zone_name}}.spatial.driver_cells d
+FROM {{zone_name}}.spatial_demos.driver_cells d
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {{zone_name}}.spatial.zone_cells z
+    FROM {{zone_name}}.spatial_demos.zone_cells z
     WHERE d.h3_cell = z.h3_cell
 );
 
@@ -235,7 +235,7 @@ SELECT
     'SFO Airport' AS test_point,
     z.zone_name AS matched_zone,
     z.surcharge_pct
-FROM {{zone_name}}.spatial.zone_cells z
+FROM {{zone_name}}.spatial_demos.zone_cells z
 WHERE z.h3_cell = h3_latlng_to_cell(37.6213, -122.3790, 9)
 
 UNION ALL
@@ -244,7 +244,7 @@ SELECT
     'Times Square' AS test_point,
     z.zone_name AS matched_zone,
     z.surcharge_pct
-FROM {{zone_name}}.spatial.zone_cells z
+FROM {{zone_name}}.spatial_demos.zone_cells z
 WHERE z.h3_cell = h3_latlng_to_cell(40.758, -73.9855, 9)
 
 UNION ALL
@@ -255,7 +255,7 @@ SELECT
     0.0 AS surcharge_pct
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {{zone_name}}.spatial.zone_cells z
+    FROM {{zone_name}}.spatial_demos.zone_cells z
     WHERE z.h3_cell = h3_latlng_to_cell(0.0, 0.0, 9)
 );
 
@@ -282,8 +282,8 @@ SELECT
     z.surcharge_pct,
     COUNT(*) AS drivers_affected,
     ROUND(COUNT(*) * CAST(z.surcharge_pct AS DOUBLE) / 100.0, 0) AS equivalent_surcharge_rides
-FROM {{zone_name}}.spatial.driver_cells d
-INNER JOIN {{zone_name}}.spatial.zone_cells z ON d.h3_cell = z.h3_cell
+FROM {{zone_name}}.spatial_demos.driver_cells d
+INNER JOIN {{zone_name}}.spatial_demos.zone_cells z ON d.h3_cell = z.h3_cell
 GROUP BY z.zone_type, z.surcharge_pct
 ORDER BY z.surcharge_pct DESC;
 
@@ -305,9 +305,9 @@ SELECT
     z.city,
     COUNT(*) AS active_drivers,
     COUNT(DISTINCT d.driver_id) AS unique_drivers,
-    ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM {{zone_name}}.spatial.driver_positions), 2) AS pct_of_all_drivers
-FROM {{zone_name}}.spatial.driver_cells d
-INNER JOIN {{zone_name}}.spatial.zone_cells z ON d.h3_cell = z.h3_cell
+    ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.driver_positions), 2) AS pct_of_all_drivers
+FROM {{zone_name}}.spatial_demos.driver_cells d
+INNER JOIN {{zone_name}}.spatial_demos.zone_cells z ON d.h3_cell = z.h3_cell
 GROUP BY z.zone_name, z.city
 ORDER BY active_drivers DESC;
 
@@ -331,13 +331,13 @@ SELECT
     ROUND(SUM(driver_count) * 1.0 / SUM(zc.cell_count), 1) AS drivers_per_cell
 FROM (
     SELECT zone_name, zone_type, COUNT(*) AS driver_count
-    FROM {{zone_name}}.spatial.driver_cells d
-    INNER JOIN {{zone_name}}.spatial.zone_cells z ON d.h3_cell = z.h3_cell
+    FROM {{zone_name}}.spatial_demos.driver_cells d
+    INNER JOIN {{zone_name}}.spatial_demos.zone_cells z ON d.h3_cell = z.h3_cell
     GROUP BY zone_name, zone_type
 ) z
 INNER JOIN (
     SELECT zone_name, COUNT(*) AS cell_count
-    FROM {{zone_name}}.spatial.zone_cells
+    FROM {{zone_name}}.spatial_demos.zone_cells
     GROUP BY zone_name
 ) zc ON z.zone_name = zc.zone_name
 GROUP BY z.zone_type
@@ -366,8 +366,8 @@ SELECT
     COUNT(z.zone_name) AS matched_drivers,
     COUNT(*) - COUNT(z.zone_name) AS unmatched_drivers,
     ROUND(100.0 * COUNT(z.zone_name) / COUNT(*), 1) AS match_rate_pct
-FROM {{zone_name}}.spatial.driver_cells d
-LEFT JOIN {{zone_name}}.spatial.zone_cells z ON d.h3_cell = z.h3_cell
+FROM {{zone_name}}.spatial_demos.driver_cells d
+LEFT JOIN {{zone_name}}.spatial_demos.zone_cells z ON d.h3_cell = z.h3_cell
 GROUP BY d.city
 ORDER BY match_rate_pct DESC;
 
@@ -399,14 +399,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total driver count = 1,000,000
     SELECT 'driver_count_1M' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial.driver_positions) = 1000000
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.driver_positions) = 1000000
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Zone count = 12
     SELECT 'zone_count_12' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial.zones) = 12
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.zones) = 12
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -414,7 +414,7 @@ SELECT check_name, result FROM (
     -- Check 3: SFO point falls inside SFO Airport zone
     SELECT 'sfo_point_in_sfo_zone' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.spatial.zone_cells
+               SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.zone_cells
                WHERE zone_name = 'SFO Airport'
                  AND h3_cell = h3_latlng_to_cell(37.6213, -122.3790, 9)
            ) > 0 THEN 'PASS' ELSE 'FAIL' END AS result
@@ -424,7 +424,7 @@ SELECT check_name, result FROM (
     -- Check 4: NYC point does NOT fall inside SFO Airport zone
     SELECT 'nyc_point_outside_sfo_zone' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.spatial.zone_cells
+               SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.zone_cells
                WHERE zone_name = 'SFO Airport'
                  AND h3_cell = h3_latlng_to_cell(40.7128, -74.0060, 9)
            ) = 0 THEN 'PASS' ELSE 'FAIL' END AS result
@@ -434,11 +434,11 @@ SELECT check_name, result FROM (
     -- Check 5: All drivers accounted for (matched + unmatched = 1M)
     SELECT 'all_drivers_accounted' AS check_name,
            CASE WHEN (
-               (SELECT COUNT(*) FROM {{zone_name}}.spatial.driver_cells d
-                WHERE EXISTS (SELECT 1 FROM {{zone_name}}.spatial.zone_cells z WHERE d.h3_cell = z.h3_cell))
+               (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.driver_cells d
+                WHERE EXISTS (SELECT 1 FROM {{zone_name}}.spatial_demos.zone_cells z WHERE d.h3_cell = z.h3_cell))
                +
-               (SELECT COUNT(*) FROM {{zone_name}}.spatial.driver_cells d
-                WHERE NOT EXISTS (SELECT 1 FROM {{zone_name}}.spatial.zone_cells z WHERE d.h3_cell = z.h3_cell))
+               (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.driver_cells d
+                WHERE NOT EXISTS (SELECT 1 FROM {{zone_name}}.spatial_demos.zone_cells z WHERE d.h3_cell = z.h3_cell))
            ) = 1000000 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -448,7 +448,7 @@ SELECT check_name, result FROM (
            CASE WHEN (
                SELECT MIN(cell_count) FROM (
                    SELECT zone_name, COUNT(*) AS cell_count
-                   FROM {{zone_name}}.spatial.zone_cells
+                   FROM {{zone_name}}.spatial_demos.zone_cells
                    GROUP BY zone_name
                )
            ) > 0 THEN 'PASS' ELSE 'FAIL' END AS result
@@ -467,7 +467,7 @@ SELECT check_name, result FROM (
     -- Check 8: Drivers per city matches expected distribution
     SELECT 'sf_driver_count' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.spatial.driver_positions
+               SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.driver_positions
                WHERE city = 'San Francisco'
            ) = 150000 THEN 'PASS' ELSE 'FAIL' END AS result
 

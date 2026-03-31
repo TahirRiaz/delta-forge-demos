@@ -16,7 +16,7 @@
 -- delete file. The reader must return exactly 570.
 
 ASSERT ROW_COUNT = 570
-SELECT * FROM {{zone_name}}.iceberg.cold_chain_readings;
+SELECT * FROM {{zone_name}}.iceberg_demos.cold_chain_readings;
 
 
 -- ============================================================================
@@ -26,7 +26,7 @@ SELECT * FROM {{zone_name}}.iceberg.cold_chain_readings;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.cold_chain_readings
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings
 WHERE sensor_id = 'SENSOR-F01';
 
 
@@ -44,7 +44,7 @@ ASSERT VALUE reading_count = 150 WHERE route = 'ROUTE-D'
 SELECT
     route,
     COUNT(*) AS reading_count
-FROM {{zone_name}}.iceberg.cold_chain_readings
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings
 GROUP BY route
 ORDER BY route;
 
@@ -58,7 +58,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE distinct_sensors = 20
 SELECT
     COUNT(DISTINCT sensor_id) AS distinct_sensors
-FROM {{zone_name}}.iceberg.cold_chain_readings;
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings;
 
 
 -- ============================================================================
@@ -74,7 +74,7 @@ ASSERT VALUE reading_count = 120 WHERE vaccine_type = 'mRNA-COVID'
 SELECT
     vaccine_type,
     COUNT(*) AS reading_count
-FROM {{zone_name}}.iceberg.cold_chain_readings
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings
 GROUP BY vaccine_type
 ORDER BY vaccine_type;
 
@@ -93,7 +93,7 @@ ASSERT VALUE excursion_count = 63 WHERE route = 'ROUTE-D'
 SELECT
     route,
     SUM(CASE WHEN temp_excursion THEN 1 ELSE 0 END) AS excursion_count
-FROM {{zone_name}}.iceberg.cold_chain_readings
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings
 GROUP BY route
 ORDER BY route;
 
@@ -111,7 +111,7 @@ ASSERT VALUE avg_temp = -0.29 WHERE route = 'ROUTE-D'
 SELECT
     route,
     ROUND(AVG(temperature_c), 2) AS avg_temp
-FROM {{zone_name}}.iceberg.cold_chain_readings
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings
 GROUP BY route
 ORDER BY route;
 
@@ -128,7 +128,7 @@ SELECT
     sensor_id,
     route,
     battery_pct
-FROM {{zone_name}}.iceberg.cold_chain_readings
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings
 WHERE battery_pct <= 25
 ORDER BY battery_pct ASC;
 
@@ -147,7 +147,7 @@ SELECT
     ROUND(MIN(temperature_c), 2) AS min_temp,
     ROUND(MAX(temperature_c), 2) AS max_temp,
     ROUND(AVG(temperature_c), 2) AS avg_temp
-FROM {{zone_name}}.iceberg.cold_chain_readings;
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings;
 
 
 -- ============================================================================
@@ -172,4 +172,4 @@ SELECT
     SUM(CASE WHEN temp_excursion THEN 1 ELSE 0 END) AS total_excursions,
     SUM(CASE WHEN battery_pct <= 25 THEN 1 ELSE 0 END) AS low_battery_count,
     COUNT(DISTINCT vaccine_type) AS vaccine_count
-FROM {{zone_name}}.iceberg.cold_chain_readings;
+FROM {{zone_name}}.iceberg_demos.cold_chain_readings;

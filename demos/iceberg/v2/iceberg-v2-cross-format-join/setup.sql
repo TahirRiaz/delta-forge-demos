@@ -13,22 +13,22 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.retail_demo
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Retail analytics cross-format demo';
 
 -- STEP 2: CSV external table — store locations
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.retail_demo.stores
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.stores
 USING CSV
 LOCATION '{{data_path}}/stores.csv'
 OPTIONS (
     header = 'true'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.retail_demo.stores TO USER {{current_user}};
-DETECT SCHEMA FOR TABLE {{zone_name}}.retail_demo.stores;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.stores TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.stores;
 
 -- STEP 3: Delta table with UniForm V2 — sales transactions
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.retail_demo.sales (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales (
     txn_id        INT,
     store_id      VARCHAR,
     product_id    VARCHAR,
@@ -44,10 +44,10 @@ TBLPROPERTIES (
     'delta.columnMapping.mode' = 'id'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.retail_demo.sales TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sales TO USER {{current_user}};
 
 -- STEP 4: Seed 40 sales transactions (4 per store)
-INSERT INTO {{zone_name}}.retail_demo.sales VALUES
+INSERT INTO {{zone_name}}.iceberg_demos.sales VALUES
     (1,  'S001', 'P100', 'Shoes',       'Running Pro X',   3,  129.99, '2024-01-15'),
     (2,  'S001', 'P101', 'Apparel',     'Winter Jacket',   2,  199.99, '2024-01-15'),
     (3,  'S001', 'P102', 'Accessories', 'Sport Watch',     1,  349.99, '2024-01-16'),

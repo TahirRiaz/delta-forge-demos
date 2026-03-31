@@ -13,7 +13,7 @@
 -- 120 transactions across 4 stores, 3 regions, 5 categories.
 
 ASSERT ROW_COUNT = 120
-SELECT * FROM {{zone_name}}.iceberg.retail_sales
+SELECT * FROM {{zone_name}}.iceberg_demos.retail_sales
 ORDER BY sale_id;
 
 
@@ -34,7 +34,7 @@ SELECT
     ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS net_revenue,
     SUM(quantity) AS total_units,
     SUM(is_return) AS return_count
-FROM {{zone_name}}.iceberg.retail_sales;
+FROM {{zone_name}}.iceberg_demos.retail_sales;
 
 
 -- ============================================================================
@@ -53,7 +53,7 @@ SELECT
     COUNT(*) AS cnt,
     ROUND(SUM(quantity * unit_price), 2) AS gross,
     ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS net
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY region
 ORDER BY region;
 
@@ -72,7 +72,7 @@ SELECT
     COUNT(*) AS cnt,
     ROUND(SUM(quantity * unit_price), 2) AS gross,
     SUM(quantity) AS units
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY category
 ORDER BY category;
 
@@ -94,7 +94,7 @@ SELECT
     category,
     COUNT(*) AS cnt,
     ROUND(SUM(quantity * unit_price), 2) AS gross
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY GROUPING SETS ((region, category), (region), (category), ())
 ORDER BY region NULLS LAST, category NULLS LAST;
 
@@ -115,7 +115,7 @@ SELECT
     store_name,
     COUNT(*) AS cnt,
     ROUND(SUM(quantity * unit_price), 2) AS gross
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY ROLLUP (region, store_name)
 ORDER BY region NULLS LAST, store_name NULLS LAST;
 
@@ -136,7 +136,7 @@ SELECT
     COUNT(*) FILTER (WHERE is_return = 1) AS returns,
     COUNT(*) FILTER (WHERE discount_pct > 0) AS discounted_sales,
     ROUND(SUM(quantity * unit_price) FILTER (WHERE is_return = 0), 2) AS non_return_gross
-FROM {{zone_name}}.iceberg.retail_sales;
+FROM {{zone_name}}.iceberg_demos.retail_sales;
 
 
 -- ============================================================================
@@ -154,7 +154,7 @@ SELECT
     COUNT(DISTINCT category) AS distinct_categories,
     COUNT(DISTINCT product_name) AS distinct_products,
     COUNT(DISTINCT salesperson) AS distinct_salespeople
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY region
 ORDER BY region;
 
@@ -172,7 +172,7 @@ SELECT
     category,
     COUNT(*) AS cnt,
     ROUND(SUM(quantity * unit_price), 2) AS gross
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY category
 HAVING SUM(quantity * unit_price) > 3000
 ORDER BY gross DESC;
@@ -191,7 +191,7 @@ SELECT
     store_name,
     COUNT(*) AS cnt,
     ROUND(SUM(quantity * unit_price), 2) AS gross
-FROM {{zone_name}}.iceberg.retail_sales
+FROM {{zone_name}}.iceberg_demos.retail_sales
 GROUP BY store_name
 ORDER BY store_name;
 
@@ -219,4 +219,4 @@ SELECT
     COUNT(DISTINCT region) AS region_count,
     COUNT(DISTINCT category) AS category_count,
     SUM(is_return) AS return_count
-FROM {{zone_name}}.iceberg.retail_sales;
+FROM {{zone_name}}.iceberg_demos.retail_sales;

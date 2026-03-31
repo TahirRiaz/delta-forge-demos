@@ -9,13 +9,13 @@
 
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm CDF demo zone';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_cdf COMMENT 'Change Data Feed with UniForm';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'Change Data Feed with UniForm';
 
 -- --------------------------------------------------------------------------
 -- Orders Table — CDF + UniForm enabled
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_cdf.orders (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.orders (
     order_id        INT,
     customer_name   VARCHAR,
     product         VARCHAR,
@@ -34,7 +34,7 @@ TBLPROPERTIES (
 -- Seed Data — 30 e-commerce orders across 5 customers, 5 products, 5 statuses
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.iceberg_cdf.orders VALUES
+INSERT INTO {{zone_name}}.iceberg_demos.orders VALUES
     (1,  'Alice Johnson',  'Laptop Pro',     1, 1299.99, 'pending',    '2025-03-01'),
     (2,  'Bob Chen',       'Wireless Mouse', 2, 29.99,   'pending',    '2025-03-01'),
     (3,  'Carol Davis',    'USB-C Hub',      1, 49.99,   'pending',    '2025-03-02'),
@@ -70,5 +70,5 @@ INSERT INTO {{zone_name}}.iceberg_cdf.orders VALUES
 -- Schema Detection & Permissions
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_cdf.orders;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_cdf.orders TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.orders;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.orders TO USER {{current_user}};

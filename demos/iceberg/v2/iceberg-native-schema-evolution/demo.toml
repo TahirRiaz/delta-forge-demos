@@ -90,4 +90,4 @@ size_bytes = 3681
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.employee_directory"
+name = "{{zone_name}}.iceberg_demos.employee_directory"

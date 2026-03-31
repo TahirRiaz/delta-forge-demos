@@ -31,7 +31,7 @@
 -- Expected: 3 rules (ssn → redact, participant_name → keyed_hash, email → mask)
 
 ASSERT ROW_COUNT = 3
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.trial_participants;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.trial_participants;
 
 
 -- ============================================================================
@@ -60,7 +60,7 @@ SELECT
     treatment_arm,
     efficacy_score,
     outcome
-FROM {{zone_name}}.pseudonymisation.trial_participants
+FROM {{zone_name}}.pseudonymisation_demos.trial_participants
 ORDER BY subject_id;
 
 
@@ -88,7 +88,7 @@ SELECT
     treatment_arm,
     COUNT(*) AS participant_count,
     ROUND(AVG(efficacy_score), 2) AS avg_efficacy
-FROM {{zone_name}}.pseudonymisation.trial_participants
+FROM {{zone_name}}.pseudonymisation_demos.trial_participants
 GROUP BY treatment_arm
 ORDER BY avg_efficacy DESC;
 
@@ -111,7 +111,7 @@ ASSERT VALUE status_count = 1 WHERE status = 'Withdrawn'
 SELECT
     status,
     COUNT(*) AS status_count
-FROM {{zone_name}}.pseudonymisation.trial_participants
+FROM {{zone_name}}.pseudonymisation_demos.trial_participants
 GROUP BY status
 ORDER BY status_count DESC;
 
@@ -133,5 +133,5 @@ SELECT
     status,
     treatment_arm,
     efficacy_score
-FROM {{zone_name}}.pseudonymisation.trial_participants
+FROM {{zone_name}}.pseudonymisation_demos.trial_participants
 ORDER BY subject_id;

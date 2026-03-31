@@ -10,14 +10,14 @@
 -- ============================================================================
 
 ASSERT ROW_COUNT = 25
-SELECT * FROM {{zone_name}}.iceberg_constraints.transactions ORDER BY txn_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.transactions ORDER BY txn_id;
 
 -- ============================================================================
 -- Query 2: Constraint Metadata — SHOW TBLPROPERTIES
 -- ============================================================================
 -- Verify that the CHECK constraints are registered in the table properties.
 
-SHOW TBLPROPERTIES {{zone_name}}.iceberg_constraints.transactions;
+SHOW TBLPROPERTIES {{zone_name}}.iceberg_demos.transactions;
 
 -- ============================================================================
 -- Query 3: Per-Account Summary
@@ -34,7 +34,7 @@ SELECT
     account_id,
     COUNT(*) AS txn_count,
     SUM(amount) AS total_amount
-FROM {{zone_name}}.iceberg_constraints.transactions
+FROM {{zone_name}}.iceberg_demos.transactions
 GROUP BY account_id
 ORDER BY account_id;
 
@@ -53,7 +53,7 @@ SELECT
     currency,
     COUNT(*) AS txn_count,
     SUM(amount) AS total_amount
-FROM {{zone_name}}.iceberg_constraints.transactions
+FROM {{zone_name}}.iceberg_demos.transactions
 GROUP BY currency
 ORDER BY currency;
 
@@ -72,7 +72,7 @@ SELECT
     txn_type,
     COUNT(*) AS txn_count,
     SUM(amount) AS total_amount
-FROM {{zone_name}}.iceberg_constraints.transactions
+FROM {{zone_name}}.iceberg_demos.transactions
 GROUP BY txn_type
 ORDER BY txn_type;
 
@@ -83,7 +83,7 @@ ORDER BY txn_type;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg_constraints.transactions
+FROM {{zone_name}}.iceberg_demos.transactions
 WHERE amount <= 0;
 
 -- ============================================================================
@@ -92,7 +92,7 @@ WHERE amount <= 0;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg_constraints.transactions
+FROM {{zone_name}}.iceberg_demos.transactions
 WHERE currency NOT IN ('USD', 'EUR', 'GBP');
 
 -- ============================================================================
@@ -107,10 +107,10 @@ ASSERT VALUE balance_after = 5000.00 WHERE account_id = 'ACC-1003'
 ASSERT VALUE balance_after = 10000.00 WHERE account_id = 'ACC-1004'
 ASSERT VALUE balance_after = 2900.00 WHERE account_id = 'ACC-1005'
 SELECT t.account_id, t.balance_after, t.txn_date
-FROM {{zone_name}}.iceberg_constraints.transactions t
+FROM {{zone_name}}.iceberg_demos.transactions t
 WHERE t.txn_date = (
     SELECT MAX(t2.txn_date)
-    FROM {{zone_name}}.iceberg_constraints.transactions t2
+    FROM {{zone_name}}.iceberg_demos.transactions t2
     WHERE t2.account_id = t.account_id
 )
 ORDER BY t.account_id;
@@ -119,18 +119,18 @@ ORDER BY t.account_id;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_constraints.transactions_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.transactions_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/transactions';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_constraints.transactions_iceberg TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.transactions_iceberg TO USER {{current_user}};
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count
 -- ============================================================================
 
 ASSERT ROW_COUNT = 25
-SELECT * FROM {{zone_name}}.iceberg_constraints.transactions_iceberg ORDER BY txn_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.transactions_iceberg ORDER BY txn_id;
 
 -- ============================================================================
 -- Iceberg Verify 2: Per-Currency Totals — Must Match Delta
@@ -144,7 +144,7 @@ SELECT
     currency,
     COUNT(*) AS txn_count,
     SUM(amount) AS total_amount
-FROM {{zone_name}}.iceberg_constraints.transactions_iceberg
+FROM {{zone_name}}.iceberg_demos.transactions_iceberg
 GROUP BY currency
 ORDER BY currency;
 
@@ -156,7 +156,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE account_id = 'ACC-1004' WHERE txn_id = 8
 ASSERT VALUE amount = 12000.00 WHERE txn_id = 8
 SELECT *
-FROM {{zone_name}}.iceberg_constraints.transactions_iceberg
+FROM {{zone_name}}.iceberg_demos.transactions_iceberg
 WHERE txn_id = 8;
 
 -- ============================================================================
@@ -179,4 +179,4 @@ SELECT
     COUNT(DISTINCT currency) AS currency_count,
     MAX(amount) AS max_amount,
     MIN(amount) AS min_amount
-FROM {{zone_name}}.iceberg_constraints.transactions;
+FROM {{zone_name}}.iceberg_demos.transactions;

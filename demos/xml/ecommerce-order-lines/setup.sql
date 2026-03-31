@@ -19,7 +19,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml_demos
     COMMENT 'XML-backed external tables';
 
 -- ============================================================================
@@ -30,7 +30,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
 -- The internal_audit block is excluded. Deep variant paths are mapped to
 -- friendly names (item_size, item_color).
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.order_lines
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.order_lines
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -79,7 +79,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.order_lines TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.order_lines TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: order_summary — One row per order (5 total)
 -- ============================================================================
@@ -87,7 +87,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.xml.order_lines TO USER {{current_user}};
 -- counted (not flattened). Customer fields are flattened normally.
 -- Internal audit is excluded.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.order_summary
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.order_summary
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -126,4 +126,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.order_summary TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.order_summary TO USER {{current_user}};

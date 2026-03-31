@@ -21,7 +21,7 @@ ASSERT ROW_COUNT = 138
 ASSERT VALUE company_name = 'Bank of America' WHERE ticker = 'BAC'
 ASSERT VALUE sector = 'Technology' WHERE ticker = 'AAPL'
 ASSERT VALUE company_name = 'BioTech Innovations' WHERE ticker = 'BIOT'
-SELECT * FROM {{zone_name}}.iceberg.stock_prices;
+SELECT * FROM {{zone_name}}.iceberg_demos.stock_prices;
 
 
 -- ============================================================================
@@ -38,7 +38,7 @@ ASSERT VALUE cnt = 18 WHERE sector = 'Energy'
 SELECT
     sector,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 GROUP BY sector
 ORDER BY sector;
 
@@ -63,7 +63,7 @@ SELECT
     ROUND(AVG(price), 2) AS avg_price,
     SUM(volume) AS total_volume,
     COUNT(*) AS row_count
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 GROUP BY ticker
 ORDER BY ticker;
 
@@ -81,7 +81,7 @@ ASSERT VALUE price = 191.77 WHERE trade_date = '2025-01-09'
 ASSERT VALUE price = 194.66 WHERE trade_date = '2025-01-10'
 ASSERT VALUE price = 195.91 WHERE trade_date = '2025-01-13'
 SELECT ticker, trade_date, price, volume, market_cap
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker = 'JPM'
 ORDER BY trade_date;
 
@@ -99,7 +99,7 @@ ASSERT VALUE price = 432.60 WHERE trade_date = '2025-01-09'
 ASSERT VALUE price = 439.43 WHERE trade_date = '2025-01-10'
 ASSERT VALUE price = 449.61 WHERE trade_date = '2025-01-13'
 SELECT ticker, trade_date, price, volume, market_cap
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker = 'MSFT'
 ORDER BY trade_date;
 
@@ -111,7 +111,7 @@ ORDER BY trade_date;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker IN ('COP', 'SLB');
 
 
@@ -124,7 +124,7 @@ ASSERT ROW_COUNT = 6
 ASSERT VALUE price = 151.81 WHERE trade_date = '2025-01-06'
 ASSERT VALUE price = 156.65 WHERE trade_date = '2025-01-10'
 SELECT ticker, trade_date, price, volume
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker = 'CVX'
 ORDER BY trade_date;
 
@@ -137,7 +137,7 @@ ASSERT ROW_COUNT = 6
 ASSERT VALUE price = 108.08 WHERE trade_date = '2025-01-06'
 ASSERT VALUE price = 103.08 WHERE trade_date = '2025-01-10'
 SELECT ticker, trade_date, price, volume
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker = 'XOM'
 ORDER BY trade_date;
 
@@ -156,7 +156,7 @@ ASSERT VALUE price = 44.82 WHERE trade_date = '2025-01-09'
 ASSERT VALUE price = 45.07 WHERE trade_date = '2025-01-10'
 ASSERT VALUE price = 45.40 WHERE trade_date = '2025-01-13'
 SELECT ticker, company_name, trade_date, price, volume, market_cap
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker = 'NWAI'
 ORDER BY trade_date;
 
@@ -173,7 +173,7 @@ ASSERT VALUE sector = 'Energy' WHERE ticker = 'GRNH'
 ASSERT VALUE sector = 'Technology' WHERE ticker = 'NWAI'
 ASSERT VALUE sector = 'Technology' WHERE ticker = 'QCMP'
 SELECT ticker, company_name, sector, trade_date, price
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 WHERE ticker IN ('BIOT', 'FINX', 'GRNH', 'NWAI', 'QCMP')
 ORDER BY ticker, trade_date;
 
@@ -196,7 +196,7 @@ SELECT
     COUNT(*) AS cnt,
     ROUND(AVG(price), 2) AS avg_price,
     SUM(volume) AS total_volume
-FROM {{zone_name}}.iceberg.stock_prices
+FROM {{zone_name}}.iceberg_demos.stock_prices
 GROUP BY trade_date
 ORDER BY trade_date;
 
@@ -207,7 +207,7 @@ ORDER BY trade_date;
 -- Show snapshot history for the Iceberg table.
 -- Expected: 4 snapshots (append, overwrite, append, delete).
 
-DESCRIBE HISTORY {{zone_name}}.iceberg.stock_prices;
+DESCRIBE HISTORY {{zone_name}}.iceberg_demos.stock_prices;
 
 
 -- ============================================================================
@@ -231,4 +231,4 @@ SELECT
     SUM(CASE WHEN ticker IN ('COP', 'SLB') THEN 1 ELSE 0 END) AS delisted_tickers,
     ROUND(AVG(price), 2) AS grand_avg_price,
     SUM(volume) AS grand_total_volume
-FROM {{zone_name}}.iceberg.stock_prices;
+FROM {{zone_name}}.iceberg_demos.stock_prices;

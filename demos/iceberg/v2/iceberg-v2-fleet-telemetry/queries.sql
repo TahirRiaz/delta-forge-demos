@@ -15,7 +15,7 @@
 -- Iceberg v2 manifest chain (metadata.json → manifest list → manifest → file).
 
 ASSERT ROW_COUNT = 450
-SELECT * FROM {{zone_name}}.iceberg.fleet_telemetry;
+SELECT * FROM {{zone_name}}.iceberg_demos.fleet_telemetry;
 
 
 -- ============================================================================
@@ -40,7 +40,7 @@ SELECT
     idle_minutes,
     harsh_braking,
     route_id
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 ORDER BY vehicle_id;
 
 
@@ -56,7 +56,7 @@ ASSERT VALUE ping_count = 150 WHERE fleet = 'West-Coast'
 SELECT
     fleet,
     COUNT(*) AS ping_count
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 GROUP BY fleet
 ORDER BY fleet;
 
@@ -73,7 +73,7 @@ ASSERT VALUE vehicle_count = 162 WHERE vehicle_type = 'Semi-Truck'
 SELECT
     vehicle_type,
     COUNT(*) AS vehicle_count
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 GROUP BY vehicle_type
 ORDER BY vehicle_type;
 
@@ -90,7 +90,7 @@ ASSERT VALUE avg_speed = 37.13 WHERE fleet = 'West-Coast'
 SELECT
     fleet,
     ROUND(AVG(speed_mph), 2) AS avg_speed
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 GROUP BY fleet
 ORDER BY fleet;
 
@@ -107,7 +107,7 @@ ASSERT VALUE total_idle = 3751 WHERE fleet = 'West-Coast'
 SELECT
     fleet,
     SUM(idle_minutes) AS total_idle
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 GROUP BY fleet
 ORDER BY fleet;
 
@@ -125,7 +125,7 @@ ASSERT VALUE harsh_events = 31 WHERE fleet = 'West-Coast'
 SELECT
     fleet,
     SUM(CASE WHEN harsh_braking THEN 1 ELSE 0 END) AS harsh_events
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 GROUP BY fleet
 ORDER BY fleet;
 
@@ -143,7 +143,7 @@ SELECT
     vehicle_type,
     speed_mph,
     route_id
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 WHERE speed_mph > 65
 ORDER BY speed_mph DESC;
 
@@ -159,7 +159,7 @@ SELECT
     fleet,
     fuel_level_pct,
     route_id
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 WHERE fuel_level_pct < 20
 ORDER BY fuel_level_pct ASC;
 
@@ -176,7 +176,7 @@ SELECT
     vehicle_type,
     engine_temp_f,
     speed_mph
-FROM {{zone_name}}.iceberg.fleet_telemetry
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry
 WHERE engine_temp_f > 220
 ORDER BY engine_temp_f DESC;
 
@@ -194,7 +194,7 @@ SELECT
     COUNT(DISTINCT vehicle_id) AS distinct_vehicles,
     COUNT(DISTINCT driver_id) AS distinct_drivers,
     COUNT(DISTINCT route_id) AS distinct_routes
-FROM {{zone_name}}.iceberg.fleet_telemetry;
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry;
 
 
 -- ============================================================================
@@ -219,4 +219,4 @@ SELECT
     SUM(CASE WHEN fuel_level_pct < 20 THEN 1 ELSE 0 END) AS low_fuel_count,
     COUNT(DISTINCT vehicle_id) AS distinct_vehicles,
     COUNT(DISTINCT route_id) AS distinct_routes
-FROM {{zone_name}}.iceberg.fleet_telemetry;
+FROM {{zone_name}}.iceberg_demos.fleet_telemetry;

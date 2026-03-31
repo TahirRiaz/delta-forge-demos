@@ -29,7 +29,7 @@ SELECT
     ROUND(MAX(fare_amount), 2) AS max_fare,
     ROUND(MIN(distance_miles), 2) AS min_distance,
     ROUND(MAX(distance_miles), 2) AS max_distance
-FROM {{zone_name}}.iceberg.trips;
+FROM {{zone_name}}.iceberg_demos.trips;
 
 
 -- ============================================================================
@@ -48,7 +48,7 @@ ASSERT VALUE trip_count = 50 WHERE pickup_month = 6
 SELECT
     MONTH(pickup_date) AS pickup_month,
     COUNT(*) AS trip_count
-FROM {{zone_name}}.iceberg.trips
+FROM {{zone_name}}.iceberg_demos.trips
 GROUP BY MONTH(pickup_date)
 ORDER BY pickup_month;
 
@@ -79,7 +79,7 @@ SELECT
     tip_amount,
     payment_type,
     city
-FROM {{zone_name}}.iceberg.trips
+FROM {{zone_name}}.iceberg_demos.trips
 WHERE pickup_date BETWEEN DATE '2025-03-01' AND DATE '2025-03-31'
 ORDER BY pickup_date, pickup_time;
 
@@ -98,7 +98,7 @@ ASSERT VALUE trip_count = 60 WHERE city = 'Seattle'
 SELECT
     city,
     COUNT(*) AS trip_count
-FROM {{zone_name}}.iceberg.trips
+FROM {{zone_name}}.iceberg_demos.trips
 GROUP BY city
 ORDER BY city;
 
@@ -123,7 +123,7 @@ SELECT
     COUNT(*) AS trip_count,
     ROUND(AVG(fare_amount), 2) AS avg_fare,
     SUM(CASE WHEN tip_amount IS NULL THEN 1 ELSE 0 END) AS null_tip_count
-FROM {{zone_name}}.iceberg.trips
+FROM {{zone_name}}.iceberg_demos.trips
 GROUP BY payment_type
 ORDER BY payment_type;
 
@@ -144,7 +144,7 @@ SELECT
     ROUND(AVG(distance_miles), 2) AS avg_distance,
     ROUND(AVG(fare_amount), 2) AS avg_fare,
     COUNT(*) AS trip_count
-FROM {{zone_name}}.iceberg.trips
+FROM {{zone_name}}.iceberg_demos.trips
 GROUP BY city
 ORDER BY avg_distance DESC;
 
@@ -162,7 +162,7 @@ ASSERT VALUE trip_count = 10 WHERE driver_id = 'DRV-1030'
 SELECT
     driver_id,
     COUNT(*) AS trip_count
-FROM {{zone_name}}.iceberg.trips
+FROM {{zone_name}}.iceberg_demos.trips
 GROUP BY driver_id
 ORDER BY trip_count DESC, driver_id;
 
@@ -195,4 +195,4 @@ SELECT
     SUM(CASE WHEN tip_amount IS NULL THEN 1 ELSE 0 END) AS null_tip_count,
     SUM(CASE WHEN pickup_date >= DATE '2025-03-01'
               AND pickup_date <= DATE '2025-03-31' THEN 1 ELSE 0 END) AS march_rows
-FROM {{zone_name}}.iceberg.trips;
+FROM {{zone_name}}.iceberg_demos.trips;

@@ -27,7 +27,7 @@ ASSERT VALUE referrer = 'direct' WHERE session_id = 'sess-06-001-5680bf9b'
 ASSERT VALUE is_bounce = true WHERE session_id = 'sess-09-002-95d99666'
 ASSERT VALUE event_count = 1 WHERE session_id = 'sess-09-002-95d99666'
 ASSERT VALUE device_type = 'tablet' WHERE session_id = 'sess-09-002-95d99666'
-SELECT * FROM {{zone_name}}.iceberg.web_analytics;
+SELECT * FROM {{zone_name}}.iceberg_demos.web_analytics;
 
 
 -- ============================================================================
@@ -49,7 +49,7 @@ ASSERT VALUE cnt = 47 WHERE country = 'US'
 SELECT
     country,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.web_analytics
+FROM {{zone_name}}.iceberg_demos.web_analytics
 GROUP BY country
 ORDER BY country;
 
@@ -66,7 +66,7 @@ ASSERT VALUE cnt = 202 WHERE device_type = 'tablet'
 SELECT
     device_type,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.web_analytics
+FROM {{zone_name}}.iceberg_demos.web_analytics
 GROUP BY device_type
 ORDER BY device_type;
 
@@ -82,7 +82,7 @@ ASSERT VALUE bounce_pct = 27.50
 SELECT
     SUM(CASE WHEN is_bounce THEN 1 ELSE 0 END) AS bounce_count,
     ROUND(AVG(CASE WHEN is_bounce THEN 1.0 ELSE 0.0 END) * 100, 2) AS bounce_pct
-FROM {{zone_name}}.iceberg.web_analytics;
+FROM {{zone_name}}.iceberg_demos.web_analytics;
 
 
 -- ============================================================================
@@ -97,7 +97,7 @@ ASSERT VALUE avg_time = 288.04 WHERE device_type = 'tablet'
 SELECT
     device_type,
     ROUND(AVG(time_on_page), 2) AS avg_time
-FROM {{zone_name}}.iceberg.web_analytics
+FROM {{zone_name}}.iceberg_demos.web_analytics
 GROUP BY device_type
 ORDER BY device_type;
 
@@ -110,7 +110,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE avg_events = 10.04
 SELECT
     ROUND(AVG(event_count), 2) AS avg_events
-FROM {{zone_name}}.iceberg.web_analytics;
+FROM {{zone_name}}.iceberg_demos.web_analytics;
 
 
 -- ============================================================================
@@ -132,7 +132,7 @@ ASSERT VALUE cnt = 43 WHERE referrer = 'email-campaign'
 SELECT
     referrer,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.web_analytics
+FROM {{zone_name}}.iceberg_demos.web_analytics
 GROUP BY referrer
 ORDER BY cnt DESC, referrer;
 
@@ -173,4 +173,4 @@ SELECT
     ROUND(AVG(time_on_page), 2) AS avg_time_on_page,
     MIN(time_on_page) AS min_time_on_page,
     MAX(time_on_page) AS max_time_on_page
-FROM {{zone_name}}.iceberg.web_analytics;
+FROM {{zone_name}}.iceberg_demos.web_analytics;

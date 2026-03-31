@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel_demos
     COMMENT 'Excel-backed external tables';
 
 -- ============================================================================
@@ -27,7 +27,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel
 -- Reads the "Sales" sheet from both regional workbooks. Enables file metadata
 -- so queries can identify which region each row came from.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel.all_sales
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_demos.all_sales
 USING EXCEL
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -36,7 +36,7 @@ OPTIONS (
     infer_schema_rows = '100',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.excel.all_sales TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel_demos.all_sales TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 2: all_returns — Returns sheet from both regions (7 rows)
@@ -44,7 +44,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.excel.all_sales TO USER {{current_user}};
 -- Reads the "Returns" sheet from both regional workbooks. Each return
 -- references an order_id from the Sales sheet, enabling cross-sheet JOINs.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel.all_returns
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_demos.all_returns
 USING EXCEL
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -53,7 +53,7 @@ OPTIONS (
     infer_schema_rows = '100',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.excel.all_returns TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel_demos.all_returns TO USER {{current_user}};
 
 -- ============================================================================
 -- TABLE 3: all_staff — Staff sheet from both regions (7 rows)
@@ -61,7 +61,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.excel.all_returns TO USER {{current_user}};
 -- Reads the "Staff" sheet from both regional workbooks. Contains employee
 -- roster with role and hire date for headcount analysis.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel.all_staff
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_demos.all_staff
 USING EXCEL
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -70,4 +70,4 @@ OPTIONS (
     infer_schema_rows = '100',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.excel.all_staff TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel_demos.all_staff TO USER {{current_user}};

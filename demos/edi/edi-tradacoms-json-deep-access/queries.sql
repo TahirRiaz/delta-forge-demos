@@ -52,7 +52,7 @@ SELECT
     mhd_2 AS msg_type,
     mhd_1 AS msg_ref,
     json_array_length(df_transaction_json) AS segment_count
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 ORDER BY df_file_name, mhd_1;
 
 
@@ -78,7 +78,7 @@ SELECT
     mhd_2 AS msg_type,
     mhd_1 AS msg_ref,
     json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 ORDER BY df_file_name, mhd_1;
 
 
@@ -103,7 +103,7 @@ ASSERT VALUE product_code = ':C13T08954010'
 SELECT
     json_extract_path_text(df_transaction_json, '1', 'segment') AS segment_tag,
     json_extract_path_text(df_transaction_json, '1', 'elements', '1', 'value') AS product_code
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 WHERE mhd_2 = 'PPRDET:2';
 
 
@@ -128,7 +128,7 @@ SELECT
     json_extract_path_text(df_transaction_json, '16', 'segment') AS sfx_segment,
     json_extract_path_text(df_transaction_json, '16', 'elements', '3', 'value') AS forecast_type,
     json_extract_path_text(df_transaction_json, '16', 'elements', '4', 'value') AS forecast_value
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 WHERE mhd_2 = 'PPRDET:2';
 
 
@@ -156,7 +156,7 @@ SELECT
     json_extract_path_text(df_transaction_json, '3', 'elements', '9', 'value') AS product_a,
     json_extract_path_text(df_transaction_json, '4', 'elements', '9', 'value') AS product_b,
     json_extract_path_text(df_transaction_json, '5', 'elements', '9', 'value') AS product_c
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 WHERE mhd_2 = 'ORDERS:9' AND mhd_1 = '2';
 
 
@@ -178,7 +178,7 @@ ASSERT VALUE instruction = 'RING BEFORE DELIVERY'
 SELECT
     json_extract_path_text(df_transaction_json, '2', 'elements', '0', 'value') AS delivery_date,
     json_extract_path_text(df_transaction_json, '2', 'elements', '3', 'value') AS instruction
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 WHERE mhd_2 = 'ORDERS:9' AND mhd_1 = '2';
 
 
@@ -216,7 +216,7 @@ SELECT
         / LENGTH('"segment":"SFS"') AS sfs_count,
     (LENGTH(df_transaction_json) - LENGTH(REPLACE(df_transaction_json, '"segment":"SFX"', '')))
         / LENGTH('"segment":"SFX"') AS sfx_count
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 WHERE mhd_2 = 'PPRDET:2';
 
 
@@ -237,7 +237,7 @@ ASSERT VALUE total_messages = 3 WHERE source_file = 'tradacoms_product_planning.
 SELECT
     df_file_name AS source_file,
     COUNT(*) AS total_messages
-FROM {{zone_name}}.edi.tradacoms_json_messages
+FROM {{zone_name}}.edi_demos.tradacoms_json_messages
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -258,14 +258,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total message count = 7 (3 planning + 4 order)
     SELECT 'message_count_7' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_json_messages) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_json_messages) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: df_transaction_json is populated for all 7 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_json_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_json_messages
                        WHERE df_transaction_json IS NOT NULL) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -274,7 +274,7 @@ SELECT check_name, result FROM (
     -- Check 3: First body segment of PPRDET is SFR
     SELECT 'planning_first_segment_sfr' AS check_name,
            CASE WHEN (SELECT json_extract_path_text(df_transaction_json, '0', 'segment')
-                      FROM {{zone_name}}.edi.tradacoms_json_messages
+                      FROM {{zone_name}}.edi_demos.tradacoms_json_messages
                       WHERE mhd_2 = 'PPRDET:2') = 'SFR'
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -282,7 +282,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: Order file produces exactly 4 messages
     SELECT 'order_messages_4' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_json_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_json_messages
                        WHERE df_file_name = 'tradacoms_order.edi') = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

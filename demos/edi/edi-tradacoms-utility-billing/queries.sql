@@ -45,7 +45,7 @@ SELECT df_file_name AS source_file,
        mhd_1 AS msg_ref,
        mhd_2 AS msg_type,
        stx_2 AS sender
-FROM {{zone_name}}.edi.tradacoms_bills
+FROM {{zone_name}}.edi_demos.tradacoms_bills
 ORDER BY df_file_name, mhd_1;
 
 
@@ -69,7 +69,7 @@ ASSERT VALUE customer_name = 'GEORGE''S FRIED CHIKEN + SONS. Could be the best c
 SELECT df_file_name AS source_file,
        sdt_2 AS supplier_name,
        cdt_2 AS customer_name
-FROM {{zone_name}}.edi.tradacoms_bills
+FROM {{zone_name}}.edi_demos.tradacoms_bills
 WHERE mhd_2 = 'UTLHDR:3'
 ORDER BY df_file_name;
 
@@ -94,7 +94,7 @@ SELECT df_file_name AS source_file,
        bcd_1 AS billing_date,
        bcd_3 AS account_number,
        bcd_8 AS billing_period
-FROM {{zone_name}}.edi.tradacoms_bill_details
+FROM {{zone_name}}.edi_demos.tradacoms_bill_details
 WHERE mhd_2 = 'UTLBIL:3'
 ORDER BY df_file_name;
 
@@ -121,7 +121,7 @@ ASSERT VALUE volume = '1770000:KWH' WHERE source_file = 'tradacoms_utility_bill.
 SELECT df_file_name AS source_file,
        ccd_3 AS tariff,
        ccd_12 AS volume
-FROM {{zone_name}}.edi.tradacoms_bill_details
+FROM {{zone_name}}.edi_demos.tradacoms_bill_details
 WHERE mhd_2 = 'UTLBIL:3'
 ORDER BY df_file_name;
 
@@ -151,7 +151,7 @@ SELECT df_file_name AS source_file,
        vat_6 AS net_amount,
        vat_7 AS vat_amount,
        vat_8 AS gross_amount
-FROM {{zone_name}}.edi.tradacoms_bill_details
+FROM {{zone_name}}.edi_demos.tradacoms_bill_details
 WHERE mhd_2 = 'UTLBIL:3'
 ORDER BY df_file_name;
 
@@ -177,7 +177,7 @@ SELECT df_file_name AS source_file,
        btl_2 AS total_charges,
        btl_3 AS total_vat,
        btl_5 AS bill_total
-FROM {{zone_name}}.edi.tradacoms_bill_details
+FROM {{zone_name}}.edi_demos.tradacoms_bill_details
 WHERE mhd_2 = 'UTLBIL:3'
 ORDER BY df_file_name;
 
@@ -206,7 +206,7 @@ SELECT df_file_name AS source_file,
        ttl_1 AS total_net,
        ttl_2 AS total_vat,
        ttl_5 AS total_gross
-FROM {{zone_name}}.edi.tradacoms_bill_details
+FROM {{zone_name}}.edi_demos.tradacoms_bill_details
 WHERE mhd_2 = 'UTLTLR:3'
 ORDER BY df_file_name;
 
@@ -230,7 +230,7 @@ ASSERT VALUE matching_totals = 'YES'
 SELECT COUNT(DISTINCT df_file_name) AS file_count,
        CASE WHEN COUNT(DISTINCT btl_5) = 1 THEN 'YES' ELSE 'NO' END AS matching_totals,
        MIN(btl_5) AS bill_total
-FROM {{zone_name}}.edi.tradacoms_bill_details
+FROM {{zone_name}}.edi_demos.tradacoms_bill_details
 WHERE mhd_2 = 'UTLBIL:3';
 
 
@@ -250,14 +250,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total message count = 8 (4 per file x 2 files)
     SELECT 'message_count_8' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_bills) = 8
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_bills) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Exactly 2 UTLBIL messages (one per file)
     SELECT 'utlbil_count_2' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_bill_details
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_bill_details
                        WHERE mhd_2 = 'UTLBIL:3') = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -265,7 +265,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: VAT fields are populated for UTLBIL rows
     SELECT 'vat_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_bill_details
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_bill_details
                        WHERE mhd_2 = 'UTLBIL:3'
                          AND vat_6 IS NOT NULL AND vat_6 <> ''
                          AND vat_7 IS NOT NULL AND vat_7 <> '') > 0
@@ -276,7 +276,7 @@ SELECT check_name, result FROM (
     -- Check 4: Bill totals match across both files
     SELECT 'totals_match' AS check_name,
            CASE WHEN (SELECT COUNT(DISTINCT btl_5)
-                       FROM {{zone_name}}.edi.tradacoms_bill_details
+                       FROM {{zone_name}}.edi_demos.tradacoms_bill_details
                        WHERE mhd_2 = 'UTLBIL:3') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

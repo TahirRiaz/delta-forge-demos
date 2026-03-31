@@ -25,7 +25,7 @@ SELECT asset_class,
        COUNT(*) AS holdings,
        SUM(market_value) AS total_value,
        ROUND(AVG(market_value), 2) AS avg_value
-FROM {{zone_name}}.update_demos.portfolio_holdings
+FROM {{zone_name}}.delta_demos.portfolio_holdings
 GROUP BY asset_class
 ORDER BY total_value DESC;
 
@@ -41,7 +41,7 @@ ASSERT VALUE portfolio_value = 120331.15 WHERE portfolio_id = 'PF-BETA'
 SELECT portfolio_id,
        COUNT(*) AS holdings,
        SUM(market_value) AS portfolio_value
-FROM {{zone_name}}.update_demos.portfolio_holdings
+FROM {{zone_name}}.delta_demos.portfolio_holdings
 GROUP BY portfolio_id
 ORDER BY portfolio_value DESC;
 
@@ -64,7 +64,7 @@ ASSERT ROW_COUNT = 3
 SELECT risk_rating,
        COUNT(*) AS count,
        SUM(market_value) AS total_value
-FROM {{zone_name}}.update_demos.portfolio_holdings
+FROM {{zone_name}}.delta_demos.portfolio_holdings
 GROUP BY risk_rating
 ORDER BY total_value DESC;
 
@@ -78,7 +78,7 @@ ORDER BY total_value DESC;
 ASSERT ROW_COUNT = 5
 ASSERT VALUE market_value = 50000.00 WHERE ticker = 'CASH' AND portfolio_id = 'PF-ALPHA'
 SELECT ticker, portfolio_id, market_value, risk_rating
-FROM {{zone_name}}.update_demos.portfolio_holdings
+FROM {{zone_name}}.delta_demos.portfolio_holdings
 ORDER BY market_value DESC
 LIMIT 5;
 
@@ -93,7 +93,7 @@ ASSERT ROW_COUNT = 8
 ASSERT VALUE market_price = 185.25 WHERE ticker = 'AAPL'
 ASSERT VALUE market_price = 620.75 WHERE ticker = 'NVDA'
 SELECT ticker, market_price
-FROM {{zone_name}}.update_demos.portfolio_holdings VERSION AS OF 1
+FROM {{zone_name}}.delta_demos.portfolio_holdings VERSION AS OF 1
 WHERE asset_class = 'equity'
 ORDER BY ticker;
 
@@ -107,7 +107,7 @@ ORDER BY ticker;
 
 -- Non-deterministic: commit timestamps set at write time
 ASSERT WARNING ROW_COUNT >= 5
-DESCRIBE HISTORY {{zone_name}}.update_demos.portfolio_holdings;
+DESCRIBE HISTORY {{zone_name}}.delta_demos.portfolio_holdings;
 
 
 -- ============================================================================
@@ -116,24 +116,24 @@ DESCRIBE HISTORY {{zone_name}}.update_demos.portfolio_holdings;
 
 -- Verify total rows: 20 holdings (no inserts or deletes, only updates)
 ASSERT VALUE cnt = 20
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.update_demos.portfolio_holdings;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.portfolio_holdings;
 
 -- Verify distinct portfolios: 3 portfolios
 ASSERT VALUE cnt = 3
-SELECT COUNT(DISTINCT portfolio_id) AS cnt FROM {{zone_name}}.update_demos.portfolio_holdings;
+SELECT COUNT(DISTINCT portfolio_id) AS cnt FROM {{zone_name}}.delta_demos.portfolio_holdings;
 
 -- Verify distinct asset classes: 5 asset classes
 ASSERT VALUE cnt = 5
-SELECT COUNT(DISTINCT asset_class) AS cnt FROM {{zone_name}}.update_demos.portfolio_holdings;
+SELECT COUNT(DISTINCT asset_class) AS cnt FROM {{zone_name}}.delta_demos.portfolio_holdings;
 
 -- Verify total market value after all rebalancing
 ASSERT VALUE total = 362359.70
-SELECT SUM(market_value) AS total FROM {{zone_name}}.update_demos.portfolio_holdings;
+SELECT SUM(market_value) AS total FROM {{zone_name}}.delta_demos.portfolio_holdings;
 
 -- Verify high-risk count after reclassification
 ASSERT VALUE cnt = 3
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.update_demos.portfolio_holdings WHERE risk_rating = 'high';
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.portfolio_holdings WHERE risk_rating = 'high';
 
 -- Verify low-risk count after reclassification
 ASSERT VALUE cnt = 11
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.update_demos.portfolio_holdings WHERE risk_rating = 'low';
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.portfolio_holdings WHERE risk_rating = 'low';

@@ -17,7 +17,7 @@
 -- The original data file contains 540 rows; the DV retracts 36, leaving 504.
 
 ASSERT ROW_COUNT = 504
-SELECT * FROM {{zone_name}}.iceberg.shipment_manifests;
+SELECT * FROM {{zone_name}}.iceberg_demos.shipment_manifests;
 
 
 -- ============================================================================
@@ -28,7 +28,7 @@ SELECT * FROM {{zone_name}}.iceberg.shipment_manifests;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 WHERE scanner_id = 'SCAN-ERR';
 
 
@@ -44,7 +44,7 @@ ASSERT VALUE shipment_count = 180 WHERE region = 'APAC'
 SELECT
     region,
     COUNT(*) AS shipment_count
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 GROUP BY region
 ORDER BY region;
 
@@ -58,7 +58,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE scanner_count = 15
 SELECT
     COUNT(DISTINCT scanner_id) AS scanner_count
-FROM {{zone_name}}.iceberg.shipment_manifests;
+FROM {{zone_name}}.iceberg_demos.shipment_manifests;
 
 
 -- ============================================================================
@@ -76,7 +76,7 @@ ASSERT VALUE shipment_count = 79 WHERE product_category = 'Textiles'
 SELECT
     product_category,
     COUNT(*) AS shipment_count
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 GROUP BY product_category
 ORDER BY product_category;
 
@@ -93,7 +93,7 @@ ASSERT VALUE hazardous_count = 21 WHERE region = 'APAC'
 SELECT
     region,
     SUM(CASE WHEN is_hazardous THEN 1 ELSE 0 END) AS hazardous_count
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 GROUP BY region
 ORDER BY region;
 
@@ -110,7 +110,7 @@ ASSERT VALUE avg_weight = 1216.02 WHERE region = 'APAC'
 SELECT
     region,
     ROUND(AVG(weight_kg), 2) AS avg_weight
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 GROUP BY region
 ORDER BY region;
 
@@ -128,7 +128,7 @@ SELECT
     ROUND(MIN(weight_kg), 2) AS min_weight,
     ROUND(MAX(weight_kg), 2) AS max_weight,
     ROUND(AVG(weight_kg), 2) AS avg_weight
-FROM {{zone_name}}.iceberg.shipment_manifests;
+FROM {{zone_name}}.iceberg_demos.shipment_manifests;
 
 
 -- ============================================================================
@@ -144,7 +144,7 @@ ASSERT VALUE shipment_count = 45 WHERE carrier = 'UPS'
 SELECT
     carrier,
     COUNT(*) AS shipment_count
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 GROUP BY carrier
 ORDER BY shipment_count DESC, carrier;
 
@@ -162,7 +162,7 @@ SELECT
     carrier,
     product_category,
     declared_value
-FROM {{zone_name}}.iceberg.shipment_manifests
+FROM {{zone_name}}.iceberg_demos.shipment_manifests
 WHERE declared_value < 500
 ORDER BY declared_value ASC;
 
@@ -182,7 +182,7 @@ SELECT
     COUNT(DISTINCT destination_country) AS distinct_countries,
     COUNT(DISTINCT carrier) AS distinct_carriers,
     COUNT(DISTINCT product_category) AS distinct_categories
-FROM {{zone_name}}.iceberg.shipment_manifests;
+FROM {{zone_name}}.iceberg_demos.shipment_manifests;
 
 
 -- ============================================================================
@@ -208,4 +208,4 @@ SELECT
     SUM(CASE WHEN is_hazardous THEN 1 ELSE 0 END) AS total_hazardous,
     COUNT(DISTINCT product_category) AS category_count,
     COUNT(DISTINCT destination_country) AS country_count
-FROM {{zone_name}}.iceberg.shipment_manifests;
+FROM {{zone_name}}.iceberg_demos.shipment_manifests;

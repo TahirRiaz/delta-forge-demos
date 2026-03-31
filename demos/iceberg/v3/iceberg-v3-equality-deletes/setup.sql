@@ -24,7 +24,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg V3 table with equality deletes
@@ -32,8 +32,8 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
 -- Delta Forge parses metadata.json to discover schema, data files, and equality
 -- delete files automatically. The format-version field in metadata.json is 3.
 -- The delete file uses equality semantics on the patient_id column.
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.patient_visits
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.patient_visits
 USING ICEBERG
 LOCATION '{{data_path}}/patient_visits';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.patient_visits TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.patient_visits TO USER {{current_user}};

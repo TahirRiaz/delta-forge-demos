@@ -24,7 +24,7 @@ ASSERT VALUE product_name = 'Succulent Planter' WHERE sku = 'SKU-H-N01'
 ASSERT VALUE unit_price = 21.99 WHERE sku = 'SKU-H-N01'
 ASSERT VALUE product_name = 'Massage Gun Mini' WHERE sku = 'SKU-S-N01'
 ASSERT VALUE unit_price = 49.99 WHERE sku = 'SKU-S-N01'
-SELECT * FROM {{zone_name}}.iceberg.inventory;
+SELECT * FROM {{zone_name}}.iceberg_demos.inventory;
 
 
 -- ============================================================================
@@ -45,7 +45,7 @@ SELECT
     category,
     COUNT(*) AS product_count,
     SUM(quantity_on_hand) AS total_qty
-FROM {{zone_name}}.iceberg.inventory
+FROM {{zone_name}}.iceberg_demos.inventory
 GROUP BY category
 ORDER BY category;
 
@@ -60,7 +60,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE avg_price = 50.05
 SELECT
     ROUND(AVG(unit_price), 2) AS avg_price
-FROM {{zone_name}}.iceberg.inventory
+FROM {{zone_name}}.iceberg_demos.inventory
 WHERE category = 'Electronics';
 
 
@@ -83,7 +83,7 @@ ASSERT VALUE product_name = 'Massage Gun Mini' WHERE sku = 'SKU-S-N01'
 ASSERT VALUE unit_price = 49.99 WHERE sku = 'SKU-S-N01'
 ASSERT VALUE quantity_on_hand = 194 WHERE sku = 'SKU-S-N01'
 SELECT *
-FROM {{zone_name}}.iceberg.inventory
+FROM {{zone_name}}.iceberg_demos.inventory
 WHERE sku LIKE 'SKU-%-N%';
 
 
@@ -94,7 +94,7 @@ WHERE sku LIKE 'SKU-%-N%';
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.inventory
+FROM {{zone_name}}.iceberg_demos.inventory
 WHERE sku IN (
     'SKU-E007', 'SKU-E013',
     'SKU-H008', 'SKU-H018', 'SKU-H019',
@@ -117,7 +117,7 @@ ASSERT VALUE product_count = 6 WHERE supplier = 'TechCorp'
 SELECT
     supplier,
     COUNT(*) AS product_count
-FROM {{zone_name}}.iceberg.inventory
+FROM {{zone_name}}.iceberg_demos.inventory
 GROUP BY supplier
 ORDER BY product_count DESC, supplier;
 
@@ -135,7 +135,7 @@ ASSERT VALUE inventory_value = 58182.71 WHERE category = 'Sports'
 SELECT
     category,
     ROUND(SUM(unit_price * quantity_on_hand), 2) AS inventory_value
-FROM {{zone_name}}.iceberg.inventory
+FROM {{zone_name}}.iceberg_demos.inventory
 GROUP BY category
 ORDER BY category;
 
@@ -147,7 +147,7 @@ ORDER BY category;
 -- NOTE: DESCRIBE HISTORY on Iceberg tables may return 0 rows (known gap).
 
 ASSERT WARNING ROW_COUNT = 4
-DESCRIBE HISTORY {{zone_name}}.iceberg.inventory;
+DESCRIBE HISTORY {{zone_name}}.iceberg_demos.inventory;
 
 
 -- ============================================================================
@@ -174,4 +174,4 @@ SELECT
         'SKU-E007', 'SKU-E013', 'SKU-H008', 'SKU-H018', 'SKU-H019',
         'SKU-S006', 'SKU-S008', 'SKU-C004', 'SKU-C017', 'SKU-C018'
     ) THEN 1 ELSE 0 END) AS discontinued_remaining
-FROM {{zone_name}}.iceberg.inventory;
+FROM {{zone_name}}.iceberg_demos.inventory;

@@ -38,7 +38,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: tradacoms_messages — Compact view
@@ -58,7 +58,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   df_transaction_id    — Unique hash for the transaction
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.tradacoms_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -66,7 +66,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.tradacoms_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: tradacoms_materialized — Key retail fields extracted
 -- ============================================================================
@@ -82,7 +82,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_messages TO USER {{current_user
 --   CDT_2  — Customer name (e.g. "GEORGE'S FRIED CHICKEN + SONS")
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.tradacoms_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_materialized
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -97,4 +97,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.tradacoms_materialized TO USER {{current_user}};

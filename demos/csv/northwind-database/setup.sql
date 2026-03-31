@@ -34,17 +34,17 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 -- STEP 2: Schema
 -- ============================================================================
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv_demos
     COMMENT 'CSV-backed external tables';
 -- ============================================================================
 -- STEP 3: External Tables
 -- ============================================================================
 -- Each table reads from a semicolon-delimited CSV file. All names are fully
--- qualified: {{zone_name}}.csv.<table_name>
+-- qualified: {{zone_name}}.csv_demos.<table_name>
 -- ============================================================================
 
 -- CUSTOMERS — 91 customer companies with contact and address details
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_customers
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_customers
 USING CSV
 LOCATION '{{data_path}}/customers.csv'
 OPTIONS (
@@ -53,7 +53,7 @@ OPTIONS (
 );
 
 -- EMPLOYEES — 9 sales employees with hire dates and reporting hierarchy
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_employees
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_employees
 USING CSV
 LOCATION '{{data_path}}/employees.csv'
 OPTIONS (
@@ -62,7 +62,7 @@ OPTIONS (
 );
 
 -- ORDERS — 830 customer orders with dates, shipping info, and freight costs
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_orders
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_orders
 USING CSV
 LOCATION '{{data_path}}/orders.csv'
 OPTIONS (
@@ -71,7 +71,7 @@ OPTIONS (
 );
 
 -- ORDER_DETAILS — 2,155 line items linking orders to products with pricing
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_order_details
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_order_details
 USING CSV
 LOCATION '{{data_path}}/order_details.csv'
 OPTIONS (
@@ -80,7 +80,7 @@ OPTIONS (
 );
 
 -- PRODUCTS — 77 products with pricing, stock levels, and reorder thresholds
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_products
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_products
 USING CSV
 LOCATION '{{data_path}}/products.csv'
 OPTIONS (
@@ -89,7 +89,7 @@ OPTIONS (
 );
 
 -- CATEGORIES — 8 product categories (Beverages, Condiments, Seafood, etc.)
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_categories
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_categories
 USING CSV
 LOCATION '{{data_path}}/categories.csv'
 OPTIONS (
@@ -98,7 +98,7 @@ OPTIONS (
 );
 
 -- SUPPLIERS — 29 product suppliers with contact and location details
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_suppliers
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_suppliers
 USING CSV
 LOCATION '{{data_path}}/suppliers.csv'
 OPTIONS (
@@ -107,7 +107,7 @@ OPTIONS (
 );
 
 -- SHIPPERS — 3 shipping companies used for order delivery
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_shippers
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_shippers
 USING CSV
 LOCATION '{{data_path}}/shippers.csv'
 OPTIONS (
@@ -116,7 +116,7 @@ OPTIONS (
 );
 
 -- REGIONS — 4 geographic sales regions (Eastern, Western, Northern, Southern)
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_regions
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_regions
 USING CSV
 LOCATION '{{data_path}}/regions.csv'
 OPTIONS (
@@ -125,7 +125,7 @@ OPTIONS (
 );
 
 -- TERRITORIES — 53 sales territories linked to regions
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_territories
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_territories
 USING CSV
 LOCATION '{{data_path}}/territories.csv'
 OPTIONS (
@@ -134,7 +134,7 @@ OPTIONS (
 );
 
 -- EMPLOYEE_TERRITORIES — Maps employees to the territories they cover
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.nw_employee_territories
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.nw_employee_territories
 USING CSV
 LOCATION '{{data_path}}/employee_territories.csv'
 OPTIONS (
@@ -149,14 +149,14 @@ OPTIONS (
 -- STEP 5: Table Permissions
 -- ============================================================================
 
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_customers TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_employees TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_orders TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_order_details TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_products TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_categories TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_suppliers TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_shippers TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_regions TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_territories TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.csv.nw_employee_territories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_customers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_employees TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_orders TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_order_details TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_products TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_categories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_suppliers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_shippers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_regions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_territories TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.nw_employee_territories TO USER {{current_user}};

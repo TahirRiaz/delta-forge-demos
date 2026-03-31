@@ -10,11 +10,11 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.clinical_messages WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.clinical_materialized WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7_demos.clinical_messages WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7_demos.clinical_materialized WITH FILES;
 
 -- STEP 2: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.hl7;
+DROP SCHEMA IF EXISTS {{zone_name}}.hl7_demos;
 
 -- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

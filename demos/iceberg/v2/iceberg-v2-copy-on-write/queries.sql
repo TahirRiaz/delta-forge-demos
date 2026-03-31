@@ -16,7 +16,7 @@
 -- data file already reflects all updates and deletes.
 
 ASSERT ROW_COUNT = 110
-SELECT * FROM {{zone_name}}.iceberg.shipments;
+SELECT * FROM {{zone_name}}.iceberg_demos.shipments;
 
 
 -- ============================================================================
@@ -33,7 +33,7 @@ ASSERT VALUE shipment_count = 11 WHERE status = 'Returned'
 SELECT
     status,
     COUNT(*) AS shipment_count
-FROM {{zone_name}}.iceberg.shipments
+FROM {{zone_name}}.iceberg_demos.shipments
 GROUP BY status
 ORDER BY status;
 
@@ -56,7 +56,7 @@ SELECT
     carrier,
     COUNT(*) AS shipment_count,
     ROUND(AVG(shipping_cost), 2) AS avg_cost
-FROM {{zone_name}}.iceberg.shipments
+FROM {{zone_name}}.iceberg_demos.shipments
 GROUP BY carrier
 ORDER BY carrier;
 
@@ -69,7 +69,7 @@ ORDER BY carrier;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.shipments
+FROM {{zone_name}}.iceberg_demos.shipments
 WHERE shipment_id IN (
     'SHP-0009', 'SHP-0012', 'SHP-0015', 'SHP-0017', 'SHP-0020',
     'SHP-0022', 'SHP-0029', 'SHP-0031', 'SHP-0032', 'SHP-0036'
@@ -85,7 +85,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE delivered_with_date = 70
 SELECT
     COUNT(*) AS delivered_with_date
-FROM {{zone_name}}.iceberg.shipments
+FROM {{zone_name}}.iceberg_demos.shipments
 WHERE actual_delivery IS NOT NULL;
 
 
@@ -101,7 +101,7 @@ ASSERT VALUE shipment_count = 34 WHERE priority = 'Standard'
 SELECT
     priority,
     COUNT(*) AS shipment_count
-FROM {{zone_name}}.iceberg.shipments
+FROM {{zone_name}}.iceberg_demos.shipments
 GROUP BY priority
 ORDER BY priority;
 
@@ -128,4 +128,4 @@ SELECT
     SUM(CASE WHEN actual_delivery IS NOT NULL THEN 1 ELSE 0 END) AS delivered_with_date,
     ROUND(SUM(shipping_cost), 2) AS total_shipping_cost,
     ROUND(AVG(weight_kg), 2) AS avg_weight
-FROM {{zone_name}}.iceberg.shipments;
+FROM {{zone_name}}.iceberg_demos.shipments;

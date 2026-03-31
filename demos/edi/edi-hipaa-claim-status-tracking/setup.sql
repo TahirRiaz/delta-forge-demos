@@ -26,7 +26,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: status_messages — Status tracking fields
@@ -47,7 +47,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   DTP_3  — Date value
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.status_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.status_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -64,7 +64,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.status_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.status_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: status_details — Service and authorization detail
 -- ============================================================================
@@ -84,7 +84,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.status_messages TO USER {{current_user}};
 --   REF_2  — Reference identification value
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.status_details
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.status_details
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -101,4 +101,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.status_details TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.status_details TO USER {{current_user}};

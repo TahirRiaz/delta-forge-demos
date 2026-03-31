@@ -10,11 +10,11 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.compliance_messages WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.compliance_details WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi_demos.compliance_messages WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi_demos.compliance_details WITH FILES;
 
 -- STEP 2: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.edi;
+DROP SCHEMA IF EXISTS {{zone_name}}.edi_demos;
 
 -- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

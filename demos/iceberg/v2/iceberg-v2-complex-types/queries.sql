@@ -20,7 +20,7 @@ ASSERT ROW_COUNT = 100
 ASSERT VALUE order_id IS NOT NULL WHERE order_id = 1
 ASSERT VALUE order_id IS NOT NULL WHERE order_id = 50
 ASSERT VALUE order_id IS NOT NULL WHERE order_id = 100
-SELECT * FROM {{zone_name}}.iceberg.orders
+SELECT * FROM {{zone_name}}.iceberg_demos.orders
 ORDER BY order_id;
 
 
@@ -37,7 +37,7 @@ ASSERT VALUE order_count = 8 WHERE city = 'New York'
 SELECT
     shipping_address.city AS city,
     COUNT(*) AS order_count
-FROM {{zone_name}}.iceberg.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY shipping_address.city
 ORDER BY order_count DESC, city;
 
@@ -51,7 +51,7 @@ ORDER BY order_count DESC, city;
 ASSERT ROW_COUNT = 311
 WITH exploded AS (
     SELECT order_id, unnest(items) AS item
-    FROM {{zone_name}}.iceberg.orders
+    FROM {{zone_name}}.iceberg_demos.orders
 )
 SELECT
     order_id,
@@ -81,7 +81,7 @@ SELECT
     status,
     COUNT(*) AS order_count,
     ROUND(AVG(order_total), 2) AS avg_total
-FROM {{zone_name}}.iceberg.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY status
 ORDER BY status;
 
@@ -98,7 +98,7 @@ ASSERT VALUE total_qty = 70 WHERE product_name = 'Keyboard'
 ASSERT VALUE total_qty = 50 WHERE product_name = 'Laptop'
 WITH exploded AS (
     SELECT unnest(items) AS item
-    FROM {{zone_name}}.iceberg.orders
+    FROM {{zone_name}}.iceberg_demos.orders
 )
 SELECT
     item['product_name'] AS product_name,
@@ -121,7 +121,7 @@ SELECT
     shipping_address.state AS state,
     COUNT(*) AS order_count,
     ROUND(SUM(order_total), 2) AS total_revenue
-FROM {{zone_name}}.iceberg.orders
+FROM {{zone_name}}.iceberg_demos.orders
 GROUP BY shipping_address.state
 ORDER BY total_revenue DESC;
 
@@ -141,5 +141,5 @@ SELECT
     COUNT(*) AS total_orders,
     ROUND(SUM(order_total), 2) AS sum_order_total,
     COUNT(DISTINCT shipping_address.city) AS distinct_cities,
-    (SELECT COUNT(*) FROM (SELECT unnest(items) AS item FROM {{zone_name}}.iceberg.orders) sub) AS total_items
-FROM {{zone_name}}.iceberg.orders;
+    (SELECT COUNT(*) FROM (SELECT unnest(items) AS item FROM {{zone_name}}.iceberg_demos.orders) sub) AS total_items
+FROM {{zone_name}}.iceberg_demos.orders;

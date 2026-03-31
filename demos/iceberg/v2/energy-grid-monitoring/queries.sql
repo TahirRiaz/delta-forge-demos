@@ -12,7 +12,7 @@
 -- Iceberg manifest chain (metadata.json → manifest list → manifest → files).
 
 ASSERT ROW_COUNT = 600
-SELECT * FROM {{zone_name}}.iceberg.grid_readings;
+SELECT * FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- ============================================================================
 -- Query 2: Schema Inference from Iceberg Metadata
 -- ============================================================================
@@ -33,7 +33,7 @@ SELECT
     energy_kwh,
     power_factor,
     grid_frequency_hz
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 ORDER BY meter_id;
 -- ============================================================================
 -- Query 3: Per-Region Row Counts
@@ -47,7 +47,7 @@ ASSERT VALUE reading_count = 200 WHERE region = 'East'
 SELECT
     region,
     COUNT(*) AS reading_count
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 GROUP BY region
 ORDER BY region;
 -- ============================================================================
@@ -60,7 +60,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE total_energy_kwh = 993.2375
 SELECT
     ROUND(SUM(energy_kwh), 4) AS total_energy_kwh
-FROM {{zone_name}}.iceberg.grid_readings;
+FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- ============================================================================
 -- Query 5: Per-Region Energy Totals
 -- ============================================================================
@@ -73,7 +73,7 @@ ASSERT VALUE total_energy = 326.8175 WHERE region = 'East'
 SELECT
     region,
     ROUND(SUM(energy_kwh), 4) AS total_energy
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 GROUP BY region
 ORDER BY region;
 -- ============================================================================
@@ -88,7 +88,7 @@ ASSERT VALUE cnt = 194 WHERE meter_type = 'Residential'
 SELECT
     meter_type,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 GROUP BY meter_type
 ORDER BY meter_type;
 -- ============================================================================
@@ -103,7 +103,7 @@ ASSERT VALUE cnt = 208 WHERE voltage = 240
 SELECT
     voltage,
     COUNT(*) AS cnt
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 GROUP BY voltage
 ORDER BY voltage;
 -- ============================================================================
@@ -119,7 +119,7 @@ SELECT
     power_kw,
     voltage,
     current_amps
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 WHERE power_kw > 10
 ORDER BY power_kw DESC;
 -- ============================================================================
@@ -135,7 +135,7 @@ SELECT
     substation,
     power_factor,
     power_kw
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 WHERE power_factor < 85
 ORDER BY power_factor ASC;
 -- ============================================================================
@@ -149,7 +149,7 @@ ASSERT VALUE distinct_substations = 15
 SELECT
     COUNT(DISTINCT meter_id) AS distinct_meters,
     COUNT(DISTINCT substation) AS distinct_substations
-FROM {{zone_name}}.iceberg.grid_readings;
+FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- ============================================================================
 -- Query 11: Average Power by Meter Type
 -- ============================================================================
@@ -162,7 +162,7 @@ ASSERT VALUE avg_power = 6.68 WHERE meter_type = 'Residential'
 SELECT
     meter_type,
     ROUND(AVG(power_kw), 2) AS avg_power
-FROM {{zone_name}}.iceberg.grid_readings
+FROM {{zone_name}}.iceberg_demos.grid_readings
 GROUP BY meter_type
 ORDER BY meter_type;
 -- ============================================================================
@@ -175,10 +175,10 @@ ORDER BY meter_type;
 -- ============================================================================
 
 -- Drop any leftovers from a previous run (idempotent)
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg.grid_readings_iceberg_readback WITH FILES;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg.grid_readings_delta WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_delta WITH FILES;
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings_delta (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_delta (
     meter_id           VARCHAR,
     region             VARCHAR,
     substation         VARCHAR,
@@ -196,22 +196,22 @@ TBLPROPERTIES (
     'delta.columnMapping.mode' = 'id'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings_delta TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.grid_readings_delta TO USER {{current_user}};
 
-INSERT INTO {{zone_name}}.iceberg.grid_readings_delta
-SELECT * FROM {{zone_name}}.iceberg.grid_readings;
+INSERT INTO {{zone_name}}.iceberg_demos.grid_readings_delta
+SELECT * FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- Register the Delta table's location as an external Iceberg table
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings_iceberg_readback
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback
 USING ICEBERG
 LOCATION '{{data_path}}/grid_readings_delta';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings_iceberg_readback TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback TO USER {{current_user}};
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — All 600 Readings via Iceberg Reader
 -- ============================================================================
 
 ASSERT ROW_COUNT = 600
-SELECT * FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+SELECT * FROM {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback;
 -- ============================================================================
 -- Iceberg Verify 2: Per-Region Counts — Must Match Original
 -- ============================================================================
@@ -223,7 +223,7 @@ ASSERT VALUE reading_count = 200 WHERE region = 'East'
 SELECT
     region,
     COUNT(*) AS reading_count
-FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback
+FROM {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback
 GROUP BY region
 ORDER BY region;
 -- ============================================================================
@@ -234,7 +234,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE total_energy_kwh = 993.2375
 SELECT
     ROUND(SUM(energy_kwh), 4) AS total_energy_kwh
-FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+FROM {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback;
 -- ============================================================================
 -- Iceberg Verify 4: Grand Totals — Cross-Format Consistency
 -- ============================================================================
@@ -249,7 +249,7 @@ SELECT
     COUNT(DISTINCT region) AS region_count,
     COUNT(DISTINCT meter_id) AS distinct_meters,
     COUNT(DISTINCT substation) AS distinct_substations
-FROM {{zone_name}}.iceberg.grid_readings_iceberg_readback;
+FROM {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback;
 -- ============================================================================
 -- VERIFY: All Checks
 -- ============================================================================
@@ -268,4 +268,4 @@ SELECT
     COUNT(DISTINCT region) AS region_count,
     COUNT(DISTINCT meter_id) AS distinct_meters,
     COUNT(DISTINCT substation) AS distinct_substations
-FROM {{zone_name}}.iceberg.grid_readings;
+FROM {{zone_name}}.iceberg_demos.grid_readings;

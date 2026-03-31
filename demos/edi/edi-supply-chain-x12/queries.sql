@@ -60,7 +60,7 @@ SELECT
     isa_8 AS receiver_id,
     st_1 AS txn_type,
     gs_8 AS x12_version
-FROM {{zone_name}}.edi.supply_chain_messages
+FROM {{zone_name}}.edi_demos.supply_chain_messages
 ORDER BY df_file_name;
 
 
@@ -102,7 +102,7 @@ SELECT
         ELSE 'Other'
     END AS txn_name,
     COUNT(*) AS txn_count
-FROM {{zone_name}}.edi.supply_chain_messages
+FROM {{zone_name}}.edi_demos.supply_chain_messages
 GROUP BY st_1
 ORDER BY txn_count DESC, st_1;
 
@@ -141,7 +141,7 @@ SELECT
     beg_5 AS po_date,
     n1_2 AS party_name,
     ctt_1 AS line_items
-FROM {{zone_name}}.edi.supply_chain_materialized
+FROM {{zone_name}}.edi_demos.supply_chain_materialized
 WHERE beg_3 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -177,7 +177,7 @@ SELECT
     big_2 AS invoice_number,
     n1_2 AS party_name,
     ctt_1 AS line_items
-FROM {{zone_name}}.edi.supply_chain_materialized
+FROM {{zone_name}}.edi_demos.supply_chain_materialized
 WHERE big_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -209,7 +209,7 @@ SELECT
     isa_6 AS sender_id,
     isa_8 AS receiver_id,
     COUNT(*) AS txn_count
-FROM {{zone_name}}.edi.supply_chain_messages
+FROM {{zone_name}}.edi_demos.supply_chain_messages
 GROUP BY isa_6, isa_8
 ORDER BY txn_count DESC;
 
@@ -236,7 +236,7 @@ ASSERT VALUE txn_count = 7 WHERE isa_version = '00401'
 SELECT
     isa_12 AS isa_version,
     COUNT(*) AS txn_count
-FROM {{zone_name}}.edi.supply_chain_messages
+FROM {{zone_name}}.edi_demos.supply_chain_messages
 GROUP BY isa_12
 ORDER BY isa_12;
 
@@ -268,7 +268,7 @@ SELECT
         ELSE gs_1
     END AS group_name,
     COUNT(*) AS txn_count
-FROM {{zone_name}}.edi.supply_chain_messages
+FROM {{zone_name}}.edi_demos.supply_chain_messages
 GROUP BY gs_1
 ORDER BY txn_count DESC;
 
@@ -295,7 +295,7 @@ SELECT
     df_file_name,
     st_1 AS txn_type,
     df_transaction_json
-FROM {{zone_name}}.edi.supply_chain_messages
+FROM {{zone_name}}.edi_demos.supply_chain_messages
 ORDER BY df_file_name
 LIMIT 3;
 
@@ -317,35 +317,35 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 14 (one per .edi file)
     SELECT 'transaction_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.supply_chain_messages) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.supply_chain_messages) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 14 distinct source files in df_file_name
     SELECT 'source_files_14' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi.supply_chain_messages) = 14
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi_demos.supply_chain_messages) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: At least 5 distinct transaction types (actual: 8)
     SELECT 'transaction_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi.supply_chain_messages) >= 5
+           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi_demos.supply_chain_messages) >= 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: Materialized table also has 14 rows (same files, different columns)
     SELECT 'materialized_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.supply_chain_materialized) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.supply_chain_materialized) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: BEG_3 (PO number) is populated for at least some rows (the 850s)
     SELECT 'beg_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.supply_chain_materialized
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.supply_chain_materialized
                        WHERE beg_3 IS NOT NULL AND beg_3 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -353,7 +353,7 @@ SELECT check_name, result FROM (
 
     -- Check 6: df_transaction_json is populated for all 14 transactions
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.supply_chain_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.supply_chain_messages
                        WHERE df_transaction_json IS NOT NULL) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

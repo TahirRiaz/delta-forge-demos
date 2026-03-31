@@ -22,7 +22,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir_demos
     COMMENT 'FHIR-backed external tables — HL7 FHIR R5 resources as JSON';
 
 -- ============================================================================
@@ -40,7 +40,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
 -- Key FHIR patterns: clinicalStatus, verificationStatus, severity,
 -- bodySite[], category[], onset/abatement dates, evidence, stage.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.conditions
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.conditions
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -83,7 +83,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.conditions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.conditions TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: procedures — 8 Procedure resources
 -- ============================================================================
@@ -98,7 +98,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.fhir.conditions TO USER {{current_user}};
 -- Key FHIR patterns: status, code (SNOMED CT procedure codes), performer[],
 -- reason[], bodySite, outcome, followUp[], note[].
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.procedures
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.procedures
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -140,7 +140,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.procedures TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.procedures TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 3: allergies — 6 AllergyIntolerance resources
 -- ============================================================================
@@ -158,7 +158,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.fhir.procedures TO USER {{current_user}};
 -- The reaction[] array is preserved as JSON via json_paths since it contains
 -- deeply nested manifestation/substance/exposure data.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.allergies
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.allergies
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -198,4 +198,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.allergies TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.allergies TO USER {{current_user}};

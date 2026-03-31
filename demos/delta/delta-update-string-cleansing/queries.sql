@@ -28,7 +28,7 @@ ASSERT VALUE account_code = '000042' WHERE id = 1
 ASSERT VALUE full_name = 'Alice Johnson' WHERE id = 1
 ASSERT VALUE country_code = 'US' WHERE id = 1
 SELECT id, first_name, last_name, full_name, email, account_code, country_code
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 ORDER BY id;
 
 
@@ -44,7 +44,7 @@ ASSERT VALUE email = 'bob.smith@yahoo.com' WHERE id = 2
 ASSERT VALUE email = 'george.wilson@outlook.com' WHERE id = 7
 ASSERT VALUE email = 'ivan.taylor@yahoo.com' WHERE id = 9
 SELECT id, full_name, email
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 ORDER BY email;
 
 
@@ -61,7 +61,7 @@ ASSERT VALUE account_code = '000001' WHERE id = 9
 ASSERT VALUE account_code = '004567' WHERE id = 7
 ASSERT VALUE account_code = '006789' WHERE id = 21
 SELECT id, full_name, account_code
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 ORDER BY account_code;
 
 
@@ -77,7 +77,7 @@ ASSERT VALUE full_name = 'George Wilson' WHERE id = 7
 ASSERT VALUE full_name = 'Sam Lee' WHERE id = 19
 ASSERT VALUE full_name = 'Patricia Garcia' WHERE id = 16
 SELECT id, first_name, last_name, full_name
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 ORDER BY full_name;
 
 
@@ -94,7 +94,7 @@ ASSERT VALUE customer_count = 5 WHERE country_code = 'DE'
 ASSERT VALUE customer_count = 4 WHERE country_code = 'CA'
 SELECT country_code,
        COUNT(*) AS customer_count
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 GROUP BY country_code
 ORDER BY customer_count DESC;
 
@@ -112,15 +112,15 @@ ASSERT VALUE padded_codes = 25
 ASSERT VALUE populated_full_names = 25
 ASSERT VALUE uppercase_country = 25
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.cleansing_demos.customer_imports
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.customer_imports
      WHERE first_name = TRIM(first_name) AND last_name = TRIM(last_name)) AS trimmed_names,
-    (SELECT COUNT(*) FROM {{zone_name}}.cleansing_demos.customer_imports
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.customer_imports
      WHERE email = LOWER(email)) AS lowercase_emails,
-    (SELECT COUNT(*) FROM {{zone_name}}.cleansing_demos.customer_imports
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.customer_imports
      WHERE LENGTH(account_code) = 6) AS padded_codes,
-    (SELECT COUNT(*) FROM {{zone_name}}.cleansing_demos.customer_imports
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.customer_imports
      WHERE full_name = first_name || ' ' || last_name) AS populated_full_names,
-    (SELECT COUNT(*) FROM {{zone_name}}.cleansing_demos.customer_imports
+    (SELECT COUNT(*) FROM {{zone_name}}.delta_demos.customer_imports
      WHERE country_code = UPPER(country_code)) AS uppercase_country;
 
 
@@ -134,7 +134,7 @@ ASSERT ROW_COUNT = 25
 ASSERT VALUE country_code = 'US' WHERE city = 'New York'
 ASSERT VALUE country_code = 'CA' WHERE city = 'San Antonio'
 SELECT city, country_code, full_name, email
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 ORDER BY country_code, city;
 
 
@@ -147,7 +147,7 @@ ORDER BY country_code, city;
 
 ASSERT ROW_COUNT = 5
 SELECT id, full_name, account_code
-FROM {{zone_name}}.cleansing_demos.customer_imports
+FROM {{zone_name}}.delta_demos.customer_imports
 ORDER BY account_code
 LIMIT 5;
 
@@ -161,7 +161,7 @@ LIMIT 5;
 
 -- Non-deterministic: commit timestamps set at write time
 ASSERT WARNING ROW_COUNT >= 7
-DESCRIBE HISTORY {{zone_name}}.cleansing_demos.customer_imports;
+DESCRIBE HISTORY {{zone_name}}.delta_demos.customer_imports;
 
 
 -- ============================================================================
@@ -170,40 +170,40 @@ DESCRIBE HISTORY {{zone_name}}.cleansing_demos.customer_imports;
 
 -- Verify total rows: 25 customers (no inserts or deletes, only updates)
 ASSERT VALUE cnt = 25
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.customer_imports;
 
 -- Verify distinct emails: 25 unique addresses
 ASSERT VALUE cnt = 25
-SELECT COUNT(DISTINCT email) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports;
+SELECT COUNT(DISTINCT email) AS cnt FROM {{zone_name}}.delta_demos.customer_imports;
 
 -- Verify distinct cities: 25 unique cities
 ASSERT VALUE cnt = 25
-SELECT COUNT(DISTINCT city) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports;
+SELECT COUNT(DISTINCT city) AS cnt FROM {{zone_name}}.delta_demos.customer_imports;
 
 -- Verify distinct country codes: 4 countries
 ASSERT VALUE cnt = 4
-SELECT COUNT(DISTINCT country_code) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports;
+SELECT COUNT(DISTINCT country_code) AS cnt FROM {{zone_name}}.delta_demos.customer_imports;
 
 -- Verify all account codes are exactly 6 characters
 ASSERT VALUE cnt = 25
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports WHERE LENGTH(account_code) = 6;
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.customer_imports WHERE LENGTH(account_code) = 6;
 
 -- Verify no leading/trailing whitespace in names
 ASSERT VALUE cnt = 25
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.customer_imports
 WHERE first_name = TRIM(first_name) AND last_name = TRIM(last_name);
 
 -- Verify all full_names match concatenation of parts
 ASSERT VALUE cnt = 25
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.customer_imports
 WHERE full_name = first_name || ' ' || last_name;
 
 -- Verify all emails are lowercase
 ASSERT VALUE cnt = 25
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.customer_imports
 WHERE email = LOWER(email);
 
 -- Verify all country codes are uppercase
 ASSERT VALUE cnt = 25
-SELECT COUNT(*) AS cnt FROM {{zone_name}}.cleansing_demos.customer_imports
+SELECT COUNT(*) AS cnt FROM {{zone_name}}.delta_demos.customer_imports
 WHERE country_code = UPPER(country_code);

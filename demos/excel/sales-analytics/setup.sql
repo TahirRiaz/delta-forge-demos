@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel_demos
     COMMENT 'Excel-backed external tables';
 
 -- ============================================================================
@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.excel
 -- name, enables file metadata for traceability, and samples 1000 rows for
 -- schema inference.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel.all_orders
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_demos.all_orders
 USING EXCEL
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -37,14 +37,14 @@ OPTIONS (
     infer_schema_rows = '1000',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.excel.all_orders TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel_demos.all_orders TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: orders_2017 — Single file only (3,312 rows)
 -- ============================================================================
 -- Uses file_filter to read only the 2017 file from the same directory.
 -- Demonstrates single-file extraction from a multi-file location.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel.orders_2017
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.excel_demos.orders_2017
 USING EXCEL
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -53,4 +53,4 @@ OPTIONS (
     file_filter = 'sales-data-2017*',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.excel.orders_2017 TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.excel_demos.orders_2017 TO USER {{current_user}};

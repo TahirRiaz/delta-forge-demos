@@ -23,7 +23,7 @@ ASSERT VALUE full_name = 'Eve Miller' WHERE emp_id = 360
 ASSERT VALUE department = 'HR' WHERE emp_id = 360
 ASSERT VALUE title = 'Data Scientist' WHERE emp_id = 360
 ASSERT VALUE location = 'New York' WHERE emp_id = 360
-SELECT * FROM {{zone_name}}.iceberg.employee_directory;
+SELECT * FROM {{zone_name}}.iceberg_demos.employee_directory;
 
 
 -- ============================================================================
@@ -53,7 +53,7 @@ SELECT
     hire_date,
     title,
     location
-FROM {{zone_name}}.iceberg.employee_directory
+FROM {{zone_name}}.iceberg_demos.employee_directory
 ORDER BY emp_id;
 
 
@@ -75,7 +75,7 @@ SELECT
     full_name,
     department,
     title
-FROM {{zone_name}}.iceberg.employee_directory
+FROM {{zone_name}}.iceberg_demos.employee_directory
 WHERE title IS NULL
 ORDER BY emp_id;
 
@@ -101,7 +101,7 @@ SELECT
     department,
     title,
     location
-FROM {{zone_name}}.iceberg.employee_directory
+FROM {{zone_name}}.iceberg_demos.employee_directory
 WHERE location IS NOT NULL
 ORDER BY emp_id;
 
@@ -121,7 +121,7 @@ ASSERT VALUE emp_count = 72 WHERE department = 'Sales'
 SELECT
     department,
     COUNT(*) AS emp_count
-FROM {{zone_name}}.iceberg.employee_directory
+FROM {{zone_name}}.iceberg_demos.employee_directory
 GROUP BY department
 ORDER BY department;
 
@@ -141,7 +141,7 @@ SELECT
     ROUND(MIN(salary), 2) AS min_salary,
     ROUND(MAX(salary), 2) AS max_salary,
     ROUND(SUM(salary), 2) AS total_salary
-FROM {{zone_name}}.iceberg.employee_directory;
+FROM {{zone_name}}.iceberg_demos.employee_directory;
 
 
 -- ============================================================================
@@ -160,7 +160,7 @@ SELECT
     COUNT(*) AS emp_count,
     ROUND(AVG(salary), 2) AS avg_salary,
     ROUND(SUM(salary), 2) AS total_salary
-FROM {{zone_name}}.iceberg.employee_directory
+FROM {{zone_name}}.iceberg_demos.employee_directory
 GROUP BY department
 ORDER BY department;
 
@@ -187,4 +187,4 @@ SELECT
     SUM(CASE WHEN location IS NULL THEN 1 ELSE 0 END) AS null_location_count,
     SUM(CASE WHEN location IS NOT NULL THEN 1 ELSE 0 END) AS has_location_count,
     ROUND(SUM(salary), 2) AS total_salary
-FROM {{zone_name}}.iceberg.employee_directory;
+FROM {{zone_name}}.iceberg_demos.employee_directory;

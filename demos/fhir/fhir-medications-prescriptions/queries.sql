@@ -22,7 +22,7 @@ ASSERT VALUE intent = order WHERE prescription_id = 'medrx0301'
 ASSERT VALUE status = active WHERE prescription_id = 'medrx0302'
 ASSERT VALUE status = active WHERE prescription_id = 'medrx002'
 SELECT prescription_id, status, intent, medication, subject, authored_date
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 ORDER BY prescription_id;
 
 
@@ -38,7 +38,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE rx_count = 7 WHERE status = 'active'
 ASSERT VALUE rx_count = 5 WHERE status = 'completed'
 SELECT status, COUNT(*) AS rx_count
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 GROUP BY status
 ORDER BY rx_count DESC;
 
@@ -55,7 +55,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE intent = order
 ASSERT VALUE rx_count = 12
 SELECT intent, COUNT(*) AS rx_count
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 GROUP BY intent
 ORDER BY rx_count DESC;
 
@@ -73,7 +73,7 @@ ASSERT ROW_COUNT = 12
 ASSERT VALUE status = completed WHERE prescription_id = 'medrx0301'
 ASSERT VALUE status = active WHERE prescription_id = 'medrx0302'
 SELECT prescription_id, status, dosage_instructions
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 WHERE dosage_instructions IS NOT NULL
 ORDER BY prescription_id;
 
@@ -90,7 +90,7 @@ ASSERT ROW_COUNT = 9
 ASSERT VALUE status = completed WHERE prescription_id = 'medrx0301'
 ASSERT VALUE status = active WHERE prescription_id = 'medrx0311'
 SELECT prescription_id, status, dispense_request
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 WHERE dispense_request IS NOT NULL
 ORDER BY prescription_id;
 
@@ -106,7 +106,7 @@ ORDER BY prescription_id;
 -- 9 of 12 prescriptions have embedded Medication definitions
 ASSERT ROW_COUNT = 9
 SELECT prescription_id, contained
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 WHERE contained IS NOT NULL
 ORDER BY prescription_id;
 
@@ -132,7 +132,7 @@ SELECT prescription_id,
        CASE WHEN note IS NOT NULL THEN 'Y' ELSE '-' END AS has_note,
        CASE WHEN category IS NOT NULL THEN 'Y' ELSE '-' END AS has_category,
        df_file_name
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 ORDER BY prescription_id;
 
 
@@ -150,7 +150,7 @@ ASSERT VALUE kind = insurance WHERE coverage_id = '9876B1'
 ASSERT VALUE kind = 'self-pay' WHERE coverage_id = 'SP1234'
 ASSERT VALUE status = active WHERE coverage_id = 'SP1234'
 SELECT coverage_id, status, kind, type, subscriber, beneficiary, period
-FROM {{zone_name}}.fhir.coverage
+FROM {{zone_name}}.fhir_demos.coverage
 ORDER BY coverage_id;
 
 
@@ -166,7 +166,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE status = active WHERE coverage_id = '7546D'
 ASSERT VALUE status = active WHERE coverage_id = '9876B1'
 SELECT coverage_id, status, class
-FROM {{zone_name}}.fhir.coverage
+FROM {{zone_name}}.fhir_demos.coverage
 WHERE class IS NOT NULL
 ORDER BY coverage_id;
 
@@ -182,7 +182,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE coverage_count = 3 WHERE kind = 'insurance'
 ASSERT VALUE coverage_count = 1 WHERE kind = 'self-pay'
 SELECT kind, COUNT(*) AS coverage_count
-FROM {{zone_name}}.fhir.coverage
+FROM {{zone_name}}.fhir_demos.coverage
 GROUP BY kind
 ORDER BY coverage_count DESC;
 
@@ -196,10 +196,10 @@ ASSERT ROW_COUNT = 16
 ASSERT VALUE resource_type = Coverage WHERE resource_id = '9876B1'
 ASSERT VALUE resource_type = Prescription WHERE resource_id = 'medrx0301'
 SELECT 'Prescription' AS resource_type, prescription_id AS resource_id, df_file_name
-FROM {{zone_name}}.fhir.prescriptions
+FROM {{zone_name}}.fhir_demos.prescriptions
 UNION ALL
 SELECT 'Coverage' AS resource_type, coverage_id AS resource_id, df_file_name
-FROM {{zone_name}}.fhir.coverage
+FROM {{zone_name}}.fhir_demos.coverage
 ORDER BY resource_type, resource_id;
 
 
@@ -220,56 +220,56 @@ SELECT check_name, result FROM (
 
     -- Check 1: Prescription count = 12
     SELECT 'prescription_count_12' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.prescriptions) = 12
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.prescriptions) = 12
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Coverage count = 4
     SELECT 'coverage_count_4' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.coverage) = 4
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.coverage) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: All prescriptions have status
     SELECT 'rx_status_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.prescriptions WHERE status IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.prescriptions WHERE status IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: All prescriptions have intent
     SELECT 'rx_intent_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.prescriptions WHERE intent IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.prescriptions WHERE intent IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: Column mapping — prescription_id exists
     SELECT 'column_mapping_rx_id' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.prescriptions WHERE prescription_id IS NOT NULL) = 12
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.prescriptions WHERE prescription_id IS NOT NULL) = 12
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Coverage has status
     SELECT 'coverage_status_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.coverage WHERE status IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.coverage WHERE status IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: Exactly 9 prescriptions have contained resources (embedded Medication definitions)
     SELECT 'contained_resources_exist' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.prescriptions WHERE contained IS NOT NULL) = 9
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.prescriptions WHERE contained IS NOT NULL) = 9
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 8: File metadata on prescriptions
     SELECT 'file_metadata_rx' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.prescriptions WHERE df_file_name IS NOT NULL) = 12
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.prescriptions WHERE df_file_name IS NOT NULL) = 12
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial_demos
     COMMENT 'H3 spatial indexing and geographic analysis tables';
 -- ============================================================================
 -- TABLE 1: zones — 12 pricing zones across 8 world cities
@@ -30,7 +30,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial
 --
 -- Coordinates verified against real-world geography (Feb 2026).
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.zones (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.zones (
     zone_id INT,
     zone_name VARCHAR,
     zone_type VARCHAR,
@@ -40,9 +40,9 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.zones (
     surcharge_pct DOUBLE
 ) LOCATION '{{data_path}}/pip_zones';
 
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.zones TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.zones TO USER {{current_user}};
 
-INSERT INTO {{zone_name}}.spatial.zones VALUES
+INSERT INTO {{zone_name}}.spatial_demos.zones VALUES
     -- San Francisco
     (1,  'SFO Airport',      'airport',  'San Francisco', 'USA',
      'POLYGON((-122.40 37.60, -122.36 37.60, -122.36 37.63, -122.40 37.63, -122.40 37.60))',
@@ -105,7 +105,7 @@ INSERT INTO {{zone_name}}.spatial.zones VALUES
 --                 ---------
 --   Total:       1,000,000
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.driver_positions (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.driver_positions (
     id BIGINT,
     lat DOUBLE,
     lng DOUBLE,
@@ -113,11 +113,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.driver_positions (
     city VARCHAR
 ) LOCATION '{{data_path}}/pip_driver_positions';
 
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.driver_positions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.driver_positions TO USER {{current_user}};
 
 -- San Francisco: 150,000 points (bbox covers SFO Airport + SF Downtown)
 -- Lat: 37.58–37.82, Lng: -122.52–-122.34
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     id,
     37.58 + (0.24 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -128,7 +128,7 @@ FROM generate_series(1, 150000) AS t(id);
 
 -- New York: 150,000 points (bbox covers JFK Airport + Manhattan Core)
 -- Lat: 40.62–40.80, Lng: -74.02–-73.74
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     150000 + id,
     40.62 + (0.18 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -139,7 +139,7 @@ FROM generate_series(1, 150000) AS t(id);
 
 -- Paris: 150,000 points (bbox covers CDG Airport + Paris Centre)
 -- Lat: 48.84–49.04, Lng: 2.30–2.60
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     300000 + id,
     48.84 + (0.20 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -150,7 +150,7 @@ FROM generate_series(1, 150000) AS t(id);
 
 -- London: 150,000 points (bbox covers Heathrow + London City)
 -- Lat: 51.44–51.54, Lng: -0.52–0.06
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     450000 + id,
     51.44 + (0.10 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -161,7 +161,7 @@ FROM generate_series(1, 150000) AS t(id);
 
 -- Tokyo: 150,000 points (bbox covers Narita Airport + Shibuya)
 -- Lat: 35.64–35.80, Lng: 139.68–140.42
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     600000 + id,
     35.64 + (0.16 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -172,7 +172,7 @@ FROM generate_series(1, 150000) AS t(id);
 
 -- Sydney: 100,000 points (bbox covers Sydney CBD area)
 -- Lat: -33.90–-33.84, Lng: 151.18–151.24
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     750000 + id,
     -33.90 + (0.06 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -183,7 +183,7 @@ FROM generate_series(1, 100000) AS t(id);
 
 -- Los Angeles: 100,000 points (bbox covers LA Downtown area)
 -- Lat: 34.02–34.08, Lng: -118.28–-118.22
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     850000 + id,
     34.02 + (0.06 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -194,7 +194,7 @@ FROM generate_series(1, 100000) AS t(id);
 
 -- Global scatter: 50,000 points across the world (outside any zone)
 -- Lat: -50 to 60, Lng: -170 to 170
-INSERT INTO {{zone_name}}.spatial.driver_positions
+INSERT INTO {{zone_name}}.spatial_demos.driver_positions
 SELECT
     950000 + id,
     -50.0 + (110.0 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -209,7 +209,7 @@ FROM generate_series(1, 50000) AS t(id);
 -- edge hexagons (~105,000 m² area). The view is lazy: cells are computed on
 -- read, not stored. This is the "index" side of the point-in-polygon trick.
 -- ============================================================================
-CREATE OR REPLACE VIEW {{zone_name}}.spatial.driver_cells AS
+CREATE OR REPLACE VIEW {{zone_name}}.spatial_demos.driver_cells AS
 SELECT
     id,
     lat,
@@ -217,7 +217,7 @@ SELECT
     driver_id,
     city,
     h3_latlng_to_cell(lat, lng, 9) AS h3_cell
-FROM {{zone_name}}.spatial.driver_positions;
+FROM {{zone_name}}.spatial_demos.driver_positions;
 -- ============================================================================
 -- VIEW 4: zone_cells — Zones expanded to H3 cell coverage
 -- ============================================================================
@@ -225,7 +225,7 @@ FROM {{zone_name}}.spatial.driver_positions;
 -- cell that covers the zone. JOIN driver_cells.h3_cell = zone_cells.h3_cell
 -- gives O(1) point-in-polygon — no geometry math at query time.
 -- ============================================================================
-CREATE OR REPLACE VIEW {{zone_name}}.spatial.zone_cells AS
+CREATE OR REPLACE VIEW {{zone_name}}.spatial_demos.zone_cells AS
 SELECT
     zone_id,
     zone_name,
@@ -234,4 +234,4 @@ SELECT
     country,
     surcharge_pct,
     UNNEST(h3_polyfill(polygon_wkt, 9)) AS h3_cell
-FROM {{zone_name}}.spatial.zones;
+FROM {{zone_name}}.spatial_demos.zones;

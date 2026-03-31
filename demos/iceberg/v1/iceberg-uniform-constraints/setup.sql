@@ -9,13 +9,13 @@
 
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm constraints demo zone';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_constraints COMMENT 'CHECK constraints with UniForm';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'CHECK constraints with UniForm';
 
 -- --------------------------------------------------------------------------
 -- Transactions Table — Constraints + UniForm
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_constraints.transactions (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.transactions (
     txn_id        INT,
     account_id    VARCHAR,
     txn_type      VARCHAR,
@@ -35,7 +35,7 @@ TBLPROPERTIES (
 -- Seed Data — 25 transactions across 5 accounts, 3 currencies
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.iceberg_constraints.transactions VALUES
+INSERT INTO {{zone_name}}.iceberg_demos.transactions VALUES
     (1,  'ACC-1001', 'deposit',    5000.00,  5000.00,  'USD', '2025-02-01'),
     (2,  'ACC-1001', 'withdrawal', 1200.00,  3800.00,  'USD', '2025-02-02'),
     (3,  'ACC-1002', 'deposit',    8500.00,  8500.00,  'EUR', '2025-02-01'),
@@ -66,5 +66,5 @@ INSERT INTO {{zone_name}}.iceberg_constraints.transactions VALUES
 -- Schema Detection & Permissions
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_constraints.transactions;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_constraints.transactions TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.transactions;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.transactions TO USER {{current_user}};

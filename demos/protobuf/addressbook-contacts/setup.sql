@@ -21,7 +21,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.protobuf
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.protobuf_demos
     COMMENT 'Protobuf-backed external tables';
 
 -- ============================================================================
@@ -31,7 +31,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.protobuf
 -- joined into a comma-separated string. The PhoneType enum is decoded to
 -- its string label. Timestamps are converted to ISO 8601 format.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.protobuf.contacts
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.protobuf_demos.contacts
 USING PROTOBUF
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -63,7 +63,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.protobuf.contacts TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.protobuf_demos.contacts TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: contact_phones — One row per phone number (22 total)
 -- ============================================================================
@@ -71,7 +71,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.protobuf.contacts TO USER {{current_user}};
 -- Person-level fields (name, id, email) are duplicated per phone row.
 -- Contacts with no phones (Luis Hernandez) produce zero rows here.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.protobuf.contact_phones
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.protobuf_demos.contact_phones
 USING PROTOBUF
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -103,4 +103,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.protobuf.contact_phones TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.protobuf_demos.contact_phones TO USER {{current_user}};

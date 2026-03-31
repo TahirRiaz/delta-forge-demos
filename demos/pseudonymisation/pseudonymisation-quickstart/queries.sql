@@ -25,7 +25,7 @@
 -- Expected: 4 rules (ssn/redact, phone/mask, last_name/keyed_hash, date_of_birth/generalize)
 
 ASSERT ROW_COUNT = 4
-SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation.bank_customers;
+SHOW PSEUDONYMISATION RULES FOR {{zone_name}}.pseudonymisation_demos.bank_customers;
 
 
 -- ============================================================================
@@ -57,7 +57,7 @@ SELECT
     account_tier,
     balance,
     active
-FROM {{zone_name}}.pseudonymisation.bank_customers;
+FROM {{zone_name}}.pseudonymisation_demos.bank_customers;
 
 
 -- ============================================================================
@@ -82,7 +82,7 @@ SELECT
     COUNT(*)           AS customer_count,
     ROUND(AVG(balance), 2) AS avg_balance,
     ROUND(SUM(balance), 2) AS total_balance
-FROM {{zone_name}}.pseudonymisation.bank_customers
+FROM {{zone_name}}.pseudonymisation_demos.bank_customers
 GROUP BY account_tier
 ORDER BY account_tier;
 
@@ -104,4 +104,4 @@ SELECT
     ssn AS ssn_redacted,
     account_tier,
     active
-FROM {{zone_name}}.pseudonymisation.bank_customers;
+FROM {{zone_name}}.pseudonymisation_demos.bank_customers;

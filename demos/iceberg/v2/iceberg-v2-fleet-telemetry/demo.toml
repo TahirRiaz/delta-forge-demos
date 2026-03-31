@@ -47,4 +47,4 @@ size_bytes = 700
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.fleet_telemetry"
+name = "{{zone_name}}.iceberg_demos.fleet_telemetry"

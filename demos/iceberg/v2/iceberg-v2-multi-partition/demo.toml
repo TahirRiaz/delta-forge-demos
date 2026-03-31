@@ -131,4 +131,4 @@ size_bytes = 9307
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.weather_readings"
+name = "{{zone_name}}.iceberg_demos.weather_readings"

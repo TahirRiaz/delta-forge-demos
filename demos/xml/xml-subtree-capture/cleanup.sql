@@ -8,11 +8,11 @@
 -- ============================================================================
 
 -- STEP 1: Drop tables (WITH FILES removes the underlying data files too)
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.products_json WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml.products_xml WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml_demos.products_json WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.xml_demos.products_xml WITH FILES;
 
 -- STEP 2: Drop schema
-DROP SCHEMA IF EXISTS {{zone_name}}.xml;
+DROP SCHEMA IF EXISTS {{zone_name}}.xml_demos;
 
 -- STEP 3: Drop zone
 DROP ZONE IF EXISTS {{zone_name}};

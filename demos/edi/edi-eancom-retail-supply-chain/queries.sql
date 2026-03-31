@@ -50,7 +50,7 @@ SELECT
     unh_1 AS msg_ref,
     unb_2 AS sender,
     unb_3 AS recipient
-FROM {{zone_name}}.edi.eancom_messages
+FROM {{zone_name}}.edi_demos.eancom_messages
 ORDER BY df_file_name;
 
 
@@ -73,7 +73,7 @@ SELECT
     unh_2 AS msg_type,
     bgm_1,
     bgm_2
-FROM {{zone_name}}.edi.eancom_materialized
+FROM {{zone_name}}.edi_demos.eancom_materialized
 ORDER BY df_file_name;
 
 
@@ -90,7 +90,7 @@ ASSERT ROW_COUNT >= 3
 SELECT
     nad_1 AS role,
     COUNT(*) AS partner_count
-FROM {{zone_name}}.edi.eancom_materialized
+FROM {{zone_name}}.edi_demos.eancom_materialized
 GROUP BY nad_1
 ORDER BY partner_count DESC;
 
@@ -113,7 +113,7 @@ SELECT
     unh_2 AS msg_type,
     lin_1,
     lin_3
-FROM {{zone_name}}.edi.eancom_materialized
+FROM {{zone_name}}.edi_demos.eancom_materialized
 WHERE lin_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -138,7 +138,7 @@ SELECT
     lin_3,
     nad_1,
     nad_2
-FROM {{zone_name}}.edi.eancom_materialized
+FROM {{zone_name}}.edi_demos.eancom_materialized
 WHERE unh_2 = 'PRICAT'
 ORDER BY df_file_name;
 
@@ -165,7 +165,7 @@ SELECT
     nad_1,
     lin_1,
     lin_3
-FROM {{zone_name}}.edi.eancom_materialized
+FROM {{zone_name}}.edi_demos.eancom_materialized
 WHERE unh_2 = 'DESADV'
 ORDER BY df_file_name;
 
@@ -188,7 +188,7 @@ SELECT
     sts_1,
     nad_1,
     nad_2
-FROM {{zone_name}}.edi.eancom_materialized
+FROM {{zone_name}}.edi_demos.eancom_materialized
 WHERE unh_2 = 'IFTSTA'
 ORDER BY df_file_name;
 
@@ -207,21 +207,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: Exact total message count = 6 (one per file)
     SELECT 'message_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eancom_messages) = 6
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eancom_messages) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 6 distinct source files in df_file_name
     SELECT 'source_files_6' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi.eancom_messages) = 6
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi_demos.eancom_messages) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: All 6 messages have BGM segments materialized
     SELECT 'bgm_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eancom_materialized
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eancom_materialized
                        WHERE bgm_1 IS NOT NULL AND bgm_2 IS NOT NULL) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -229,7 +229,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: df_transaction_json is populated for all 6 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eancom_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eancom_messages
                        WHERE df_transaction_json IS NOT NULL) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

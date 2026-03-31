@@ -11,7 +11,7 @@
 
 ASSERT ROW_COUNT = 5
 SELECT *
-FROM {{zone_name}}.xml.products_json;
+FROM {{zone_name}}.xml_demos.products_json;
 
 
 -- ============================================================================
@@ -20,7 +20,7 @@ FROM {{zone_name}}.xml.products_json;
 
 ASSERT ROW_COUNT = 5
 SELECT *
-FROM {{zone_name}}.xml.products_xml;
+FROM {{zone_name}}.xml_demos.products_xml;
 
 
 -- ============================================================================
@@ -42,7 +42,7 @@ ASSERT VALUE catalog_product_price_attr_currency = 'EUR' WHERE catalog_product_a
 ASSERT VALUE catalog_product_name = 'Fiber Optic Transceiver' WHERE catalog_product_attr_id = 'PRD-005'
 SELECT catalog_product_attr_id, catalog_product_attr_status, catalog_product_name, catalog_product_category, catalog_product_price, catalog_product_price_attr_currency,
        catalog_product_specifications, catalog_product_supplier, catalog_product_tags
-FROM {{zone_name}}.xml.products_json
+FROM {{zone_name}}.xml_demos.products_json
 ORDER BY catalog_product_attr_id;
 
 
@@ -59,7 +59,7 @@ ASSERT VALUE catalog_product_name = 'Power Supply Unit' WHERE catalog_product_at
 ASSERT VALUE catalog_product_price_attr_currency = 'EUR' WHERE catalog_product_attr_id = 'PRD-004'
 SELECT catalog_product_attr_id, catalog_product_attr_status, catalog_product_name, catalog_product_category, catalog_product_price, catalog_product_price_attr_currency,
        catalog_product_specifications, catalog_product_supplier, catalog_product_tags
-FROM {{zone_name}}.xml.products_xml
+FROM {{zone_name}}.xml_demos.products_xml
 ORDER BY catalog_product_attr_id;
 
 
@@ -71,7 +71,7 @@ ORDER BY catalog_product_attr_id;
 
 ASSERT VALUE specs_json_count = 5
 SELECT COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '{%') AS specs_json_count
-FROM {{zone_name}}.xml.products_json;
+FROM {{zone_name}}.xml_demos.products_json;
 
 
 -- ============================================================================
@@ -82,7 +82,7 @@ FROM {{zone_name}}.xml.products_json;
 
 ASSERT VALUE specs_xml_count = 5
 SELECT COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '<%') AS specs_xml_count
-FROM {{zone_name}}.xml.products_xml;
+FROM {{zone_name}}.xml_demos.products_xml;
 
 
 -- ============================================================================
@@ -95,7 +95,7 @@ ASSERT VALUE supplier_json_count = 5
 SELECT COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
                            OR catalog_product_supplier LIKE '%NetCore%'
                            OR catalog_product_supplier LIKE '%EuroPower%') AS supplier_json_count
-FROM {{zone_name}}.xml.products_json;
+FROM {{zone_name}}.xml_demos.products_json;
 
 
 -- ============================================================================
@@ -106,7 +106,7 @@ ASSERT VALUE supplier_xml_count = 5
 SELECT COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
                            OR catalog_product_supplier LIKE '%NetCore%'
                            OR catalog_product_supplier LIKE '%EuroPower%') AS supplier_xml_count
-FROM {{zone_name}}.xml.products_xml;
+FROM {{zone_name}}.xml_demos.products_xml;
 
 
 -- ============================================================================
@@ -117,7 +117,7 @@ FROM {{zone_name}}.xml.products_xml;
 
 ASSERT VALUE top_level_count = 5
 SELECT COUNT(*) FILTER (WHERE catalog_product_name IS NOT NULL AND catalog_product_category IS NOT NULL) AS top_level_count
-FROM {{zone_name}}.xml.products_json;
+FROM {{zone_name}}.xml_demos.products_json;
 
 
 -- ============================================================================
@@ -127,7 +127,7 @@ FROM {{zone_name}}.xml.products_json;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE catalog_product_name = 'Industrial Sensor Module'
 SELECT catalog_product_attr_id, catalog_product_name, catalog_product_specifications
-FROM {{zone_name}}.xml.products_json
+FROM {{zone_name}}.xml_demos.products_json
 WHERE catalog_product_attr_id = 'PRD-001';
 
 
@@ -138,7 +138,7 @@ WHERE catalog_product_attr_id = 'PRD-001';
 ASSERT ROW_COUNT = 1
 ASSERT VALUE catalog_product_name = 'Industrial Sensor Module'
 SELECT catalog_product_attr_id, catalog_product_name, catalog_product_specifications
-FROM {{zone_name}}.xml.products_xml
+FROM {{zone_name}}.xml_demos.products_xml
 WHERE catalog_product_attr_id = 'PRD-001';
 
 
@@ -152,8 +152,8 @@ SELECT j.catalog_product_attr_id,
        j.catalog_product_name,
        j.catalog_product_specifications,
        x.catalog_product_specifications
-FROM {{zone_name}}.xml.products_json j
-JOIN {{zone_name}}.xml.products_xml x ON j.catalog_product_attr_id = x.catalog_product_attr_id
+FROM {{zone_name}}.xml_demos.products_json j
+JOIN {{zone_name}}.xml_demos.products_xml x ON j.catalog_product_attr_id = x.catalog_product_attr_id
 WHERE j.catalog_product_attr_id = 'PRD-002';
 
 
@@ -166,38 +166,38 @@ WHERE j.catalog_product_attr_id = 'PRD-002';
 ASSERT ROW_COUNT = 7
 SELECT 'json_row_count' AS check_name,
        CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.xml.products_json
+FROM {{zone_name}}.xml_demos.products_json
 UNION ALL
 SELECT 'xml_row_count',
        CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.xml.products_xml
+FROM {{zone_name}}.xml_demos.products_xml
 UNION ALL
 SELECT 'specs_is_json',
        CASE WHEN COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '{%') = 5
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.xml.products_json
+FROM {{zone_name}}.xml_demos.products_json
 UNION ALL
 SELECT 'specs_is_xml',
        CASE WHEN COUNT(*) FILTER (WHERE catalog_product_specifications LIKE '<%') = 5
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.xml.products_xml
+FROM {{zone_name}}.xml_demos.products_xml
 UNION ALL
 SELECT 'supplier_json_has_company',
        CASE WHEN COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
                                     OR catalog_product_supplier LIKE '%NetCore%'
                                     OR catalog_product_supplier LIKE '%EuroPower%') = 5
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.xml.products_json
+FROM {{zone_name}}.xml_demos.products_json
 UNION ALL
 SELECT 'supplier_xml_has_company',
        CASE WHEN COUNT(*) FILTER (WHERE catalog_product_supplier LIKE '%TechParts%'
                                     OR catalog_product_supplier LIKE '%NetCore%'
                                     OR catalog_product_supplier LIKE '%EuroPower%') = 5
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.xml.products_xml
+FROM {{zone_name}}.xml_demos.products_xml
 UNION ALL
 SELECT 'top_level_flattened',
        CASE WHEN COUNT(*) FILTER (WHERE catalog_product_name IS NOT NULL AND catalog_product_category IS NOT NULL) = 5
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.xml.products_json
+FROM {{zone_name}}.xml_demos.products_json
 ORDER BY check_name;

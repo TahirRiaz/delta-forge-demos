@@ -36,7 +36,7 @@ SELECT
         WHEN '278' THEN 'Health Services Review'
         ELSE 'Other'
     END AS transaction_name
-FROM {{zone_name}}.edi.status_messages
+FROM {{zone_name}}.edi_demos.status_messages
 ORDER BY df_file_name;
 
 
@@ -58,7 +58,7 @@ SELECT
         ELSE 'Other'
     END AS type_name,
     COUNT(*) AS type_count
-FROM {{zone_name}}.edi.status_messages
+FROM {{zone_name}}.edi_demos.status_messages
 GROUP BY st_1
 ORDER BY st_1;
 
@@ -87,7 +87,7 @@ SELECT
         WHEN stc_1 LIKE 'R%' THEN 'Request for Information'
         ELSE 'Other'
     END AS status_category
-FROM {{zone_name}}.edi.status_messages
+FROM {{zone_name}}.edi_demos.status_messages
 WHERE stc_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -110,7 +110,7 @@ SELECT
         WHEN 'YU' THEN 'Federal Medicare or Medicaid Payment'
         ELSE 'Other Amount'
     END AS amount_description
-FROM {{zone_name}}.edi.status_messages
+FROM {{zone_name}}.edi_demos.status_messages
 WHERE amt_2 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -137,7 +137,7 @@ SELECT
         WHEN '2' THEN 'Referenced Trace'
         ELSE 'Other'
     END AS trace_type
-FROM {{zone_name}}.edi.status_messages
+FROM {{zone_name}}.edi_demos.status_messages
 WHERE st_1 IN ('276', '277')
 ORDER BY df_file_name;
 
@@ -171,7 +171,7 @@ SELECT
         WHEN 'E' THEN 'Extension'
         ELSE 'Other'
     END AS certification_description
-FROM {{zone_name}}.edi.status_details
+FROM {{zone_name}}.edi_demos.status_details
 WHERE um_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -194,7 +194,7 @@ SELECT
     svc_1 AS procedure_code,
     svc_2 AS charged_amount,
     svc_3 AS paid_amount
-FROM {{zone_name}}.edi.status_details
+FROM {{zone_name}}.edi_demos.status_details
 WHERE svc_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -220,8 +220,8 @@ SELECT
     CASE WHEN m.stc_1 IS NOT NULL THEN 'Yes' ELSE 'No' END AS has_status_code,
     CASE WHEN d.um_1 IS NOT NULL THEN 'Yes' ELSE 'No' END AS has_authorization,
     CASE WHEN d.svc_1 IS NOT NULL THEN 'Yes' ELSE 'No' END AS has_service_line
-FROM {{zone_name}}.edi.status_messages m
-JOIN {{zone_name}}.edi.status_details d
+FROM {{zone_name}}.edi_demos.status_messages m
+JOIN {{zone_name}}.edi_demos.status_details d
     ON m.df_file_name = d.df_file_name
 ORDER BY m.df_file_name;
 
@@ -239,21 +239,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 3
     SELECT 'total_files_3' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.status_messages) = 3
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.status_messages) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 3 distinct transaction types
     SELECT 'transaction_types_3' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi.status_messages) = 3
+           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi_demos.status_messages) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: 1 status response with STC code
     SELECT 'status_response' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.status_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.status_messages
                        WHERE stc_1 IS NOT NULL) = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -261,7 +261,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: 1 authorization review with UM segment
     SELECT 'auth_review' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.status_details
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.status_details
                        WHERE um_1 IS NOT NULL) = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

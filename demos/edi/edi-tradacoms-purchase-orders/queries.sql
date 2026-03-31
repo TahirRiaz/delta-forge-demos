@@ -53,7 +53,7 @@ SELECT
     mhd_2 AS msg_type,
     stx_2 AS sender,
     stx_3 AS receiver
-FROM {{zone_name}}.edi.tradacoms_order_compact
+FROM {{zone_name}}.edi_demos.tradacoms_order_compact
 ORDER BY mhd_1;
 
 
@@ -80,7 +80,7 @@ SELECT
     typ_2 AS typ_desc,
     sdt_2 AS supplier_name,
     cdt_2 AS customer_name
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDHDR:9';
 
 
@@ -114,7 +114,7 @@ SELECT
     old_5 AS quantity,
     old_6 AS unit_price,
     old_10 AS description
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL
 ORDER BY ord_1, old_1;
 
@@ -140,7 +140,7 @@ ASSERT VALUE order_total = 48 WHERE order_ref = '982::940321'
 SELECT
     ord_1 AS order_ref,
     SUM(CAST(old_5 AS INTEGER) * CAST(old_6 AS INTEGER)) AS order_total
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL
 GROUP BY ord_1
 ORDER BY ord_1;
@@ -166,7 +166,7 @@ SELECT
     ord_1 AS order_ref,
     din_1 AS delivery_date,
     din_4 AS instruction
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDERS:9' AND din_1 IS NOT NULL
 ORDER BY ord_1;
 
@@ -188,7 +188,7 @@ ASSERT VALUE location_code = '5000600003282::68347' WHERE order_ref = '982::9403
 SELECT
     ord_1 AS order_ref,
     clo_1 AS location_code
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDERS:9' AND clo_1 IS NOT NULL
 ORDER BY ord_1;
 
@@ -212,7 +212,7 @@ SELECT
     ord_1 AS order_ref,
     otr_1 AS declared_lines,
     otr_2 AS declared_total
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDERS:9' AND otr_1 IS NOT NULL
 ORDER BY ord_1;
 
@@ -236,7 +236,7 @@ SELECT
     COUNT(*) AS total_lines,
     SUM(CAST(old_5 AS INTEGER) * CAST(old_6 AS INTEGER)) AS grand_total,
     COUNT(DISTINCT old_2) AS distinct_products
-FROM {{zone_name}}.edi.tradacoms_order_lines
+FROM {{zone_name}}.edi_demos.tradacoms_order_lines
 WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL;
 
 
@@ -256,14 +256,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Exact total message count = 4 (ORDHDR + ORDERS x2 + ORDTLR)
     SELECT 'message_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_order_compact) = 4
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_order_compact) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 2 distinct orders in ORDERS messages
     SELECT 'order_count' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT ord_1) FROM {{zone_name}}.edi.tradacoms_order_lines
+           CASE WHEN (SELECT COUNT(DISTINCT ord_1) FROM {{zone_name}}.edi_demos.tradacoms_order_lines
                        WHERE mhd_2 = 'ORDERS:9' AND ord_1 IS NOT NULL) = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -271,7 +271,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: 2 line items (last OLD per ORDERS message)
     SELECT 'line_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.tradacoms_order_lines
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_order_lines
                        WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL) = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -280,7 +280,7 @@ SELECT check_name, result FROM (
     -- Check 4: Grand total = 168 (120 + 48)
     SELECT 'grand_total' AS check_name,
            CASE WHEN (SELECT SUM(CAST(old_5 AS INTEGER) * CAST(old_6 AS INTEGER))
-                       FROM {{zone_name}}.edi.tradacoms_order_lines
+                       FROM {{zone_name}}.edi_demos.tradacoms_order_lines
                        WHERE mhd_2 = 'ORDERS:9' AND old_1 IS NOT NULL) = 168
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

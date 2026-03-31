@@ -36,7 +36,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: hipaa_messages — Compact view (11 transactions)
@@ -48,14 +48,14 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 -- Use df_transaction_json with JSON functions for deep segment access.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.hipaa_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.hipaa_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
     edi_config = '{"ediFormat": "x12"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.hipaa_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.hipaa_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: hipaa_materialized — Key healthcare fields extracted (11 transactions)
 -- ============================================================================
@@ -75,7 +75,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.hipaa_messages TO USER {{current_user}};
 --   BPR_2  — Total payment amount
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.hipaa_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.hipaa_materialized
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -90,4 +90,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.hipaa_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.hipaa_materialized TO USER {{current_user}};

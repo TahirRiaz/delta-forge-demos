@@ -19,7 +19,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir_demos
     COMMENT 'FHIR-backed external tables — HL7 FHIR R5 resources as JSON';
 
 -- ============================================================================
@@ -36,7 +36,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
 -- The dosageInstruction and contained arrays are kept as JSON blobs via
 -- json_paths since they have deeply variable structure across prescriptions.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.prescriptions
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.prescriptions
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -76,7 +76,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.prescriptions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.prescriptions TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: coverage — 4 Coverage resources (insurance plans)
 -- ============================================================================
@@ -89,7 +89,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.fhir.prescriptions TO USER {{current_user}};
 --
 -- The class array is preserved as JSON for downstream processing.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.coverage
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.coverage
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -122,4 +122,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.coverage TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.coverage TO USER {{current_user}};

@@ -26,15 +26,15 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg v3 table with deletion vectors
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
 -- Delta Forge parses v3.metadata.json to discover schema, data files, and the
 -- Puffin deletion vector. The format-version field in metadata.json is 3.
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.shipment_manifests
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.shipment_manifests
 USING ICEBERG
 LOCATION '{{data_path}}/shipment_manifests';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.shipment_manifests TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.shipment_manifests TO USER {{current_user}};

@@ -48,7 +48,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: edifact_messages — Compact view
@@ -71,7 +71,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   UNH_2 = Message identifier (e.g. ORDERS:D:96A:UN, INVOIC:D:01B:UN:EAN010)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.edifact_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.edifact_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -79,4 +79,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.edifact_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.edifact_messages TO USER {{current_user}};

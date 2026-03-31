@@ -41,7 +41,7 @@ SELECT
     unh_2 AS msg_type,
     unh_1 AS msg_ref,
     unb_2 AS sender
-FROM {{zone_name}}.edi.edifact_messages
+FROM {{zone_name}}.edi_demos.edifact_messages
 ORDER BY df_file_name;
 
 
@@ -59,7 +59,7 @@ ASSERT VALUE msg_count = 1 WHERE msg_type = 'PAORES'
 SELECT
     unh_2 AS msg_type,
     COUNT(*) AS msg_count
-FROM {{zone_name}}.edi.edifact_messages
+FROM {{zone_name}}.edi_demos.edifact_messages
 GROUP BY unh_2
 ORDER BY msg_count DESC, unh_2;
 
@@ -87,7 +87,7 @@ SELECT
         ELSE unb_1
     END AS syntax_name,
     COUNT(*) AS msg_count
-FROM {{zone_name}}.edi.edifact_messages
+FROM {{zone_name}}.edi_demos.edifact_messages
 GROUP BY unb_1
 ORDER BY msg_count DESC;
 
@@ -120,7 +120,7 @@ SELECT
     END AS domain,
     unh_2 AS msg_type,
     COUNT(*) AS msg_count
-FROM {{zone_name}}.edi.edifact_messages
+FROM {{zone_name}}.edi_demos.edifact_messages
 GROUP BY
     CASE
         WHEN unh_2 LIKE 'ORDERS%' OR unh_2 LIKE 'ORDRSP%' OR unh_2 LIKE 'INVOIC%'
@@ -157,7 +157,7 @@ SELECT
     END AS standard,
     COUNT(DISTINCT df_file_name) AS file_count,
     COUNT(*) AS msg_count
-FROM {{zone_name}}.edi.edifact_messages
+FROM {{zone_name}}.edi_demos.edifact_messages
 GROUP BY
     CASE
         WHEN df_file_name LIKE 'eancom%' THEN 'EANCOM'
@@ -178,7 +178,7 @@ SELECT
     df_file_name,
     unh_2 AS msg_type,
     df_transaction_json
-FROM {{zone_name}}.edi.edifact_messages
+FROM {{zone_name}}.edi_demos.edifact_messages
 ORDER BY df_file_name
 LIMIT 3;
 
@@ -195,25 +195,25 @@ ASSERT VALUE result = 'PASS' WHERE check_name = 'json_populated'
 SELECT check_name, result FROM (
 
     SELECT 'message_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.edifact_messages) >= 22
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.edifact_messages) >= 22
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     SELECT 'source_files_22' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi.edifact_messages) = 22
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.edi_demos.edifact_messages) = 22
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     SELECT 'multi_message_type' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT unh_2) FROM {{zone_name}}.edi.edifact_messages) >= 10
+           CASE WHEN (SELECT COUNT(DISTINCT unh_2) FROM {{zone_name}}.edi_demos.edifact_messages) >= 10
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.edifact_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.edifact_messages
                        WHERE df_transaction_json IS NOT NULL) >= 22
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

@@ -13,7 +13,7 @@
 
 ASSERT ROW_COUNT = 73089
 SELECT *
-FROM {{zone_name}}.parquet.all_orders;
+FROM {{zone_name}}.parquet_demos.all_orders;
 
 
 -- ============================================================================
@@ -23,7 +23,7 @@ FROM {{zone_name}}.parquet.all_orders;
 ASSERT ROW_COUNT = 20
 SELECT "OrderID", "CustomerID", "SalespersonPersonID", "OrderDate",
        "ExpectedDeliveryDate", "IsUndersupplyBackordered"
-FROM {{zone_name}}.parquet.all_orders
+FROM {{zone_name}}.parquet_demos.all_orders
 LIMIT 20;
 
 
@@ -33,7 +33,7 @@ LIMIT 20;
 
 ASSERT ROW_COUNT = 14
 SELECT df_file_name, COUNT(*) AS row_count
-FROM {{zone_name}}.parquet.all_orders
+FROM {{zone_name}}.parquet_demos.all_orders
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -44,7 +44,7 @@ ORDER BY df_file_name;
 
 ASSERT VALUE file_count = 14
 SELECT COUNT(DISTINCT df_file_name) AS file_count
-FROM {{zone_name}}.parquet.all_orders;
+FROM {{zone_name}}.parquet_demos.all_orders;
 
 
 -- ============================================================================
@@ -53,7 +53,7 @@ FROM {{zone_name}}.parquet.all_orders;
 
 ASSERT ROW_COUNT = 23636
 SELECT *
-FROM {{zone_name}}.parquet.orders_2015;
+FROM {{zone_name}}.parquet_demos.orders_2015;
 
 
 -- ============================================================================
@@ -63,7 +63,7 @@ FROM {{zone_name}}.parquet.orders_2015;
 ASSERT ROW_COUNT = 4
 ASSERT VALUE row_count >= 1 WHERE df_file_name LIKE '%2015%'
 SELECT df_file_name, COUNT(*) AS row_count
-FROM {{zone_name}}.parquet.orders_2015
+FROM {{zone_name}}.parquet_demos.orders_2015
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -74,7 +74,7 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 1400
 SELECT *
-FROM {{zone_name}}.parquet.orders_sample;
+FROM {{zone_name}}.parquet_demos.orders_sample;
 
 
 -- ============================================================================
@@ -83,7 +83,7 @@ FROM {{zone_name}}.parquet.orders_sample;
 
 ASSERT ROW_COUNT = 5210
 SELECT *
-FROM {{zone_name}}.parquet.orders_q1_2014;
+FROM {{zone_name}}.parquet_demos.orders_q1_2014;
 
 
 -- ============================================================================
@@ -92,7 +92,7 @@ FROM {{zone_name}}.parquet.orders_q1_2014;
 
 ASSERT VALUE metadata_count = 73089
 SELECT COUNT(*) AS metadata_count
-FROM {{zone_name}}.parquet.all_orders
+FROM {{zone_name}}.parquet_demos.all_orders
 WHERE df_file_name IS NOT NULL;
 
 
@@ -105,7 +105,7 @@ ASSERT VALUE total_orders = 7481 WHERE "SalespersonPersonID" = 16
 SELECT "SalespersonPersonID",
        COUNT(*) AS total_orders,
        COUNT(DISTINCT "CustomerID") AS unique_customers
-FROM {{zone_name}}.parquet.all_orders
+FROM {{zone_name}}.parquet_demos.all_orders
 GROUP BY "SalespersonPersonID"
 ORDER BY total_orders DESC;
 
@@ -118,8 +118,8 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE order_count = 73089 WHERE "IsUndersupplyBackordered" = true
 SELECT "IsUndersupplyBackordered",
        COUNT(*) AS order_count,
-       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM {{zone_name}}.parquet.all_orders), 1) AS pct
-FROM {{zone_name}}.parquet.all_orders
+       ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM {{zone_name}}.parquet_demos.all_orders), 1) AS pct
+FROM {{zone_name}}.parquet_demos.all_orders
 GROUP BY "IsUndersupplyBackordered";
 
 
@@ -141,49 +141,49 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total row count = 73,089
     SELECT 'total_count_73089' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet.all_orders) = 73089
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet_demos.all_orders) = 73089
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 14 distinct source files (recursive scanning)
     SELECT 'recursive_14_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.parquet.all_orders) = 14
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.parquet_demos.all_orders) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: File filter — 2015 has 23,636 rows
     SELECT 'filter_2015_count' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet.orders_2015) = 23636
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet_demos.orders_2015) = 23636
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: File filter — 2015 has 4 files
     SELECT 'filter_2015_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.parquet.orders_2015) = 4
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.parquet_demos.orders_2015) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: Max rows — sample has 1,400 rows (100 x 14)
     SELECT 'max_rows_1400' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet.orders_sample) = 1400
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet_demos.orders_sample) = 1400
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Single quarter — Q1 2014 has 5,210 rows
     SELECT 'quarter_q1_2014' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet.orders_q1_2014) = 5210
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet_demos.orders_q1_2014) = 5210
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: File metadata populated for all rows
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet.all_orders WHERE df_file_name IS NOT NULL) = 73089
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.parquet_demos.all_orders WHERE df_file_name IS NOT NULL) = 73089
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -192,7 +192,7 @@ SELECT check_name, result FROM (
     SELECT 'schema_orderid_exists' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
-               WHERE table_schema = 'parquet' AND table_name = 'all_orders'
+               WHERE table_schema = 'parquet_demos' AND table_name = 'all_orders'
                AND column_name = 'OrderID'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -202,14 +202,14 @@ SELECT check_name, result FROM (
     SELECT 'column_count_20' AS check_name,
            CASE WHEN (
                SELECT COUNT(*) FROM information_schema.columns
-               WHERE table_schema = 'parquet' AND table_name = 'all_orders'
+               WHERE table_schema = 'parquet_demos' AND table_name = 'all_orders'
            ) = 20 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 10: Sampled data covers all 14 files
     SELECT 'sample_all_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.parquet.orders_sample) = 14
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.parquet_demos.orders_sample) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

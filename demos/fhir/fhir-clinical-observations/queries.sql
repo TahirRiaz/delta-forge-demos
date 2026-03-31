@@ -19,7 +19,7 @@ ASSERT ROW_COUNT = 15
 ASSERT VALUE status = final WHERE observation_id = 'bulk-observation-87'
 ASSERT VALUE status = final WHERE observation_id = 'bulk-observation-73'
 SELECT observation_id, status, subject, effective_date, value_quantity
-FROM {{zone_name}}.fhir.observations_bulk
+FROM {{zone_name}}.fhir_demos.observations_bulk
 ORDER BY effective_date
 LIMIT 15;
 
@@ -39,7 +39,7 @@ ASSERT VALUE last_record = 100
 SELECT COUNT(*) AS total_readings,
        MIN(df_row_number) AS first_record,
        MAX(df_row_number) AS last_record
-FROM {{zone_name}}.fhir.observations_bulk;
+FROM {{zone_name}}.fhir_demos.observations_bulk;
 
 
 -- ============================================================================
@@ -56,7 +56,7 @@ ASSERT VALUE status = final WHERE observation_id = 'bmi'
 ASSERT VALUE status = final WHERE observation_id = 'body-height'
 ASSERT VALUE status = final WHERE observation_id = 'glasgow'
 SELECT observation_id, status, code, effective_date, value_quantity
-FROM {{zone_name}}.fhir.observations_clinical
+FROM {{zone_name}}.fhir_demos.observations_clinical
 ORDER BY observation_id;
 
 
@@ -84,7 +84,7 @@ SELECT observation_id,
        CASE WHEN interpretation IS NOT NULL THEN 'Y' ELSE '-' END AS has_interp,
        CASE WHEN category IS NOT NULL THEN 'Y' ELSE '-' END AS has_category,
        df_file_name
-FROM {{zone_name}}.fhir.observations_clinical
+FROM {{zone_name}}.fhir_demos.observations_clinical
 ORDER BY observation_id;
 
 
@@ -100,7 +100,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE status = final
 ASSERT VALUE obs_count = 14
 SELECT status, COUNT(*) AS obs_count
-FROM {{zone_name}}.fhir.observations_clinical
+FROM {{zone_name}}.fhir_demos.observations_clinical
 GROUP BY status
 ORDER BY obs_count DESC;
 
@@ -116,7 +116,7 @@ ASSERT ROW_COUNT = 14
 ASSERT VALUE df_file_name LIKE '%observation-example-bmi%' WHERE observation_id = 'bmi'
 ASSERT VALUE df_file_name LIKE '%observation-example-heart-rate%' WHERE observation_id = 'heart-rate'
 SELECT df_file_name, observation_id, status
-FROM {{zone_name}}.fhir.observations_clinical
+FROM {{zone_name}}.fhir_demos.observations_clinical
 ORDER BY df_file_name;
 
 
@@ -131,7 +131,7 @@ ORDER BY df_file_name;
 ASSERT ROW_COUNT = 10
 ASSERT VALUE observation_count = 6 WHERE subject = '{"reference":"Patient/bulk-patient-41"}'
 SELECT subject, COUNT(*) AS observation_count
-FROM {{zone_name}}.fhir.observations_bulk
+FROM {{zone_name}}.fhir_demos.observations_bulk
 GROUP BY subject
 ORDER BY observation_count DESC
 LIMIT 10;
@@ -150,7 +150,7 @@ ASSERT VALUE readings = 9 WHERE observation_date = '2024-01-14'
 ASSERT VALUE readings = 2 WHERE observation_date = '2024-01-28'
 SELECT SUBSTRING(effective_date, 1, 10) AS observation_date,
        COUNT(*) AS readings
-FROM {{zone_name}}.fhir.observations_bulk
+FROM {{zone_name}}.fhir_demos.observations_bulk
 WHERE effective_date IS NOT NULL
 GROUP BY SUBSTRING(effective_date, 1, 10)
 ORDER BY observation_date;
@@ -166,10 +166,10 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE count = 100 WHERE source = 'Bulk NDJSON (Heart Rate)'
 ASSERT VALUE count = 14 WHERE source = 'Clinical JSON (Mixed Types)'
 SELECT 'Bulk NDJSON (Heart Rate)' AS source, COUNT(*) AS count
-FROM {{zone_name}}.fhir.observations_bulk
+FROM {{zone_name}}.fhir_demos.observations_bulk
 UNION ALL
 SELECT 'Clinical JSON (Mixed Types)' AS source, COUNT(*) AS count
-FROM {{zone_name}}.fhir.observations_clinical
+FROM {{zone_name}}.fhir_demos.observations_clinical
 ORDER BY source;
 
 
@@ -183,56 +183,56 @@ SELECT check_name, result FROM (
 
     -- Check 1: Bulk observation count = 100
     SELECT 'bulk_count_100' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_bulk) = 100
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_bulk) = 100
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Clinical observation count = 14
     SELECT 'clinical_count_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_clinical) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_clinical) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: All bulk observations have status
     SELECT 'bulk_status_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_bulk WHERE status IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_bulk WHERE status IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: All bulk observations have subject (patient reference)
     SELECT 'bulk_subject_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_bulk WHERE subject IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_bulk WHERE subject IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: Column mapping — observation_id exists
     SELECT 'column_mapping_obs_id' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_bulk WHERE observation_id IS NOT NULL) = 100
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_bulk WHERE observation_id IS NOT NULL) = 100
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Clinical observations have code
     SELECT 'clinical_code_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_clinical WHERE code IS NOT NULL) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_clinical WHERE code IS NOT NULL) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: File metadata on bulk
     SELECT 'file_metadata_bulk' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.observations_bulk WHERE df_file_name IS NOT NULL) = 100
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.observations_bulk WHERE df_file_name IS NOT NULL) = 100
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 8: Multiple source files for clinical
     SELECT 'clinical_multi_file' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.fhir.observations_clinical) = 14
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.fhir_demos.observations_clinical) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

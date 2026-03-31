@@ -70,7 +70,7 @@ SELECT
     COALESCE(beg_3, big_2, bsn_2, bak_3, bra_1, bgn_2) AS document_id,
     st_1 AS txn_type,
     df_file_name
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 ORDER BY
     CASE st_1
         WHEN '850' THEN 1
@@ -117,7 +117,7 @@ SELECT
         ELSE 'Other'
     END AS lifecycle_stage,
     COUNT(*) AS stage_count
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 GROUP BY st_1
 ORDER BY stage_count DESC, st_1;
 
@@ -157,7 +157,7 @@ SELECT
     ref_1 AS ref_type,
     ref_2 AS ref_value,
     ctt_1 AS line_items
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 WHERE st_1 = '850'
 ORDER BY df_file_name;
 
@@ -194,7 +194,7 @@ SELECT
     ref_1 AS ref_type,
     ref_2 AS ref_value,
     ctt_1 AS line_items
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 WHERE st_1 = '810'
 ORDER BY df_file_name;
 
@@ -238,7 +238,7 @@ SELECT
     bra_1 AS receipt_id,
     n1_1 AS party_code,
     n1_2 AS party_name
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 WHERE st_1 IN ('856', '857', '861')
 ORDER BY
     CASE st_1
@@ -285,7 +285,7 @@ SELECT
     END AS lifecycle_stage,
     COALESCE(beg_3, big_2, bsn_2, bak_3, bra_1, bgn_2) AS document_id,
     df_file_name
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 WHERE COALESCE(beg_5, big_1, bsn_3, bak_4) IS NOT NULL
 ORDER BY COALESCE(beg_5, big_1, bsn_3, bak_4);
 
@@ -326,7 +326,7 @@ SELECT
         END, ', '
     ) AS stages,
     COUNT(*) AS document_count
-FROM {{zone_name}}.edi.lifecycle_tracking
+FROM {{zone_name}}.edi_demos.lifecycle_tracking
 WHERE n1_2 IS NOT NULL AND n1_2 <> ''
 GROUP BY n1_2, n1_1
 ORDER BY document_count DESC, party_name;
@@ -348,21 +348,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: All 14 transactions loaded into the unified table
     SELECT 'lifecycle_has_14_rows' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.lifecycle_tracking) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.lifecycle_tracking) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 8 distinct transaction types present
     SELECT 'eight_txn_types' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi.lifecycle_tracking) = 8
+           CASE WHEN (SELECT COUNT(DISTINCT st_1) FROM {{zone_name}}.edi_demos.lifecycle_tracking) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: All 850s have BEG_3 (PO number) populated
     SELECT 'all_850s_have_beg3' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.lifecycle_tracking
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.lifecycle_tracking
                        WHERE st_1 = '850' AND (beg_3 IS NULL OR beg_3 = '')) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -370,7 +370,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: All 810s have BIG_2 (invoice number) populated
     SELECT 'all_810s_have_big2' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.lifecycle_tracking
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.lifecycle_tracking
                        WHERE st_1 = '810' AND (big_2 IS NULL OR big_2 = '')) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -378,7 +378,7 @@ SELECT check_name, result FROM (
 
     -- Check 5: Fulfillment stage has exactly 3 documents (856 + 857 + 861)
     SELECT 'fulfillment_has_3_docs' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.lifecycle_tracking
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.lifecycle_tracking
                        WHERE st_1 IN ('856', '857', '861')) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

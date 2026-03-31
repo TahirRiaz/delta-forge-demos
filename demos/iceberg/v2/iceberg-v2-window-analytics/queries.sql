@@ -15,7 +15,7 @@
 -- 60 members: 20 Bronze, 18 Silver, 14 Gold, 8 Platinum across 5 airports.
 
 ASSERT ROW_COUNT = 60
-SELECT * FROM {{zone_name}}.iceberg.loyalty_members
+SELECT * FROM {{zone_name}}.iceberg_demos.loyalty_members
 ORDER BY member_id;
 
 
@@ -37,7 +37,7 @@ SELECT
     SUM(flights_ytd) AS total_flights,
     ROUND(SUM(spend_ytd), 2) AS total_spend,
     ROUND(AVG(spend_ytd), 2) AS avg_spend
-FROM {{zone_name}}.iceberg.loyalty_members
+FROM {{zone_name}}.iceberg_demos.loyalty_members
 GROUP BY tier
 ORDER BY tier;
 
@@ -60,7 +60,7 @@ SELECT
     tier,
     miles_ytd,
     ROW_NUMBER() OVER (ORDER BY miles_ytd DESC) AS overall_rank
-FROM {{zone_name}}.iceberg.loyalty_members
+FROM {{zone_name}}.iceberg_demos.loyalty_members
 ORDER BY overall_rank;
 
 
@@ -82,7 +82,7 @@ WITH ranked AS (
         tier,
         spend_ytd,
         RANK() OVER (PARTITION BY tier ORDER BY spend_ytd DESC) AS spend_rank
-    FROM {{zone_name}}.iceberg.loyalty_members
+    FROM {{zone_name}}.iceberg_demos.loyalty_members
 )
 SELECT member_id, member_name, tier, spend_ytd
 FROM ranked
@@ -108,7 +108,7 @@ WITH quartiled AS (
         member_id,
         spend_ytd,
         NTILE(4) OVER (ORDER BY spend_ytd) AS quartile
-    FROM {{zone_name}}.iceberg.loyalty_members
+    FROM {{zone_name}}.iceberg_demos.loyalty_members
 )
 SELECT
     quartile,
@@ -137,7 +137,7 @@ WITH ordered AS (
         miles_ytd,
         LAG(miles_ytd, 1) OVER (ORDER BY miles_ytd DESC) AS prev_miles,
         LEAD(miles_ytd, 1) OVER (ORDER BY miles_ytd DESC) AS next_miles
-    FROM {{zone_name}}.iceberg.loyalty_members
+    FROM {{zone_name}}.iceberg_demos.loyalty_members
 )
 SELECT *
 FROM ordered
@@ -159,7 +159,7 @@ SELECT
     member_name,
     miles_ytd,
     SUM(miles_ytd) OVER (ORDER BY miles_ytd ROWS UNBOUNDED PRECEDING) AS running_total
-FROM {{zone_name}}.iceberg.loyalty_members
+FROM {{zone_name}}.iceberg_demos.loyalty_members
 WHERE tier = 'Platinum'
 ORDER BY miles_ytd;
 
@@ -184,7 +184,7 @@ WITH ranked AS (
         tier,
         spend_ytd,
         ROW_NUMBER() OVER (PARTITION BY home_airport ORDER BY spend_ytd DESC) AS rn
-    FROM {{zone_name}}.iceberg.loyalty_members
+    FROM {{zone_name}}.iceberg_demos.loyalty_members
 )
 SELECT member_id, member_name, home_airport, tier, spend_ytd, rn
 FROM ranked
@@ -207,7 +207,7 @@ SELECT
     home_airport,
     COUNT(*) AS cnt,
     ROUND(SUM(spend_ytd), 2) AS total_spend
-FROM {{zone_name}}.iceberg.loyalty_members
+FROM {{zone_name}}.iceberg_demos.loyalty_members
 GROUP BY home_airport
 ORDER BY home_airport;
 
@@ -233,4 +233,4 @@ SELECT
     COUNT(DISTINCT tier) AS tier_count,
     COUNT(DISTINCT home_airport) AS airport_count,
     ROUND(AVG(spend_ytd), 2) AS avg_spend
-FROM {{zone_name}}.iceberg.loyalty_members;
+FROM {{zone_name}}.iceberg_demos.loyalty_members;

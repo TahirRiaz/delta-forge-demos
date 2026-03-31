@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir_demos
     COMMENT 'FHIR-backed external tables — HL7 FHIR R5 resources as JSON';
 
 -- ============================================================================
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
 -- given), gender, and birthDate. Column mappings rename nested FHIR paths to
 -- analyst-friendly names.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.patients_bulk
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.patients_bulk
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -54,7 +54,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.patients_bulk TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.patients_bulk TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: patients_detailed — 7 individual FHIR Patient JSON files
 -- ============================================================================
@@ -65,7 +65,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.fhir.patients_bulk TO USER {{current_user}};
 -- resulting in NULL values for missing fields (e.g., deceasedBoolean only
 -- appears in some patients).
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.patients_detailed
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.patients_detailed
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -99,4 +99,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.patients_detailed TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.patients_detailed TO USER {{current_user}};

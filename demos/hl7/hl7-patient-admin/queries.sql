@@ -50,7 +50,7 @@ SELECT
     msh_9 AS message_type,
     msh_12 AS hl7_version,
     msh_10 AS message_control_id
-FROM {{zone_name}}.hl7.adt_messages
+FROM {{zone_name}}.hl7_demos.adt_messages
 ORDER BY df_file_name;
 
 
@@ -82,7 +82,7 @@ SELECT
     pid_8 AS gender,
     pid_11 AS address,
     pv1_2 AS patient_class
-FROM {{zone_name}}.hl7.adt_materialized
+FROM {{zone_name}}.hl7_demos.adt_materialized
 ORDER BY pid_5;
 
 
@@ -106,7 +106,7 @@ ASSERT VALUE message_count = 1 WHERE hl7_version = '2.6'
 SELECT
     msh_12 AS hl7_version,
     COUNT(*) AS message_count
-FROM {{zone_name}}.hl7.adt_messages
+FROM {{zone_name}}.hl7_demos.adt_messages
 GROUP BY msh_12
 ORDER BY msh_12;
 
@@ -135,7 +135,7 @@ ASSERT VALUE message_count = 1 WHERE message_type = 'ADT^A08^ADT_A01'
 SELECT
     msh_9 AS message_type,
     COUNT(*) AS message_count
-FROM {{zone_name}}.hl7.adt_messages
+FROM {{zone_name}}.hl7_demos.adt_messages
 GROUP BY msh_9
 ORDER BY message_count DESC;
 
@@ -163,7 +163,7 @@ SELECT
     pv1_2 AS patient_class,
     pv1_3 AS assigned_location,
     pv1_7 AS attending_physician
-FROM {{zone_name}}.hl7.adt_materialized
+FROM {{zone_name}}.hl7_demos.adt_materialized
 ORDER BY pv1_2;
 
 
@@ -191,7 +191,7 @@ SELECT
     msh_4 AS sending_facility,
     msh_12 AS hl7_version,
     COUNT(*) AS messages
-FROM {{zone_name}}.hl7.adt_messages
+FROM {{zone_name}}.hl7_demos.adt_messages
 GROUP BY msh_3, msh_4, msh_12
 ORDER BY msh_3;
 
@@ -218,7 +218,7 @@ SELECT
     df_file_name,
     msh_9 AS message_type,
     df_message_json
-FROM {{zone_name}}.hl7.adt_messages
+FROM {{zone_name}}.hl7_demos.adt_messages
 ORDER BY df_file_name
 LIMIT 3;
 
@@ -235,7 +235,7 @@ LIMIT 3;
 
 ASSERT ROW_COUNT = 8
 SELECT DISTINCT df_file_name
-FROM {{zone_name}}.hl7.adt_messages
+FROM {{zone_name}}.hl7_demos.adt_messages
 ORDER BY df_file_name;
 
 
@@ -256,35 +256,35 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total message count = 8 (one per .hl7 file)
     SELECT 'message_count_8' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.adt_messages) = 8
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.adt_messages) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 8 distinct source files in df_file_name
     SELECT 'source_files_8' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.hl7.adt_messages) = 8
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.hl7_demos.adt_messages) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: At least 3 distinct HL7 versions (actual: 5)
     SELECT 'multi_version' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT msh_12) FROM {{zone_name}}.hl7.adt_messages) >= 3
+           CASE WHEN (SELECT COUNT(DISTINCT msh_12) FROM {{zone_name}}.hl7_demos.adt_messages) >= 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: Materialized table also has 8 rows (same files, different columns)
     SELECT 'materialized_count_8' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.adt_materialized) = 8
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.adt_materialized) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: PID_5 (patient name) is populated in at least some rows
     SELECT 'pid5_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.adt_materialized
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.adt_materialized
                        WHERE pid_5 IS NOT NULL AND pid_5 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -292,7 +292,7 @@ SELECT check_name, result FROM (
 
     -- Check 6: df_message_json is populated for all 8 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.adt_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.adt_messages
                        WHERE df_message_json IS NOT NULL) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

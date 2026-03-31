@@ -37,7 +37,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 
 
@@ -56,7 +56,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 -- Column naming: {segment}_{occurrence}_{element} (all 1-based)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.repeating_indexed
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.repeating_indexed
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -73,7 +73,7 @@ OPTIONS (
 );
 
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_indexed TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.repeating_indexed TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -85,7 +85,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_indexed TO USER {{current_user}
 --   po1_1 = '000100001|000200001|000200002'
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.repeating_concat
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.repeating_concat
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -102,7 +102,7 @@ OPTIONS (
 );
 
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_concat TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.repeating_concat TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -114,7 +114,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_concat TO USER {{current_user}}
 --   po1_4 = '["2.53","3.41","3.41"]'
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.repeating_json
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.repeating_json
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -131,4 +131,4 @@ OPTIONS (
 );
 
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.repeating_json TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.repeating_json TO USER {{current_user}};

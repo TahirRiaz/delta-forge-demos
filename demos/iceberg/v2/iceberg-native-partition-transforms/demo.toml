@@ -434,5 +434,5 @@ size_bytes = 3015
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.network_traffic"
+name = "{{zone_name}}.iceberg_demos.network_traffic"
 

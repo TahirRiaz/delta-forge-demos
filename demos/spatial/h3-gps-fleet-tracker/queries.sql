@@ -13,7 +13,7 @@
 
 ASSERT ROW_COUNT = 10000
 SELECT *
-FROM {{zone_name}}.spatial.gps_points;
+FROM {{zone_name}}.spatial_demos.gps_points;
 
 
 -- ============================================================================
@@ -26,7 +26,7 @@ ASSERT VALUE city = 'San Francisco' WHERE id = 1
 ASSERT VALUE name = 'Statue of Liberty' WHERE id = 2
 ASSERT VALUE name = 'Eiffel Tower' WHERE id = 3
 SELECT *
-FROM {{zone_name}}.spatial.landmarks;
+FROM {{zone_name}}.spatial_demos.landmarks;
 
 
 -- ============================================================================
@@ -49,7 +49,7 @@ SELECT
     h3_get_resolution(h3_latlng_to_cell(lat, lng, 9)) AS resolution,
     ROUND(h3_cell_to_lat(h3_latlng_to_cell(lat, lng, 9)), 4) AS roundtrip_lat,
     ROUND(h3_cell_to_lng(h3_latlng_to_cell(lat, lng, 9)), 4) AS roundtrip_lng
-FROM {{zone_name}}.spatial.landmarks
+FROM {{zone_name}}.spatial_demos.landmarks
 ORDER BY id;
 
 
@@ -61,7 +61,7 @@ ORDER BY id;
 
 ASSERT VALUE valid_count = 10
 SELECT COUNT(*) FILTER (WHERE h3_is_valid_cell(h3_latlng_to_cell(lat, lng, 9))) AS valid_count
-FROM {{zone_name}}.spatial.landmarks;
+FROM {{zone_name}}.spatial_demos.landmarks;
 
 
 -- ============================================================================
@@ -72,7 +72,7 @@ FROM {{zone_name}}.spatial.landmarks;
 
 ASSERT VALUE class_iii_count = 10
 SELECT COUNT(*) FILTER (WHERE h3_is_res_class_iii(h3_latlng_to_cell(lat, lng, 9))) AS class_iii_count
-FROM {{zone_name}}.spatial.landmarks;
+FROM {{zone_name}}.spatial_demos.landmarks;
 
 
 -- ============================================================================
@@ -255,7 +255,7 @@ SELECT
     region_name,
     country,
     COUNT(*) AS h3_cell_count
-FROM {{zone_name}}.spatial.region_cells
+FROM {{zone_name}}.spatial_demos.region_cells
 GROUP BY region_name, country
 ORDER BY h3_cell_count DESC;
 
@@ -274,8 +274,8 @@ SELECT
     r.country,
     COUNT(DISTINCT p.id) AS points_in_region,
     COUNT(DISTINCT p.device_id) AS unique_devices
-FROM {{zone_name}}.spatial.points_h3 p
-INNER JOIN {{zone_name}}.spatial.region_cells r ON p.h3_cell = r.h3_cell
+FROM {{zone_name}}.spatial_demos.points_h3 p
+INNER JOIN {{zone_name}}.spatial_demos.region_cells r ON p.h3_cell = r.h3_cell
 GROUP BY r.region_name, r.country
 ORDER BY points_in_region DESC;
 
@@ -285,11 +285,11 @@ ORDER BY points_in_region DESC;
 -- ============================================================================
 
 ASSERT VALUE actual = 10000
-SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial.points_h3 p
-        INNER JOIN {{zone_name}}.spatial.region_cells r ON p.h3_cell = r.h3_cell) +
-       (SELECT COUNT(*) FROM {{zone_name}}.spatial.points_h3 p
+SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.points_h3 p
+        INNER JOIN {{zone_name}}.spatial_demos.region_cells r ON p.h3_cell = r.h3_cell) +
+       (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.points_h3 p
         WHERE NOT EXISTS (
-            SELECT 1 FROM {{zone_name}}.spatial.region_cells r WHERE p.h3_cell = r.h3_cell
+            SELECT 1 FROM {{zone_name}}.spatial_demos.region_cells r WHERE p.h3_cell = r.h3_cell
         )) AS actual;
 
 
@@ -300,7 +300,7 @@ SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial.points_h3 p
 -- Its H3 cell appears exactly once in the polyfill of the SF region.
 
 ASSERT VALUE match_count = 1
-SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial.region_cells
+SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.region_cells
         WHERE region_name = 'San Francisco'
           AND h3_cell = h3_latlng_to_cell(37.7792, -122.4191, 9)) AS match_count;
 
@@ -310,7 +310,7 @@ SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial.region_cells
 -- ============================================================================
 
 ASSERT VALUE outside_count = 0
-SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial.region_cells
+SELECT (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.region_cells
         WHERE region_name = 'San Francisco'
           AND h3_cell = h3_latlng_to_cell(40.6892, -74.0445, 9)) AS outside_count;
 
@@ -329,7 +329,7 @@ SELECT
     ROUND(h3_cell_area(h3_latlng_to_cell(lat, lng, 9)), 0) AS area_m2,
     ROUND(h3_cell_area_km2(h3_latlng_to_cell(lat, lng, 9)), 4) AS area_km2,
     ROUND(h3_edge_length(h3_latlng_to_cell(lat, lng, 9)), 1) AS edge_m
-FROM {{zone_name}}.spatial.landmarks
+FROM {{zone_name}}.spatial_demos.landmarks
 ORDER BY id;
 
 
@@ -348,8 +348,8 @@ SELECT
         h3_latlng_to_cell(a.lat, a.lng, 9),
         h3_latlng_to_cell(b.lat, b.lng, 9)
     ) AS grid_distance
-FROM {{zone_name}}.spatial.landmarks a
-CROSS JOIN {{zone_name}}.spatial.landmarks b
+FROM {{zone_name}}.spatial_demos.landmarks a
+CROSS JOIN {{zone_name}}.spatial_demos.landmarks b
 WHERE a.city = b.city AND a.id < b.id
 ORDER BY a.city, grid_distance;
 
@@ -381,8 +381,8 @@ SELECT
     COUNT(DISTINCT p.device_id) AS unique_devices,
     COUNT(*) AS total_pings,
     ROUND(COUNT(*)::DOUBLE / COUNT(DISTINCT p.device_id), 1) AS pings_per_device
-FROM {{zone_name}}.spatial.points_h3 p
-INNER JOIN {{zone_name}}.spatial.region_cells r ON p.h3_cell = r.h3_cell
+FROM {{zone_name}}.spatial_demos.points_h3 p
+INNER JOIN {{zone_name}}.spatial_demos.region_cells r ON p.h3_cell = r.h3_cell
 GROUP BY r.region_name
 ORDER BY total_pings DESC;
 
@@ -398,7 +398,7 @@ SELECT
     ROUND(MIN(lat), 4) AS lat,
     ROUND(MIN(lng), 4) AS lng,
     MIN(city) AS city
-FROM {{zone_name}}.spatial.points_h3
+FROM {{zone_name}}.spatial_demos.points_h3
 GROUP BY h3_cell
 ORDER BY visit_count DESC
 LIMIT 10;
@@ -421,21 +421,21 @@ ASSERT VALUE result = 'PASS' WHERE check_name = 'sf_cityhall_inside_sf'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'statue_liberty_outside_sf'
 SELECT 'gps_point_count' AS check_name,
        CASE WHEN COUNT(*) = 10000 THEN 'PASS' ELSE 'FAIL' END AS result
-FROM {{zone_name}}.spatial.gps_points
+FROM {{zone_name}}.spatial_demos.gps_points
 UNION ALL
 SELECT 'landmark_count',
        CASE WHEN COUNT(*) = 10 THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.spatial.landmarks
+FROM {{zone_name}}.spatial_demos.landmarks
 UNION ALL
 SELECT 'all_cells_valid',
        CASE WHEN COUNT(*) FILTER (WHERE h3_is_valid_cell(h3_latlng_to_cell(lat, lng, 9))) = 10
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.spatial.landmarks
+FROM {{zone_name}}.spatial_demos.landmarks
 UNION ALL
 SELECT 'res9_class_iii',
        CASE WHEN COUNT(*) FILTER (WHERE h3_is_res_class_iii(h3_latlng_to_cell(lat, lng, 9))) = 10
             THEN 'PASS' ELSE 'FAIL' END
-FROM {{zone_name}}.spatial.landmarks
+FROM {{zone_name}}.spatial_demos.landmarks
 UNION ALL
 SELECT 'ring_k1_count',
        CASE WHEN (SELECT COUNT(*) FROM (
@@ -515,22 +515,22 @@ SELECT 'sf_polyfill',
 UNION ALL
 SELECT 'spatial_join_total',
        CASE WHEN (
-           (SELECT COUNT(*) FROM {{zone_name}}.spatial.points_h3 p
-            INNER JOIN {{zone_name}}.spatial.region_cells r ON p.h3_cell = r.h3_cell) +
-           (SELECT COUNT(*) FROM {{zone_name}}.spatial.points_h3 p
+           (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.points_h3 p
+            INNER JOIN {{zone_name}}.spatial_demos.region_cells r ON p.h3_cell = r.h3_cell) +
+           (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.points_h3 p
             WHERE NOT EXISTS (
-                SELECT 1 FROM {{zone_name}}.spatial.region_cells r WHERE p.h3_cell = r.h3_cell
+                SELECT 1 FROM {{zone_name}}.spatial_demos.region_cells r WHERE p.h3_cell = r.h3_cell
             ))
        ) = 10000 THEN 'PASS' ELSE 'FAIL' END
 UNION ALL
 SELECT 'sf_cityhall_inside_sf',
-       CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial.region_cells
+       CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.region_cells
                   WHERE region_name = 'San Francisco'
                     AND h3_cell = h3_latlng_to_cell(37.7792, -122.4191, 9)) = 1
             THEN 'PASS' ELSE 'FAIL' END
 UNION ALL
 SELECT 'statue_liberty_outside_sf',
-       CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial.region_cells
+       CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.spatial_demos.region_cells
                   WHERE region_name = 'San Francisco'
                     AND h3_cell = h3_latlng_to_cell(40.6892, -74.0445, 9)) = 0
             THEN 'PASS' ELSE 'FAIL' END

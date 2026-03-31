@@ -20,7 +20,7 @@ ASSERT ROW_COUNT = 10
 ASSERT VALUE store_name = 'Downtown Flagship' WHERE store_id = 'S001'
 ASSERT VALUE region = 'Northeast' WHERE store_id = 'S001'
 SELECT *
-FROM {{zone_name}}.retail_demo.stores
+FROM {{zone_name}}.iceberg_demos.stores
 ORDER BY store_id;
 
 
@@ -32,7 +32,7 @@ ASSERT ROW_COUNT = 40
 ASSERT VALUE product_name = 'Running Pro X' WHERE txn_id = 1
 ASSERT VALUE quantity = 3 WHERE txn_id = 1
 SELECT *
-FROM {{zone_name}}.retail_demo.sales
+FROM {{zone_name}}.iceberg_demos.sales
 ORDER BY txn_id;
 
 
@@ -56,8 +56,8 @@ SELECT
     COUNT(*) AS txn_count,
     SUM(s.quantity) AS total_qty,
     ROUND(SUM(s.quantity * s.unit_price), 2) AS revenue
-FROM {{zone_name}}.retail_demo.sales s
-JOIN {{zone_name}}.retail_demo.stores st ON s.store_id = st.store_id
+FROM {{zone_name}}.iceberg_demos.sales s
+JOIN {{zone_name}}.iceberg_demos.stores st ON s.store_id = st.store_id
 GROUP BY s.store_id, st.store_name, st.city, st.region
 ORDER BY s.store_id;
 
@@ -76,8 +76,8 @@ SELECT
     st.region,
     COUNT(*) AS txn_count,
     ROUND(SUM(s.quantity * s.unit_price), 2) AS revenue
-FROM {{zone_name}}.retail_demo.sales s
-JOIN {{zone_name}}.retail_demo.stores st ON s.store_id = st.store_id
+FROM {{zone_name}}.iceberg_demos.sales s
+JOIN {{zone_name}}.iceberg_demos.stores st ON s.store_id = st.store_id
 GROUP BY st.region
 ORDER BY st.region;
 
@@ -92,8 +92,8 @@ SELECT
     s.product_name,
     SUM(s.quantity) AS total_qty,
     ROUND(SUM(s.quantity * s.unit_price), 2) AS revenue
-FROM {{zone_name}}.retail_demo.sales s
-JOIN {{zone_name}}.retail_demo.stores st ON s.store_id = st.store_id
+FROM {{zone_name}}.iceberg_demos.sales s
+JOIN {{zone_name}}.iceberg_demos.stores st ON s.store_id = st.store_id
 GROUP BY st.region, s.product_name
 ORDER BY st.region, revenue DESC
 LIMIT 5;
@@ -111,7 +111,7 @@ SELECT
     COUNT(*) AS total_txns,
     SUM(quantity) AS total_qty,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM {{zone_name}}.retail_demo.sales;
+FROM {{zone_name}}.iceberg_demos.sales;
 
 
 -- ============================================================================
@@ -128,8 +128,8 @@ SELECT
     ROUND(SUM(s.quantity * s.unit_price), 2) AS total_revenue,
     COUNT(DISTINCT st.store_id) AS store_count,
     COUNT(DISTINCT st.region) AS region_count
-FROM {{zone_name}}.retail_demo.sales s
-JOIN {{zone_name}}.retail_demo.stores st ON s.store_id = st.store_id;
+FROM {{zone_name}}.iceberg_demos.sales s
+JOIN {{zone_name}}.iceberg_demos.stores st ON s.store_id = st.store_id;
 
 
 -- ============================================================================
@@ -139,11 +139,11 @@ JOIN {{zone_name}}.retail_demo.stores st ON s.store_id = st.store_id;
 -- This reads through the V2 metadata chain. Then JOIN with the CSV table
 -- to prove 3-way format interop: Iceberg (read) + CSV (read) + Delta (write).
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.retail_demo.sales_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sales';
 
-GRANT ADMIN ON TABLE {{zone_name}}.retail_demo.sales_iceberg TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sales_iceberg TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -151,7 +151,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.retail_demo.sales_iceberg TO USER {{current_u
 -- ============================================================================
 
 ASSERT ROW_COUNT = 40
-SELECT * FROM {{zone_name}}.retail_demo.sales_iceberg ORDER BY txn_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.sales_iceberg ORDER BY txn_id;
 
 
 -- ============================================================================
@@ -164,7 +164,7 @@ ASSERT VALUE product_name = 'Running Pro X' WHERE txn_id = 1
 ASSERT VALUE quantity = 3 WHERE txn_id = 1
 ASSERT VALUE unit_price = 129.99 WHERE txn_id = 1
 SELECT *
-FROM {{zone_name}}.retail_demo.sales_iceberg
+FROM {{zone_name}}.iceberg_demos.sales_iceberg
 WHERE txn_id = 1;
 
 
@@ -186,8 +186,8 @@ SELECT
     COUNT(*) AS txn_count,
     SUM(si.quantity) AS total_qty,
     ROUND(SUM(si.quantity * si.unit_price), 2) AS revenue
-FROM {{zone_name}}.retail_demo.sales_iceberg si
-JOIN {{zone_name}}.retail_demo.stores st ON si.store_id = st.store_id
+FROM {{zone_name}}.iceberg_demos.sales_iceberg si
+JOIN {{zone_name}}.iceberg_demos.stores st ON si.store_id = st.store_id
 GROUP BY si.store_id, st.store_name, st.city, st.region
 ORDER BY si.store_id;
 
@@ -204,8 +204,8 @@ SELECT
     st.region,
     COUNT(*) AS txn_count,
     ROUND(SUM(si.quantity * si.unit_price), 2) AS revenue
-FROM {{zone_name}}.retail_demo.sales_iceberg si
-JOIN {{zone_name}}.retail_demo.stores st ON si.store_id = st.store_id
+FROM {{zone_name}}.iceberg_demos.sales_iceberg si
+JOIN {{zone_name}}.iceberg_demos.stores st ON si.store_id = st.store_id
 GROUP BY st.region
 ORDER BY st.region;
 
@@ -222,4 +222,4 @@ SELECT
     COUNT(*) AS total_txns,
     SUM(quantity) AS total_qty,
     ROUND(SUM(quantity * unit_price), 2) AS total_revenue
-FROM {{zone_name}}.retail_demo.sales_iceberg;
+FROM {{zone_name}}.iceberg_demos.sales_iceberg;

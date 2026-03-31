@@ -20,7 +20,7 @@ ASSERT VALUE gender = male WHERE patient_id = 'bulk-patient-1'
 ASSERT VALUE birth_date = 1976-02-17 WHERE patient_id = 'bulk-patient-1'
 ASSERT VALUE gender = female WHERE patient_id = 'bulk-patient-2'
 SELECT patient_id, name, gender, birth_date
-FROM {{zone_name}}.fhir.patients_bulk
+FROM {{zone_name}}.fhir_demos.patients_bulk
 ORDER BY patient_id
 LIMIT 15;
 
@@ -36,7 +36,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE patient_count = 26 WHERE gender = 'male'
 ASSERT VALUE patient_count = 24 WHERE gender = 'female'
 SELECT gender, COUNT(*) AS patient_count
-FROM {{zone_name}}.fhir.patients_bulk
+FROM {{zone_name}}.fhir_demos.patients_bulk
 GROUP BY gender
 ORDER BY patient_count DESC;
 
@@ -54,7 +54,7 @@ ASSERT VALUE patient_count = 13 WHERE birth_decade = '1950s'
 ASSERT VALUE patient_count = 8 WHERE birth_decade = '1970s'
 SELECT CONCAT(SUBSTRING(birth_date, 1, 3), '0s') AS birth_decade,
        COUNT(*) AS patient_count
-FROM {{zone_name}}.fhir.patients_bulk
+FROM {{zone_name}}.fhir_demos.patients_bulk
 WHERE birth_date IS NOT NULL
 GROUP BY SUBSTRING(birth_date, 1, 3)
 ORDER BY birth_decade;
@@ -78,7 +78,7 @@ ASSERT VALUE gender = female WHERE patient_id = 'pat4'
 ASSERT VALUE birth_date = 1960-03-13 WHERE patient_id = 'f201'
 SELECT patient_id, gender, birth_date, active, is_deceased,
        name, telecom, address
-FROM {{zone_name}}.fhir.patients_detailed
+FROM {{zone_name}}.fhir_demos.patients_detailed
 ORDER BY patient_id;
 
 
@@ -102,7 +102,7 @@ SELECT patient_id,
        CASE WHEN marital_status IS NOT NULL THEN 'Y' ELSE '-' END AS has_marital,
        CASE WHEN managing_org IS NOT NULL THEN 'Y' ELSE '-' END AS has_org,
        df_file_name
-FROM {{zone_name}}.fhir.patients_detailed
+FROM {{zone_name}}.fhir_demos.patients_detailed
 ORDER BY patient_id;
 
 
@@ -118,7 +118,7 @@ ASSERT ROW_COUNT = 7
 ASSERT VALUE df_row_number = 1 WHERE patient_id = 'f001'
 ASSERT VALUE gender = other WHERE patient_id = 'pat2'
 SELECT df_file_name, df_row_number, patient_id, gender, birth_date
-FROM {{zone_name}}.fhir.patients_detailed
+FROM {{zone_name}}.fhir_demos.patients_detailed
 ORDER BY df_file_name;
 
 
@@ -138,7 +138,7 @@ SELECT df_file_name,
        MIN(df_row_number) AS first_row,
        MAX(df_row_number) AS last_row,
        COUNT(*) AS total_patients
-FROM {{zone_name}}.fhir.patients_bulk
+FROM {{zone_name}}.fhir_demos.patients_bulk
 GROUP BY df_file_name;
 
 
@@ -153,9 +153,9 @@ GROUP BY df_file_name;
 ASSERT ROW_COUNT = 2
 ASSERT VALUE count = 50 WHERE source = 'Bulk NDJSON'
 ASSERT VALUE count = 7 WHERE source = 'Detailed JSON'
-SELECT 'Bulk NDJSON' AS source, COUNT(*) AS count FROM {{zone_name}}.fhir.patients_bulk
+SELECT 'Bulk NDJSON' AS source, COUNT(*) AS count FROM {{zone_name}}.fhir_demos.patients_bulk
 UNION ALL
-SELECT 'Detailed JSON' AS source, COUNT(*) AS count FROM {{zone_name}}.fhir.patients_detailed
+SELECT 'Detailed JSON' AS source, COUNT(*) AS count FROM {{zone_name}}.fhir_demos.patients_detailed
 ORDER BY source;
 
 
@@ -170,49 +170,49 @@ SELECT check_name, result FROM (
 
     -- Check 1: Bulk patient count = 50
     SELECT 'bulk_count_50' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_bulk) = 50
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_bulk) = 50
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Detailed patient count = 7
     SELECT 'detailed_count_7' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_detailed) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_detailed) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: All bulk patients have gender populated
     SELECT 'bulk_gender_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_bulk WHERE gender IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_bulk WHERE gender IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: All bulk patients have birth_date
     SELECT 'bulk_birthdate_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_bulk WHERE birth_date IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_bulk WHERE birth_date IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: Column mapping applied — patient_id exists (not "id")
     SELECT 'column_mapping_patient_id' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_bulk WHERE patient_id IS NOT NULL) = 50
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_bulk WHERE patient_id IS NOT NULL) = 50
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: File metadata populated for bulk
     SELECT 'file_metadata_bulk' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_bulk WHERE df_file_name IS NOT NULL) = 50
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_bulk WHERE df_file_name IS NOT NULL) = 50
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: Detailed patients have name data
     SELECT 'detailed_names_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.patients_detailed WHERE name IS NOT NULL) > 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.patients_detailed WHERE name IS NOT NULL) > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

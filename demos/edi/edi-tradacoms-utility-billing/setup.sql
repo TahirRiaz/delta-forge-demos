@@ -36,7 +36,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: tradacoms_bills — Default TRADACOMS output
@@ -61,7 +61,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   CDT_2  — Customer name (demonstrates escape decoding in second file)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.tradacoms_bills
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_bills
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -74,7 +74,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_bills TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.tradacoms_bills TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: tradacoms_bill_details — Deep field extraction via materialized_paths
 -- ============================================================================
@@ -101,7 +101,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_bills TO USER {{current_user}};
 --   CLO_1  — Customer location code
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.tradacoms_bill_details
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_bill_details
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -121,4 +121,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_bill_details TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.tradacoms_bill_details TO USER {{current_user}};

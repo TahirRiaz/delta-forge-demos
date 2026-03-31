@@ -16,15 +16,15 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg v1 table
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
 -- Delta Forge parses metadata.json to discover schema and data files automatically.
 -- The format-version field in metadata.json is 1 (original Iceberg spec).
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.warehouse_inventory
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory
 USING ICEBERG
 LOCATION '{{data_path}}/warehouse_inventory';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.warehouse_inventory TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.warehouse_inventory TO USER {{current_user}};

@@ -14,7 +14,7 @@
 -- Iceberg v1 manifest chain (metadata.json → manifest list → manifest → file).
 
 ASSERT ROW_COUNT = 489
-SELECT * FROM {{zone_name}}.iceberg.warehouse_inventory;
+SELECT * FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
 
 
 -- ============================================================================
@@ -36,7 +36,7 @@ SELECT
     last_restock_date,
     supplier,
     aisle_location
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 ORDER BY sku;
 
 
@@ -52,7 +52,7 @@ ASSERT VALUE item_count = 164 WHERE warehouse = 'Portland-OR'
 SELECT
     warehouse,
     COUNT(*) AS item_count
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY warehouse
 ORDER BY warehouse;
 
@@ -71,7 +71,7 @@ ASSERT VALUE item_count = 99 WHERE category = 'Industrial'
 SELECT
     category,
     COUNT(*) AS item_count
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY category
 ORDER BY category;
 
@@ -86,7 +86,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE total_value = 17554271.58
 SELECT
     ROUND(SUM(quantity_on_hand * unit_cost), 2) AS total_value
-FROM {{zone_name}}.iceberg.warehouse_inventory;
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
 
 
 -- ============================================================================
@@ -101,7 +101,7 @@ ASSERT VALUE warehouse_value = 6272426.43 WHERE warehouse = 'Portland-OR'
 SELECT
     warehouse,
     ROUND(SUM(quantity_on_hand * unit_cost), 2) AS warehouse_value
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY warehouse
 ORDER BY warehouse;
 
@@ -120,7 +120,7 @@ SELECT
     category,
     quantity_on_hand,
     reorder_point
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 WHERE quantity_on_hand < reorder_point
 ORDER BY quantity_on_hand ASC;
 
@@ -137,7 +137,7 @@ ASSERT VALUE reorder_needed = 20 WHERE warehouse = 'Portland-OR'
 SELECT
     warehouse,
     COUNT(*) AS reorder_needed
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 WHERE quantity_on_hand < reorder_point
 GROUP BY warehouse
 ORDER BY warehouse;
@@ -157,7 +157,7 @@ ASSERT VALUE avg_cost = 150.28 WHERE category = 'Industrial'
 SELECT
     category,
     ROUND(AVG(unit_cost), 2) AS avg_cost
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY category
 ORDER BY category;
 
@@ -176,7 +176,7 @@ ASSERT VALUE item_count = 110 WHERE supplier = 'QuickShip'
 SELECT
     supplier,
     COUNT(*) AS item_count
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 GROUP BY supplier
 ORDER BY supplier;
 
@@ -195,7 +195,7 @@ SELECT
     quantity_on_hand,
     unit_cost,
     ROUND(quantity_on_hand * unit_cost, 2) AS line_value
-FROM {{zone_name}}.iceberg.warehouse_inventory
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory
 WHERE quantity_on_hand * unit_cost > 10000
 ORDER BY line_value DESC;
 
@@ -220,4 +220,4 @@ SELECT
     COUNT(DISTINCT category) AS category_count,
     COUNT(DISTINCT supplier) AS supplier_count,
     SUM(CASE WHEN quantity_on_hand < reorder_point THEN 1 ELSE 0 END) AS below_reorder
-FROM {{zone_name}}.iceberg.warehouse_inventory;
+FROM {{zone_name}}.iceberg_demos.warehouse_inventory;

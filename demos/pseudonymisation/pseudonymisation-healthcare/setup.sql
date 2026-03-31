@@ -33,7 +33,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation_demos
     COMMENT 'Pseudonymisation demo — healthcare data with protection rules';
 
 
@@ -44,7 +44,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
 -- the most common HIPAA identifiers: name, DOB, SSN, address, phone.
 -- ============================================================================
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.hl7_patients (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.hl7_patients (
     df_message_id   VARCHAR,
     pid_3           VARCHAR,
     pid_5           VARCHAR,
@@ -60,11 +60,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.hl7_patients (
     status          VARCHAR
 ) LOCATION '{{data_path}}/hl7_patients';
 
-GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation.hl7_patients TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.hl7_patients TO USER {{current_user}};
 
-DELETE FROM {{zone_name}}.pseudonymisation.hl7_patients WHERE 1=1;
+DELETE FROM {{zone_name}}.pseudonymisation_demos.hl7_patients WHERE 1=1;
 
-INSERT INTO {{zone_name}}.pseudonymisation.hl7_patients VALUES
+INSERT INTO {{zone_name}}.pseudonymisation_demos.hl7_patients VALUES
     ('MSG001', 'MRN-10045', 'SMITH^WILLIAM^A', '19610615', 'M', '1200 N ELM STREET^^JERUSALEM^TN^99999', '(999)999-1212', '123-45-6789', 'I', 'W4-R201-B1', 'DR JONES', 'A01', 'Active'),
     ('MSG002', 'MRN-10046', 'DOE^JANE^M', '19850322', 'F', '456 OAK AVE^^BIRMINGHAM^AL^35209', '(555)123-4567', '234-56-7890', 'O', 'CLINIC-A', 'DR PATEL', 'A04', 'Active'),
     ('MSG003', 'MRN-10047', 'KLEINSAMPLE^BARRY^Q', '19480203', 'M', '260 GOODWIN CREST^^BIRMINGHAM^AL^35209', '(555)987-6543', '345-67-8901', 'E', 'ER-BAY3', 'DR CHEN', 'A01', 'Active'),
@@ -78,7 +78,7 @@ INSERT INTO {{zone_name}}.pseudonymisation.hl7_patients VALUES
 -- make wildcard patterns (address_*, *_name) practical for broad protection.
 -- ============================================================================
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.fhir_patients (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.fhir_patients (
     patient_id      VARCHAR,
     family_name     VARCHAR,
     given_name      VARCHAR,
@@ -96,11 +96,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.fhir_patients (
     active          BOOLEAN
 ) LOCATION '{{data_path}}/fhir_patients';
 
-GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation.fhir_patients TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.fhir_patients TO USER {{current_user}};
 
-DELETE FROM {{zone_name}}.pseudonymisation.fhir_patients WHERE 1=1;
+DELETE FROM {{zone_name}}.pseudonymisation_demos.fhir_patients WHERE 1=1;
 
-INSERT INTO {{zone_name}}.pseudonymisation.fhir_patients VALUES
+INSERT INTO {{zone_name}}.pseudonymisation_demos.fhir_patients VALUES
     ('pt-fhir-001', 'Chalmers', 'Peter', '1974-12-25', 'male', 'peter.chalmers@example.com', '(03) 5555 6473', '534 Erewhon St', 'PleasantVille', 'VT', '05401', 'MRN-20001', '111-22-3333', 'M', true),
     ('pt-fhir-002', 'Solo', 'Leia', '1995-10-12', 'female', 'leia.solo@hospital.org', '(555) 867-5309', '100 Galaxy Way', 'Alderaan', 'CA', '90210', 'MRN-20002', '222-33-4444', 'S', true),
     ('pt-fhir-003', 'Duck', 'Donald', '1934-06-09', 'male', 'dduck@duckburg.net', '(555) 382-5633', '1313 Webfoot Walk', 'Duckburg', 'CA', '95501', 'MRN-20003', '333-44-5555', 'M', true),
@@ -114,7 +114,7 @@ INSERT INTO {{zone_name}}.pseudonymisation.fhir_patients VALUES
 -- (NM1), financial data (BPR), and claim details (CLM).
 -- ============================================================================
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.edi_claims (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.edi_claims (
     df_transaction_id VARCHAR,
     st_1            VARCHAR,
     bht_2           VARCHAR,
@@ -132,11 +132,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.edi_claims (
     bpr_14          VARCHAR
 ) LOCATION '{{data_path}}/edi_claims';
 
-GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation.edi_claims TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.edi_claims TO USER {{current_user}};
 
-DELETE FROM {{zone_name}}.pseudonymisation.edi_claims WHERE 1=1;
+DELETE FROM {{zone_name}}.pseudonymisation_demos.edi_claims WHERE 1=1;
 
-INSERT INTO {{zone_name}}.pseudonymisation.edi_claims VALUES
+INSERT INTO {{zone_name}}.pseudonymisation_demos.edi_claims VALUES
     ('TXN-837-001', '837', '00', 'IL', 'SMITH', 'FRED', '123456789A', '12101930', 'M', 'ACCT-5001', 1250.00, 'C', 1250.00, '9876543210', '1234567890'),
     ('TXN-837-002', '837', '00', 'IL', 'JONES', 'MARY', '234567890A', '05151985', 'F', 'ACCT-5002', 3750.50, 'C', 3750.50, '8765432109', '2345678901'),
     ('TXN-835-001', '835', '08', '85', 'GENERAL HOSPITAL', NULL, '987654321', NULL, NULL, NULL, NULL, 'H', 5000.50, '7654321098', '3456789012'),
@@ -150,30 +150,30 @@ INSERT INTO {{zone_name}}.pseudonymisation.edi_claims VALUES
 -- HL7 messages contain HIPAA identifiers in PID segments. These rules
 -- protect patient identity while preserving clinical utility.
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_3)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_3)
     TRANSFORM keyed_hash
     SCOPE person
     PRIORITY 10
     PARAMS (salt = 'hl7_mrn_salt_2024');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_19)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_19)
     TRANSFORM redact
     PRIORITY 20
     PARAMS (mask = '***-**-****');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_7)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_7)
     TRANSFORM generalize
     SCOPE relationship
     PARAMS (range = 10000);
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_13)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_13)
     TRANSFORM mask
     PARAMS (show = 5);
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_11)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_11)
     TRANSFORM hash;
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid_5)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.hl7_patients (pid_5)
     TRANSFORM tokenize
     SCOPE person
     PRIORITY 5;
@@ -185,41 +185,41 @@ CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.hl7_patients (pid
 -- FHIR resources use human-readable field names. Wildcard patterns
 -- efficiently protect multiple columns matching a naming convention.
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (email)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (email)
     TRANSFORM encrypt
     SCOPE person
     PRIORITY 10
     PARAMS (algorithm = 'AES256');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (patient_id)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (patient_id)
     TRANSFORM tokenize
     SCOPE person
     PRIORITY 10;
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (ssn)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (ssn)
     TRANSFORM keyed_hash
     SCOPE person
     PARAMS (salt = 'fhir_ssn_salt_2024');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (phone)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (phone)
     TRANSFORM mask
     PRIORITY 5
     PARAMS (show = 4);
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (mrn)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (mrn)
     TRANSFORM redact
     PARAMS (mask = '[REDACTED]');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (address_*)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (address_*)
     TRANSFORM hash
     PRIORITY 1;
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (birth_date)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (birth_date)
     TRANSFORM generalize
     SCOPE relationship
     PARAMS (range = 10);
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (*_name)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.fhir_patients (*_name)
     TRANSFORM keyed_hash
     SCOPE person
     PRIORITY 3
@@ -233,42 +233,42 @@ CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.fhir_patients (*_
 -- and claim details (CLM). Pseudonymisation must satisfy HIPAA Privacy Rule
 -- while preserving enough structure for claims processing analytics.
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (nm1_8)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (nm1_8)
     TRANSFORM keyed_hash
     SCOPE person
     PRIORITY 20
     PARAMS (salt = 'edi_member_id_salt_2024');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (bpr_8)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (bpr_8)
     TRANSFORM redact
     PRIORITY 20
     PARAMS (mask = '**********');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (bpr_14)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (bpr_14)
     TRANSFORM redact
     PRIORITY 20
     PARAMS (mask = '**********');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (clm_1)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (clm_1)
     TRANSFORM tokenize
     SCOPE transaction
     PRIORITY 10;
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (clm_2)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (clm_2)
     TRANSFORM mask
     PARAMS (show = 2);
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (nm1_3)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (nm1_3)
     TRANSFORM keyed_hash
     SCOPE person
     PARAMS (salt = 'edi_name_salt_2024');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (nm1_4)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (nm1_4)
     TRANSFORM keyed_hash
     SCOPE person
     PARAMS (salt = 'edi_name_salt_2024');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.edi_claims (dmg_1)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.edi_claims (dmg_1)
     TRANSFORM generalize
     SCOPE relationship
     PARAMS (range = 10000);

@@ -17,7 +17,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json_demos
     COMMENT 'JSON-backed external tables';
 
 -- ============================================================================
@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- are flattened normally. This is useful when downstream consumers need the
 -- full nested structure (e.g., map rendering, mortgage calculators).
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.listings_captured
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.listings_captured
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -65,7 +65,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.listings_captured TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.listings_captured TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: listings_flattened — Same data, fully flattened (no json_paths)
 -- ============================================================================
@@ -73,7 +73,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.json.listings_captured TO USER {{current_user
 -- into individual columns. This creates more columns but allows direct SQL
 -- filtering on nested fields (e.g., WHERE city = 'Boston').
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.listings_flattened
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.listings_flattened
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -129,4 +129,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.listings_flattened TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.listings_flattened TO USER {{current_user}};

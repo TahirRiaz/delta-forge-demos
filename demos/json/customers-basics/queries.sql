@@ -12,7 +12,7 @@
 
 ASSERT ROW_COUNT = 200
 SELECT *
-FROM {{zone_name}}.json.customers;
+FROM {{zone_name}}.json_demos.customers;
 
 
 -- ============================================================================
@@ -28,7 +28,7 @@ ASSERT VALUE country = 'Switzerland' WHERE id = '1'
 ASSERT VALUE first = 'Ryleigh' WHERE id = '10'
 ASSERT VALUE last = 'Cole' WHERE id = '10'
 SELECT id, email, first, last, company, created_at, country
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 ORDER BY id
 LIMIT 10;
 
@@ -40,7 +40,7 @@ LIMIT 10;
 
 ASSERT VALUE populated_count = 200
 SELECT COUNT(*) AS populated_count
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 WHERE first IS NOT NULL AND last IS NOT NULL;
 
 
@@ -51,7 +51,7 @@ WHERE first IS NOT NULL AND last IS NOT NULL;
 ASSERT ROW_COUNT = 10
 ASSERT VALUE customer_count = 4 WHERE country = 'Congo'
 SELECT country, COUNT(*) AS customer_count
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 GROUP BY country
 ORDER BY customer_count DESC
 LIMIT 10;
@@ -70,7 +70,7 @@ ASSERT VALUE latest_signup >= '2015-03-21'
 ASSERT VALUE latest_signup < '2015-03-22'
 SELECT MIN(created_at) AS earliest_signup,
        MAX(created_at) AS latest_signup
-FROM {{zone_name}}.json.customers;
+FROM {{zone_name}}.json_demos.customers;
 
 
 -- ============================================================================
@@ -83,7 +83,7 @@ ASSERT VALUE df_file_name LIKE '%customers%'
 ASSERT VALUE first_row = 1
 ASSERT VALUE last_row = 200
 SELECT df_file_name, MIN(df_row_number) AS first_row, MAX(df_row_number) AS last_row
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 GROUP BY df_file_name;
 
 
@@ -94,7 +94,7 @@ GROUP BY df_file_name;
 
 ASSERT VALUE null_row_count = 0
 SELECT COUNT(*) AS null_row_count
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 WHERE id IS NULL
    OR email IS NULL
    OR first IS NULL
@@ -110,7 +110,7 @@ WHERE id IS NULL
 ASSERT ROW_COUNT = 1
 ASSERT VALUE company = 'Hilll, Mayert and Wolf'
 SELECT id, first, last, company, country
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 WHERE id = '1';
 
 
@@ -121,7 +121,7 @@ WHERE id = '1';
 ASSERT ROW_COUNT = 5
 ASSERT VALUE employee_count = 1
 SELECT company, COUNT(*) AS employee_count
-FROM {{zone_name}}.json.customers
+FROM {{zone_name}}.json_demos.customers
 GROUP BY company
 ORDER BY employee_count DESC
 LIMIT 5;
@@ -137,42 +137,42 @@ SELECT check_name, result FROM (
 
     -- Check 1: Row count = 200
     SELECT 'row_count_200' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers) = 200
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Auto-detected column name (first exists with data)
     SELECT 'column_first' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE first IS NOT NULL) = 200
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers WHERE first IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: Auto-detected column name (last exists with data)
     SELECT 'column_last' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE last IS NOT NULL) = 200
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers WHERE last IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: Auto-detected column name (created_at exists with data)
     SELECT 'column_created_at' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE created_at IS NOT NULL) = 200
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers WHERE created_at IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: No NULL IDs
     SELECT 'no_null_ids' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE id IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers WHERE id IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: File metadata populated
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.customers WHERE df_file_name IS NOT NULL) = 200
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers WHERE df_file_name IS NOT NULL) = 200
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -180,7 +180,7 @@ SELECT check_name, result FROM (
     -- Check 7: Spot check — customer 1 is Torrey Veum from Switzerland
     SELECT 'spot_check_customer_1' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.json.customers
+               SELECT COUNT(*) FROM {{zone_name}}.json_demos.customers
                WHERE id = '1' AND first = 'Torrey' AND last = 'Veum' AND country = 'Switzerland'
            ) = 1 THEN 'PASS' ELSE 'FAIL' END AS result
 

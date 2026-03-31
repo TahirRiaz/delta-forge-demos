@@ -33,7 +33,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation_demos
     COMMENT 'Pseudonymisation demo — clinical trial data with protection rules';
 
 
@@ -45,7 +45,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
 -- Treatment arms: Drug A (2), Drug B (2), Placebo (2).
 -- ============================================================================
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.trial_participants (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.trial_participants (
     subject_id      VARCHAR,
     trial_id        VARCHAR,
     trial_phase     VARCHAR,
@@ -59,11 +59,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.trial_participan
     outcome         VARCHAR
 ) LOCATION '{{data_path}}/trial_participants';
 
-GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation.trial_participants TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.trial_participants TO USER {{current_user}};
 
-DELETE FROM {{zone_name}}.pseudonymisation.trial_participants WHERE 1=1;
+DELETE FROM {{zone_name}}.pseudonymisation_demos.trial_participants WHERE 1=1;
 
-INSERT INTO {{zone_name}}.pseudonymisation.trial_participants VALUES
+INSERT INTO {{zone_name}}.pseudonymisation_demos.trial_participants VALUES
     ('SUBJ-001', 'TR-2024-A', 'Phase III', 'Emily Watson', '1982-05-20', 'emily.w@trial.org', '555-11-2233', 'Active', 'Drug A', 0.85, 'Partial Response'),
     ('SUBJ-002', 'TR-2024-A', 'Phase III', 'Robert Chen', '1975-11-08', 'robert.c@trial.org', '555-22-3344', 'Active', 'Placebo', 0.42, 'Stable Disease'),
     ('SUBJ-003', 'TR-2024-A', 'Phase III', 'Ana Silva', '1990-03-14', 'ana.s@trial.org', '555-33-4455', 'Withdrawn', 'Drug A', 0.91, 'Complete Response'),
@@ -79,15 +79,15 @@ INSERT INTO {{zone_name}}.pseudonymisation.trial_participants VALUES
 -- Three transform types cover the most common clinical trial de-identification
 -- patterns: redact SSN, hash participant names for linkage, mask emails.
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.trial_participants (ssn)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.trial_participants (ssn)
     TRANSFORM redact
     PARAMS (mask = '***-**-****');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.trial_participants (participant_name)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.trial_participants (participant_name)
     TRANSFORM keyed_hash
     SCOPE person
     PARAMS (salt = 'trial_name_salt_2024');
 
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.trial_participants (email)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.trial_participants (email)
     TRANSFORM mask
     PARAMS (show = 3);

@@ -18,7 +18,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir_demos
     COMMENT 'FHIR-backed external tables — HL7 FHIR R5 resources as JSON';
 
 -- ============================================================================
@@ -30,7 +30,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fhir
 -- demonstrates high-volume clinical data ingestion from the standard FHIR
 -- bulk export format.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.observations_bulk
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.observations_bulk
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -59,7 +59,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.observations_bulk TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.observations_bulk TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: observations_clinical — 14 individual clinical observations
 -- ============================================================================
@@ -73,7 +73,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.fhir.observations_bulk TO USER {{current_user
 -- component[] instead of valueQuantity). This demonstrates how Delta Forge
 -- handles schema evolution across different observation categories.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir.observations_clinical
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.observations_clinical
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -111,4 +111,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.fhir.observations_clinical TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.observations_clinical TO USER {{current_user}};

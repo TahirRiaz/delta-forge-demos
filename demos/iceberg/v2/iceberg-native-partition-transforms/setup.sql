@@ -22,15 +22,15 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg v2 table with partition transforms
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
 -- Delta Forge parses metadata.json to discover schema, partition spec, and data files.
 -- The partition-spec uses bucket(8, source_ip) and days(capture_time).
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.network_traffic
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.network_traffic
 USING ICEBERG
 LOCATION '{{data_path}}/network_traffic';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.network_traffic TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.network_traffic TO USER {{current_user}};

@@ -33,7 +33,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: tradacoms_order_compact — Default TRADACOMS output
@@ -53,7 +53,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   df_transaction_id    — Unique hash for the transaction
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.tradacoms_order_compact
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_order_compact
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -61,7 +61,7 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_order_compact TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.tradacoms_order_compact TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: tradacoms_order_lines — Deep field extraction via materialized_paths
 -- ============================================================================
@@ -82,7 +82,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_order_compact TO USER {{current
 --   SDT_2  — Supplier name        CDT_2  — Customer name
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.tradacoms_order_lines
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_order_lines
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -100,4 +100,4 @@ OPTIONS (
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
 
-GRANT ADMIN ON TABLE {{zone_name}}.edi.tradacoms_order_lines TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.tradacoms_order_lines TO USER {{current_user}};

@@ -12,7 +12,7 @@
 
 ASSERT ROW_COUNT = 11
 SELECT *
-FROM {{zone_name}}.xml.order_lines;
+FROM {{zone_name}}.xml_demos.order_lines;
 
 
 -- ============================================================================
@@ -31,7 +31,7 @@ ASSERT VALUE orders_order_customer_name = 'Emma Wilson' WHERE orders_order_attr_
 ASSERT VALUE orders_order_items_item_variant_color = 'Rose Gold' WHERE orders_order_attr_id = 'ORD-1005' AND orders_order_items_item_attr_sku = 'GDG-200'
 SELECT orders_order_attr_id, orders_order_attr_status, orders_order_customer_name, orders_order_items_item_attr_sku, orders_order_items_item_product,
        orders_order_items_item_quantity, orders_order_items_item_unit_price, orders_order_items_item_variant_size, orders_order_items_item_variant_color
-FROM {{zone_name}}.xml.order_lines
+FROM {{zone_name}}.xml_demos.order_lines
 ORDER BY orders_order_attr_id, orders_order_items_item_attr_sku;
 
 
@@ -43,7 +43,7 @@ ORDER BY orders_order_attr_id, orders_order_items_item_attr_sku;
 
 ASSERT VALUE deep_nesting_count = 11
 SELECT COUNT(*) FILTER (WHERE orders_order_items_item_variant_color IS NOT NULL) AS deep_nesting_count
-FROM {{zone_name}}.xml.order_lines;
+FROM {{zone_name}}.xml_demos.order_lines;
 
 
 -- ============================================================================
@@ -54,7 +54,7 @@ FROM {{zone_name}}.xml.order_lines;
 
 ASSERT VALUE column_mapping_count = 11
 SELECT COUNT(*) FILTER (WHERE orders_order_customer_name IS NOT NULL AND orders_order_items_item_variant_color IS NOT NULL) AS column_mapping_count
-FROM {{zone_name}}.xml.order_lines;
+FROM {{zone_name}}.xml_demos.order_lines;
 
 
 -- ============================================================================
@@ -65,7 +65,7 @@ FROM {{zone_name}}.xml.order_lines;
 
 ASSERT VALUE cdata_count = 6
 SELECT COUNT(*) FILTER (WHERE orders_order_items_item_description LIKE '%<b>%' OR orders_order_items_item_description LIKE '%<em>%') AS cdata_count
-FROM {{zone_name}}.xml.order_lines;
+FROM {{zone_name}}.xml_demos.order_lines;
 
 
 -- ============================================================================
@@ -76,7 +76,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE orders_order_items_item_description IS NOT NULL WHERE orders_order_items_item_attr_sku = 'WDG-100'
 ASSERT VALUE orders_order_items_item_description IS NOT NULL WHERE orders_order_items_item_attr_sku = 'GDG-200'
 SELECT orders_order_items_item_attr_sku, orders_order_items_item_description
-FROM {{zone_name}}.xml.order_lines
+FROM {{zone_name}}.xml_demos.order_lines
 WHERE orders_order_items_item_attr_sku IN ('WDG-100', 'GDG-200')
 GROUP BY orders_order_items_item_attr_sku, orders_order_items_item_description
 ORDER BY orders_order_items_item_attr_sku;
@@ -101,7 +101,7 @@ WHERE table_name = 'order_lines'
 
 ASSERT ROW_COUNT = 5
 SELECT *
-FROM {{zone_name}}.xml.order_summary;
+FROM {{zone_name}}.xml_demos.order_summary;
 
 
 -- ============================================================================
@@ -124,7 +124,7 @@ ASSERT VALUE orders_order_customer_name = 'Emma Wilson' WHERE orders_order_attr_
 ASSERT VALUE orders_order_customer_tier = 'gold' WHERE orders_order_attr_id = 'ORD-1005'
 SELECT orders_order_attr_id, orders_order_attr_status, orders_order_customer_name, orders_order_customer_email, orders_order_customer_tier,
        orders_order_order_date, orders_order_items_item, orders_order_shipping_total
-FROM {{zone_name}}.xml.order_summary
+FROM {{zone_name}}.xml_demos.order_summary
 ORDER BY orders_order_attr_id;
 
 
@@ -144,7 +144,7 @@ ASSERT VALUE order_count = 3 WHERE orders_order_items_item_product = 'Premium Wi
 SELECT orders_order_items_item_product,
        SUM(CAST(orders_order_items_item_quantity AS INT)) AS total_qty,
        COUNT(*) AS order_count
-FROM {{zone_name}}.xml.order_lines
+FROM {{zone_name}}.xml_demos.order_lines
 GROUP BY orders_order_items_item_product
 ORDER BY total_qty DESC;
 
@@ -176,7 +176,7 @@ ASSERT VALUE shipping = '8.99' WHERE orders_order_attr_id = 'ORD-1004'
 SELECT orders_order_attr_id, orders_order_customer_name,
        SUM(CAST(orders_order_items_item_quantity AS INT) * CAST(orders_order_items_item_unit_price AS DOUBLE)) AS order_total,
        MIN(orders_order_shipping_total) AS shipping
-FROM {{zone_name}}.xml.order_lines
+FROM {{zone_name}}.xml_demos.order_lines
 GROUP BY orders_order_attr_id, orders_order_customer_name
 ORDER BY order_total DESC;
 
@@ -193,26 +193,26 @@ SELECT check_name, result
 FROM (
     SELECT 'exploded_rows' AS check_name,
            CASE WHEN COUNT(*) = 11 THEN 'PASS' ELSE 'FAIL' END AS result
-    FROM {{zone_name}}.xml.order_lines
+    FROM {{zone_name}}.xml_demos.order_lines
     UNION ALL
     SELECT 'deep_nesting_color',
            CASE WHEN COUNT(*) FILTER (WHERE orders_order_items_item_variant_color IS NOT NULL) = 11
                 THEN 'PASS' ELSE 'FAIL' END
-    FROM {{zone_name}}.xml.order_lines
+    FROM {{zone_name}}.xml_demos.order_lines
     UNION ALL
     SELECT 'column_mapping',
            CASE WHEN COUNT(*) FILTER (WHERE orders_order_customer_name IS NOT NULL AND orders_order_items_item_variant_color IS NOT NULL) = 11
                 THEN 'PASS' ELSE 'FAIL' END
-    FROM {{zone_name}}.xml.order_lines
+    FROM {{zone_name}}.xml_demos.order_lines
     UNION ALL
     SELECT 'cdata_extraction',
            CASE WHEN COUNT(*) FILTER (WHERE orders_order_items_item_description LIKE '%<b>%' OR orders_order_items_item_description LIKE '%<em>%') = 6
                 THEN 'PASS' ELSE 'FAIL' END
-    FROM {{zone_name}}.xml.order_lines
+    FROM {{zone_name}}.xml_demos.order_lines
     UNION ALL
     SELECT 'summary_rows',
            CASE WHEN COUNT(*) = 5 THEN 'PASS' ELSE 'FAIL' END
-    FROM {{zone_name}}.xml.order_summary
+    FROM {{zone_name}}.xml_demos.order_summary
 )
 WHERE result = 'FAIL'
 ORDER BY check_name;

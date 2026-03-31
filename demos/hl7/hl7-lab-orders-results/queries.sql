@@ -49,7 +49,7 @@ SELECT
     msh_4 AS sending_facility,
     msh_9 AS message_type,
     msh_12 AS hl7_version
-FROM {{zone_name}}.hl7.lab_orders
+FROM {{zone_name}}.hl7_demos.lab_orders
 ORDER BY df_file_name;
 
 
@@ -93,7 +93,7 @@ SELECT
     obx_6 AS units,
     obx_7 AS reference_range,
     obx_8 AS abnormal_flag
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 WHERE msh_9 LIKE 'ORU%'
 ORDER BY df_file_name;
 
@@ -124,7 +124,7 @@ ASSERT VALUE result_count = 1 WHERE value_type = 'HD'
 SELECT
     obx_2 AS value_type,
     COUNT(*) AS result_count
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 WHERE obx_2 IS NOT NULL AND obx_2 <> ''
 GROUP BY obx_2
 ORDER BY result_count DESC;
@@ -159,7 +159,7 @@ SELECT
     obx_6 AS units,
     obx_7 AS reference_range,
     obx_8 AS abnormal_flag
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 WHERE obx_8 IS NOT NULL AND obx_8 <> '' AND obx_8 <> 'N';
 
 
@@ -181,13 +181,13 @@ ASSERT VALUE row_count = 3 WHERE table_name = 'lab_orders'
 ASSERT VALUE row_count = 8 WHERE table_name = 'lab_results_total'
 ASSERT VALUE row_count = 5 WHERE table_name = 'lab_results_oru_only'
 SELECT 'lab_orders' AS table_name, COUNT(*) AS row_count
-FROM {{zone_name}}.hl7.lab_orders
+FROM {{zone_name}}.hl7_demos.lab_orders
 UNION ALL
 SELECT 'lab_results_total' AS table_name, COUNT(*) AS row_count
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 UNION ALL
 SELECT 'lab_results_oru_only' AS table_name, COUNT(*) AS row_count
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 WHERE msh_9 LIKE 'ORU%';
 
 
@@ -211,7 +211,7 @@ SELECT
     df_file_name,
     msh_9 AS message_type,
     df_message_json
-FROM {{zone_name}}.hl7.lab_orders
+FROM {{zone_name}}.hl7_demos.lab_orders
 WHERE df_file_name LIKE '%orm_o01_order%';
 
 
@@ -238,7 +238,7 @@ SELECT
     obx_3 AS first_obs,
     obx_5 AS first_value,
     df_message_json
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 WHERE df_file_name LIKE '%lab_result%';
 
 
@@ -269,7 +269,7 @@ SELECT
     msh_4 AS sending_facility,
     msh_9 AS message_type,
     msh_12 AS hl7_version
-FROM {{zone_name}}.hl7.lab_results
+FROM {{zone_name}}.hl7_demos.lab_results
 ORDER BY msh_9, df_file_name;
 
 
@@ -290,21 +290,21 @@ SELECT check_name, result FROM (
 
     -- Check 1: 3 ORM order messages in lab_orders
     SELECT 'order_count_3' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_orders) = 3
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.lab_orders) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 8 total messages in lab_results (3 ORM + 5 ORU)
     SELECT 'results_total_8' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_results) = 8
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.lab_results) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: 5 ORU messages when filtered by message type
     SELECT 'results_oru_5' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_results
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.lab_results
                        WHERE msh_9 LIKE 'ORU%') = 5
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -312,14 +312,14 @@ SELECT check_name, result FROM (
 
     -- Check 4: At least 3 distinct HL7 versions (actual: 4)
     SELECT 'multi_version' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT msh_12) FROM {{zone_name}}.hl7.lab_results) >= 3
+           CASE WHEN (SELECT COUNT(DISTINCT msh_12) FROM {{zone_name}}.hl7_demos.lab_results) >= 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: df_message_json populated for all 3 orders
     SELECT 'orders_json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_orders
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.lab_orders
                        WHERE df_message_json IS NOT NULL) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -327,7 +327,7 @@ SELECT check_name, result FROM (
 
     -- Check 6: PID_5 populated in at least one ORU result
     SELECT 'results_pid5_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.lab_results
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.lab_results
                        WHERE msh_9 LIKE 'ORU%' AND pid_5 IS NOT NULL AND pid_5 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

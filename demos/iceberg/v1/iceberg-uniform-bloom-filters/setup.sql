@@ -9,13 +9,13 @@
 
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm bloom filter demo zone';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_bloom COMMENT 'Bloom filters with UniForm';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'Bloom filters with UniForm';
 
 -- --------------------------------------------------------------------------
 -- Members Table — Bloom Filters + UniForm
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_bloom.members (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.members (
     member_id      INT,
     full_name      VARCHAR,
     tier           VARCHAR,
@@ -33,7 +33,7 @@ BLOOM FILTER COLUMNS (member_id, full_name);
 -- Seed Data — 40 loyalty members across 4 tiers
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.iceberg_bloom.members VALUES
+INSERT INTO {{zone_name}}.iceberg_demos.members VALUES
     (1,  'Sarah Thompson',      'Bronze',   1250,  340.50,   '2023-06-15'),
     (2,  'Michael Brown',       'Silver',   4800,  1250.00,  '2022-11-20'),
     (3,  'Jennifer Lee',        'Gold',     12500, 3800.75,  '2021-03-08'),
@@ -79,5 +79,5 @@ INSERT INTO {{zone_name}}.iceberg_bloom.members VALUES
 -- Schema Detection & Permissions
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_bloom.members;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_bloom.members TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.members;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.members TO USER {{current_user}};

@@ -26,7 +26,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: eligibility_messages — Eligibility request/response fields
@@ -44,7 +44,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 --   DMG_2  — Date of birth
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.eligibility_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.eligibility_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -60,7 +60,7 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.eligibility_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.eligibility_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: enrollment_details — Enrollment and plan fields
 -- ============================================================================
@@ -79,7 +79,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.eligibility_messages TO USER {{current_us
 --   COB_1  — Payer responsibility code (P=primary, S=secondary)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.enrollment_details
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.enrollment_details
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -96,4 +96,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.enrollment_details TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.enrollment_details TO USER {{current_user}};

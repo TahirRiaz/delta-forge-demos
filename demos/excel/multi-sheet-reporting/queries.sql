@@ -12,7 +12,7 @@
 
 ASSERT ROW_COUNT = 33
 SELECT *
-FROM {{zone_name}}.excel.all_sales;
+FROM {{zone_name}}.excel_demos.all_sales;
 
 
 -- ============================================================================
@@ -29,7 +29,7 @@ ASSERT WARNING VALUE total_amount BETWEEN 12853.29 AND 12855.29 WHERE region LIK
 SELECT df_file_name AS region,
        COUNT(*) AS orders,
        ROUND(SUM(CAST(total_amount AS DOUBLE)), 2) AS total_amount
-FROM {{zone_name}}.excel.all_sales
+FROM {{zone_name}}.excel_demos.all_sales
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -40,7 +40,7 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 7
 SELECT *
-FROM {{zone_name}}.excel.all_returns;
+FROM {{zone_name}}.excel_demos.all_returns;
 
 
 -- ============================================================================
@@ -57,7 +57,7 @@ ASSERT WARNING VALUE total_refunds BETWEEN 3538.83 AND 3540.83 WHERE region LIKE
 SELECT df_file_name AS region,
        COUNT(*) AS return_count,
        ROUND(SUM(CAST(refund_amount AS DOUBLE)), 2) AS total_refunds
-FROM {{zone_name}}.excel.all_returns
+FROM {{zone_name}}.excel_demos.all_returns
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -75,8 +75,8 @@ ASSERT VALUE clean_orders = 26
 SELECT COUNT(*) AS total_orders,
        COUNT(r.return_id) AS returned_orders,
        COUNT(*) - COUNT(r.return_id) AS clean_orders
-FROM {{zone_name}}.excel.all_sales s
-LEFT JOIN {{zone_name}}.excel.all_returns r
+FROM {{zone_name}}.excel_demos.all_sales s
+LEFT JOIN {{zone_name}}.excel_demos.all_returns r
     ON s.order_id = r.order_id;
 
 
@@ -98,8 +98,8 @@ SELECT s.df_file_name AS region,
        ROUND(SUM(CAST(s.total_amount AS DOUBLE)), 2) AS gross_sales,
        ROUND(COALESCE(SUM(CAST(r.refund_amount AS DOUBLE)), 0), 2) AS total_refunds,
        ROUND(SUM(CAST(s.total_amount AS DOUBLE)) - COALESCE(SUM(CAST(r.refund_amount AS DOUBLE)), 0), 2) AS net_revenue
-FROM {{zone_name}}.excel.all_sales s
-LEFT JOIN {{zone_name}}.excel.all_returns r
+FROM {{zone_name}}.excel_demos.all_sales s
+LEFT JOIN {{zone_name}}.excel_demos.all_returns r
     ON s.order_id = r.order_id
 GROUP BY s.df_file_name
 ORDER BY s.df_file_name;
@@ -111,7 +111,7 @@ ORDER BY s.df_file_name;
 
 ASSERT ROW_COUNT = 7
 SELECT *
-FROM {{zone_name}}.excel.all_staff;
+FROM {{zone_name}}.excel_demos.all_staff;
 
 
 -- ============================================================================
@@ -121,7 +121,7 @@ FROM {{zone_name}}.excel.all_staff;
 ASSERT ROW_COUNT >= 3
 SELECT role,
        COUNT(*) AS headcount
-FROM {{zone_name}}.excel.all_staff
+FROM {{zone_name}}.excel_demos.all_staff
 GROUP BY role
 ORDER BY headcount DESC;
 
@@ -145,12 +145,12 @@ SELECT s.df_file_name AS region,
        ROUND(CAST(COALESCE(r.return_count, 0) AS DOUBLE) / CAST(s.sales_count AS DOUBLE) * 100, 1) AS return_rate_pct
 FROM (
     SELECT df_file_name, COUNT(*) AS sales_count
-    FROM {{zone_name}}.excel.all_sales
+    FROM {{zone_name}}.excel_demos.all_sales
     GROUP BY df_file_name
 ) s
 LEFT JOIN (
     SELECT df_file_name, COUNT(*) AS return_count
-    FROM {{zone_name}}.excel.all_returns
+    FROM {{zone_name}}.excel_demos.all_returns
     GROUP BY df_file_name
 ) r ON s.df_file_name = r.df_file_name
 ORDER BY s.df_file_name;
@@ -173,57 +173,57 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total sales rows = 33
     SELECT 'sales_count_33' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_sales) = 33
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_sales) = 33
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Total returns rows = 7
     SELECT 'returns_count_7' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_returns) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_returns) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: Total staff rows = 7
     SELECT 'staff_count_7' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_staff) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_staff) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: Exactly 2 source files in sales table
     SELECT 'two_source_files' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.excel.all_sales) = 2
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.excel_demos.all_sales) = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: East region has 17 sales rows
     SELECT 'east_sales_17' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_sales WHERE df_file_name LIKE '%east%') = 17
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_sales WHERE df_file_name LIKE '%east%') = 17
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: West region has 16 sales rows
     SELECT 'west_sales_16' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_sales WHERE df_file_name LIKE '%west%') = 16
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_sales WHERE df_file_name LIKE '%west%') = 16
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: Cross-sheet JOIN produces results (returns reference valid order_ids)
     SELECT 'cross_sheet_join_works' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_sales s
-                      INNER JOIN {{zone_name}}.excel.all_returns r ON s.order_id = r.order_id) = 7
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_sales s
+                      INNER JOIN {{zone_name}}.excel_demos.all_returns r ON s.order_id = r.order_id) = 7
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 8: File metadata populated on all sales rows
     SELECT 'file_metadata_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel.all_sales WHERE df_file_name IS NOT NULL) = 33
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.excel_demos.all_sales WHERE df_file_name IS NOT NULL) = 33
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

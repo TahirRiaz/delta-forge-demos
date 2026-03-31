@@ -15,15 +15,15 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg v2 copy-on-write table
 -- The table root contains data/ and metadata/ directories.
 -- v4.metadata.json has 3 snapshots: append (120 rows), overwrite (update 20),
 -- overwrite (delete 10). Only one data file is current — no delete files.
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.shipments
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.shipments
 USING ICEBERG
 LOCATION '{{data_path}}/shipments';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.shipments TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.shipments TO USER {{current_user}};

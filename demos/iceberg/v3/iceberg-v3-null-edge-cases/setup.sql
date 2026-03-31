@@ -17,12 +17,12 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg V3 table
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.lab_results
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.lab_results
 USING ICEBERG
 LOCATION '{{data_path}}/lab_results';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.lab_results TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.lab_results TO USER {{current_user}};

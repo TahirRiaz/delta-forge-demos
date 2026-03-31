@@ -24,7 +24,7 @@ ASSERT VALUE onset_date = '2013-04-02' WHERE condition_id = 'f201'
 ASSERT VALUE onset_date = '2010-07-18' WHERE condition_id = 'stroke'
 SELECT condition_id, clinical_status, verification_status,
        severity, code, body_site, onset_date
-FROM {{zone_name}}.fhir.conditions
+FROM {{zone_name}}.fhir_demos.conditions
 ORDER BY condition_id;
 
 
@@ -41,7 +41,7 @@ ASSERT ROW_COUNT = 5
 ASSERT VALUE condition_count = 1 WHERE severity_level = 'Not specified'
 SELECT CASE WHEN severity IS NOT NULL THEN severity ELSE 'Not specified' END AS severity_level,
        COUNT(*) AS condition_count
-FROM {{zone_name}}.fhir.conditions
+FROM {{zone_name}}.fhir_demos.conditions
 GROUP BY severity
 ORDER BY condition_count DESC;
 
@@ -61,7 +61,7 @@ ASSERT VALUE resolution_status = 'Ongoing' WHERE condition_id = 'stroke'
 SELECT condition_id, code, onset_date, abatement_date,
        CASE WHEN abatement_date IS NOT NULL THEN 'Resolved'
             ELSE 'Ongoing' END AS resolution_status
-FROM {{zone_name}}.fhir.conditions
+FROM {{zone_name}}.fhir_demos.conditions
 ORDER BY onset_date;
 
 
@@ -78,7 +78,7 @@ ASSERT VALUE status = 'completed' WHERE procedure_id = 'biopsy'
 ASSERT VALUE status = 'completed' WHERE procedure_id = 'f001'
 ASSERT VALUE status = 'completed' WHERE procedure_id = 'example'
 SELECT procedure_id, status, code, subject, occurrence_date, body_site
-FROM {{zone_name}}.fhir.procedures
+FROM {{zone_name}}.fhir_demos.procedures
 ORDER BY procedure_id;
 
 
@@ -95,7 +95,7 @@ ASSERT VALUE status = 'completed' WHERE procedure_id = 'colonoscopy'
 ASSERT VALUE status = 'completed' WHERE procedure_id = 'example-implant'
 SELECT procedure_id, status,
        performer, reason, follow_up, note
-FROM {{zone_name}}.fhir.procedures
+FROM {{zone_name}}.fhir_demos.procedures
 ORDER BY procedure_id;
 
 
@@ -111,7 +111,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE status = 'completed'
 ASSERT VALUE procedure_count = 8
 SELECT status, COUNT(*) AS procedure_count
-FROM {{zone_name}}.fhir.procedures
+FROM {{zone_name}}.fhir_demos.procedures
 GROUP BY status
 ORDER BY procedure_count DESC;
 
@@ -130,7 +130,7 @@ ASSERT VALUE criticality = 'high' WHERE allergy_id = 'example'
 ASSERT VALUE criticality = 'high' WHERE allergy_id = 'medication'
 SELECT allergy_id, clinical_status, type, category,
        criticality, code, patient
-FROM {{zone_name}}.fhir.allergies
+FROM {{zone_name}}.fhir_demos.allergies
 ORDER BY allergy_id;
 
 
@@ -145,7 +145,7 @@ ORDER BY allergy_id;
 
 ASSERT ROW_COUNT = 2
 SELECT allergy_id, code, criticality, reaction, last_occurrence
-FROM {{zone_name}}.fhir.allergies
+FROM {{zone_name}}.fhir_demos.allergies
 WHERE reaction IS NOT NULL
 ORDER BY allergy_id;
 
@@ -163,7 +163,7 @@ ASSERT VALUE allergy_count = 4 WHERE risk_level = 'Not specified'
 ASSERT VALUE allergy_count = 2 WHERE risk_level = 'high'
 SELECT CASE WHEN criticality IS NOT NULL THEN criticality ELSE 'Not specified' END AS risk_level,
        COUNT(*) AS allergy_count
-FROM {{zone_name}}.fhir.allergies
+FROM {{zone_name}}.fhir_demos.allergies
 GROUP BY criticality
 ORDER BY allergy_count DESC;
 
@@ -188,7 +188,7 @@ SELECT condition_id,
        CASE WHEN onset_date IS NOT NULL THEN 'Y' ELSE '-' END AS has_onset,
        CASE WHEN abatement_date IS NOT NULL THEN 'Y' ELSE '-' END AS has_abatement,
        df_file_name
-FROM {{zone_name}}.fhir.conditions
+FROM {{zone_name}}.fhir_demos.conditions
 ORDER BY condition_id;
 
 
@@ -203,11 +203,11 @@ ASSERT ROW_COUNT = 3
 ASSERT VALUE record_count = 6 WHERE resource_type = 'Allergies'
 ASSERT VALUE record_count = 8 WHERE resource_type = 'Conditions'
 ASSERT VALUE record_count = 8 WHERE resource_type = 'Procedures'
-SELECT 'Conditions' AS resource_type, COUNT(*) AS record_count FROM {{zone_name}}.fhir.conditions
+SELECT 'Conditions' AS resource_type, COUNT(*) AS record_count FROM {{zone_name}}.fhir_demos.conditions
 UNION ALL
-SELECT 'Procedures' AS resource_type, COUNT(*) AS record_count FROM {{zone_name}}.fhir.procedures
+SELECT 'Procedures' AS resource_type, COUNT(*) AS record_count FROM {{zone_name}}.fhir_demos.procedures
 UNION ALL
-SELECT 'Allergies' AS resource_type, COUNT(*) AS record_count FROM {{zone_name}}.fhir.allergies
+SELECT 'Allergies' AS resource_type, COUNT(*) AS record_count FROM {{zone_name}}.fhir_demos.allergies
 ORDER BY resource_type;
 
 
@@ -221,11 +221,11 @@ ASSERT ROW_COUNT = 22
 ASSERT VALUE type = 'Condition' WHERE id = 'stroke'
 ASSERT VALUE type = 'Allergy' WHERE id = 'nka'
 ASSERT VALUE type = 'Procedure' WHERE id = 'biopsy'
-SELECT 'Condition' AS type, condition_id AS id, df_file_name FROM {{zone_name}}.fhir.conditions
+SELECT 'Condition' AS type, condition_id AS id, df_file_name FROM {{zone_name}}.fhir_demos.conditions
 UNION ALL
-SELECT 'Procedure' AS type, procedure_id AS id, df_file_name FROM {{zone_name}}.fhir.procedures
+SELECT 'Procedure' AS type, procedure_id AS id, df_file_name FROM {{zone_name}}.fhir_demos.procedures
 UNION ALL
-SELECT 'Allergy' AS type, allergy_id AS id, df_file_name FROM {{zone_name}}.fhir.allergies
+SELECT 'Allergy' AS type, allergy_id AS id, df_file_name FROM {{zone_name}}.fhir_demos.allergies
 ORDER BY type, id;
 
 
@@ -250,67 +250,67 @@ SELECT check_name, result FROM (
 
     -- Check 1: Condition count = 8
     SELECT 'condition_count_8' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.conditions) = 8
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.conditions) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Procedure count = 8
     SELECT 'procedure_count_8' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.procedures) = 8
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.procedures) = 8
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: Allergy count = 6
     SELECT 'allergy_count_6' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.allergies) = 6
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.allergies) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: All conditions have clinical status
     SELECT 'condition_status_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.conditions WHERE clinical_status IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.conditions WHERE clinical_status IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: All procedures have status
     SELECT 'procedure_status_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.procedures WHERE status IS NULL) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.procedures WHERE status IS NULL) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Column mapping — condition_id, procedure_id, allergy_id
     SELECT 'column_mapping_ids' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.conditions WHERE condition_id IS NOT NULL) = 8
-                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir.procedures WHERE procedure_id IS NOT NULL) = 8
-                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir.allergies WHERE allergy_id IS NOT NULL) = 6
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.conditions WHERE condition_id IS NOT NULL) = 8
+                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.procedures WHERE procedure_id IS NOT NULL) = 8
+                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.allergies WHERE allergy_id IS NOT NULL) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 7: Some allergies have reaction data
     SELECT 'allergy_reactions_exist' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.allergies WHERE reaction IS NOT NULL) > 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.allergies WHERE reaction IS NOT NULL) > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 8: Conditions have SNOMED-coded diagnoses
     SELECT 'condition_codes_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.conditions WHERE code IS NOT NULL) > 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.conditions WHERE code IS NOT NULL) > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 9: File metadata on all three tables
     SELECT 'file_metadata_all' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir.conditions WHERE df_file_name IS NOT NULL) = 8
-                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir.procedures WHERE df_file_name IS NOT NULL) = 8
-                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir.allergies WHERE df_file_name IS NOT NULL) = 6
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.conditions WHERE df_file_name IS NOT NULL) = 8
+                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.procedures WHERE df_file_name IS NOT NULL) = 8
+                 AND (SELECT COUNT(*) FROM {{zone_name}}.fhir_demos.allergies WHERE df_file_name IS NOT NULL) = 6
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -320,9 +320,9 @@ SELECT check_name, result FROM (
     -- depends on flattener configuration; verifies all three tables have data.
     SELECT 'multi_resource_types' AS check_name,
            CASE WHEN (SELECT COUNT(DISTINCT source_type) FROM (
-               SELECT 'Condition' AS source_type FROM {{zone_name}}.fhir.conditions
-               UNION SELECT 'Procedure' AS source_type FROM {{zone_name}}.fhir.procedures
-               UNION SELECT 'Allergy' AS source_type FROM {{zone_name}}.fhir.allergies
+               SELECT 'Condition' AS source_type FROM {{zone_name}}.fhir_demos.conditions
+               UNION SELECT 'Procedure' AS source_type FROM {{zone_name}}.fhir_demos.procedures
+               UNION SELECT 'Allergy' AS source_type FROM {{zone_name}}.fhir_demos.allergies
            ) combined) = 3 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

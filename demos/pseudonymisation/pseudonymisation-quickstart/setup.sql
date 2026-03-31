@@ -33,7 +33,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'Demo zone for pseudonymisation quickstart';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation_demos
     COMMENT 'Schema for banking KYC pseudonymisation demo';
 
 
@@ -41,7 +41,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pseudonymisation
 -- STEP 2: Table — bank_customers
 -- ============================================================================
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.bank_customers (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.bank_customers (
     customer_id    VARCHAR,
     first_name     VARCHAR,
     last_name      VARCHAR,
@@ -58,11 +58,11 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation.bank_customers (
     active         BOOLEAN
 ) LOCATION '{{data_path}}/bank_customers';
 
-GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation.bank_customers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.bank_customers TO USER {{current_user}};
 
-DELETE FROM {{zone_name}}.pseudonymisation.bank_customers WHERE 1=1;
+DELETE FROM {{zone_name}}.pseudonymisation_demos.bank_customers WHERE 1=1;
 
-INSERT INTO {{zone_name}}.pseudonymisation.bank_customers VALUES
+INSERT INTO {{zone_name}}.pseudonymisation_demos.bank_customers VALUES
     ('C001', 'Alice',  'Johnson',  '1985-03-15', 'alice.j@email.com',   '(212)555-0101', '411-22-3344', '100 Broadway',    'New York',      'NY', '10001', 'Premium',  125000.50, true),
     ('C002', 'Bob',    'Martinez', '1972-08-22', 'bob.m@corp.net',      '(310)555-0202', '522-33-4455', '200 Sunset Blvd', 'Los Angeles',   'CA', '90028', 'Standard', 45200.75,  true),
     ('C003', 'Carol',  'Lee',      '1990-11-30', 'carol.lee@bank.org',  '(312)555-0303', '633-44-5566', '300 Michigan Ave', 'Chicago',      'IL', '60601', 'Premium',  89750.00,  true),
@@ -76,23 +76,23 @@ INSERT INTO {{zone_name}}.pseudonymisation.bank_customers VALUES
 -- ============================================================================
 
 -- Rule 1: Redact SSN — fully replaced with mask string
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.bank_customers (ssn)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.bank_customers (ssn)
     TRANSFORM redact
     PARAMS (mask = '***-**-****');
 
 -- Rule 2: Mask phone — show last 5 characters only
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.bank_customers (phone)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.bank_customers (phone)
     TRANSFORM mask
     PARAMS (show = 5);
 
 -- Rule 3: Keyed hash last name — deterministic pseudonym for linkage
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.bank_customers (last_name)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.bank_customers (last_name)
     TRANSFORM keyed_hash
     SCOPE person
     PARAMS (salt = 'bank_name_salt_2024');
 
 -- Rule 4: Generalize date of birth — round to decade
-CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.bank_customers (date_of_birth)
+CREATE PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.bank_customers (date_of_birth)
     TRANSFORM generalize
     SCOPE relationship
     PARAMS (range = 10);

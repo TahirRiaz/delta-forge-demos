@@ -9,13 +9,13 @@
 
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm restore demo zone';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_restore COMMENT 'RESTORE with UniForm';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'RESTORE with UniForm';
 
 -- --------------------------------------------------------------------------
 -- Compliance Records Table
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_restore.compliance_records (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.compliance_records (
     record_id         INT,
     entity_name       VARCHAR,
     regulation        VARCHAR,
@@ -32,7 +32,7 @@ TBLPROPERTIES (
 -- Seed Data — 20 compliance records across 5 entities, 4 regulations
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.iceberg_restore.compliance_records VALUES
+INSERT INTO {{zone_name}}.iceberg_demos.compliance_records VALUES
     (1,  'Acme Corp',   'SOX',     'compliant',     15, '2025-01-10'),
     (2,  'Acme Corp',   'GDPR',    'compliant',     22, '2025-01-10'),
     (3,  'Beta Inc',    'SOX',     'non_compliant', 68, '2025-01-12'),
@@ -58,5 +58,5 @@ INSERT INTO {{zone_name}}.iceberg_restore.compliance_records VALUES
 -- Schema Detection & Permissions
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_restore.compliance_records;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_restore.compliance_records TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.compliance_records;
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.compliance_records TO USER {{current_user}};

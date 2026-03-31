@@ -9,13 +9,13 @@
 -- ============================================================================
 
 -- STEP 1: Drop Pseudonymisation Rules
-DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation.insurance_claims;
+DROP PSEUDONYMISATION RULE ON {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 -- STEP 2: Drop Table
-DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation.insurance_claims;
+DROP TABLE IF EXISTS {{zone_name}}.pseudonymisation_demos.insurance_claims;
 
 -- STEP 3: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.pseudonymisation;
+DROP SCHEMA IF EXISTS {{zone_name}}.pseudonymisation_demos;
 
 -- STEP 4: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

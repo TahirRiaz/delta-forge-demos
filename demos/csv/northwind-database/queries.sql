@@ -34,9 +34,9 @@ SELECT
     c.company_name,
     COUNT(DISTINCT o.order_id) AS order_count,
     ROUND(SUM(CAST(od.unit_price AS NUMERIC) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS NUMERIC))), 2) AS total_value
-FROM {{zone_name}}.csv.nw_customers c
-JOIN {{zone_name}}.csv.nw_orders o ON c.customer_id = o.customer_id
-JOIN {{zone_name}}.csv.nw_order_details od ON o.order_id = od.order_id
+FROM {{zone_name}}.csv_demos.nw_customers c
+JOIN {{zone_name}}.csv_demos.nw_orders o ON c.customer_id = o.customer_id
+JOIN {{zone_name}}.csv_demos.nw_order_details od ON o.order_id = od.order_id
 GROUP BY c.company_name
 ORDER BY total_value DESC
 LIMIT 10;
@@ -70,9 +70,9 @@ SELECT
     cat.category_name,
     COUNT(DISTINCT p.product_id) AS product_count,
     ROUND(SUM(CAST(od.unit_price AS NUMERIC) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS NUMERIC))), 2) AS total_revenue
-FROM {{zone_name}}.csv.nw_order_details od
-JOIN {{zone_name}}.csv.nw_products p ON od.product_id = p.product_id
-JOIN {{zone_name}}.csv.nw_categories cat ON p.category_id = cat.category_id
+FROM {{zone_name}}.csv_demos.nw_order_details od
+JOIN {{zone_name}}.csv_demos.nw_products p ON od.product_id = p.product_id
+JOIN {{zone_name}}.csv_demos.nw_categories cat ON p.category_id = cat.category_id
 GROUP BY cat.category_name
 ORDER BY total_revenue DESC;
 
@@ -104,9 +104,9 @@ SELECT
     e.title,
     COUNT(DISTINCT o.order_id) AS orders_handled,
     ROUND(SUM(CAST(od.unit_price AS NUMERIC) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS NUMERIC))), 2) AS total_sales
-FROM {{zone_name}}.csv.nw_employees e
-JOIN {{zone_name}}.csv.nw_orders o ON e.employee_id = o.employee_id
-JOIN {{zone_name}}.csv.nw_order_details od ON o.order_id = od.order_id
+FROM {{zone_name}}.csv_demos.nw_employees e
+JOIN {{zone_name}}.csv_demos.nw_orders o ON e.employee_id = o.employee_id
+JOIN {{zone_name}}.csv_demos.nw_order_details od ON o.order_id = od.order_id
 GROUP BY e.first_name, e.last_name, e.title
 ORDER BY total_sales DESC;
 
@@ -134,7 +134,7 @@ SELECT
     EXTRACT(MONTH FROM o.order_date) AS month,
     COUNT(*) AS order_count,
     ROUND(SUM(CAST(o.freight AS NUMERIC)), 2) AS total_freight
-FROM {{zone_name}}.csv.nw_orders o
+FROM {{zone_name}}.csv_demos.nw_orders o
 GROUP BY year, month
 ORDER BY year, month;
 
@@ -161,9 +161,9 @@ SELECT
     p.units_in_stock,
     p.reorder_level,
     p.units_on_order
-FROM {{zone_name}}.csv.nw_products p
-JOIN {{zone_name}}.csv.nw_categories cat ON p.category_id = cat.category_id
-JOIN {{zone_name}}.csv.nw_suppliers s ON p.supplier_id = s.supplier_id
+FROM {{zone_name}}.csv_demos.nw_products p
+JOIN {{zone_name}}.csv_demos.nw_categories cat ON p.category_id = cat.category_id
+JOIN {{zone_name}}.csv_demos.nw_suppliers s ON p.supplier_id = s.supplier_id
 WHERE CAST(p.units_in_stock AS INT) < CAST(p.reorder_level AS INT)
   AND CAST(p.discontinued AS INT) = 0
 ORDER BY (CAST(p.reorder_level AS INT) - CAST(p.units_in_stock AS INT)) DESC;
@@ -191,9 +191,9 @@ SELECT
     COUNT(DISTINCT o.order_id) AS shipments,
     ROUND(AVG(CAST(o.freight AS NUMERIC)), 2) AS avg_freight,
     ROUND(SUM(CAST(od.unit_price AS NUMERIC) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS NUMERIC))), 2) AS total_order_value
-FROM {{zone_name}}.csv.nw_orders o
-JOIN {{zone_name}}.csv.nw_shippers sh ON o.ship_via = sh.shipper_id
-JOIN {{zone_name}}.csv.nw_order_details od ON o.order_id = od.order_id
+FROM {{zone_name}}.csv_demos.nw_orders o
+JOIN {{zone_name}}.csv_demos.nw_shippers sh ON o.ship_via = sh.shipper_id
+JOIN {{zone_name}}.csv_demos.nw_order_details od ON o.order_id = od.order_id
 GROUP BY sh.company_name
 ORDER BY shipments DESC;
 
@@ -220,8 +220,8 @@ SELECT
     COUNT(DISTINCT c.customer_id) AS customer_count,
     COUNT(DISTINCT o.order_id) AS order_count,
     ROUND(AVG(CAST(o.freight AS NUMERIC)), 2) AS avg_freight
-FROM {{zone_name}}.csv.nw_customers c
-JOIN {{zone_name}}.csv.nw_orders o ON c.customer_id = o.customer_id
+FROM {{zone_name}}.csv_demos.nw_customers c
+JOIN {{zone_name}}.csv_demos.nw_orders o ON c.customer_id = o.customer_id
 GROUP BY c.country
 ORDER BY order_count DESC;
 
@@ -251,10 +251,10 @@ SELECT
     e.first_name || ' ' || e.last_name AS employee_name,
     r.region_description AS region,
     COUNT(t.territory_id) AS territory_count
-FROM {{zone_name}}.csv.nw_employees e
-JOIN {{zone_name}}.csv.nw_employee_territories et ON e.employee_id = et.employee_id
-JOIN {{zone_name}}.csv.nw_territories t ON et.territory_id = t.territory_id
-JOIN {{zone_name}}.csv.nw_regions r ON t.region_id = r.region_id
+FROM {{zone_name}}.csv_demos.nw_employees e
+JOIN {{zone_name}}.csv_demos.nw_employee_territories et ON e.employee_id = et.employee_id
+JOIN {{zone_name}}.csv_demos.nw_territories t ON et.territory_id = t.territory_id
+JOIN {{zone_name}}.csv_demos.nw_regions r ON t.region_id = r.region_id
 GROUP BY e.first_name, e.last_name, r.region_description
 ORDER BY employee_name, region;
 
@@ -279,9 +279,9 @@ SELECT
     s.country,
     COUNT(DISTINCT p.product_id) AS products_supplied,
     ROUND(SUM(CAST(od.unit_price AS NUMERIC) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS NUMERIC))), 2) AS total_revenue
-FROM {{zone_name}}.csv.nw_suppliers s
-JOIN {{zone_name}}.csv.nw_products p ON s.supplier_id = p.supplier_id
-JOIN {{zone_name}}.csv.nw_order_details od ON p.product_id = od.product_id
+FROM {{zone_name}}.csv_demos.nw_suppliers s
+JOIN {{zone_name}}.csv_demos.nw_products p ON s.supplier_id = p.supplier_id
+JOIN {{zone_name}}.csv_demos.nw_order_details od ON p.product_id = od.product_id
 GROUP BY s.company_name, s.country
 ORDER BY total_revenue DESC
 LIMIT 10;
@@ -308,8 +308,8 @@ SELECT
     o.order_date,
     o.required_date,
     o.shipped_date
-FROM {{zone_name}}.csv.nw_orders o
-JOIN {{zone_name}}.csv.nw_customers c ON o.customer_id = c.customer_id
+FROM {{zone_name}}.csv_demos.nw_orders o
+JOIN {{zone_name}}.csv_demos.nw_customers c ON o.customer_id = c.customer_id
 WHERE o.shipped_date > o.required_date
 ORDER BY o.shipped_date DESC;
 
@@ -328,6 +328,6 @@ SELECT
     COUNT(DISTINCT o.order_id) AS total_orders,
     COUNT(DISTINCT c.customer_id) AS total_customers,
     ROUND(SUM(CAST(od.unit_price AS NUMERIC) * CAST(od.quantity AS INT) * (1 - CAST(od.discount AS NUMERIC))), 2) AS grand_total_revenue
-FROM {{zone_name}}.csv.nw_order_details od
-JOIN {{zone_name}}.csv.nw_orders o ON od.order_id = o.order_id
-JOIN {{zone_name}}.csv.nw_customers c ON o.customer_id = c.customer_id;
+FROM {{zone_name}}.csv_demos.nw_order_details od
+JOIN {{zone_name}}.csv_demos.nw_orders o ON od.order_id = o.order_id
+JOIN {{zone_name}}.csv_demos.nw_customers c ON o.customer_id = c.customer_id;

@@ -74,4 +74,4 @@ size_bytes = 4971
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.iceberg.trips"
+name = "{{zone_name}}.iceberg_demos.trips"

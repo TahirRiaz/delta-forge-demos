@@ -9,7 +9,7 @@
 -- ============================================================================
 
 ASSERT ROW_COUNT = 20
-SELECT * FROM {{zone_name}}.iceberg_restore.compliance_records ORDER BY record_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.compliance_records ORDER BY record_id;
 
 -- ============================================================================
 -- Query 2: Baseline Status Distribution
@@ -23,7 +23,7 @@ SELECT
     compliance_status,
     COUNT(*) AS record_count,
     SUM(risk_score) AS total_risk
-FROM {{zone_name}}.iceberg_restore.compliance_records
+FROM {{zone_name}}.iceberg_demos.compliance_records
 GROUP BY compliance_status
 ORDER BY compliance_status;
 
@@ -40,7 +40,7 @@ SELECT
     COUNT(*) AS record_count,
     SUM(risk_score) AS total_risk,
     ROUND(AVG(risk_score), 2) AS avg_risk
-FROM {{zone_name}}.iceberg_restore.compliance_records
+FROM {{zone_name}}.iceberg_demos.compliance_records
 GROUP BY entity_name
 ORDER BY entity_name;
 
@@ -49,7 +49,7 @@ ORDER BY entity_name;
 -- ============================================================================
 -- A compliance officer escalates all non-compliant findings for review.
 
-UPDATE {{zone_name}}.iceberg_restore.compliance_records
+UPDATE {{zone_name}}.iceberg_demos.compliance_records
 SET compliance_status = 'under_review'
 WHERE compliance_status = 'non_compliant';
 
@@ -64,7 +64,7 @@ ASSERT VALUE record_count = 5 WHERE compliance_status = 'under_review'
 SELECT
     compliance_status,
     COUNT(*) AS record_count
-FROM {{zone_name}}.iceberg_restore.compliance_records
+FROM {{zone_name}}.iceberg_demos.compliance_records
 GROUP BY compliance_status
 ORDER BY compliance_status;
 
@@ -74,7 +74,7 @@ ORDER BY compliance_status;
 -- A junior analyst accidentally deletes all records with risk_score > 50.
 -- This removes 7 critical records that must be recovered.
 
-DELETE FROM {{zone_name}}.iceberg_restore.compliance_records
+DELETE FROM {{zone_name}}.iceberg_demos.compliance_records
 WHERE risk_score > 50;
 
 -- ============================================================================
@@ -82,7 +82,7 @@ WHERE risk_score > 50;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 13
-SELECT * FROM {{zone_name}}.iceberg_restore.compliance_records ORDER BY record_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.compliance_records ORDER BY record_id;
 
 -- ============================================================================
 -- Query 6: Damage Assessment — Missing High-Risk Records
@@ -91,7 +91,7 @@ SELECT * FROM {{zone_name}}.iceberg_restore.compliance_records ORDER BY record_i
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg_restore.compliance_records
+FROM {{zone_name}}.iceberg_demos.compliance_records
 WHERE risk_score > 50;
 
 -- ============================================================================
@@ -101,14 +101,14 @@ WHERE risk_score > 50;
 -- records with the updated statuses. The Iceberg metadata must be rebuilt
 -- to reflect the restored state.
 
-RESTORE {{zone_name}}.iceberg_restore.compliance_records TO VERSION 2;
+RESTORE {{zone_name}}.iceberg_demos.compliance_records TO VERSION 2;
 
 -- ============================================================================
 -- Query 7: Post-Restore — All 20 Records Recovered
 -- ============================================================================
 
 ASSERT ROW_COUNT = 20
-SELECT * FROM {{zone_name}}.iceberg_restore.compliance_records ORDER BY record_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.compliance_records ORDER BY record_id;
 
 -- ============================================================================
 -- Query 8: Post-Restore Status — under_review Preserved (Not Original)
@@ -123,7 +123,7 @@ ASSERT VALUE record_count = 5 WHERE compliance_status = 'under_review'
 SELECT
     compliance_status,
     COUNT(*) AS record_count
-FROM {{zone_name}}.iceberg_restore.compliance_records
+FROM {{zone_name}}.iceberg_demos.compliance_records
 GROUP BY compliance_status
 ORDER BY compliance_status;
 
@@ -133,7 +133,7 @@ ORDER BY compliance_status;
 
 ASSERT ROW_COUNT = 7
 SELECT record_id, entity_name, regulation, risk_score
-FROM {{zone_name}}.iceberg_restore.compliance_records
+FROM {{zone_name}}.iceberg_demos.compliance_records
 WHERE risk_score > 50
 ORDER BY risk_score DESC;
 
@@ -141,18 +141,18 @@ ORDER BY risk_score DESC;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_restore.compliance_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/compliance_records';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_restore.compliance_iceberg TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.compliance_iceberg TO USER {{current_user}};
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 20 Records After Restore
 -- ============================================================================
 
 ASSERT ROW_COUNT = 20
-SELECT * FROM {{zone_name}}.iceberg_restore.compliance_iceberg ORDER BY record_id;
+SELECT * FROM {{zone_name}}.iceberg_demos.compliance_iceberg ORDER BY record_id;
 
 -- ============================================================================
 -- Iceberg Verify 2: Status Distribution via Iceberg — Must Match Delta
@@ -164,7 +164,7 @@ ASSERT VALUE record_count = 5 WHERE compliance_status = 'under_review'
 SELECT
     compliance_status,
     COUNT(*) AS record_count
-FROM {{zone_name}}.iceberg_restore.compliance_iceberg
+FROM {{zone_name}}.iceberg_demos.compliance_iceberg
 GROUP BY compliance_status
 ORDER BY compliance_status;
 
@@ -176,7 +176,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE entity_name = 'Epsilon SA' WHERE record_id = 15
 ASSERT VALUE risk_score = 80 WHERE record_id = 15
 SELECT *
-FROM {{zone_name}}.iceberg_restore.compliance_iceberg
+FROM {{zone_name}}.iceberg_demos.compliance_iceberg
 WHERE record_id = 15;
 
 -- ============================================================================
@@ -195,4 +195,4 @@ SELECT
     ROUND(AVG(risk_score), 2) AS avg_risk,
     COUNT(DISTINCT entity_name) AS entity_count,
     COUNT(DISTINCT regulation) AS regulation_count
-FROM {{zone_name}}.iceberg_restore.compliance_records;
+FROM {{zone_name}}.iceberg_demos.compliance_records;

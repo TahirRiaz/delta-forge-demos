@@ -3,8 +3,8 @@
 -- ============================================================================
 
 -- STEP 1: Drop tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.puffin_dv_demo.products_iceberg WITH FILES;
-DROP DELTA TABLE IF EXISTS {{zone_name}}.puffin_dv_demo.products WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.products_iceberg WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.products WITH FILES;
 
 -- STEP 2: Drop schema
-DROP SCHEMA IF EXISTS {{zone_name}}.puffin_dv_demo;
+DROP SCHEMA IF EXISTS {{zone_name}}.iceberg_demos;

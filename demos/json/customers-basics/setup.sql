@@ -16,7 +16,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json_demos
     COMMENT 'JSON-backed external tables';
 
 -- ============================================================================
@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.json
 -- (strip $., split camelCase, lowercase). Type inference handles automatic
 -- timestamp detection.
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json.customers
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.json_demos.customers
 USING JSON
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -50,4 +50,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.json.customers TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.json_demos.customers TO USER {{current_user}};

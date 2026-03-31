@@ -15,7 +15,7 @@
 -- via the Iceberg v2 manifest chain across bucket and day partitions.
 
 ASSERT ROW_COUNT = 480
-SELECT * FROM {{zone_name}}.iceberg.network_traffic;
+SELECT * FROM {{zone_name}}.iceberg_demos.network_traffic;
 
 
 -- ============================================================================
@@ -30,7 +30,7 @@ ASSERT VALUE packet_count = 160 WHERE region = 'north-america'
 SELECT
     region,
     COUNT(*) AS packet_count
-FROM {{zone_name}}.iceberg.network_traffic
+FROM {{zone_name}}.iceberg_demos.network_traffic
 GROUP BY region
 ORDER BY region;
 
@@ -48,7 +48,7 @@ ASSERT VALUE packet_count = 120 WHERE protocol = 'UDP'
 SELECT
     protocol,
     COUNT(*) AS packet_count
-FROM {{zone_name}}.iceberg.network_traffic
+FROM {{zone_name}}.iceberg_demos.network_traffic
 GROUP BY protocol
 ORDER BY protocol;
 
@@ -66,7 +66,7 @@ ASSERT VALUE packet_count = 159 WHERE threat_level = 'medium'
 SELECT
     threat_level,
     COUNT(*) AS packet_count
-FROM {{zone_name}}.iceberg.network_traffic
+FROM {{zone_name}}.iceberg_demos.network_traffic
 GROUP BY threat_level
 ORDER BY threat_level;
 
@@ -86,7 +86,7 @@ SELECT
     ROUND(AVG(bytes_transferred), 2) AS avg_bytes,
     MIN(bytes_transferred) AS min_bytes,
     MAX(bytes_transferred) AS max_bytes
-FROM {{zone_name}}.iceberg.network_traffic;
+FROM {{zone_name}}.iceberg_demos.network_traffic;
 
 
 -- ============================================================================
@@ -101,7 +101,7 @@ ASSERT VALUE total_bytes = 85042112 WHERE region = 'north-america'
 SELECT
     region,
     SUM(bytes_transferred) AS total_bytes
-FROM {{zone_name}}.iceberg.network_traffic
+FROM {{zone_name}}.iceberg_demos.network_traffic
 GROUP BY region
 ORDER BY region;
 
@@ -123,7 +123,7 @@ SELECT
     threat_level,
     capture_time,
     region
-FROM {{zone_name}}.iceberg.network_traffic
+FROM {{zone_name}}.iceberg_demos.network_traffic
 WHERE capture_time >= TIMESTAMP '2025-03-01 00:00:00'
   AND capture_time < TIMESTAMP '2025-03-04 00:00:00'
 ORDER BY capture_time;
@@ -142,7 +142,7 @@ SELECT
     protocol,
     port,
     bytes_transferred
-FROM {{zone_name}}.iceberg.network_traffic
+FROM {{zone_name}}.iceberg_demos.network_traffic
 WHERE port > 8000
 ORDER BY port DESC, packet_id;
 
@@ -173,4 +173,4 @@ SELECT
     SUM(CASE WHEN port > 8000 THEN 1 ELSE 0 END) AS high_port_count,
     SUM(CASE WHEN capture_time >= TIMESTAMP '2025-03-01 00:00:00'
               AND capture_time < TIMESTAMP '2025-03-04 00:00:00' THEN 1 ELSE 0 END) AS first_3_days_count
-FROM {{zone_name}}.iceberg.network_traffic;
+FROM {{zone_name}}.iceberg_demos.network_traffic;

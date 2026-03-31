@@ -40,7 +40,7 @@ SELECT
     st_1,
     clm_1,
     clm_2
-FROM {{zone_name}}.edi.claims_header
+FROM {{zone_name}}.edi_demos.claims_header
 ORDER BY df_file_name;
 
 
@@ -59,7 +59,7 @@ ASSERT VALUE total_charges = '339.93'
 SELECT
     COUNT(*) AS claim_count,
     CAST(SUM(CAST(clm_2 AS DOUBLE)) AS VARCHAR) AS total_charges
-FROM {{zone_name}}.edi.claims_header
+FROM {{zone_name}}.edi_demos.claims_header
 WHERE clm_1 IS NOT NULL;
 
 
@@ -83,7 +83,7 @@ SELECT
     clm_1 AS claim_id,
     COALESCE(sv1_1, sv2_1, sv3_1) AS service_code,
     COALESCE(sv1_2, sv2_2, sv3_2) AS service_charge
-FROM {{zone_name}}.edi.claims_header
+FROM {{zone_name}}.edi_demos.claims_header
 WHERE clm_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -107,7 +107,7 @@ SELECT
         ELSE 'Other'
     END AS type_name,
     COUNT(*) AS type_count
-FROM {{zone_name}}.edi.claims_header
+FROM {{zone_name}}.edi_demos.claims_header
 GROUP BY st_1
 HAVING COUNT(*) > 1
 ORDER BY st_1;
@@ -128,7 +128,7 @@ SELECT
     bpr_1 AS handling_code,
     bpr_2 AS payment_amount,
     st_1 AS transaction_type
-FROM {{zone_name}}.edi.claims_remittance
+FROM {{zone_name}}.edi_demos.claims_remittance
 WHERE bpr_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -159,7 +159,7 @@ SELECT
         WHEN '4' THEN 'Reversal'
         ELSE 'Other'
     END AS status_description
-FROM {{zone_name}}.edi.claims_remittance
+FROM {{zone_name}}.edi_demos.claims_remittance
 WHERE clp_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -188,7 +188,7 @@ SELECT
         WHEN 'PR' THEN 'Patient Responsibility'
         ELSE 'Other'
     END AS group_description
-FROM {{zone_name}}.edi.claims_remittance
+FROM {{zone_name}}.edi_demos.claims_remittance
 WHERE cas_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -213,8 +213,8 @@ SELECT
     h.clm_1 AS claim_id,
     h.clm_2 AS claim_charge,
     r.bpr_2 AS payment_amount
-FROM {{zone_name}}.edi.claims_header h
-JOIN {{zone_name}}.edi.claims_remittance r
+FROM {{zone_name}}.edi_demos.claims_header h
+JOIN {{zone_name}}.edi_demos.claims_remittance r
     ON h.df_file_name = r.df_file_name
 ORDER BY h.df_file_name;
 
@@ -239,7 +239,7 @@ SELECT
     CAST(bpr_2 AS DOUBLE) AS paid,
     CAST(clp_3 AS DOUBLE) - CAST(bpr_2 AS DOUBLE) AS write_off,
     ROUND((CAST(clp_3 AS DOUBLE) - CAST(bpr_2 AS DOUBLE)) / CAST(clp_3 AS DOUBLE) * 100, 1) AS write_off_pct
-FROM {{zone_name}}.edi.claims_remittance
+FROM {{zone_name}}.edi_demos.claims_remittance
 WHERE clp_3 IS NOT NULL AND bpr_2 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -257,28 +257,28 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 4
     SELECT 'total_files_4' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.claims_header) = 4
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.claims_header) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: 3 claims have charge amounts (CLM_1 IS NOT NULL)
     SELECT 'claims_with_charges' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.claims_header WHERE clm_1 IS NOT NULL) = 3
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.claims_header WHERE clm_1 IS NOT NULL) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: 1 remittance has payment info (BPR_1 IS NOT NULL)
     SELECT 'payment_records' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.claims_remittance WHERE bpr_1 IS NOT NULL) = 1
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.claims_remittance WHERE bpr_1 IS NOT NULL) = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: All claim charges are positive
     SELECT 'charges_positive' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.claims_header
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.claims_header
                        WHERE clm_2 IS NOT NULL AND CAST(clm_2 AS DOUBLE) <= 0) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

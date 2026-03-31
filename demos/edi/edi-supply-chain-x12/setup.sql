@@ -37,7 +37,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
     TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
     COMMENT 'EDI transaction-backed external tables';
 -- ============================================================================
 -- TABLE 1: supply_chain_messages — Compact view (14 transactions)
@@ -49,14 +49,14 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi
 -- segment access.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.supply_chain_messages
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.supply_chain_messages
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
     edi_config = '{"ediFormat": "x12"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.supply_chain_messages TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.supply_chain_messages TO USER {{current_user}};
 -- ============================================================================
 -- TABLE 2: supply_chain_materialized — Key business fields extracted
 -- ============================================================================
@@ -76,7 +76,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi.supply_chain_messages TO USER {{current_u
 --   CTT_1  — Transaction Totals (number of line items)
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi.supply_chain_materialized
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.supply_chain_materialized
 USING EDI
 LOCATION '{{data_path}}/*.edi'
 OPTIONS (
@@ -92,4 +92,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.edi.supply_chain_materialized TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.supply_chain_materialized TO USER {{current_user}};

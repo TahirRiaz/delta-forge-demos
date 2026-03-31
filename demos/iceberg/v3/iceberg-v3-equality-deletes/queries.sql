@@ -17,7 +17,7 @@
 -- matching 4 patient_id values (55 rows total), leaving 445 visible.
 
 ASSERT ROW_COUNT = 445
-SELECT * FROM {{zone_name}}.iceberg.patient_visits;
+SELECT * FROM {{zone_name}}.iceberg_demos.patient_visits;
 
 
 -- ============================================================================
@@ -29,7 +29,7 @@ SELECT * FROM {{zone_name}}.iceberg.patient_visits;
 
 ASSERT ROW_COUNT = 0
 SELECT *
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 WHERE patient_id IN ('P-0012', 'P-0025', 'P-0041', 'P-0067');
 
 
@@ -48,7 +48,7 @@ ASSERT VALUE visit_count = 92 WHERE hospital = 'Mount-Sinai-NYC'
 SELECT
     hospital,
     COUNT(*) AS visit_count
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 GROUP BY hospital
 ORDER BY hospital;
 
@@ -63,7 +63,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE patient_count = 75
 SELECT
     COUNT(DISTINCT patient_id) AS patient_count
-FROM {{zone_name}}.iceberg.patient_visits;
+FROM {{zone_name}}.iceberg_demos.patient_visits;
 
 
 -- ============================================================================
@@ -83,7 +83,7 @@ ASSERT VALUE visit_count = 45 WHERE department = 'Radiology'
 SELECT
     department,
     COUNT(*) AS visit_count
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 GROUP BY department
 ORDER BY department;
 
@@ -102,7 +102,7 @@ ASSERT VALUE emergency_count = 10 WHERE hospital = 'Mount-Sinai-NYC'
 SELECT
     hospital,
     COUNT(*) AS emergency_count
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 WHERE is_emergency = true
 GROUP BY hospital
 ORDER BY hospital;
@@ -122,7 +122,7 @@ ASSERT VALUE avg_cost = 14129.32 WHERE hospital = 'Mount-Sinai-NYC'
 SELECT
     hospital,
     ROUND(AVG(treatment_cost), 2) AS avg_cost
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 GROUP BY hospital
 ORDER BY hospital;
 
@@ -138,7 +138,7 @@ ASSERT VALUE avg_cost = 13166.73
 SELECT
     ROUND(SUM(treatment_cost), 2) AS total_cost,
     ROUND(AVG(treatment_cost), 2) AS avg_cost
-FROM {{zone_name}}.iceberg.patient_visits;
+FROM {{zone_name}}.iceberg_demos.patient_visits;
 
 
 -- ============================================================================
@@ -155,7 +155,7 @@ ASSERT VALUE visit_count = 42 WHERE attending_physician = 'Dr-Ivanova'
 SELECT
     attending_physician,
     COUNT(*) AS visit_count
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 GROUP BY attending_physician
 ORDER BY visit_count DESC
 LIMIT 5;
@@ -180,7 +180,7 @@ ASSERT VALUE visit_count = 45 WHERE diagnosis_code = 'N39.0'
 SELECT
     diagnosis_code,
     COUNT(*) AS visit_count
-FROM {{zone_name}}.iceberg.patient_visits
+FROM {{zone_name}}.iceberg_demos.patient_visits
 GROUP BY diagnosis_code
 ORDER BY diagnosis_code;
 
@@ -202,7 +202,7 @@ SELECT
     COUNT(DISTINCT hospital) AS hospitals,
     COUNT(DISTINCT department) AS departments,
     COUNT(DISTINCT attending_physician) AS physicians
-FROM {{zone_name}}.iceberg.patient_visits;
+FROM {{zone_name}}.iceberg_demos.patient_visits;
 
 
 -- ============================================================================
@@ -226,4 +226,4 @@ SELECT
     COUNT(DISTINCT patient_id) AS patient_count,
     SUM(CASE WHEN patient_id IN ('P-0012', 'P-0025', 'P-0041', 'P-0067') THEN 1 ELSE 0 END) AS gdpr_patient_rows,
     SUM(CASE WHEN is_emergency = true THEN 1 ELSE 0 END) AS total_emergency
-FROM {{zone_name}}.iceberg.patient_visits;
+FROM {{zone_name}}.iceberg_demos.patient_visits;

@@ -13,7 +13,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml_demos
     COMMENT 'XML-backed external tables';
 
 -- ============================================================================
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.xml
 --   /catalog/book/@id    →  catalog_book_attr_id
 --   /catalog/book/author →  catalog_book_author
 -- ============================================================================
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml.books_evolved
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.xml_demos.books_evolved
 USING XML
 LOCATION '{{data_path}}'
 OPTIONS (
@@ -76,4 +76,4 @@ OPTIONS (
     }',
     file_metadata = '{"columns":["df_file_name","df_file_modified","df_dataset","df_row_number"]}'
 );
-GRANT ADMIN ON TABLE {{zone_name}}.xml.books_evolved TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.xml_demos.books_evolved TO USER {{current_user}};

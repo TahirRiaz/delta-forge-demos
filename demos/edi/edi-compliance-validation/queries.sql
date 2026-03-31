@@ -53,7 +53,7 @@ SELECT
         ELSE 'Business'
     END AS classification,
     COUNT(*) AS doc_count
-FROM {{zone_name}}.edi.compliance_messages
+FROM {{zone_name}}.edi_demos.compliance_messages
 GROUP BY
     CASE
         WHEN st_1 IN ('997', '824') THEN 'Compliance'
@@ -97,7 +97,7 @@ SELECT
     ak9_2,
     ak9_3,
     ak9_4
-FROM {{zone_name}}.edi.compliance_details
+FROM {{zone_name}}.edi_demos.compliance_details
 WHERE st_1 = '997';
 
 
@@ -130,7 +130,7 @@ SELECT
     ak4_1,
     ak4_2,
     ak4_3
-FROM {{zone_name}}.edi.compliance_details
+FROM {{zone_name}}.edi_demos.compliance_details
 WHERE st_1 = '997';
 
 
@@ -167,7 +167,7 @@ SELECT
     oti_1,
     oti_2,
     oti_3
-FROM {{zone_name}}.edi.compliance_details
+FROM {{zone_name}}.edi_demos.compliance_details
 WHERE st_1 = '824';
 
 
@@ -203,7 +203,7 @@ SELECT
     ref_2,
     n1_1,
     n1_2
-FROM {{zone_name}}.edi.compliance_details
+FROM {{zone_name}}.edi_demos.compliance_details
 WHERE st_1 = '824';
 
 
@@ -233,7 +233,7 @@ SELECT
         / COUNT(*),
         1
     ) AS compliance_pct
-FROM {{zone_name}}.edi.compliance_messages;
+FROM {{zone_name}}.edi_demos.compliance_messages;
 
 
 -- ============================================================================
@@ -277,7 +277,7 @@ SELECT
             THEN 'Fully Accepted — all transaction sets passed'
         ELSE 'Status: ' || ak9_1
     END AS assessment
-FROM {{zone_name}}.edi.compliance_details
+FROM {{zone_name}}.edi_demos.compliance_details
 WHERE st_1 = '997';
 
 
@@ -298,7 +298,7 @@ SELECT check_name, result FROM (
 
     -- Check 1: Exactly one 997 Functional Acknowledgment
     SELECT '997_count_is_1' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.compliance_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.compliance_messages
                        WHERE st_1 = '997') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -306,7 +306,7 @@ SELECT check_name, result FROM (
 
     -- Check 2: Exactly one 824 Application Advice
     SELECT '824_count_is_1' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.compliance_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.compliance_messages
                        WHERE st_1 = '824') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -314,7 +314,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: AK1_1 is populated for the 997 row in compliance_details
     SELECT 'ak1_populated_for_997' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.compliance_details
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.compliance_details
                        WHERE st_1 = '997' AND ak1_1 IS NOT NULL AND ak1_1 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -322,7 +322,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: OTI_1 is populated for the 824 row in compliance_details
     SELECT 'oti_populated_for_824' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.compliance_details
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.compliance_details
                        WHERE st_1 = '824' AND oti_1 IS NOT NULL AND oti_1 <> '') > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -330,7 +330,7 @@ SELECT check_name, result FROM (
 
     -- Check 5: Total transaction count = 14 across all files
     SELECT 'total_transactions_14' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.compliance_messages) = 14
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.compliance_messages) = 14
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

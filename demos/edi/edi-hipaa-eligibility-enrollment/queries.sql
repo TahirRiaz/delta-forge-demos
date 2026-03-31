@@ -32,7 +32,7 @@ SELECT
         WHEN '834' THEN 'Benefit Enrollment'
         ELSE 'Other'
     END AS transaction_name
-FROM {{zone_name}}.edi.eligibility_messages
+FROM {{zone_name}}.edi_demos.eligibility_messages
 ORDER BY df_file_name;
 
 
@@ -53,7 +53,7 @@ SELECT
         ELSE 'Other'
     END AS group_name,
     COUNT(*) AS transaction_count
-FROM {{zone_name}}.edi.eligibility_messages
+FROM {{zone_name}}.edi_demos.eligibility_messages
 GROUP BY gs_1
 ORDER BY gs_1;
 
@@ -74,12 +74,12 @@ ASSERT VALUE response_purpose = '11'
 ASSERT VALUE payer_name = 'SMITH'
 WITH request AS (
     SELECT trn_2 AS trace_number, bht_2 AS purpose, nm1_3 AS payer_name
-    FROM {{zone_name}}.edi.eligibility_messages
+    FROM {{zone_name}}.edi_demos.eligibility_messages
     WHERE st_1 = '270'
 ),
 response AS (
     SELECT trn_2 AS trace_number, bht_2 AS purpose
-    FROM {{zone_name}}.edi.eligibility_messages
+    FROM {{zone_name}}.edi_demos.eligibility_messages
     WHERE st_1 = '271'
 )
 SELECT
@@ -106,7 +106,7 @@ SELECT
     st_1,
     nm1_3 AS entity_name,
     dmg_2 AS dob
-FROM {{zone_name}}.edi.eligibility_messages
+FROM {{zone_name}}.edi_demos.eligibility_messages
 ORDER BY df_file_name;
 
 
@@ -136,7 +136,7 @@ SELECT
         WHEN 'VIS' THEN 'Vision'
         ELSE 'Other'
     END AS plan_description
-FROM {{zone_name}}.edi.enrollment_details
+FROM {{zone_name}}.edi_demos.enrollment_details
 WHERE bgn_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -160,7 +160,7 @@ SELECT
         ELSE 'Unknown'
     END AS responsibility_description,
     hd_3 AS plan_type
-FROM {{zone_name}}.edi.enrollment_details
+FROM {{zone_name}}.edi_demos.enrollment_details
 WHERE cob_1 IS NOT NULL
 ORDER BY df_file_name;
 
@@ -184,8 +184,8 @@ SELECT
     CASE WHEN e.bht_1 IS NOT NULL THEN 'Yes' ELSE 'No' END AS has_eligibility,
     CASE WHEN d.bgn_1 IS NOT NULL THEN 'Yes' ELSE 'No' END AS has_enrollment,
     COALESCE(e.nm1_3, d.nm1_3) AS entity_name
-FROM {{zone_name}}.edi.eligibility_messages e
-JOIN {{zone_name}}.edi.enrollment_details d
+FROM {{zone_name}}.edi_demos.eligibility_messages e
+JOIN {{zone_name}}.edi_demos.enrollment_details d
     ON e.df_file_name = d.df_file_name
 ORDER BY e.df_file_name;
 
@@ -203,14 +203,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 3
     SELECT 'total_files_3' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eligibility_messages) = 3
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eligibility_messages) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Eligibility pair exists (270 + 271 with matching TRN_2)
     SELECT 'eligibility_pair' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eligibility_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eligibility_messages
                        WHERE st_1 IN ('270', '271')) = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -218,7 +218,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: Exactly 1 enrollment record (834)
     SELECT 'enrollment_record' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.enrollment_details
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.enrollment_details
                        WHERE bgn_1 IS NOT NULL) = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -226,7 +226,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: HC functional group has 2 transactions
     SELECT 'hc_transactions' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eligibility_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eligibility_messages
                        WHERE gs_1 = 'HC') = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -234,7 +234,7 @@ SELECT check_name, result FROM (
 
     -- Check 5: BE functional group has 1 transaction
     SELECT 'be_transactions' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi.eligibility_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.eligibility_messages
                        WHERE gs_1 = 'BE') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

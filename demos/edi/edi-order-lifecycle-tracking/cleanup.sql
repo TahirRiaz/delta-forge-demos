@@ -10,10 +10,10 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Table
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi.lifecycle_tracking WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.edi_demos.lifecycle_tracking WITH FILES;
 
 -- STEP 2: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.edi;
+DROP SCHEMA IF EXISTS {{zone_name}}.edi_demos;
 
 -- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

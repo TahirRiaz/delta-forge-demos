@@ -23,7 +23,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial_demos
     COMMENT 'H3 spatial indexing and geographic analysis tables';
 -- ============================================================================
 -- TABLE 1: landmarks — 10 famous world landmarks with known coordinates
@@ -32,7 +32,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.spatial
 -- These serve as ground truth for verifying coordinate conversions, grid
 -- distances, cell hierarchy, area metrics, and boundary WKT generation.
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.landmarks (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.landmarks (
     id INT,
     name VARCHAR,
     city VARCHAR,
@@ -41,9 +41,9 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.landmarks (
     lng DOUBLE
 ) LOCATION '{{data_path}}/landmarks';
 
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.landmarks TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.landmarks TO USER {{current_user}};
 
-INSERT INTO {{zone_name}}.spatial.landmarks VALUES
+INSERT INTO {{zone_name}}.spatial_demos.landmarks VALUES
     (1,  'Golden Gate Bridge',     'San Francisco', 'USA',       37.8199, -122.4783),
     (2,  'Statue of Liberty',     'New York',      'USA',       40.6892,  -74.0445),
     (3,  'Eiffel Tower',          'Paris',         'France',    48.8584,    2.2945),
@@ -62,7 +62,7 @@ INSERT INTO {{zone_name}}.spatial.landmarks VALUES
 -- WKT format suitable for h3_polyfill(). The polygons are intentionally
 -- rectangular for deterministic cell counts at each H3 resolution.
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.regions (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.regions (
     region_id INT,
     region_name VARCHAR,
     country VARCHAR,
@@ -70,9 +70,9 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.regions (
     timezone VARCHAR
 ) LOCATION '{{data_path}}/regions';
 
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.regions TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.regions TO USER {{current_user}};
 
-INSERT INTO {{zone_name}}.spatial.regions VALUES
+INSERT INTO {{zone_name}}.spatial_demos.regions VALUES
     (1, 'San Francisco', 'USA',    'POLYGON((-122.52 37.70, -122.35 37.70, -122.35 37.82, -122.52 37.82, -122.52 37.70))', 'America/Los_Angeles'),
     (2, 'Manhattan',     'USA',    'POLYGON((-74.02 40.70, -73.97 40.70, -73.97 40.80, -74.02 40.80, -74.02 40.70))',      'America/New_York'),
     (3, 'Central Paris', 'France', 'POLYGON((2.25 48.83, 2.42 48.83, 2.42 48.90, 2.25 48.90, 2.25 48.83))',               'Europe/Paris'),
@@ -87,7 +87,7 @@ INSERT INTO {{zone_name}}.spatial.regions VALUES
 -- The formula (id * 0.618033...) % 1.0 produces a low-discrepancy sequence
 -- ensuring even coverage without clustering artifacts.
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.gps_points (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.gps_points (
     id BIGINT,
     lat DOUBLE,
     lng DOUBLE,
@@ -95,10 +95,10 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial.gps_points (
     city VARCHAR
 ) LOCATION '{{data_path}}/gps_points';
 
-GRANT ADMIN ON TABLE {{zone_name}}.spatial.gps_points TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.gps_points TO USER {{current_user}};
 
 -- San Francisco: 2,000 points within bounding box
-INSERT INTO {{zone_name}}.spatial.gps_points
+INSERT INTO {{zone_name}}.spatial_demos.gps_points
 SELECT
     id,
     37.70 + (0.12 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -108,7 +108,7 @@ SELECT
 FROM generate_series(1, 2000) AS t(id);
 
 -- Manhattan: 2,000 points
-INSERT INTO {{zone_name}}.spatial.gps_points
+INSERT INTO {{zone_name}}.spatial_demos.gps_points
 SELECT
     2000 + id,
     40.70 + (0.10 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -118,7 +118,7 @@ SELECT
 FROM generate_series(1, 2000) AS t(id);
 
 -- Paris: 2,000 points
-INSERT INTO {{zone_name}}.spatial.gps_points
+INSERT INTO {{zone_name}}.spatial_demos.gps_points
 SELECT
     4000 + id,
     48.83 + (0.07 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -128,7 +128,7 @@ SELECT
 FROM generate_series(1, 2000) AS t(id);
 
 -- London: 2,000 points
-INSERT INTO {{zone_name}}.spatial.gps_points
+INSERT INTO {{zone_name}}.spatial_demos.gps_points
 SELECT
     6000 + id,
     51.48 + (0.07 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -138,7 +138,7 @@ SELECT
 FROM generate_series(1, 2000) AS t(id);
 
 -- Tokyo: 2,000 points
-INSERT INTO {{zone_name}}.spatial.gps_points
+INSERT INTO {{zone_name}}.spatial_demos.gps_points
 SELECT
     8000 + id,
     35.63 + (0.10 * ((CAST(id AS DOUBLE) * 0.618033988749895) % 1.0)) AS lat,
@@ -154,7 +154,7 @@ FROM generate_series(1, 2000) AS t(id);
 -- hexagons (~105,000 m² area) — appropriate for city-level analysis. The view is lazy so cells
 -- are computed on read, not stored.
 -- ============================================================================
-CREATE OR REPLACE VIEW {{zone_name}}.spatial.points_h3 AS
+CREATE OR REPLACE VIEW {{zone_name}}.spatial_demos.points_h3 AS
 SELECT
     id,
     lat,
@@ -162,7 +162,7 @@ SELECT
     device_id,
     city,
     h3_latlng_to_cell(lat, lng, 9) AS h3_cell
-FROM {{zone_name}}.spatial.gps_points;
+FROM {{zone_name}}.spatial_demos.gps_points;
 -- ============================================================================
 -- VIEW 5: region_cells — Regions expanded to H3 cell coverage
 -- ============================================================================
@@ -170,11 +170,11 @@ FROM {{zone_name}}.spatial.gps_points;
 -- H3 cell that covers the region. This enables O(1) spatial joins by
 -- matching h3_cell values directly (instead of point-in-polygon tests).
 -- ============================================================================
-CREATE OR REPLACE VIEW {{zone_name}}.spatial.region_cells AS
+CREATE OR REPLACE VIEW {{zone_name}}.spatial_demos.region_cells AS
 SELECT
     region_id,
     region_name,
     country,
     timezone,
     UNNEST(h3_polyfill(polygon_wkt, 9)) AS h3_cell
-FROM {{zone_name}}.spatial.regions;
+FROM {{zone_name}}.spatial_demos.regions;

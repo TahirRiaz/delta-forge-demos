@@ -21,14 +21,14 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External and Delta tables — demo datasets';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.update_demos
-    COMMENT 'UPDATE expression pattern demos';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.delta_demos
+    COMMENT 'Delta table management tutorial demos';
 
 
 -- ============================================================================
 -- TABLE: portfolio_holdings — Investment portfolio positions
 -- ============================================================================
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.update_demos.portfolio_holdings (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.portfolio_holdings (
     holding_id     INT,
     portfolio_id   VARCHAR,
     ticker         VARCHAR,
@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.update_demos.portfolio_holdings (
     last_rebalance VARCHAR
 ) LOCATION '{{data_path}}/portfolio_holdings';
 
-GRANT ADMIN ON TABLE {{zone_name}}.update_demos.portfolio_holdings TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.portfolio_holdings TO USER {{current_user}};
 
 
 -- ============================================================================
@@ -52,7 +52,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.update_demos.portfolio_holdings TO USER {{cur
 -- PF-BETA:  Growth-oriented (6 holdings)
 -- PF-GAMMA: Diversified value (8 holdings)
 -- Asset classes: equity, bond, commodity, reit, cash
-INSERT INTO {{zone_name}}.update_demos.portfolio_holdings VALUES
+INSERT INTO {{zone_name}}.delta_demos.portfolio_holdings VALUES
     (1,  'PF-ALPHA', 'AAPL',  'equity',    150.0000, 142.50,   185.25,   27787.50,  18.52, 'medium', '2024-01-02 09:00:00'),
     (2,  'PF-ALPHA', 'MSFT',  'equity',    100.0000, 310.00,   378.50,   37850.00,  25.23, 'medium', '2024-01-02 09:00:00'),
     (3,  'PF-ALPHA', 'BND',   'bond',      200.0000, 72.00,    71.50,    14300.00,  9.53,  'low',    '2024-01-02 09:00:00'),
@@ -81,7 +81,7 @@ INSERT INTO {{zone_name}}.update_demos.portfolio_holdings VALUES
 -- Q1 rally: all equity holdings see a 5% market price increase.
 -- Both market_price and market_value are recalculated using arithmetic
 -- expressions in the SET clause.
-UPDATE {{zone_name}}.update_demos.portfolio_holdings
+UPDATE {{zone_name}}.delta_demos.portfolio_holdings
 SET market_price = ROUND(market_price * 1.05, 2),
     market_value = ROUND(shares * ROUND(market_price * 1.05, 2), 2),
     last_rebalance = '2024-03-15 09:00:00'
@@ -93,7 +93,7 @@ WHERE asset_class = 'equity';
 -- ============================================================================
 -- Compliance requires risk ratings to reflect current exposure.
 -- High: market_value > 35000 | Medium: > 15000 | Low: <= 15000
-UPDATE {{zone_name}}.update_demos.portfolio_holdings
+UPDATE {{zone_name}}.delta_demos.portfolio_holdings
 SET risk_rating = CASE
         WHEN market_value > 35000 THEN 'high'
         WHEN market_value > 15000 THEN 'medium'
@@ -107,7 +107,7 @@ SET risk_rating = CASE
 -- ============================================================================
 -- Rising interest rates push bond prices down. Same arithmetic pattern
 -- as the equity update, but in the opposite direction.
-UPDATE {{zone_name}}.update_demos.portfolio_holdings
+UPDATE {{zone_name}}.delta_demos.portfolio_holdings
 SET market_price = ROUND(market_price * 0.98, 2),
     market_value = ROUND(shares * ROUND(market_price * 0.98, 2), 2),
     last_rebalance = '2024-03-15 11:00:00'

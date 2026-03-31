@@ -29,8 +29,8 @@ size_bytes = 615
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.retail_demo.sales"
+name = "{{zone_name}}.iceberg_demos.sales"
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.retail_demo.stores"
+name = "{{zone_name}}.iceberg_demos.stores"

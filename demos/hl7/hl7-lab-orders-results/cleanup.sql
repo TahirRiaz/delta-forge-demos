@@ -10,11 +10,11 @@
 -- ============================================================================
 
 -- STEP 1: Drop External Tables
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.lab_orders WITH FILES;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7.lab_results WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7_demos.lab_orders WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hl7_demos.lab_results WITH FILES;
 
 -- STEP 2: Drop Schema
-DROP SCHEMA IF EXISTS {{zone_name}}.hl7;
+DROP SCHEMA IF EXISTS {{zone_name}}.hl7_demos;
 
 -- STEP 3: Drop Zone
 DROP ZONE IF EXISTS {{zone_name}};

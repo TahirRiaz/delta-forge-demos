@@ -13,7 +13,7 @@
 
 ASSERT ROW_COUNT = 3503
 SELECT *
-FROM {{zone_name}}.json.album_tracks;
+FROM {{zone_name}}.json_demos.album_tracks;
 
 
 -- ============================================================================
@@ -26,7 +26,7 @@ ASSERT VALUE vendor_name = 'AC/DC' WHERE details_track_id = 1
 ASSERT VALUE details_name = 'For Those About To Rock (We Salute You)' WHERE details_track_id = 1
 SELECT details_track_id, name, vendor_name, details_name, details_composer,
        details_genre_id, details_milliseconds, details_unit_price
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 ORDER BY id, details_track_id
 LIMIT 15;
 
@@ -37,7 +37,7 @@ LIMIT 15;
 
 ASSERT ROW_COUNT = 347
 SELECT *
-FROM {{zone_name}}.json.album_summary;
+FROM {{zone_name}}.json_demos.album_summary;
 
 
 -- ============================================================================
@@ -48,7 +48,7 @@ ASSERT ROW_COUNT = 10
 ASSERT VALUE name = 'For Those About To Rock We Salute You' WHERE id = 1
 ASSERT VALUE status = 'available' WHERE id = 1
 SELECT id, name, sku, status, price, vendor, details
-FROM {{zone_name}}.json.album_summary
+FROM {{zone_name}}.json_demos.album_summary
 ORDER BY id
 LIMIT 10;
 
@@ -61,7 +61,7 @@ LIMIT 10;
 ASSERT ROW_COUNT = 10
 ASSERT VALUE vendor_name = 'AC/DC' WHERE vendor_id = 1
 SELECT DISTINCT vendor_id, vendor_name
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 ORDER BY vendor_name
 LIMIT 10;
 
@@ -74,7 +74,7 @@ LIMIT 10;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE name = 'For Those About To Rock We Salute You'
 SELECT name, vendor
-FROM {{zone_name}}.json.album_summary
+FROM {{zone_name}}.json_demos.album_summary
 WHERE id = 1;
 
 
@@ -88,7 +88,7 @@ ASSERT VALUE track_count = 370 WHERE df_file_name LIKE '%catalog_jazz%'
 ASSERT VALUE track_count = 1037 WHERE df_file_name LIKE '%catalog_pop%'
 ASSERT VALUE track_count = 2096 WHERE df_file_name LIKE '%catalog_rock%'
 SELECT df_file_name, COUNT(*) AS track_count
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 GROUP BY df_file_name
 ORDER BY df_file_name;
 
@@ -100,7 +100,7 @@ ORDER BY df_file_name;
 ASSERT ROW_COUNT = 25
 ASSERT VALUE track_count = 1297 WHERE details_genre_id = 1
 SELECT details_genre_id, COUNT(*) AS track_count
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 GROUP BY details_genre_id
 ORDER BY track_count DESC;
 
@@ -113,7 +113,7 @@ ASSERT ROW_COUNT = 10
 ASSERT VALUE details_composer = 'Steve Harris' WHERE tracks_composed >= 80
 ASSERT VALUE tracks_composed >= 80 WHERE details_composer = 'Steve Harris'
 SELECT details_composer, COUNT(*) AS tracks_composed
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 WHERE details_composer IS NOT NULL
 GROUP BY details_composer
 ORDER BY tracks_composed DESC
@@ -128,7 +128,7 @@ ASSERT ROW_COUNT = 10
 ASSERT VALUE minutes >= 48.8
 SELECT details_name, name, vendor_name,
        ROUND(CAST(details_milliseconds AS DOUBLE) / 60000.0, 1) AS minutes
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 ORDER BY CAST(details_milliseconds AS DOUBLE) DESC
 LIMIT 10;
 
@@ -143,7 +143,7 @@ ASSERT VALUE total_revenue = 56.43
 SELECT name, vendor_name,
        COUNT(*) AS tracks,
        ROUND(SUM(CAST(details_unit_price AS DOUBLE)), 2) AS total_revenue
-FROM {{zone_name}}.json.album_tracks
+FROM {{zone_name}}.json_demos.album_tracks
 GROUP BY name, vendor_name
 ORDER BY total_revenue DESC
 LIMIT 10;
@@ -161,42 +161,42 @@ SELECT check_name, result FROM (
 
     -- Check 1: Exploded track count = 3,503
     SELECT 'track_count_3503' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks) = 3503
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_tracks) = 3503
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Album summary count = 347
     SELECT 'album_count_347' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_summary) = 347
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_summary) = 347
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 3: Vendor flattened in tracks (vendor_name populated)
     SELECT 'vendor_flattened' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE vendor_name IS NOT NULL) = 3503
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_tracks WHERE vendor_name IS NOT NULL) = 3503
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 4: json_paths — vendor is JSON string in summary
     SELECT 'vendor_json_blob' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_summary WHERE vendor IS NOT NULL) = 347
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_summary WHERE vendor IS NOT NULL) = 347
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 5: Column mappings — details_name exists with data
     SELECT 'column_mapping_details_name' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE details_name IS NOT NULL) > 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_tracks WHERE details_name IS NOT NULL) > 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 6: Multi-file — 3 distinct source files
     SELECT 'multi_file_3_sources' AS check_name,
-           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.json.album_tracks) = 3
+           CASE WHEN (SELECT COUNT(DISTINCT df_file_name) FROM {{zone_name}}.json_demos.album_tracks) = 3
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
@@ -204,7 +204,7 @@ SELECT check_name, result FROM (
     -- Check 7: Spot check — AC/DC album "For Those About To Rock" exists
     SELECT 'spot_check_acdc' AS check_name,
            CASE WHEN (
-               SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks
+               SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_tracks
                WHERE name = 'For Those About To Rock We Salute You' AND vendor_name = 'AC/DC'
            ) > 0 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -212,7 +212,7 @@ SELECT check_name, result FROM (
 
     -- Check 8: All tracks have positive duration
     SELECT 'positive_duration' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json.album_tracks WHERE CAST(details_milliseconds AS DOUBLE) <= 0) = 0
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.json_demos.album_tracks WHERE CAST(details_milliseconds AS DOUBLE) <= 0) = 0
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks

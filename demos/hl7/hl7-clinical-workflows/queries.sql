@@ -46,7 +46,7 @@ SELECT
     msh_3 AS sending_app,
     msh_9 AS message_type,
     msh_12 AS hl7_version
-FROM {{zone_name}}.hl7.clinical_messages
+FROM {{zone_name}}.hl7_demos.clinical_messages
 ORDER BY df_file_name;
 
 
@@ -84,7 +84,7 @@ SELECT
     txa_14 AS document_status,
     obx_3 AS first_section_id,
     obx_5 AS first_section_text
-FROM {{zone_name}}.hl7.clinical_materialized
+FROM {{zone_name}}.hl7_demos.clinical_materialized
 WHERE msh_9 LIKE 'MDM%';
 
 
@@ -111,7 +111,7 @@ SELECT
     df_file_name,
     msh_9 AS message_type,
     df_message_json
-FROM {{zone_name}}.hl7.clinical_messages
+FROM {{zone_name}}.hl7_demos.clinical_messages
 WHERE df_file_name LIKE '%mdm%';
 
 
@@ -152,7 +152,7 @@ SELECT
     sch_7 AS appointment_reason,
     sch_10 AS duration,
     sch_25 AS status
-FROM {{zone_name}}.hl7.clinical_materialized
+FROM {{zone_name}}.hl7_demos.clinical_materialized
 WHERE msh_9 LIKE 'SIU%'
 ORDER BY df_file_name;
 
@@ -180,7 +180,7 @@ SELECT
     df_file_name,
     msh_3 AS system,
     df_message_json
-FROM {{zone_name}}.hl7.clinical_messages
+FROM {{zone_name}}.hl7_demos.clinical_messages
 WHERE msh_9 LIKE 'SIU%'
 ORDER BY df_file_name;
 
@@ -209,7 +209,7 @@ SELECT
     pid_5 AS patient_name_decoded,
     obx_3 AS first_obs_id,
     obx_5 AS first_obs_value
-FROM {{zone_name}}.hl7.clinical_materialized
+FROM {{zone_name}}.hl7_demos.clinical_materialized
 WHERE df_file_name LIKE '%edge%';
 
 
@@ -233,7 +233,7 @@ SELECT
     df_file_name,
     msh_9 AS message_type,
     df_message_json
-FROM {{zone_name}}.hl7.clinical_messages
+FROM {{zone_name}}.hl7_demos.clinical_messages
 WHERE df_file_name LIKE '%edge%';
 
 
@@ -255,7 +255,7 @@ ASSERT VALUE message_count = 1 WHERE message_type = 'SIU^S12^SIU_S12'
 SELECT
     msh_9 AS message_type,
     COUNT(*) AS message_count
-FROM {{zone_name}}.hl7.clinical_messages
+FROM {{zone_name}}.hl7_demos.clinical_messages
 GROUP BY msh_9
 ORDER BY message_count DESC;
 
@@ -276,14 +276,14 @@ SELECT check_name, result FROM (
 
     -- Check 1: 4 total messages (1 MDM + 2 SIU + 1 edge-case ADT)
     SELECT 'total_messages_4' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages) = 4
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.clinical_messages) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
     UNION ALL
 
     -- Check 2: Exactly 1 MDM document message
     SELECT 'mdm_count_1' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.clinical_messages
                        WHERE msh_9 LIKE 'MDM%') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -291,7 +291,7 @@ SELECT check_name, result FROM (
 
     -- Check 3: Exactly 2 SIU scheduling messages
     SELECT 'siu_count_2' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.clinical_messages
                        WHERE msh_9 LIKE 'SIU%') = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -299,7 +299,7 @@ SELECT check_name, result FROM (
 
     -- Check 4: Exactly 1 edge-case message (identified by filename)
     SELECT 'edge_case_count_1' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.clinical_messages
                        WHERE df_file_name LIKE '%edge%') = 1
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
@@ -307,7 +307,7 @@ SELECT check_name, result FROM (
 
     -- Check 5: df_message_json populated for all 4 messages
     SELECT 'json_populated' AS check_name,
-           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7.clinical_messages
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.hl7_demos.clinical_messages
                        WHERE df_message_json IS NOT NULL) = 4
                 THEN 'PASS' ELSE 'FAIL' END AS result
 

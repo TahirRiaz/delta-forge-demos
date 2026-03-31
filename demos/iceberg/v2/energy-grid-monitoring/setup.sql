@@ -15,7 +15,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'External tables — demo datasets and file-backed data';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
     COMMENT 'Apache Iceberg native table demos';
 
 -- STEP 2: Register the Iceberg table
@@ -25,8 +25,8 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg
 -- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
 -- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,
 -- use forward-slash paths or UNC paths for the data_path variable.
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg.grid_readings
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings
 USING ICEBERG
 LOCATION '{{data_path}}';
 
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg.grid_readings TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.grid_readings TO USER {{current_user}};

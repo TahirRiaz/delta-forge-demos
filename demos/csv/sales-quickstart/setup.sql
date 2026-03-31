@@ -29,10 +29,10 @@
 --   table  = object name
 --
 -- After running, try these queries:
---   SELECT * FROM {{zone_name}}.csv.sales ORDER BY id;
---   SELECT id, sale_date, region, territory FROM {{zone_name}}.csv.sales ORDER BY id;
+--   SELECT * FROM {{zone_name}}.csv_demos.sales ORDER BY id;
+--   SELECT id, sale_date, region, territory FROM {{zone_name}}.csv_demos.sales ORDER BY id;
 --   SELECT sales_rep, SUM(quantity * unit_price) AS revenue
---   FROM {{zone_name}}.csv.sales WHERE sales_rep IS NOT NULL
+--   FROM {{zone_name}}.csv_demos.sales WHERE sales_rep IS NOT NULL
 --   GROUP BY sales_rep ORDER BY revenue DESC;
 -- ============================================================================
 -- ============================================================================
@@ -46,7 +46,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}}
 -- STEP 2: Schema
 -- ============================================================================
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv_demos
     COMMENT 'CSV-backed external tables';
 -- ============================================================================
 -- STEP 3: External Table
@@ -60,7 +60,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv
 --   sales_2024_q4.csv  8 cols  (region removed, + territory)
 --   sales_2025_q1.csv  8 cols  (discount_pct removed, + channel)
 -- Delta Forge unifies all schemas; missing columns appear as NULL.
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv.sales
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.sales
 USING CSV
 LOCATION '{{data_path}}/sales*.csv'
 OPTIONS (
@@ -77,4 +77,4 @@ OPTIONS (
 -- STEP 5: Table Permission
 -- ============================================================================
 
-GRANT ADMIN ON TABLE {{zone_name}}.csv.sales TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.csv_demos.sales TO USER {{current_user}};
