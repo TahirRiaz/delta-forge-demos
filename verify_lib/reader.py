@@ -77,25 +77,83 @@ def read_iceberg_table(table_path):
     with open(ml_path, "rb") as f:
         ml_records = list(fastavro.reader(f))
 
-    data_files = []
+    # Collect data files and position delete files from the manifest chain.
+    # The UniForm writer may produce both a DELETED entry and position deletes
+    # for the same file (hybrid copy-on-write + merge-on-read).  When position
+    # deletes target a file, the file is kept and only specific rows removed.
+    added_files = set()      # file paths with status ADDED or EXISTING
+    deleted_files = set()    # file paths with status DELETED
+    pos_delete_files = []    # paths to position-delete Parquet files
+
     for ml_rec in ml_records:
         m_path = from_uri(ml_rec.get("manifest_path", ""))
+        content_type = ml_rec.get("content", 0)  # 0=DATA, 1=DELETES
         if not os.path.isfile(m_path):
             m_path = os.path.join(table_path, "metadata", os.path.basename(m_path))
         with open(m_path, "rb") as f:
             for entry in fastavro.reader(f):
                 df_entry = entry.get("data_file", entry)
                 status = entry.get("status", 1)
-                if status != 2:  # 2 = DELETED
-                    fp = from_uri(df_entry.get("file_path", ""))
-                    if not os.path.isfile(fp):
-                        fp = os.path.join(table_path, os.path.basename(fp))
-                    data_files.append(fp)
+                fp = from_uri(df_entry.get("file_path", ""))
+                entry_content = df_entry.get("content", content_type)
 
-    # Read Parquet and rename columns via field IDs
+                if entry_content == 1:
+                    # Position delete file
+                    if status != 2:
+                        resolved = fp
+                        if not os.path.isfile(resolved):
+                            resolved = os.path.join(table_path, "metadata",
+                                                    os.path.basename(resolved))
+                        pos_delete_files.append(resolved)
+                    continue
+                if entry_content != 0:
+                    continue  # Skip equality deletes or unknown types
+
+                if status == 2:
+                    deleted_files.add(fp)
+                else:
+                    added_files.add(fp)
+
+    # Build position delete index: {file_path -> set of row positions}
+    # Normalize file paths (strip file:// prefix) to match manifest entries.
+    pos_deletes = {}
+    for pd_path in pos_delete_files:
+        pd_table = pq.read_table(pd_path)
+        if "file_path" in pd_table.column_names and "pos" in pd_table.column_names:
+            for fp_val, pos_val in zip(
+                pd_table.column("file_path").to_pylist(),
+                pd_table.column("pos").to_pylist(),
+            ):
+                normalized_fp = from_uri(fp_val)
+                pos_deletes.setdefault(normalized_fp, set()).add(pos_val)
+
+    # A file targeted by position deletes is LIVE even if also marked DELETED
+    # (the UniForm writer emits both; the delete entry is for the old snapshot).
+    live_files = set()
+    for fp in added_files:
+        if fp in deleted_files and fp not in pos_deletes:
+            continue  # Truly deleted (copy-on-write, no position deletes)
+        live_files.add(fp)
+
+    data_files = []
+    for fp in live_files:
+        resolved = fp
+        if not os.path.isfile(resolved):
+            resolved = os.path.join(table_path, os.path.basename(resolved))
+        data_files.append((resolved, fp))
+
+    # Read Parquet, apply position deletes, and rename columns via field IDs
     tables = []
-    for df_path in data_files:
+    for df_path, original_fp in data_files:
         pf = pq.read_table(df_path)
+
+        # Apply position deletes for this file
+        if original_fp in pos_deletes:
+            keep = [i for i in range(pf.num_rows) if i not in pos_deletes[original_fp]]
+            if not keep:
+                continue  # All rows deleted
+            pf = pf.take(keep)
+
         arrow_schema = pf.schema
         rename_map = {}
         for arrow_field in arrow_schema:
@@ -110,7 +168,7 @@ def read_iceberg_table(table_path):
             pf = pf.rename_columns(new_names)
         tables.append(pf)
 
-    return pa.concat_tables(tables), metadata
+    return pa.concat_tables(tables, promote_options="default"), metadata
 
 
 # ---------------------------------------------------------------------------
