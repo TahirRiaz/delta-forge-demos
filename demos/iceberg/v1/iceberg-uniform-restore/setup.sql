@@ -7,7 +7,7 @@
 -- Zone & Schema
 -- --------------------------------------------------------------------------
 
-CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm restore demo zone';
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL COMMENT 'External and Delta tables — demo datasets';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'RESTORE with UniForm';
 
@@ -27,6 +27,8 @@ TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.columnMapping.mode' = 'id'
 );
+
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.compliance_records TO USER {{current_user}};
 
 -- --------------------------------------------------------------------------
 -- Seed Data — 20 compliance records across 5 entities, 4 regulations
@@ -55,8 +57,7 @@ INSERT INTO {{zone_name}}.iceberg_demos.compliance_records VALUES
     (20, 'Epsilon SA',  'SOX',     'non_compliant', 75, '2025-02-01');
 
 -- --------------------------------------------------------------------------
--- Schema Detection & Permissions
+-- Schema Detection
 -- --------------------------------------------------------------------------
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.compliance_records;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.compliance_records TO USER {{current_user}};

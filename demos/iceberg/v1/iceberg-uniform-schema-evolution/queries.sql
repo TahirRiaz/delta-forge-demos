@@ -238,17 +238,17 @@ FROM {{zone_name}}.iceberg_demos.customer_orders;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
-CREATE EXTERNAL TABLE IF NOT EXISTS customer_orders_iceberg
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.customer_orders_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/customer_orders';
 
-GRANT ADMIN ON TABLE customer_orders_iceberg TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.customer_orders_iceberg TO USER {{current_user}};
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 24 Orders (20 Original + 4 Post-Evolution)
 -- ============================================================================
 
 ASSERT ROW_COUNT = 24
-SELECT * FROM customer_orders_iceberg ORDER BY id;
+SELECT * FROM {{zone_name}}.iceberg_demos.customer_orders_iceberg ORDER BY id;
 -- ============================================================================
 -- Iceberg Verify 2: Evolved Columns Are Populated
 -- ============================================================================
@@ -263,7 +263,7 @@ SELECT
     COUNT(loyalty_tier) AS has_tier,
     COUNT(discount_pct) AS has_discount,
     COUNT(notes) AS has_notes
-FROM customer_orders_iceberg;
+FROM {{zone_name}}.iceberg_demos.customer_orders_iceberg;
 -- ============================================================================
 -- Iceberg Verify 3: Revenue Totals — Must Match Delta Final State
 -- ============================================================================
@@ -274,4 +274,4 @@ ASSERT VALUE discounted_revenue = 12296.63
 SELECT
     ROUND(SUM(quantity * unit_price), 2) AS gross_revenue,
     ROUND(SUM(quantity * unit_price * (1 - discount_pct / 100)), 2) AS discounted_revenue
-FROM customer_orders_iceberg;
+FROM {{zone_name}}.iceberg_demos.customer_orders_iceberg;

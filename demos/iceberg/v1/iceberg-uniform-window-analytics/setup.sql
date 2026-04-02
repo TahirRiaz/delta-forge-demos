@@ -7,7 +7,7 @@
 -- Zone & Schema
 -- --------------------------------------------------------------------------
 
-CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA COMMENT 'Iceberg UniForm window analytics demo zone';
+CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL COMMENT 'External and Delta tables — demo datasets';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos COMMENT 'Window functions with UniForm';
 
@@ -28,6 +28,8 @@ TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.columnMapping.mode' = 'id'
 );
+
+GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sales TO USER {{current_user}};
 
 -- --------------------------------------------------------------------------
 -- Seed Data — 40 sales across 7 reps, 4 regions, 3 categories
@@ -76,8 +78,7 @@ INSERT INTO {{zone_name}}.iceberg_demos.sales VALUES
     (40, 'Ava Moore',     'West',      'Furniture',   4200.00,  7.5,  '2025-03-14');
 
 -- --------------------------------------------------------------------------
--- Schema Detection & Permissions
+-- Schema Detection
 -- --------------------------------------------------------------------------
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.iceberg_demos.sales;
-GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sales TO USER {{current_user}};
