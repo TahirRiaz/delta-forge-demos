@@ -136,10 +136,24 @@ def read_iceberg_table(table_path):
         live_files.add(fp)
 
     data_files = []
+    table_dir_name = os.path.basename(table_path)
     for fp in live_files:
         resolved = fp
         if not os.path.isfile(resolved):
-            resolved = os.path.join(table_path, os.path.basename(resolved))
+            # Try to find the table directory name in the path and resolve
+            # relative to table_path (e.g. .../orders/data/file.parquet
+            # -> join table_path with data/file.parquet)
+            parts = fp.replace("\\", "/").split("/")
+            try:
+                idx = parts.index(table_dir_name)
+                rel_suffix = os.path.join(*parts[idx + 1:])
+                candidate = os.path.join(table_path, rel_suffix)
+                if os.path.isfile(candidate):
+                    resolved = candidate
+            except (ValueError, TypeError):
+                pass
+            if not os.path.isfile(resolved):
+                resolved = os.path.join(table_path, os.path.basename(fp))
         data_files.append((resolved, fp))
 
     # Read Parquet, apply position deletes, and rename columns via field IDs
