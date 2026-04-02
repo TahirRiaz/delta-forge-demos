@@ -50,7 +50,7 @@ def verify_network_traffic(data_root, verbose=False):
 
     # Protocol distribution: 4 protocols, 120 each
     assert_distinct_count(table, "protocol", 4)
-    for proto in ["DNS", "HTTP", "HTTPS", "SSH"]:
+    for proto in ["DNS", "ICMP", "TCP", "UDP"]:
         assert_count_where(table, "protocol", proto, 120)
 
     # Threat level distribution

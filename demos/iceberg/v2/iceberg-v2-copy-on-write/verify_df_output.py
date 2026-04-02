@@ -81,7 +81,7 @@ def verify_shipments(data_root, verbose=False):
 
     # Totals and averages
     assert_sum(table, "shipping_cost", 28730.35, label="total_shipping_cost")
-    assert_avg(table, "weight", 67.44, label="avg_weight")
+    assert_avg(table, "weight_kg", 67.44, label="avg_weight")
 
     # Deleted shipment IDs must be absent
     deleted_ids = [

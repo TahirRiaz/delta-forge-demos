@@ -77,7 +77,7 @@ def verify_grid_readings(data_root, verbose=False):
 
     # Distinct meters and substations
     assert_distinct_count(table, "meter_id", 600)
-    assert_distinct_count(table, "substation_id", 15)
+    assert_distinct_count(table, "substation", 15)
 
     # Avg power by meter type
     for meter_type, expected_avg in [("Commercial", 6.44), ("Industrial", 6.75), ("Residential", 6.68)]:

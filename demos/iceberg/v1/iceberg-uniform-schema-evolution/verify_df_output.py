@@ -96,24 +96,26 @@ def verify_customer_orders(data_root, verbose=False):
     else:
         fail(f"Gross revenue = {gross}, expected 13445.00")
 
-    # Discounted revenue = SUM(quantity * unit_price * (1 - discount_pct/100)) = 12296.63
+    # Discounted revenue = SUM(quantity * unit_price * (1 - discount_pct/100))
+    # Exact value is 12296.625; SQL ROUND gives 12296.63, Python round gives
+    # 12296.62 (banker's rounding). Accept either.
     discounted = round(sum(
         float(table.column("quantity")[i].as_py()) *
         float(table.column("unit_price")[i].as_py()) *
         (1 - float(table.column("discount_pct")[i].as_py()) / 100)
         for i in range(table.num_rows)
     ), 2)
-    if discounted == 12296.63:
-        ok(f"Discounted revenue = 12296.63")
+    if discounted in (12296.62, 12296.63):
+        ok(f"Discounted revenue = {discounted}")
     else:
-        fail(f"Discounted revenue = {discounted}, expected 12296.63")
+        fail(f"Discounted revenue = {discounted}, expected 12296.62 or 12296.63")
 
-    # Per-customer discounted revenue
+    # Per-customer discounted revenue (all 24 rows, including post-evolution inserts)
     for cust, expected_dr in [
-        ("Acme Corp", 1363.25),
-        ("TechStart Inc", 2104.38),
-        ("Global Foods", 2407.50),
-        ("DataFlow LLC", 2439.00),
+        ("Acme Corp", 2075.75),
+        ("TechStart Inc", 3214.38),
+        ("Global Foods", 3757.50),
+        ("DataFlow LLC", 3249.00),
     ]:
         mask = pc.equal(table.column("customer_name"), cust)
         filtered = table.filter(mask)

@@ -56,17 +56,17 @@ def verify_loyalty_members(data_root, verbose=False):
     # Overall totals
     assert_sum(table, "miles_ytd", 2685394.0, label="total_miles")
     assert_sum(table, "flights_ytd", 1682.0, label="total_flights")
-    assert_sum(table, "total_spend", 615209.16, label="total_spend")
-    assert_avg(table, "total_spend", 10253.49, label="avg_spend")
+    assert_sum(table, "spend_ytd", 615209.16, label="spend_ytd")
+    assert_avg(table, "spend_ytd", 10253.49, label="avg_spend")
 
     # Platinum total spend
     plat_mask = pc.equal(table.column("tier"), "Platinum")
     plat = table.filter(plat_mask)
-    plat_spend = round(pc.sum(plat.column("total_spend")).as_py(), 2)
+    plat_spend = round(pc.sum(plat.column("spend_ytd")).as_py(), 2)
     if plat_spend == 294131.32:
-        ok(f"Platinum total_spend = 294131.32")
+        ok(f"Platinum spend_ytd = 294131.32")
     else:
-        fail(f"Platinum total_spend = {plat_spend}, expected 294131.32")
+        fail(f"Platinum spend_ytd = {plat_spend}, expected 294131.32")
 
     # Top member by miles_ytd
     miles_col = table.column("miles_ytd")

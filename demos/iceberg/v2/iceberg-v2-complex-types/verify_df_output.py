@@ -56,7 +56,7 @@ def verify_orders(data_root, verbose=False):
     # In Arrow, struct sub-fields are accessed via .field("sub_field")
     try:
         addr_col = table.column("shipping_address")
-        city_array = addr_col.field("city")
+        city_array = pc.struct_field(addr_col, "city")
         distinct_cities = pc.count_distinct(city_array).as_py()
         if distinct_cities == 15:
             ok(f"Distinct shipping cities = 15")
