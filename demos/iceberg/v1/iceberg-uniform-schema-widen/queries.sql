@@ -205,6 +205,8 @@ FROM {{zone_name}}.iceberg_demos.sensor_readings;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensor_readings_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensor_readings_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sensor_readings';

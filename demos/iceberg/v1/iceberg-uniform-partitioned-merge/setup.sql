@@ -31,6 +31,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory
 PARTITIONED BY (warehouse)
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
+    'delta.universalFormat.icebergVersion' = '1',
     'delta.columnMapping.mode' = 'id'
 );
 

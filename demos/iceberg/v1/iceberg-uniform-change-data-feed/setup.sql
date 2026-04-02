@@ -26,6 +26,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.orders (
 ) LOCATION '{{data_path}}/orders'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
+    'delta.universalFormat.icebergVersion' = '1',
     'delta.columnMapping.mode' = 'id',
     'delta.enableChangeDataFeed' = 'true'
 );

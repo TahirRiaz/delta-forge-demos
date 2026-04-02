@@ -203,6 +203,8 @@ FROM {{zone_name}}.iceberg_demos.user_profiles;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.user_profiles_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.user_profiles_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/user_profiles';

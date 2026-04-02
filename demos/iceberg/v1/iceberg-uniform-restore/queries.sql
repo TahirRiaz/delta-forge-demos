@@ -141,6 +141,8 @@ ORDER BY risk_score DESC;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/compliance_records';

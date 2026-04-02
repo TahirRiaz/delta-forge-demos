@@ -126,6 +126,8 @@ ORDER BY total_revenue DESC;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.sales_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sales';

@@ -220,6 +220,8 @@ FROM {{zone_name}}.iceberg_demos.warehouse_inventory;
 -- ICEBERG V3 READ-BACK VERIFICATION
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/warehouse_inventory';

@@ -119,6 +119,8 @@ ORDER BY t.account_id;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.transactions_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.transactions_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/transactions';

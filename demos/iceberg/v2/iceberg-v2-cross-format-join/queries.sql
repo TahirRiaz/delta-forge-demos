@@ -139,6 +139,8 @@ JOIN {{zone_name}}.iceberg_demos.stores st ON s.store_id = st.store_id;
 -- This reads through the V2 metadata chain. Then JOIN with the CSV table
 -- to prove 3-way format interop: Iceberg (read) + CSV (read) + Delta (write).
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.sales_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sales';

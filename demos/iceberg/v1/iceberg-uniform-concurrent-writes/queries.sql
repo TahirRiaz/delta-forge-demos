@@ -342,6 +342,8 @@ FROM {{zone_name}}.iceberg_demos.ingestion_log;
 -- use forward-slash paths or UNC paths for the data_path variable.
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.ingestion_log_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.ingestion_log_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/ingestion_log';

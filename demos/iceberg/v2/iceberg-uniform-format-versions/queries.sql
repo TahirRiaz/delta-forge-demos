@@ -259,6 +259,8 @@ SELECT
 -- Register V1's physical location as an external Iceberg table and detect
 -- its schema through the Iceberg metadata chain.
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sensors_v1';
@@ -269,6 +271,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v1_iceberg TO USER {{cu
 -- ============================================================================
 -- Register V2's physical location as an external Iceberg table.
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/sensors_v2';
@@ -278,6 +282,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.sensors_v2_iceberg TO USER {{cu
 -- Iceberg Read-Back: Register V3 as External Iceberg Table
 -- ============================================================================
 -- Register V3's physical location as an external Iceberg table.
+
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg
 USING ICEBERG

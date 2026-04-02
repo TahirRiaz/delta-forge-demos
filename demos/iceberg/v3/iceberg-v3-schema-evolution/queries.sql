@@ -269,6 +269,8 @@ FROM {{zone_name}}.iceberg_demos.drug_registry;
 -- through the V3 metadata chain. This proves the UniForm V3 shadow metadata
 -- correctly tracks all schema evolution steps.
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.drug_registry_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.drug_registry_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/drug_registry';

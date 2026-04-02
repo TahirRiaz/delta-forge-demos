@@ -201,6 +201,8 @@ GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.grid_readings_delta TO USER {{c
 INSERT INTO {{zone_name}}.iceberg_demos.grid_readings_delta
 SELECT * FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- Register the Delta table's location as an external Iceberg table
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback
 USING ICEBERG
 LOCATION '{{data_path}}/grid_readings_delta';

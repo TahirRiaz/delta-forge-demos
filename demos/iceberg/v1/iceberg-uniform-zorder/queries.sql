@@ -288,6 +288,8 @@ FROM {{zone_name}}.iceberg_demos.delivery_tracking;
 -- The Iceberg sort-order spec should reflect the Z-ORDER columns.
 -- ============================================================================
 
+DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.delivery_tracking_iceberg;
+
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 USING ICEBERG
 LOCATION '{{data_path}}/delivery_tracking';
