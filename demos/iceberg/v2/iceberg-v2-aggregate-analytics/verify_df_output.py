@@ -78,7 +78,7 @@ def verify_retail_sales(data_root, verbose=False):
     assert_sum(table, "quantity", 529.0, label="total_units")
 
     # Return count
-    assert_count_where(table, "is_return", True, 9)
+    assert_count_where(table, "is_return", 1, 9)
 
     # Per-region counts and gross revenue
     for region, expected_cnt, expected_gross in [
