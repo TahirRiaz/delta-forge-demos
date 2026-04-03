@@ -364,7 +364,23 @@ def read_iceberg_table(table_path):
         except pa.lib.ArrowTypeError:
             # Mixed dictionary / plain string encoding across row-groups or
             # partition directories.  Retry with dictionary columns decoded.
-            pf = pq.read_table(df_path, read_dictionary=[])
+            try:
+                pf = pq.read_table(df_path, read_dictionary=[])
+            except pa.lib.ArrowTypeError:
+                # Last resort: read row-groups individually and concat
+                pfile = pq.ParquetFile(df_path)
+                rg_tables = []
+                for i in range(pfile.metadata.num_row_groups):
+                    rgt = pfile.read_row_group(i)
+                    # Decode any dictionary columns
+                    cols = {}
+                    for field in rgt.schema:
+                        col = rgt.column(field.name)
+                        if pa.types.is_dictionary(col.type):
+                            col = col.dictionary_decode()
+                        cols[field.name] = col
+                    rg_tables.append(pa.table(cols))
+                pf = _concat_tables_safe(rg_tables) if rg_tables else pa.table({})
 
         # Apply position deletes for this file
         if original_fp in pos_deletes:
