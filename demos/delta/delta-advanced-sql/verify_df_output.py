@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", "..
 
 from verify_lib import (ok, fail, info,
     print_header, print_section, print_summary, exit_with_status)
+from verify_lib.spark_session import get_spark, resolve_data_root
 
 def verify_stock_prices(spark, data_root, verbose=False):
     print_section("stock_prices -- Final State")
@@ -41,20 +42,20 @@ def verify_stock_prices(spark, data_root, verbose=False):
     else:
         fail(f"ROW_COUNT = {row_count}, expected 100")
 
-    # Distinct ticker count
-    distinct_tickers = df.select("ticker").distinct().count()
-    if distinct_tickers == 5:
-        ok("DISTINCT ticker = 5")
+    # Distinct symbol count
+    distinct_symbols = df.select("symbol").distinct().count()
+    if distinct_symbols == 5:
+        ok("DISTINCT symbol = 5")
     else:
-        fail(f"DISTINCT ticker = {distinct_tickers}, expected 5")
+        fail(f"DISTINCT symbol = {distinct_symbols}, expected 5")
 
-    # Per-ticker counts
-    for ticker, expected in [("AAPL", 20), ("MSFT", 20), ("GOOGL", 20), ("AMZN", 20), ("TSLA", 20)]:
-        cnt = df.filter(df.ticker == ticker).count()
+    # Per-symbol counts
+    for symbol, expected in [("AAPL", 20), ("MSFT", 20), ("GOOGL", 20), ("AMZN", 20), ("TSLA", 20)]:
+        cnt = df.filter(df.symbol == symbol).count()
         if cnt == expected:
-            ok(f"COUNT WHERE ticker='{ticker}' = {expected}")
+            ok(f"COUNT WHERE symbol='{symbol}' = {expected}")
         else:
-            fail(f"COUNT WHERE ticker='{ticker}' = {cnt}, expected {expected}")
+            fail(f"COUNT WHERE symbol='{symbol}' = {cnt}, expected {expected}")
 
 def main():
     data_root, verbose = resolve_data_root()
