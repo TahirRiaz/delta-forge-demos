@@ -15,12 +15,50 @@ Requirements:
 
 import os
 import sys
+import subprocess
+
+# ---------------------------------------------------------------------------
+# Auto-install missing pip dependencies
+# ---------------------------------------------------------------------------
+_REQUIRED = {
+    "pyspark": "pyspark",       # import name -> pip package
+    "delta": "delta-spark",     # delta-spark installs as 'delta'
+}
+for _import_name, _pip_pkg in _REQUIRED.items():
+    try:
+        __import__(_import_name)
+    except ImportError:
+        print(f"  Installing missing dependency: {_pip_pkg}")
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", _pip_pkg, "-q"],
+            stdout=subprocess.DEVNULL,
+        )
+
+# ---------------------------------------------------------------------------
+# Auto-detect JAVA_HOME if not set
+# ---------------------------------------------------------------------------
+if not os.environ.get("JAVA_HOME"):
+    _candidates = [
+        os.path.expanduser("~/local/jdk"),
+        os.path.expanduser("~/.jdks/temurin-17"),
+        "/usr/lib/jvm/java-17-openjdk-amd64",
+        "/usr/lib/jvm/java-11-openjdk-amd64",
+    ]
+    for _jh in _candidates:
+        if os.path.isfile(os.path.join(_jh, "bin", "java")):
+            os.environ["JAVA_HOME"] = _jh
+            break
+    if not os.environ.get("JAVA_HOME"):
+        print("Error: JAVA_HOME is not set and no JDK found in known locations.")
+        print("Install a JDK or set JAVA_HOME before running this script.")
+        sys.exit(1)
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 
 from verify_lib import (ok, fail, info,
     print_header, print_section, print_summary, exit_with_status)
 from verify_lib.spark_session import get_spark, resolve_data_root
+
 
 def verify_stock_prices(spark, data_root, verbose=False):
     print_section("stock_prices -- Final State")
@@ -56,6 +94,7 @@ def verify_stock_prices(spark, data_root, verbose=False):
             ok(f"COUNT WHERE symbol='{symbol}' = {expected}")
         else:
             fail(f"COUNT WHERE symbol='{symbol}' = {cnt}, expected {expected}")
+
 
 def main():
     data_root, verbose = resolve_data_root()

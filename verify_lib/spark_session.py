@@ -22,18 +22,42 @@ import sys
 
 
 def get_spark():
-    """Create a SparkSession configured for Delta Lake reads."""
+    """Create a SparkSession configured for Delta Lake reads.
+
+    Uses delta-spark's configure_spark_with_delta_pip() to handle
+    classpath setup automatically across PySpark versions.
+    """
     from pyspark.sql import SparkSession
 
-    return SparkSession.builder \
-        .appName("delta-verify") \
-        .master("local[*]") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .config("spark.driver.memory", "2g") \
-        .config("spark.ui.showConsoleProgress", "false") \
-        .config("spark.log.level", "WARN") \
-        .getOrCreate()
+    try:
+        from delta import configure_spark_with_delta_pip
+        builder = configure_spark_with_delta_pip(
+            SparkSession.builder
+                .appName("delta-verify")
+                .master("local[*]")
+                .config("spark.sql.extensions",
+                        "io.delta.sql.DeltaSparkSessionExtension")
+                .config("spark.sql.catalog.spark_catalog",
+                        "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+                .config("spark.driver.memory", "2g")
+                .config("spark.ui.showConsoleProgress", "false")
+                .config("spark.log.level", "WARN")
+        )
+        return builder.getOrCreate()
+    except ImportError:
+        # Fallback for environments without delta-spark pip package:
+        # assume Delta JARs are on the classpath already.
+        return SparkSession.builder \
+            .appName("delta-verify") \
+            .master("local[*]") \
+            .config("spark.sql.extensions",
+                    "io.delta.sql.DeltaSparkSessionExtension") \
+            .config("spark.sql.catalog.spark_catalog",
+                    "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
+            .config("spark.driver.memory", "2g") \
+            .config("spark.ui.showConsoleProgress", "false") \
+            .config("spark.log.level", "WARN") \
+            .getOrCreate()
 
 
 def resolve_data_root(description="Verify Delta data for demo"):
