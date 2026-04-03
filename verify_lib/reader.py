@@ -71,16 +71,24 @@ def _unified_schema(tables):
 
 
 def _cast_table(table, target_schema):
-    """Cast *table* columns to match *target_schema* types."""
+    """Cast *table* columns to match *target_schema* types.
+
+    Handles missing columns (schema evolution) by filling with nulls,
+    and dictionary-encoded columns by decoding first.
+    """
     columns = []
     for field in target_schema:
-        col = table.column(field.name)
-        if col.type != field.type:
-            # Dictionary -> plain type: use dictionary_decode first
-            if pa.types.is_dictionary(col.type):
-                col = col.dictionary_decode()
+        if field.name in table.column_names:
+            col = table.column(field.name)
             if col.type != field.type:
-                col = col.cast(field.type)
+                # Dictionary -> plain type: use dictionary_decode first
+                if pa.types.is_dictionary(col.type):
+                    col = col.dictionary_decode()
+                if col.type != field.type:
+                    col = col.cast(field.type)
+        else:
+            # Column missing (schema evolution) -- fill with nulls
+            col = pa.nulls(table.num_rows, type=field.type)
         columns.append(col)
     return pa.table({f.name: c for f, c in zip(target_schema, columns)},
                     schema=target_schema)
@@ -351,7 +359,12 @@ def read_iceberg_table(table_path):
     # Read Parquet, apply position deletes, and rename columns via field IDs
     tables = []
     for df_path, original_fp in data_files:
-        pf = pq.read_table(df_path)
+        try:
+            pf = pq.read_table(df_path)
+        except pa.lib.ArrowTypeError:
+            # Mixed dictionary / plain string encoding across row-groups or
+            # partition directories.  Retry with dictionary columns decoded.
+            pf = pq.read_table(df_path, read_dictionary=[])
 
         # Apply position deletes for this file
         if original_fp in pos_deletes:
