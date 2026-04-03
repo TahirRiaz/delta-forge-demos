@@ -28,6 +28,7 @@ from verify_lib import print_header, print_section, print_summary, exit_with_sta
 
 
 def verify_eq_del_products(data_root, verbose=False):
+    import pyarrow as pa
     import pyarrow.compute as pc
 
     print_section("eq_del_products -- UniForm Equality Deletes")
@@ -61,7 +62,7 @@ def verify_eq_del_products(data_root, verbose=False):
 
     # Deleted ids must be absent
     for deleted_id in [2, 5, 8]:
-        mask = pc.is_in(table.column("id"), value_set=pc.array([deleted_id]))
+        mask = pc.is_in(table.column("id"), value_set=pa.array([deleted_id]))
         filtered = table.filter(mask)
         if filtered.num_rows == 0:
             ok(f"Deleted id={deleted_id} is absent")
