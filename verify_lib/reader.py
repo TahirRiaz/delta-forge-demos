@@ -232,18 +232,41 @@ def read_iceberg_table(table_path):
     import pyarrow.parquet as pq
 
     meta_dir = os.path.join(table_path, "metadata")
-    # Match both naming conventions:
-    #   Spark-style:  v1.metadata.json, v2.metadata.json, ...
-    #   Numeric-UUID: 00000-<uuid>.metadata.json, 00001-<uuid>.metadata.json, ...
-    meta_files = sorted(glob.glob(os.path.join(meta_dir, "v*.metadata.json")))
-    meta_files += sorted(glob.glob(os.path.join(meta_dir, "[0-9]*.metadata.json")))
-    gz_files = sorted(glob.glob(os.path.join(meta_dir, "v*.metadata.json.gz")))
-    gz_files += sorted(glob.glob(os.path.join(meta_dir, "[0-9]*.metadata.json.gz")))
-    all_meta = meta_files + gz_files
-    if not all_meta:
-        raise FileNotFoundError(f"No metadata files in {meta_dir}")
 
-    latest_meta = all_meta[-1]
+    # Prefer version-hint.text which always points to the latest version.
+    # Alphabetical sorting of v*.metadata.json breaks when versions cross
+    # digit boundaries (e.g. v9 sorts after v11).
+    version_hint_path = os.path.join(meta_dir, "version-hint.text")
+    latest_meta = None
+    if os.path.isfile(version_hint_path):
+        with open(version_hint_path) as f:
+            hint = f.read().strip()
+        candidate = os.path.join(meta_dir, f"v{hint}.metadata.json")
+        if os.path.isfile(candidate):
+            latest_meta = candidate
+        else:
+            candidate_gz = candidate + ".gz"
+            if os.path.isfile(candidate_gz):
+                latest_meta = candidate_gz
+
+    if latest_meta is None:
+        # Fallback: sort numerically by extracting the version number.
+        def _meta_sort_key(path):
+            base = os.path.basename(path)
+            # Extract number from "v123.metadata.json" or "00123-uuid.metadata.json"
+            import re
+            m = re.match(r"v?(\d+)", base)
+            return int(m.group(1)) if m else 0
+
+        meta_files = glob.glob(os.path.join(meta_dir, "v*.metadata.json"))
+        meta_files += glob.glob(os.path.join(meta_dir, "[0-9]*.metadata.json"))
+        gz_files = glob.glob(os.path.join(meta_dir, "v*.metadata.json.gz"))
+        gz_files += glob.glob(os.path.join(meta_dir, "[0-9]*.metadata.json.gz"))
+        all_meta = meta_files + gz_files
+        if not all_meta:
+            raise FileNotFoundError(f"No metadata files in {meta_dir}")
+        all_meta.sort(key=_meta_sort_key)
+        latest_meta = all_meta[-1]
     if latest_meta.endswith(".gz"):
         with gzip.open(latest_meta, "rt") as f:
             metadata = json.load(f)
