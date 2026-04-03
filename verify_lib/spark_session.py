@@ -9,7 +9,7 @@ Usage in verify scripts:
 
 Variables are resolved in this order:
     1. CLI argument (positional `data_root`)
-    2. Environment variable `DEMO_DATA_PATH`
+    2. Environment variable ``DEMO_DATA_PATH``
     3. Fail with a clear error message
 
 This module is the single source of truth for Spark configuration
@@ -18,7 +18,53 @@ across all Delta demo verification scripts.
 
 import argparse
 import os
+import subprocess
 import sys
+
+
+# ---------------------------------------------------------------------------
+# Auto-install missing pip dependencies
+# ---------------------------------------------------------------------------
+_REQUIRED = {
+    "pyspark": "pyspark",
+    "delta": "delta-spark",
+}
+for _import_name, _pip_pkg in _REQUIRED.items():
+    try:
+        __import__(_import_name)
+    except ImportError:
+        print(f"  Installing missing dependency: {_pip_pkg}")
+        subprocess.check_call(
+            [sys.executable, "-m", "pip", "install", _pip_pkg, "-q"],
+            stdout=subprocess.DEVNULL,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Auto-detect JAVA_HOME if not set
+# ---------------------------------------------------------------------------
+if not os.environ.get("JAVA_HOME"):
+    _JDK_CANDIDATES = [
+        os.path.expanduser("~/local/jdk"),
+        os.path.expanduser("~/.jdks/temurin-17"),
+        os.path.expanduser("~/.jdks/temurin-11"),
+        "/usr/lib/jvm/java-17-openjdk-amd64",
+        "/usr/lib/jvm/java-11-openjdk-amd64",
+    ]
+    for _jh in _JDK_CANDIDATES:
+        if os.path.isfile(os.path.join(_jh, "bin", "java")):
+            os.environ["JAVA_HOME"] = _jh
+            break
+    if not os.environ.get("JAVA_HOME"):
+        # Last resort: try install-jdk
+        try:
+            import jdk
+            _jh = jdk.install("17")
+            os.environ["JAVA_HOME"] = _jh
+        except Exception:
+            print("Error: JAVA_HOME is not set and no JDK found.")
+            print("Install a JDK, set JAVA_HOME, or: pip install install-jdk")
+            sys.exit(1)
 
 
 def get_spark():

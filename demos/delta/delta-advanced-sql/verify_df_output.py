@@ -8,50 +8,10 @@ Read-only analytics demo: 100 rows, 5 stocks (AAPL, MSFT, GOOGL, AMZN, TSLA),
 
 Usage:
     python verify_df_output.py <data_root_path> [--verbose]
-
-Requirements:
-    pip install pyspark delta-spark
 """
 
 import os
 import sys
-import subprocess
-
-# ---------------------------------------------------------------------------
-# Auto-install missing pip dependencies
-# ---------------------------------------------------------------------------
-_REQUIRED = {
-    "pyspark": "pyspark",       # import name -> pip package
-    "delta": "delta-spark",     # delta-spark installs as 'delta'
-}
-for _import_name, _pip_pkg in _REQUIRED.items():
-    try:
-        __import__(_import_name)
-    except ImportError:
-        print(f"  Installing missing dependency: {_pip_pkg}")
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", _pip_pkg, "-q"],
-            stdout=subprocess.DEVNULL,
-        )
-
-# ---------------------------------------------------------------------------
-# Auto-detect JAVA_HOME if not set
-# ---------------------------------------------------------------------------
-if not os.environ.get("JAVA_HOME"):
-    _candidates = [
-        os.path.expanduser("~/local/jdk"),
-        os.path.expanduser("~/.jdks/temurin-17"),
-        "/usr/lib/jvm/java-17-openjdk-amd64",
-        "/usr/lib/jvm/java-11-openjdk-amd64",
-    ]
-    for _jh in _candidates:
-        if os.path.isfile(os.path.join(_jh, "bin", "java")):
-            os.environ["JAVA_HOME"] = _jh
-            break
-    if not os.environ.get("JAVA_HOME"):
-        print("Error: JAVA_HOME is not set and no JDK found in known locations.")
-        print("Install a JDK or set JAVA_HOME before running this script.")
-        sys.exit(1)
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 
