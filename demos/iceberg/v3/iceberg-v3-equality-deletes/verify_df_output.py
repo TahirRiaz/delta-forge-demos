@@ -72,8 +72,8 @@ def verify_patient_visits(data_root, verbose=False):
     assert_count_where(table, "department", "Emergency", 50)
 
     # Cost aggregations
-    assert_sum(table, "cost", 5859194.13)
-    assert_avg(table, "cost", 13166.73)
+    assert_sum(table, "treatment_cost", 5859194.13)
+    assert_avg(table, "treatment_cost", 13166.73)
 
     # Per-hospital average cost
     for hospital, expected_avg in [
@@ -85,7 +85,7 @@ def verify_patient_visits(data_root, verbose=False):
     ]:
         mask = pc.equal(table.column("hospital"), hospital)
         filtered = table.filter(mask)
-        actual_avg = round(pc.mean(filtered.column("cost")).as_py(), 2)
+        actual_avg = round(pc.mean(filtered.column("treatment_cost")).as_py(), 2)
         if actual_avg == expected_avg:
             ok(f"Avg cost {hospital} = {expected_avg}")
         else:

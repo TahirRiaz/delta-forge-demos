@@ -308,6 +308,13 @@ def read_iceberg_table(table_path):
             print(f"  WARNING: position delete file not found, skipping: "
                   f"{pd_path}", file=sys.stderr)
             continue
+        # Puffin deletion vector files (.puffin) encode row-level deletion
+        # bitmaps in a binary format that is NOT Parquet.  They appear in the
+        # manifest with content=1 (DELETES) but cannot be read by PyArrow's
+        # Parquet reader.  Skip them -- the Rust engine applies these DVs at
+        # query time; the verify reader does not need to handle them.
+        if pd_path.endswith(".puffin"):
+            continue
         pd_table = pq.read_table(pd_path)
         if "file_path" in pd_table.column_names and "pos" in pd_table.column_names:
             for fp_val, pos_val in zip(

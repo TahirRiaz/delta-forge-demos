@@ -72,7 +72,7 @@ def verify_lab_results(data_root, verbose=False):
 
     # Distinct counts
     assert_distinct_count(table, "test_name", 10)
-    assert_distinct_count(table, "patient_id", 15)
+    assert_distinct_count(table, "patient_name", 15)
 
     # Critical counts: is_critical=1 (true), is_critical=0 (false), IS NULL
     critical_count = pc.sum(pc.equal(table.column("is_critical"), 1)).as_py()

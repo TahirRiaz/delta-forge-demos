@@ -60,13 +60,15 @@ def verify_lab_results(data_root, verbose=False):
     else:
         fail(f"Total abnormal = {total_abnormal}, expected 84")
 
-    above_range = pc.sum(pc.equal(table.column("flag"), "above_range")).as_py()
+    above_range = pc.sum(pc.greater(table.column("result_value"),
+                                      table.column("reference_high"))).as_py()
     if above_range == 31:
         ok(f"Above range = 31")
     else:
         fail(f"Above range = {above_range}, expected 31")
 
-    below_range = pc.sum(pc.equal(table.column("flag"), "below_range")).as_py()
+    below_range = pc.sum(pc.less(table.column("result_value"),
+                                  table.column("reference_low"))).as_py()
     if below_range == 53:
         ok(f"Below range = 53")
     else:
