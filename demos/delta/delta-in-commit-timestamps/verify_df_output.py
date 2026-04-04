@@ -40,12 +40,12 @@ def verify_release_tracker(spark, data_root, verbose=False):
     else:
         fail(f"Row count is {row_count} (expected 30)")
 
-    # Assert count where status = 'successful' is 25
-    successful_count = df.filter(col("status") == "successful").count()
+    # Assert count where status = 'success' is 25
+    successful_count = df.filter(col("status") == "success").count()
     if successful_count == 25:
-        ok(f"Count where 'status' == 'successful' is {successful_count} (expected 25)")
+        ok(f"Count where 'status' == 'success' is {successful_count} (expected 25)")
     else:
-        fail(f"Count where 'status' == 'successful' is {successful_count} (expected 25)")
+        fail(f"Count where 'status' == 'success' is {successful_count} (expected 25)")
 
 def main():
     data_root, verbose = resolve_data_root()
