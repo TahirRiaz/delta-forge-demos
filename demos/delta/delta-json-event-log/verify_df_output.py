@@ -39,12 +39,12 @@ def verify_payment_events(spark, data_root, verbose=False):
     else:
         fail(f"Row count is {row_count} (expected 40)")
 
-    # Assert count where event_type = 'charge' is 15
-    charge_count = df.filter(col("event_type") == "charge").count()
+    # Assert count where txn_type = 'charge' is 15
+    charge_count = df.filter(col("txn_type") == "charge").count()
     if charge_count == 15:
-        ok(f"Count where 'event_type' == 'charge' is {charge_count} (expected 15)")
+        ok(f"Count where 'txn_type' == 'charge' is {charge_count} (expected 15)")
     else:
-        fail(f"Count where 'event_type' == 'charge' is {charge_count} (expected 15)")
+        fail(f"Count where 'txn_type' == 'charge' is {charge_count} (expected 15)")
 
 def main():
     data_root, verbose = resolve_data_root()
