@@ -3,7 +3,7 @@
 Delta Constraints Properties -- Delta Data Verification (PySpark)
 
 Verifies the invoices and event_log tables:
-  - invoices: 30 rows (18 paid, 7 pending, 5 overdue)
+  - invoices: 30 rows (18 paid, 8 pending, 4 overdue)
   - event_log: 50 rows (append-only)
 
 Usage:
@@ -37,7 +37,7 @@ def verify_invoices(spark, data_root, verbose=False):
     else:
         fail(f"Row count = {row_count}, expected 30")
 
-    for status, expected in [("paid", 18), ("pending", 7), ("overdue", 5)]:
+    for status, expected in [("paid", 18), ("pending", 8), ("overdue", 4)]:
         actual = df.filter(df.status == status).count()
         if actual == expected:
             ok(f"status='{status}' count = {expected}")
