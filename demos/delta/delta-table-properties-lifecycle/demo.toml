@@ -16,6 +16,8 @@ categories = ["delta-table", "delta-fundamentals"]
 tags = ["delta-table", "intermediate", "tblproperties", "alter-table", "configuration", "show-properties", "version-as-of"]
 difficulty = "intermediate"
 estimated_time_minutes = 8
+spark_compatible = false
+spark_incompatibility_reason = "Uses delta.targetFileSize which is a Databricks-only table property not supported in Spark OSS"
 
 [demo.variables]
 data_path = { description = "Root path where Delta table data is stored", required = true }

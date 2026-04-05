@@ -77,12 +77,25 @@ if not os.environ.get("JAVA_HOME"):
 
 
 
-def get_spark():
-    """Create a local SparkSession configured for Delta Lake.
+_session = None
 
-    Uses delta-spark's configure_spark_with_delta_pip() to handle
-    classpath setup automatically. Runs on-prem with Spark 4.0.
+
+def get_spark():
+    """Return a cached local SparkSession configured for Delta Lake.
+
+    The session is created once and reused for the lifetime of the process.
+    Call stop_spark() for explicit cleanup. Uses delta-spark's
+    configure_spark_with_delta_pip() for classpath setup.
     """
+    global _session
+    if _session is not None:
+        try:
+            # Verify session is still alive
+            _session.sparkContext._jsc.sc().isStopped()
+            return _session
+        except Exception:
+            _session = None
+
     from pyspark.sql import SparkSession
 
     try:
@@ -99,10 +112,9 @@ def get_spark():
                 .config("spark.ui.showConsoleProgress", "false")
                 .config("spark.log.level", "WARN")
         )
-        return builder.getOrCreate()
+        _session = builder.getOrCreate()
     except ImportError:
-        # Fallback: assume Delta JARs are on the classpath already.
-        return SparkSession.builder \
+        _session = SparkSession.builder \
             .appName("delta-verify") \
             .master("local[*]") \
             .config("spark.sql.extensions",
@@ -113,6 +125,15 @@ def get_spark():
             .config("spark.ui.showConsoleProgress", "false") \
             .config("spark.log.level", "WARN") \
             .getOrCreate()
+    return _session
+
+
+def stop_spark():
+    """Explicitly stop the cached SparkSession."""
+    global _session
+    if _session is not None:
+        _session.stop()
+        _session = None
 
 
 def resolve_data_root(description="Verify Delta data for demo"):
