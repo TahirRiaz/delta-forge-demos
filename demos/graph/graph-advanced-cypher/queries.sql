@@ -70,8 +70,8 @@ ORDER BY count DESC;
 -- Cypher negative pattern: WHERE NOT (n)-->()
 
 ASSERT ROW_COUNT = 5
-ASSERT VALUE name = 'Prof. Chen_40' WHERE name = 'Prof. Chen_40'
-ASSERT VALUE name = 'Prof. Larsson_36' WHERE name = 'Prof. Larsson_36'
+ASSERT VALUE department = 'CompSci' WHERE name = 'Prof. Chen_40'
+ASSERT VALUE department = 'Physics' WHERE name = 'Prof. Larsson_36'
 USE {{zone_name}}.research_network.research_network
 MATCH (n)
 WHERE NOT (n)-->()

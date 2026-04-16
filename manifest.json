@@ -5069,6 +5069,55 @@
       ]
     },
     {
+      "id": "graph-gpu-10m-finance",
+      "path": "demos/graph/graph-gpu-10m-finance",
+      "iconPath": "icons/graph-gpu-10m-finance.svg",
+      "name": "GPU-Accelerated Global Banking Network — 10M-Account Fraud Analytics",
+      "summary": "GPU-accelerated stress test on 10,000,000-account global banking network with ~48M directed transaction edges. 30 banks, 25 cities, 3 account tiers. All 5 GPU-accelerable algorithms (PageRank, Connected Components, Louvain, Betweenness, Triangle Count) via USING GPU hints. Tests GPU MATCH expansion, streaming property loading, and threshold fallback at 10x the 1M-node benchmark scale.",
+      "categories": [
+        "graph",
+        "gpu"
+      ],
+      "tags": [
+        "graph",
+        "gpu",
+        "finance",
+        "fraud-detection",
+        "stress-test",
+        "performance",
+        "benchmark",
+        "10-million-scale",
+        "cypher",
+        "algorithms",
+        "advanced"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 60,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-16T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "graph",
+          "name": "{{zone_name}}.gpu_finance_network.gpu_finance_network"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.gpu_finance_network.gfn_transactions"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.gpu_finance_network.gfn_accounts"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.gpu_finance_network.gfn_banks"
+        }
+      ]
+    },
+    {
       "id": "graph-karate-club",
       "path": "demos/graph/graph-karate-club",
       "iconPath": "icons/graph-karate-club.svg",

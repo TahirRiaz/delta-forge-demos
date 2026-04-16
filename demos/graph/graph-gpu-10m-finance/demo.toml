@@ -1,0 +1,42 @@
+[demo]
+id = "graph-gpu-10m-finance"
+name = "GPU-Accelerated Global Banking Network — 10M-Account Fraud Analytics"
+version = "1.0.0"
+author = "Delta Forge Team"
+description = """
+GPU-accelerated stress test on a 10,000,000-account global banking network \
+with ~48,000,000 directed transaction edges. Models realistic financial \
+topology: 30 banks, 25 cities, 3 account tiers (retail 80%, corporate 15%, \
+institutional 5%). Dense intra-bank payment clusters, cross-bank clearing \
+corridors, hierarchical advisory trees, compliance bridge nodes, and \
+pseudo-random weak ties create community structure for fraud ring detection. \
+Forces GPU execution on all 5 GPU-accelerable algorithms (PageRank, \
+Connected Components, Louvain, Betweenness, Triangle Count) plus GPU MATCH \
+expansion — 10x scale-up from the 1M-node GPU stress test. Tests GPU \
+memory management, streaming property loading, and threshold fallback at \
+enterprise financial-services scale.
+"""
+categories = ["graph", "gpu"]
+tags = ["graph", "gpu", "finance", "fraud-detection", "stress-test", "performance", "benchmark", "10-million-scale", "cypher", "algorithms", "advanced"]
+difficulty = "advanced"
+estimated_time_minutes = 60
+
+[demo.variables]
+data_path = { description = "Path to the demo data directory", required = true }
+zone_name = { description = "Target zone name for tables (defaults to 'external')", required = false }
+
+[[demo.target_objects]]
+type = "graph"
+name = "{{zone_name}}.gpu_finance_network.gpu_finance_network"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.gpu_finance_network.gfn_banks"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.gpu_finance_network.gfn_accounts"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.gpu_finance_network.gfn_transactions"

@@ -118,7 +118,7 @@ $$) AS (customer_id BIGINT, influence_score DOUBLE, influence_rank BIGINT);
 -- All 40 customers should have a score. The top-ranked customer has rank=1.
 
 ASSERT ROW_COUNT = 40
-ASSERT VALUE influence_rank = 1 WHERE influence_rank = 1
+ASSERT VALUE influence_rank >= 1 WHERE name = 'Acme_Corp'
 ASSERT VALUE influence_score > 0 WHERE influence_rank = 1
 SELECT i.customer_id, c.name, c.region, i.influence_score, i.influence_rank
 FROM {{zone_name}}.customer_network.influence_scores i

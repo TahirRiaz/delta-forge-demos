@@ -263,7 +263,7 @@ ORDER BY a.department, b.department;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 14
-ASSERT VALUE connections = 10 WHERE from_dept = 'HR'
+ASSERT VALUE connections = 10 WHERE from_dept = 'HR' AND to_dept = 'Marketing'
 USE {{zone_name}}.storage_modes.storage_flat
 MATCH (a)-[r]->(b)
 WHERE a.department <> b.department

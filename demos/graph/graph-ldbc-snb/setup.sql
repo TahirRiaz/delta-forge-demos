@@ -31,7 +31,7 @@
 -- ############################################################################
 -- STEP 1: Zone & Schemas
 -- ############################################################################
--- This demo creates 33 external tables, 31 Delta tables, and 1 graph.
+-- This demo creates 33 external tables, 33 Delta tables, and 1 graph.
 -- Two schemas keep staging separate from the materialized layer:
 --   {{zone_name}}.ldbc_snb_raw   — External CSV tables (staging / read-only)
 --   {{zone_name}}.ldbc_social_network — Delta tables + graph definition (queryable)
