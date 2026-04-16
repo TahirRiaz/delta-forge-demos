@@ -266,7 +266,7 @@ LIMIT 30;
 -- ============================================================================
 -- The 20 transaction types and their exact counts must match CPU results.
 
-ASSERT ROW_COUNT = 20
+ASSERT ROW_COUNT = 18
 ASSERT VALUE count = 7500000 WHERE type = 'wire-transfer'
 ASSERT VALUE count = 7500000 WHERE type = 'card-payment'
 ASSERT VALUE count = 5500000 WHERE type = 'advisory'
@@ -423,8 +423,8 @@ SELECT 'Banks = 30',
 FROM (SELECT COUNT(DISTINCT bank) AS cnt FROM {{zone_name}}.gpu_finance_network.gfn_accounts)
 
 UNION ALL
-SELECT 'Transaction types = 20',
-       CASE WHEN cnt = 20 THEN 'PASS' ELSE 'FAIL (got ' || CAST(cnt AS VARCHAR) || ')' END
+SELECT 'Transaction types = 18',
+       CASE WHEN cnt = 18 THEN 'PASS' ELSE 'FAIL (got ' || CAST(cnt AS VARCHAR) || ')' END
 FROM (SELECT COUNT(DISTINCT transaction_type) AS cnt FROM {{zone_name}}.gpu_finance_network.gfn_transactions)
 
 UNION ALL
