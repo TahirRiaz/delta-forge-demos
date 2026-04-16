@@ -83,3 +83,13 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.gpu_karate.gpu_karate
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN edge_type
     DIRECTED;
+
+-- ############################################################################
+-- STEP 5: Warm the CSR cache
+-- ############################################################################
+-- CREATE GRAPHCSR pre-builds the Compressed Sparse Row topology and writes
+-- it to disk as a .dcsr file. The first Cypher query then loads in ~200 ms
+-- instead of rebuilding from Delta tables. Safe to re-run after bulk edge
+-- loads to refresh the cache.
+
+CREATE GRAPHCSR {{zone_name}}.gpu_karate.gpu_karate;

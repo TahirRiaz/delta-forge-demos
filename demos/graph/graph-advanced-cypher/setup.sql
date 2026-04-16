@@ -168,3 +168,11 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.research_network.research_network
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN collab_type
     DIRECTED;
+
+-- ============================================================================
+-- WARM CSR CACHE — Pre-build the Compressed Sparse Row topology
+-- ============================================================================
+-- CREATE GRAPHCSR writes the binary .dcsr file to disk, so the first Cypher
+-- query loads in ~200 ms instead of rebuilding from Delta tables (6-14 s for
+-- large graphs). Safe to re-run after bulk edge loads to refresh the cache.
+CREATE GRAPHCSR {{zone_name}}.research_network.research_network;

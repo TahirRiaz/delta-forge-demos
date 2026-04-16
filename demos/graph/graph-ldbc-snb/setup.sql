@@ -586,3 +586,13 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.ldbc_social_network.ldbc_social_network
     VERTEX TABLE {{zone_name}}.ldbc_social_network.person ID COLUMN id NODE TYPE COLUMN gender NODE NAME COLUMN first_name
     EDGE TABLE {{zone_name}}.ldbc_social_network.person_knows_person SOURCE COLUMN src TARGET COLUMN dst
     DIRECTED;
+
+-- ############################################################################
+-- STEP N: Warm the CSR cache
+-- ############################################################################
+-- CREATE GRAPHCSR pre-builds the Compressed Sparse Row topology and writes
+-- it to disk as a .dcsr file. The first Cypher query then loads in ~200 ms
+-- instead of rebuilding from Delta tables. Safe to re-run after bulk edge
+-- loads to refresh the cache.
+
+CREATE GRAPHCSR {{zone_name}}.ldbc_social_network.ldbc_social_network;

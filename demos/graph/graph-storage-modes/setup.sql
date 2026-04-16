@@ -244,6 +244,9 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.storage_modes.storage_flat
     EDGE TYPE COLUMN relationship_type
     DIRECTED;
 
+-- Warm CSR cache for FLATTENED graph (see WARM CSR notes at end of file)
+CREATE GRAPHCSR {{zone_name}}.storage_modes.storage_flat;
+
 
 -- ############################################################################
 --  MODE 2: HYBRID — Core columns + JSON extras
@@ -300,6 +303,9 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.storage_modes.storage_hybrid
     VERTEX PROPERTIES HYBRID COLUMNS (name, age) JSON COLUMN extras
     EDGE PROPERTIES HYBRID COLUMNS (weight, relationship_type) JSON COLUMN extras;
 
+-- Warm CSR cache for HYBRID graph (see WARM CSR notes at end of file)
+CREATE GRAPHCSR {{zone_name}}.storage_modes.storage_hybrid;
+
 
 -- ############################################################################
 --  MODE 3: JSON — Single JSON blob per vertex/edge
@@ -355,3 +361,14 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.storage_modes.storage_json
     DIRECTED
     VERTEX PROPERTIES JSON COLUMN props
     EDGE PROPERTIES JSON COLUMN props;
+
+-- ############################################################################
+-- WARM CSR CACHE — All three storage modes
+-- ############################################################################
+-- CREATE GRAPHCSR pre-builds the Compressed Sparse Row topology and writes
+-- it to disk as a .dcsr file. The first Cypher query then loads in ~200 ms
+-- instead of rebuilding from Delta tables. Safe to re-run after bulk edge
+-- loads to refresh the cache. Each graph has its own cache file keyed to the
+-- edge-table version, so FLAT/HYBRID/JSON are warmed independently.
+
+CREATE GRAPHCSR {{zone_name}}.storage_modes.storage_json;
