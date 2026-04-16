@@ -36,6 +36,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.gpu_karate_raw.karate_edges
 USING CSV LOCATION '{{data_path}}/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.gpu_karate_raw.karate_edges;
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_karate_raw.karate_edges TO USER {{current_user}};
 
 -- ############################################################################
@@ -53,6 +54,7 @@ AS SELECT
     CAST(edge_type AS VARCHAR) AS edge_type
 FROM {{zone_name}}.gpu_karate_raw.karate_edges;
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.gpu_karate.edges;
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_karate.edges TO USER {{current_user}};
 
 -- === Vertex Table (from CSV with member names and roles) ===
@@ -61,6 +63,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.gpu_karate_raw.karate_vertices
 USING CSV LOCATION '{{data_path}}/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.gpu_karate_raw.karate_vertices;
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_karate_raw.karate_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_karate.vertices
@@ -71,6 +74,7 @@ AS SELECT
     CAST(category AS VARCHAR) AS role
 FROM {{zone_name}}.gpu_karate_raw.karate_vertices;
 
+DETECT SCHEMA FOR TABLE {{zone_name}}.gpu_karate.vertices;
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_karate.vertices TO USER {{current_user}};
 
 -- ############################################################################
