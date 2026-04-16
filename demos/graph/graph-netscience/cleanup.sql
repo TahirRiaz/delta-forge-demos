@@ -14,6 +14,7 @@ DROP DELTA TABLE IF EXISTS {{zone_name}}.netscience_collab.edges WITH FILES;
 
 -- STEP 3: Drop external tables
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.netscience_raw.netscience_edges WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.netscience_raw.netscience_vertices WITH FILES;
 
 -- STEP 4: Drop schemas and zone
 DROP SCHEMA IF EXISTS {{zone_name}}.netscience_collab;

@@ -14,6 +14,7 @@ DROP DELTA TABLE IF EXISTS {{zone_name}}.political_books.edges WITH FILES;
 
 -- STEP 3: Drop external tables
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.polbooks_raw.polbooks_edges WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.polbooks_raw.polbooks_vertices WITH FILES;
 
 -- STEP 4: Drop schemas and zone
 DROP SCHEMA IF EXISTS {{zone_name}}.political_books;

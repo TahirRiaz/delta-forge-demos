@@ -888,7 +888,11 @@ SELECT 'Top hub degree >= 300',
        CASE WHEN max_deg >= 300 THEN 'PASS' ELSE 'FAIL (got ' || CAST(max_deg AS VARCHAR) || ')' END
 FROM (
     SELECT MAX(deg) AS max_deg FROM (
-        SELECT src, COUNT(*) AS deg FROM {{zone_name}}.ldbc_social_network.person_knows_person GROUP BY src
+        SELECT node_id, SUM(cnt) AS deg FROM (
+            SELECT src AS node_id, COUNT(*) AS cnt FROM {{zone_name}}.ldbc_social_network.person_knows_person GROUP BY src
+            UNION ALL
+            SELECT dst AS node_id, COUNT(*) AS cnt FROM {{zone_name}}.ldbc_social_network.person_knows_person GROUP BY dst
+        ) GROUP BY node_id
     )
 )
 
