@@ -264,7 +264,7 @@ LIMIT 30;
 -- ============================================================================
 -- 15. GPU MATCH — Transaction type distribution
 -- ============================================================================
--- The 20 transaction types and their exact counts must match CPU results.
+-- The 18 distinct transaction types and their exact counts must match CPU results.
 
 ASSERT ROW_COUNT = 18
 ASSERT VALUE count = 7500000 WHERE type = 'wire-transfer'
