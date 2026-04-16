@@ -4,7 +4,7 @@
 -- Creates a 1,000,000-node graph with ~5,000,000 directed edges simulating
 -- a realistic enterprise organization network. Identical data to the CPU
 -- stress test — the difference is in queries.sql which forces GPU execution
--- via USING GPU hints on all accelerable algorithms and MATCH expansions.
+-- via ON GPU hints on all accelerable algorithms and MATCH expansions.
 --
 -- Topology features:
 --   * Dense intra-department neighborhoods (stride-20 arithmetic)

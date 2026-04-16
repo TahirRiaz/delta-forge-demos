@@ -9,7 +9,7 @@
 --
 -- This demo proves that GPU-accelerated graph algorithms produce correct
 -- results on a 1,000,000-node enterprise organization network. Every query
--- uses the USING GPU hint to force GPU execution. Assertion values are
+-- uses the ON GPU hint to force GPU execution. Assertion values are
 -- identical to the CPU stress test — proving GPU/CPU equivalence at scale.
 --
 -- GPU-accelerable algorithms (5):
@@ -22,7 +22,7 @@
 --   Baseline verification — same data as CPU stress test.
 --
 -- PART 2: GPU ALGORITHMS (queries 4–10)
---   All 5 GPU-accelerable algorithms with USING GPU hint.
+--   All 5 GPU-accelerable algorithms with ON GPU hint.
 --
 -- PART 3: GPU MATCH EXPANSION (queries 11–16)
 --   Pattern matching through GPU edge expansion path.
@@ -49,6 +49,7 @@
 
 ASSERT VALUE total_employees = 1000000
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
+ON GPU
 MATCH (n)
 RETURN count(n) AS total_employees;
 
@@ -60,6 +61,7 @@ RETURN count(n) AS total_employees;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_connections = 5059998
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
+ON GPU
 MATCH (a)-[r]->(b)
 RETURN count(r) AS total_connections;
 
@@ -72,9 +74,19 @@ ASSERT ROW_COUNT = 20
 ASSERT VALUE headcount = 50000 WHERE department = 'Engineering'
 ASSERT VALUE headcount = 50000 WHERE department = 'AI/ML'
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
+ON GPU
 MATCH (n)
 RETURN n.department AS department, count(n) AS headcount
 ORDER BY headcount DESC;
+
+
+-- ############################################################################
+-- CSR BUILD — Pre-build the compressed sparse row representation
+-- ############################################################################
+-- At 1M nodes and 5M edges, building the CSR once upfront avoids repeated
+-- reconstruction on each algorithm or MATCH call.
+
+CREATE GRAPHCSR {{zone_name}}.gpu_stress_network.gpu_stress_network;
 
 
 -- ############################################################################
@@ -91,7 +103,7 @@ ORDER BY headcount DESC;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -109,7 +121,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 1000000
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -127,7 +139,7 @@ LIMIT 25;
 -- Non-deterministic: Louvain is stochastic — community count varies by node ordering
 ASSERT WARNING ROW_COUNT >= 2
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.louvain({resolution: 1.0})
 YIELD node_id, community_id
 RETURN community_id, count(*) AS size
@@ -143,7 +155,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.betweenness({samplingSize: 1000})
 YIELD node_id, centrality, rank
 RETURN node_id, centrality, rank
@@ -159,7 +171,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.triangleCount()
 YIELD node_id, triangle_count
 RETURN node_id, triangle_count
@@ -175,7 +187,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 20})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -192,7 +204,7 @@ LIMIT 25;
 -- Non-deterministic: Louvain is stochastic — community count varies by node ordering
 ASSERT WARNING ROW_COUNT >= 2
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 CALL algo.louvain({resolution: 1.5})
 YIELD node_id, community_id
 RETURN community_id, count(*) AS size
@@ -216,7 +228,7 @@ LIMIT 25;
 
 ASSERT VALUE total_connections = 5059998
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 RETURN count(r) AS total_connections;
 
@@ -229,7 +241,7 @@ RETURN count(r) AS total_connections;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE a.department = 'Engineering' AND b.department = 'Engineering'
 RETURN a.name AS from_name, b.name AS to_name, r.relationship_type AS type, r.weight AS weight
@@ -245,7 +257,7 @@ LIMIT 25;
 
 ASSERT VALUE mentor_count = 550000
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE r.relationship_type = 'mentor'
 RETURN count(r) AS mentor_count;
@@ -260,7 +272,7 @@ RETURN count(r) AS mentor_count;
 ASSERT ROW_COUNT = 30
 ASSERT VALUE connections = 91000 WHERE from_dept = 'Engineering'
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE a.department <> b.department
 RETURN a.department AS from_dept, b.department AS to_dept,
@@ -280,7 +292,7 @@ ASSERT VALUE count = 750000 WHERE type = 'colleague'
 ASSERT VALUE count = 750000 WHERE type = 'teammate'
 ASSERT VALUE count = 550000 WHERE type = 'mentor'
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 RETURN r.relationship_type AS type, count(r) AS count,
        avg(r.weight) AS avg_strength
@@ -295,7 +307,7 @@ ORDER BY count DESC;
 
 ASSERT ROW_COUNT = 389
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE a.id <= 100 AND b.id <= 100
 RETURN a, r, b;
@@ -305,7 +317,7 @@ RETURN a, r, b;
 -- PART 4: GPU + STREAMING PROPERTY LOADING
 -- ############################################################################
 -- For graphs that exceed GPU memory, streaming mode loads properties
--- in batches. These queries combine USING GPU with WITH STREAMING
+-- in batches. These queries combine ON GPU with WITH STREAMING
 -- to test the streaming property pipeline.
 
 
@@ -315,7 +327,7 @@ RETURN a, r, b;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU STREAMING CACHE 500000
+ON GPU STREAMING CACHE 500000
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -330,7 +342,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 1000000
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU STREAMING CACHE 500000
+ON GPU STREAMING CACHE 500000
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -344,7 +356,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU STREAMING CACHE 500000
+ON GPU STREAMING CACHE 500000
 CALL algo.triangleCount()
 YIELD node_id, triangle_count
 RETURN node_id, triangle_count
@@ -368,7 +380,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 1000000
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU MIN THRESHOLD 100000
+ON GPU THRESHOLD 100000
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -385,7 +397,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 1000000
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU MIN THRESHOLD 2000000
+ON GPU THRESHOLD 2000000
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -400,7 +412,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_stress_network.gpu_stress_network
-USING GPU MIN THRESHOLD 500000
+ON GPU THRESHOLD 500000
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
 YIELD node_id, score, rank
 RETURN node_id, score, rank

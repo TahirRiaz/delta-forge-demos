@@ -323,6 +323,15 @@ RETURN 'cross_department' AS scope, count(r) AS connections,
 
 
 -- ############################################################################
+-- CSR BUILD — Pre-build the compressed sparse row representation
+-- ############################################################################
+-- At 1M nodes and 5M edges, building the CSR once upfront avoids repeated
+-- reconstruction on each algorithm or MATCH call.
+
+CREATE GRAPHCSR {{zone_name}}.stress_test_network.stress_test_network;
+
+
+-- ############################################################################
 -- ############################################################################
 --
 -- PART 2: GRAPH ALGORITHMS — Influence, Communities & Paths

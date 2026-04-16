@@ -12,7 +12,7 @@
 -- and SNAP. By forcing GPU execution on this small, well-understood graph,
 -- we verify that GPU implementations produce the same results as CPU.
 --
--- Every GPU algorithm uses USING GPU MIN THRESHOLD 1 to force GPU execution
+-- Every GPU algorithm uses ON GPU THRESHOLD 1 to force GPU execution
 -- even on this small 34-node graph. Without the threshold override, the
 -- engine would fall back to CPU since 34 nodes is below the default GPU
 -- threshold. The MIN THRESHOLD 1 says "use GPU for any graph with >= 1 node."
@@ -70,7 +70,7 @@ WHERE src = dst;
 -- ############################################################################
 -- PART 2: GPU ALGORITHMS — GOLDEN VALUE VERIFICATION
 -- ############################################################################
--- Every algorithm uses USING GPU MIN THRESHOLD 1 to force GPU execution.
+-- Every algorithm uses ON GPU THRESHOLD 1 to force GPU execution.
 -- Assertion values come from NetworkX reference implementations.
 
 
@@ -85,7 +85,7 @@ ASSERT ROW_COUNT = 10
 ASSERT VALUE rank = 1 WHERE node_id = 33
 ASSERT VALUE rank = 2 WHERE node_id = 0
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 20})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -99,7 +99,7 @@ LIMIT 10;
 -- NetworkX-verified top-5:
 --   Node 33: total=34, Node 0: total=32, Node 32: total=24,
 --   Node 2: total=20, Node 1: total=18
--- Degree centrality is CPU-only but included for comparison baseline.
+-- Degree is deterministic from edge data — GPU must produce identical counts.
 
 ASSERT ROW_COUNT = 10
 ASSERT VALUE total_degree = 34 WHERE node_id = 33
@@ -108,6 +108,7 @@ ASSERT VALUE total_degree = 24 WHERE node_id = 32
 ASSERT VALUE in_degree = 17 WHERE node_id = 33
 ASSERT VALUE in_degree = 16 WHERE node_id = 0
 USE {{zone_name}}.gpu_karate.gpu_karate
+ON GPU THRESHOLD 1
 CALL algo.degree()
 YIELD node_id, in_degree, out_degree, total_degree
 RETURN node_id, in_degree, out_degree, total_degree
@@ -125,7 +126,7 @@ ASSERT ROW_COUNT = 10
 ASSERT VALUE rank = 1 WHERE node_id = 0
 ASSERT VALUE rank = 2 WHERE node_id = 33
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.betweenness()
 YIELD node_id, centrality, rank
 RETURN node_id, centrality, rank
@@ -142,7 +143,7 @@ LIMIT 10;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE members = 34
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS members
@@ -158,7 +159,7 @@ ORDER BY members DESC;
 ASSERT WARNING ROW_COUNT >= 3
 ASSERT WARNING ROW_COUNT <= 6
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.louvain({resolution: 1.0})
 YIELD node_id, community_id
 RETURN community_id, count(*) AS members
@@ -177,7 +178,7 @@ ASSERT VALUE triangle_count = 18 WHERE node_id = 0
 ASSERT VALUE triangle_count = 15 WHERE node_id = 33
 ASSERT VALUE triangle_count = 13 WHERE node_id = 32
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.triangleCount()
 YIELD node_id, triangle_count
 RETURN node_id, triangle_count
@@ -189,11 +190,12 @@ LIMIT 10;
 -- 11. GPU SCC — Strongly connected components
 -- ============================================================================
 -- Expected: 1 SCC with all 34 nodes (bidirectional edges).
--- SCC is CPU-only but included for completeness.
+-- Expected: 1 SCC with all 34 nodes (bidirectional edges).
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE members = 34
 USE {{zone_name}}.gpu_karate.gpu_karate
+ON GPU THRESHOLD 1
 CALL algo.scc()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS members
@@ -209,7 +211,7 @@ ORDER BY members DESC;
 ASSERT ROW_COUNT = 10
 ASSERT VALUE rank = 1 WHERE node_id = 33
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.pageRank({dampingFactor: 0.50, iterations: 20})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -226,7 +228,7 @@ LIMIT 10;
 -- Non-deterministic: Louvain is stochastic — community count varies by node ordering
 ASSERT WARNING ROW_COUNT >= 3
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 CALL algo.louvain({resolution: 2.0})
 YIELD node_id, community_id
 RETURN community_id, count(*) AS members
@@ -237,12 +239,13 @@ ORDER BY members DESC;
 -- 14. CLOSENESS CENTRALITY — Proximity ranking
 -- ============================================================================
 -- NetworkX-verified: Node 0 = rank 1, Node 2 = rank 2.
--- Closeness is CPU-only but provides reference for GPU validation context.
+-- NetworkX-verified: Node 0 = rank 1, Node 2 = rank 2.
 
 ASSERT ROW_COUNT = 10
 ASSERT VALUE rank = 1 WHERE node_id = 0
 ASSERT VALUE rank = 2 WHERE node_id = 2
 USE {{zone_name}}.gpu_karate.gpu_karate
+ON GPU THRESHOLD 1
 CALL algo.closeness()
 YIELD node_id, closeness, rank
 RETURN node_id, closeness, rank
@@ -254,7 +257,7 @@ LIMIT 10;
 -- 15. SHORTEST PATH — Distance between faction leaders
 -- ============================================================================
 -- Nodes 0 and 33 are NOT directly connected. Distance = 2 hops.
--- CPU algorithm but validates the graph structure used by GPU algorithms.
+-- Nodes 0 and 33 are NOT directly connected. Distance = 2 hops.
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE distance = 0 WHERE step = 0
@@ -262,6 +265,7 @@ ASSERT VALUE distance = 2 WHERE step = 2
 ASSERT VALUE node_id = 0 WHERE step = 0
 ASSERT VALUE node_id = 33 WHERE step = 2
 USE {{zone_name}}.gpu_karate.gpu_karate
+ON GPU THRESHOLD 1
 CALL algo.shortestPath({source: 0, target: 33})
 YIELD node_id, step, distance
 RETURN node_id, step, distance
@@ -282,7 +286,7 @@ ORDER BY step;
 
 ASSERT ROW_COUNT = 156
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 MATCH (a)-[r]->(b)
 RETURN a.id AS src, b.id AS dst, r.edge_type AS type, r.weight AS weight
 ORDER BY src, dst;
@@ -295,7 +299,7 @@ ORDER BY src, dst;
 
 ASSERT ROW_COUNT = 16
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 MATCH (a)-[r]->(b)
 WHERE a.id = 0
 RETURN b.id AS friend_id, b.name AS friend_name
@@ -309,7 +313,7 @@ ORDER BY friend_id;
 
 ASSERT ROW_COUNT = 5
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 MATCH (a)-[r]->(b)
 RETURN r.edge_type AS type, count(r) AS count
 ORDER BY count DESC;
@@ -326,7 +330,7 @@ ASSERT VALUE degree = 17 WHERE member_id = 33
 ASSERT VALUE degree = 16 WHERE member_id = 0
 ASSERT VALUE degree = 12 WHERE member_id = 32
 USE {{zone_name}}.gpu_karate.gpu_karate
-USING GPU MIN THRESHOLD 1
+ON GPU THRESHOLD 1
 MATCH (a)-[r]->(b)
 RETURN a.id AS member_id, a.name AS name, COUNT(r) AS degree
 ORDER BY degree DESC, member_id ASC;

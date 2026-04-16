@@ -8,7 +8,7 @@ GPU algorithm quality verification using Zachary's Karate Club (1977), \
 the most studied graph in network science. 34 members, 78 undirected \
 edges — decades of published reference values from NetworkX provide \
 golden truth for every algorithm. Forces GPU execution via \
-USING GPU MIN THRESHOLD 1 on all 5 GPU-accelerable algorithms \
+ON GPU THRESHOLD 1 on all 5 GPU-accelerable algorithms \
 (PageRank, Connected Components, Louvain, Betweenness, Triangle Count) \
 and GPU MATCH expansion. Every assertion value matches NetworkX — if \
 GPU produces correct results on this benchmark, the implementation is \

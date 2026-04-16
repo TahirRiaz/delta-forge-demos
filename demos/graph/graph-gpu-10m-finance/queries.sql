@@ -10,7 +10,7 @@
 -- This demo proves that GPU-accelerated graph algorithms produce correct
 -- results on a 10,000,000-account global banking transaction network —
 -- a 10x scale-up from the 1M-node GPU stress test. Every query uses the
--- USING GPU hint to force GPU execution.
+-- ON GPU hint to force GPU execution.
 --
 -- GPU-accelerable algorithms (5):
 --   PageRank, Connected Components, Louvain, Betweenness, Triangle Count
@@ -39,6 +39,7 @@
 
 ASSERT VALUE total_accounts = 10000000
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
+ON GPU
 MATCH (n)
 RETURN count(n) AS total_accounts;
 
@@ -50,6 +51,7 @@ RETURN count(n) AS total_accounts;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_transactions = 48099998
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
+ON GPU
 MATCH (a)-[r]->(b)
 RETURN count(r) AS total_transactions;
 
@@ -62,9 +64,19 @@ ASSERT ROW_COUNT = 30
 ASSERT VALUE headcount = 333333 WHERE bank = 'JPMorgan'
 ASSERT VALUE headcount = 333334 WHERE bank = 'Goldman Sachs'
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
+ON GPU
 MATCH (n)
 RETURN n.bank AS bank, count(n) AS headcount
 ORDER BY headcount DESC;
+
+
+-- ############################################################################
+-- CSR BUILD — Pre-build the compressed sparse row representation
+-- ############################################################################
+-- At 10M nodes and 48M edges, the CSR construction is expensive. Building it
+-- once upfront avoids repeated reconstruction on each algorithm or MATCH call.
+
+CREATE GRAPHCSR {{zone_name}}.gpu_finance_network.gpu_finance_network;
 
 
 -- ############################################################################
@@ -81,7 +93,7 @@ ORDER BY headcount DESC;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -99,7 +111,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 10000000
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -116,7 +128,7 @@ LIMIT 25;
 -- Non-deterministic: Louvain is stochastic — community count varies by node ordering
 ASSERT WARNING ROW_COUNT >= 2
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.louvain({resolution: 1.0})
 YIELD node_id, community_id
 RETURN community_id, count(*) AS size
@@ -132,7 +144,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.betweenness({samplingSize: 1000})
 YIELD node_id, centrality, rank
 RETURN node_id, centrality, rank
@@ -148,7 +160,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.triangleCount()
 YIELD node_id, triangle_count
 RETURN node_id, triangle_count
@@ -164,7 +176,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 20})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -181,7 +193,7 @@ LIMIT 25;
 -- Non-deterministic: Louvain is stochastic — community count varies by node ordering
 ASSERT WARNING ROW_COUNT >= 2
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 CALL algo.louvain({resolution: 1.5})
 YIELD node_id, community_id
 RETURN community_id, count(*) AS size
@@ -202,7 +214,7 @@ LIMIT 25;
 
 ASSERT VALUE total_transactions = 48099998
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 RETURN count(r) AS total_transactions;
 
@@ -213,7 +225,7 @@ RETURN count(r) AS total_transactions;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE a.bank = 'JPMorgan' AND b.bank = 'JPMorgan'
 RETURN a.name AS from_acct, b.name AS to_acct, r.transaction_type AS type, r.weight AS weight
@@ -228,7 +240,7 @@ LIMIT 25;
 
 ASSERT VALUE advisory_count = 5500000
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE r.transaction_type = 'advisory'
 RETURN count(r) AS advisory_count;
@@ -240,7 +252,7 @@ RETURN count(r) AS advisory_count;
 
 ASSERT ROW_COUNT = 30
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE a.bank <> b.bank
 RETURN a.bank AS from_bank, b.bank AS to_bank,
@@ -259,7 +271,7 @@ ASSERT VALUE count = 7500000 WHERE type = 'wire-transfer'
 ASSERT VALUE count = 7500000 WHERE type = 'card-payment'
 ASSERT VALUE count = 5500000 WHERE type = 'advisory'
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 RETURN r.transaction_type AS type, count(r) AS count,
        avg(r.weight) AS avg_strength
@@ -274,7 +286,7 @@ ORDER BY count DESC;
 
 ASSERT ROW_COUNT = 319
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU
+ON GPU
 MATCH (a)-[r]->(b)
 WHERE a.id <= 100 AND b.id <= 100
 RETURN a, r, b;
@@ -293,7 +305,7 @@ RETURN a, r, b;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU STREAMING CACHE 5000000
+ON GPU STREAMING CACHE 5000000
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
 YIELD node_id, score, rank
 RETURN node_id, score, rank
@@ -308,7 +320,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 10000000
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU STREAMING CACHE 5000000
+ON GPU STREAMING CACHE 5000000
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -322,7 +334,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU STREAMING CACHE 5000000
+ON GPU STREAMING CACHE 5000000
 CALL algo.triangleCount()
 YIELD node_id, triangle_count
 RETURN node_id, triangle_count
@@ -345,7 +357,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 10000000
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU MIN THRESHOLD 1000000
+ON GPU THRESHOLD 1000000
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -362,7 +374,7 @@ LIMIT 25;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE community_size = 10000000
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU MIN THRESHOLD 20000000
+ON GPU THRESHOLD 20000000
 CALL algo.connectedComponents()
 YIELD node_id, component_id
 RETURN component_id, count(*) AS community_size
@@ -377,7 +389,7 @@ LIMIT 25;
 
 ASSERT ROW_COUNT = 25
 USE {{zone_name}}.gpu_finance_network.gpu_finance_network
-USING GPU MIN THRESHOLD 5000000
+ON GPU THRESHOLD 5000000
 CALL algo.pageRank({dampingFactor: 0.85, iterations: 5})
 YIELD node_id, score, rank
 RETURN node_id, score, rank

@@ -3,7 +3,7 @@
 -- ============================================================================
 -- Loads the classic Zachary Karate Club dataset (1977) and creates a graph
 -- for GPU algorithm quality verification. Same data as the CPU karate demo
--- but queries.sql forces GPU execution via USING GPU MIN THRESHOLD 1 to
+-- but queries.sql forces GPU execution via ON GPU THRESHOLD 1 to
 -- validate GPU algorithm correctness against published reference values.
 --
 -- Data source: W. W. Zachary, Journal of Anthropological Research, 1977
