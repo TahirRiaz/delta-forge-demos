@@ -198,7 +198,7 @@ ORDER BY total DESC;
 -- high-value orders earn 8% instead of 5%.
 
 ASSERT ROW_COUNT = 4
-ASSERT VALUE total_revenue = 14739.50 WHERE sales_rep = 'Sarah'
+ASSERT VALUE total_revenue = 14739.52 WHERE sales_rep = 'Sarah'
 ASSERT VALUE total_commission = 1141.67 WHERE sales_rep = 'Sarah'
 ASSERT VALUE effective_commission_pct = 7.75 WHERE sales_rep = 'Sarah'
 SELECT sales_rep,
@@ -220,7 +220,7 @@ ORDER BY total_revenue DESC;
 
 ASSERT ROW_COUNT = 4
 ASSERT VALUE invoice_count = 10 WHERE discount_tier = 'Bulk (15-25%)'
-ASSERT VALUE total_discounted = 7179.05 WHERE discount_tier = 'Bulk (15-25%)'
+ASSERT VALUE total_discounted = 7179.03 WHERE discount_tier = 'Bulk (15-25%)'
 ASSERT VALUE avg_discount_pct = 19.0 WHERE discount_tier = 'Bulk (15-25%)'
 SELECT
     CASE

@@ -136,7 +136,7 @@ FROM {{zone_name}}.delta_demos.survey_responses;
 -- appearing first. The 5 NULL ratings appear in rows 1-5.
 
 ASSERT ROW_COUNT = 30
-ASSERT VALUE satisfaction_rating = NULL WHERE response_id = 3
+ASSERT VALUE satisfaction_rating IS NULL WHERE response_id = 3
 ASSERT VALUE satisfaction_rating = 1 WHERE response_id = 14
 ASSERT VALUE satisfaction_rating = 5 WHERE response_id = 1
 SELECT

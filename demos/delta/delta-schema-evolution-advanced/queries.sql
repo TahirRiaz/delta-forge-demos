@@ -85,8 +85,12 @@ INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
 
 -- Compare old vs. new rows side by side:
 -- ids 1,15 are original (NULL for new columns), ids 31,45 have values
-ASSERT NO_FAIL IN result
 ASSERT ROW_COUNT = 4
+ASSERT VALUE weight_kg IS NULL WHERE id = 1
+ASSERT VALUE weight_kg IS NULL WHERE id = 15
+ASSERT VALUE weight_kg = 0.15 WHERE id = 31
+ASSERT VALUE weight_kg = 2.80 WHERE id = 45
+ASSERT VALUE discount_pct = 0.10 WHERE id = 31
 SELECT id, name, weight_kg, discount_pct
 FROM {{zone_name}}.delta_demos.product_catalog
 WHERE id IN (1, 15, 31, 45)
