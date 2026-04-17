@@ -281,7 +281,7 @@ FROM {{zone_name}}.iceberg_demos.app_logs;
 -- shadow metadata remains consistent after OPTIMIZE, DELETE, and VACUUM.
 -- ============================================================================
 
-DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg
 USING ICEBERG

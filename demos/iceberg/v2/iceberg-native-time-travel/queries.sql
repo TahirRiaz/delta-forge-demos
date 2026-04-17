@@ -207,6 +207,7 @@ ORDER BY trade_date;
 -- Show snapshot history for the Iceberg table.
 -- Expected: 4 snapshots (append, overwrite, append, delete).
 
+ASSERT WARNING ROW_COUNT >= 4
 DESCRIBE HISTORY {{zone_name}}.iceberg_demos.stock_prices;
 
 

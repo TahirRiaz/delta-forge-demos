@@ -4,3 +4,4 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.subscriptions_iceberg 
 DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.subscriptions WITH FILES;
 
 DROP SCHEMA IF EXISTS {{zone_name}}.iceberg_demos;
+DROP ZONE IF EXISTS {{zone_name}};

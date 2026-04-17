@@ -4,3 +4,4 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.drug_registry_iceberg 
 DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.drug_registry WITH FILES;
 
 DROP SCHEMA IF EXISTS {{zone_name}}.iceberg_demos;
+DROP ZONE IF EXISTS {{zone_name}};

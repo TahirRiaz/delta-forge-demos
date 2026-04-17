@@ -3,7 +3,7 @@
 -- ============================================================================
 
 -- STEP 1: Drop Iceberg read-back verification table
-DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg WITH FILES;
 
 -- STEP 2: Drop Delta table (includes Delta log + Iceberg metadata/ directory)
 DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_logs WITH FILES;
