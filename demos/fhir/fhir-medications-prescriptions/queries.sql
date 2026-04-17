@@ -214,6 +214,8 @@ ASSERT VALUE result = PASS WHERE check_name = 'prescription_count_12'
 ASSERT VALUE result = PASS WHERE check_name = 'coverage_count_4'
 ASSERT VALUE result = PASS WHERE check_name = 'rx_status_populated'
 ASSERT VALUE result = PASS WHERE check_name = 'rx_intent_populated'
+ASSERT VALUE result = PASS WHERE check_name = 'column_mapping_rx_id'
+ASSERT VALUE result = PASS WHERE check_name = 'coverage_status_populated'
 ASSERT VALUE result = PASS WHERE check_name = 'contained_resources_exist'
 ASSERT VALUE result = PASS WHERE check_name = 'file_metadata_rx'
 SELECT check_name, result FROM (

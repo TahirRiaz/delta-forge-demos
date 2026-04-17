@@ -164,7 +164,9 @@ ORDER BY patient_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 4
-ASSERT VALUE family_name = 'Windsor' WHERE patient_id = 'example'
+-- patient-example has two top-level <name><family> values (Chalmers, Windsor),
+-- which join_comma concatenates into "Chalmers,Windsor" — match substring.
+ASSERT VALUE family_name LIKE '%Windsor%' WHERE patient_id = 'example'
 ASSERT VALUE family_name = 'Donald' WHERE patient_id = 'pat1'
 SELECT
     patient_id,
@@ -281,7 +283,9 @@ ORDER BY observation_id;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 8
-ASSERT VALUE family_name = 'Windsor' WHERE observation_id = 'example'
+-- Observation 'example' joins to Patient 'example' whose family_name is the
+-- comma-joined "Chalmers,Windsor" (two top-level <name> entries) — match substring.
+ASSERT VALUE family_name LIKE '%Windsor%' WHERE observation_id = 'example'
 ASSERT VALUE family_name = 'van de Heuvel' WHERE observation_id = 'f001'
 SELECT
     o.observation_id,

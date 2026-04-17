@@ -179,6 +179,14 @@ ORDER BY source;
 -- Cross-cutting sanity check: bulk count, clinical count, data completeness.
 
 ASSERT ROW_COUNT = 8
+ASSERT VALUE result = PASS WHERE check_name = 'bulk_count_100'
+ASSERT VALUE result = PASS WHERE check_name = 'clinical_count_14'
+ASSERT VALUE result = PASS WHERE check_name = 'bulk_status_populated'
+ASSERT VALUE result = PASS WHERE check_name = 'bulk_subject_populated'
+ASSERT VALUE result = PASS WHERE check_name = 'column_mapping_obs_id'
+ASSERT VALUE result = PASS WHERE check_name = 'clinical_code_populated'
+ASSERT VALUE result = PASS WHERE check_name = 'file_metadata_bulk'
+ASSERT VALUE result = PASS WHERE check_name = 'clinical_multi_file'
 SELECT check_name, result FROM (
 
     -- Check 1: Bulk observation count = 100
