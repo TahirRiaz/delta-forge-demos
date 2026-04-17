@@ -1,7 +1,13 @@
--- Cleanup: Iceberg V3 UniForm — Investment Portfolio Audit Trail
+-- ============================================================================
+-- Iceberg V3 UniForm — Investment Portfolio Audit Trail — Cleanup
+-- ============================================================================
 
+-- STEP 1: Drop Iceberg read-back verification table
 DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings_iceberg WITH FILES;
+
+-- STEP 2: Drop tables (includes Delta log + Iceberg metadata/ directory)
 DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings WITH FILES;
 
+-- STEP 3: Shared resources (used by other iceberg demos if present)
 DROP SCHEMA IF EXISTS {{zone_name}}.iceberg_demos;
 DROP ZONE IF EXISTS {{zone_name}};
