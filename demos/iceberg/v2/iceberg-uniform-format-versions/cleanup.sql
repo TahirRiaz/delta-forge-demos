@@ -4,9 +4,9 @@
 
 -- STEP 1: Drop Iceberg read-back verification tables (catalog entries only,
 -- files are owned by the underlying Delta tables and dropped below).
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg;
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg WITH FILES;
 
 -- STEP 2: Drop all three Delta tables
 DROP DELTA TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v1 WITH FILES;

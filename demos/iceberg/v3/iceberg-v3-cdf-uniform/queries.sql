@@ -171,7 +171,7 @@ ORDER BY merchant;
 -- V3 shadow metadata is readable by an Iceberg engine even after CDF
 -- was generating change records alongside.
 
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.payment_transactions_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.payment_transactions_iceberg WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.payment_transactions_iceberg
 USING ICEBERG

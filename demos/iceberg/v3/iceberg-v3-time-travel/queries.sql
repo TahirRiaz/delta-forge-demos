@@ -237,7 +237,7 @@ FROM {{zone_name}}.iceberg_demos.portfolio_holdings;
 -- ICEBERG V3 READ-BACK VERIFICATION
 -- ============================================================================
 
-DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings_iceberg WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings_iceberg
 USING ICEBERG

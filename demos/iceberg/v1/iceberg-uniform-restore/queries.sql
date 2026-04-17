@@ -151,7 +151,7 @@ ORDER BY risk_score DESC;
 -- ICEBERG READ-BACK VERIFICATION
 -- ============================================================================
 
-DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg
 USING ICEBERG

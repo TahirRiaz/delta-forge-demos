@@ -16,6 +16,10 @@
 -- data file already reflects all updates and deletes.
 
 ASSERT ROW_COUNT = 110
+ASSERT VALUE status = 'Delivered' WHERE shipment_id = 'SHP-0001'
+ASSERT VALUE carrier = 'FedEx' WHERE shipment_id = 'SHP-0001'
+ASSERT VALUE status = 'Processing' WHERE shipment_id = 'SHP-0060'
+ASSERT VALUE status = 'Returned' WHERE shipment_id = 'SHP-0120'
 SELECT * FROM {{zone_name}}.iceberg_demos.shipments;
 
 

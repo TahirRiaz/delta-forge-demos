@@ -138,8 +138,9 @@ LIMIT 10;
 -- ============================================================================
 
 ASSERT ROW_COUNT = 10
-ASSERT VALUE name = 'Greatest Hits'
-ASSERT VALUE total_revenue = 56.43
+ASSERT VALUE name = 'Greatest Hits' WHERE vendor_name = 'Lenny Kravitz'
+ASSERT VALUE tracks = 57 WHERE vendor_name = 'Lenny Kravitz'
+ASSERT VALUE total_revenue = 56.43 WHERE vendor_name = 'Lenny Kravitz'
 SELECT name, vendor_name,
        COUNT(*) AS tracks,
        ROUND(SUM(CAST(details_unit_price AS DOUBLE)), 2) AS total_revenue

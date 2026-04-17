@@ -17,9 +17,12 @@
 -- nested STRUCT and ARRAY columns.
 
 ASSERT ROW_COUNT = 100
-ASSERT VALUE order_id IS NOT NULL WHERE order_id = 1
-ASSERT VALUE order_id IS NOT NULL WHERE order_id = 50
-ASSERT VALUE order_id IS NOT NULL WHERE order_id = 100
+ASSERT VALUE customer_name = 'Karen Johnson' WHERE order_id = 1
+ASSERT VALUE status = 'Shipped' WHERE order_id = 1
+ASSERT VALUE customer_name = 'Iris Williams' WHERE order_id = 50
+ASSERT VALUE status = 'Delivered' WHERE order_id = 50
+ASSERT VALUE customer_name = 'Leo Davis' WHERE order_id = 100
+ASSERT VALUE status = 'Processing' WHERE order_id = 100
 SELECT * FROM {{zone_name}}.iceberg_demos.orders
 ORDER BY order_id;
 

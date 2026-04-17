@@ -268,7 +268,7 @@ FROM {{zone_name}}.iceberg_demos.subscriptions;
 -- ICEBERG V3 READ-BACK VERIFICATION
 -- ============================================================================
 
-DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.subscriptions_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.subscriptions_iceberg WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.subscriptions_iceberg
 USING ICEBERG

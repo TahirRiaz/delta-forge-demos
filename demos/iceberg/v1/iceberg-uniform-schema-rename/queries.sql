@@ -196,7 +196,7 @@ FROM {{zone_name}}.iceberg_demos.financial_transactions;
 -- transparently without data file rewrites.
 -- ============================================================================
 
-DROP TABLE IF EXISTS {{zone_name}}.iceberg_demos.financial_transactions_iceberg;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.financial_transactions_iceberg WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.financial_transactions_iceberg
 USING ICEBERG

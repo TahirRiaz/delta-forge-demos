@@ -25,7 +25,9 @@ SELECT * FROM {{zone_name}}.iceberg_demos.fleet_telemetry;
 -- columns to prove correct Iceberg→Arrow type mapping including boolean.
 
 ASSERT ROW_COUNT = 450
-ASSERT VALUE vehicle_id IS NOT NULL WHERE vehicle_id = 'VH-0001'
+ASSERT VALUE fleet = 'West-Coast' WHERE vehicle_id = 'VH-0001'
+ASSERT VALUE vehicle_type = 'Delivery-Van' WHERE vehicle_id = 'VH-0001'
+ASSERT VALUE driver_id = 'DRV-141' WHERE vehicle_id = 'VH-0001'
 SELECT
     vehicle_id,
     fleet,

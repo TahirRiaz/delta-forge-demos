@@ -20,7 +20,11 @@ SELECT * FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- exercises all 11 columns to prove correct Iceberg→Arrow type mapping.
 
 ASSERT ROW_COUNT = 600
-ASSERT VALUE meter_id IS NOT NULL WHERE meter_id = 'MTR-N0001'
+ASSERT VALUE region = 'North' WHERE meter_id = 'MTR-N0001'
+ASSERT VALUE substation = 'NS-01' WHERE meter_id = 'MTR-N0001'
+ASSERT VALUE meter_type = 'Residential' WHERE meter_id = 'MTR-N0001'
+ASSERT VALUE voltage = 240 WHERE meter_id = 'MTR-N0001'
+ASSERT VALUE power_factor = 87 WHERE meter_id = 'MTR-N0001'
 SELECT
     meter_id,
     region,
@@ -201,7 +205,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.grid_readings_delta TO USER {{c
 INSERT INTO {{zone_name}}.iceberg_demos.grid_readings_delta
 SELECT * FROM {{zone_name}}.iceberg_demos.grid_readings;
 -- Register the Delta table's location as an external Iceberg table
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback WITH FILES;
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback
 USING ICEBERG
