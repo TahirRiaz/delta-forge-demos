@@ -47,6 +47,9 @@ ASSERT VALUE segment_count = 32 WHERE source_file = 'tradacoms_product_planning.
 ASSERT VALUE segment_count = 1 WHERE source_file = 'tradacoms_product_planning.edi' AND msg_type = 'PPRTLR:2'
 ASSERT VALUE segment_count = 4 WHERE source_file = 'tradacoms_product_planning.edi' AND msg_type = 'PPRHDR:2'
 ASSERT VALUE segment_count = 4 WHERE source_file = 'tradacoms_order.edi' AND msg_type = 'ORDHDR:9'
+ASSERT VALUE segment_count = 1 WHERE source_file = 'tradacoms_order.edi' AND msg_type = 'ORDTLR:9'
+ASSERT VALUE segment_count = 7 WHERE source_file = 'tradacoms_order.edi' AND msg_type = 'ORDERS:9' AND msg_ref = '2'
+ASSERT VALUE segment_count = 5 WHERE source_file = 'tradacoms_order.edi' AND msg_type = 'ORDERS:9' AND msg_ref = '3'
 SELECT
     df_file_name AS source_file,
     mhd_2 AS msg_type,
@@ -74,6 +77,9 @@ ASSERT VALUE first_segment = 'TYP' WHERE msg_type = 'PPRHDR:2'
 ASSERT VALUE first_segment = 'SFR' WHERE msg_type = 'PPRDET:2'
 ASSERT VALUE first_segment = 'PPT' WHERE msg_type = 'PPRTLR:2'
 ASSERT VALUE first_segment = 'OFT' WHERE msg_type = 'ORDTLR:9'
+ASSERT VALUE first_segment = 'TYP' WHERE msg_type = 'ORDHDR:9'
+ASSERT VALUE first_segment = 'CLO' WHERE msg_type = 'ORDERS:9' AND msg_ref = '2'
+ASSERT VALUE first_segment = 'CLO' WHERE msg_type = 'ORDERS:9' AND msg_ref = '3'
 SELECT
     mhd_2 AS msg_type,
     mhd_1 AS msg_ref,

@@ -72,12 +72,18 @@ WHERE clm_1 IS NOT NULL;
 --
 -- SQL features: COALESCE, WHERE IS NOT NULL
 
+-- Note: Default repeating_segment_mode is 'first', so sv1_1/sv2_1/sv3_1 reflect
+-- the FIRST occurrence of each segment within the transaction. For the 837I
+-- institutional claim the first SV2 is SV2*0305*HC:85025*13.39*... so sv2_1
+-- is the revenue code '0305' and sv2_2 is the procedure code 'HC:85025'.
+
 ASSERT ROW_COUNT = 3
-ASSERT VALUE service_code = 'HC:86663' WHERE df_file_name = 'hipaa_835_claim_payment.edi'
-ASSERT VALUE service_charge = '10' WHERE df_file_name = 'hipaa_835_claim_payment.edi'
-ASSERT VALUE service_code = 'AD:D1110' WHERE df_file_name = 'hipaa_837D_dental_claim.edi'
-ASSERT VALUE service_charge = '50' WHERE df_file_name = 'hipaa_837D_dental_claim.edi'
-ASSERT VALUE service_code = '0730' WHERE df_file_name = 'hipaa_837I_institutional_claim.edi'
+ASSERT VALUE service_code = 'HC:99213' WHERE df_file_name = 'hipaa_835_claim_payment.edi'
+ASSERT VALUE service_charge = '40' WHERE df_file_name = 'hipaa_835_claim_payment.edi'
+ASSERT VALUE service_code = 'AD:D2150' WHERE df_file_name = 'hipaa_837D_dental_claim.edi'
+ASSERT VALUE service_charge = '100' WHERE df_file_name = 'hipaa_837D_dental_claim.edi'
+ASSERT VALUE service_code = '0305' WHERE df_file_name = 'hipaa_837I_institutional_claim.edi'
+ASSERT VALUE service_charge = 'HC:85025' WHERE df_file_name = 'hipaa_837I_institutional_claim.edi'
 SELECT
     df_file_name,
     clm_1 AS claim_id,
@@ -253,6 +259,7 @@ ASSERT ROW_COUNT = 4
 ASSERT VALUE result = 'PASS' WHERE check_name = 'total_files_4'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'claims_with_charges'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'payment_records'
+ASSERT VALUE result = 'PASS' WHERE check_name = 'charges_positive'
 SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 4

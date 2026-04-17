@@ -239,16 +239,19 @@ ORDER BY df_file_name;
 --   - qualifier_name:  Human-readable description
 --   - msg_count:       Number of messages with that party qualifier
 --
--- 4 distinct qualifiers from 4 messages (PNRGOV has no NAD):
---   CF = Container operator      (BAPLIE)
---   N1 = Notify party            (D95B CUSCAR)
---   OS = Consignor               (CUSCAR cargo report)
---   VW = Vessel master           (PAXLST)
+-- NAD is a repeating segment — materialized nad_1 reflects the FIRST
+-- occurrence per message. 4 distinct first-NAD qualifiers from 4 messages
+-- (PNRGOV has no NAD):
+--   CA = Carrier agent                 (CUSCAR cargo report)
+--   MS = Document/message issuer       (D95B CUSCAR)
+--   VW = Vessel master                 (PAXLST)
+--   WZ = Consignment routing party     (BAPLIE)
 
 ASSERT ROW_COUNT = 4
 ASSERT VALUE qualifier_name = 'Vessel master' WHERE nad_qualifier = 'VW'
 ASSERT VALUE qualifier_name = 'Carrier agent' WHERE nad_qualifier = 'CA'
 ASSERT VALUE qualifier_name = 'Consignment routing party' WHERE nad_qualifier = 'WZ'
+ASSERT VALUE qualifier_name = 'Document/message issuer' WHERE nad_qualifier = 'MS'
 SELECT
     nad_1 AS nad_qualifier,
     CASE nad_1

@@ -23,8 +23,10 @@ ASSERT VALUE st_1 = '277' WHERE df_file_name = 'hipaa_277_claim_status_response.
 ASSERT VALUE st_1 = '278' WHERE df_file_name = 'hipaa_278_services_review.edi'
 ASSERT VALUE bht_2 = '13' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
 ASSERT VALUE bht_2 = '08' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
-ASSERT VALUE payer_name = 'MANN' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
-ASSERT VALUE payer_name = 'WATSON' WHERE df_file_name = 'hipaa_278_services_review.edi'
+ASSERT VALUE bht_2 = '13' WHERE df_file_name = 'hipaa_278_services_review.edi'
+ASSERT VALUE payer_name = 'ABC INSURANCE' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
+ASSERT VALUE payer_name = 'ABC INSURANCE' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE payer_name = 'MARYLAND CAPITAL INSURANCE COMPANY' WHERE df_file_name = 'hipaa_278_services_review.edi'
 SELECT
     df_file_name,
     st_1,
@@ -73,8 +75,9 @@ ORDER BY st_1;
 -- SQL features: LIKE pattern matching, CASE WHEN with LIKE
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE status_code = 'F2:88:QC' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
-ASSERT VALUE claim_amount = '150' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE status_code = 'P3:317' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE claim_amount = '8513.88' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE status_category = 'Pending' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
 SELECT
     df_file_name,
     stc_1 AS status_code,
@@ -125,8 +128,10 @@ ORDER BY df_file_name;
 ASSERT ROW_COUNT = 2
 ASSERT VALUE trn_1 = '1' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
 ASSERT VALUE trn_1 = '2' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
-ASSERT VALUE trace_number = 'ABCXYZ3' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
-ASSERT VALUE trace_number = 'ABCXYC3' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE trace_number = 'ABCXYZ1' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
+ASSERT VALUE trace_number = 'ABCXYZ1' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE trace_type = 'Originator Trace' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
+ASSERT VALUE trace_type = 'Referenced Trace' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
 SELECT
     df_file_name,
     st_1,
@@ -154,6 +159,8 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE review_type = 'SC' WHERE df_file_name = 'hipaa_278_services_review.edi'
 ASSERT VALUE cert_type = 'I' WHERE df_file_name = 'hipaa_278_services_review.edi'
 ASSERT VALUE diagnosis = 'BF:41090:D8:20050430' WHERE df_file_name = 'hipaa_278_services_review.edi'
+ASSERT VALUE review_description = 'Surgical' WHERE df_file_name = 'hipaa_278_services_review.edi'
+ASSERT VALUE certification_description = 'Initial' WHERE df_file_name = 'hipaa_278_services_review.edi'
 SELECT
     df_file_name,
     um_1 AS review_type,
@@ -187,6 +194,7 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE procedure_code = 'HC:99203' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
 ASSERT VALUE charged_amount = '150' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
 ASSERT VALUE procedure_code = 'HC:99203' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE charged_amount = '150' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
 ASSERT VALUE paid_amount = '0' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
 SELECT
     df_file_name,
@@ -211,9 +219,13 @@ ORDER BY df_file_name;
 ASSERT ROW_COUNT = 3
 ASSERT VALUE has_status_code = 'Yes' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
 ASSERT VALUE has_status_code = 'No' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
+ASSERT VALUE has_status_code = 'No' WHERE df_file_name = 'hipaa_278_services_review.edi'
 ASSERT VALUE has_authorization = 'Yes' WHERE df_file_name = 'hipaa_278_services_review.edi'
 ASSERT VALUE has_authorization = 'No' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
+ASSERT VALUE has_authorization = 'No' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE has_service_line = 'Yes' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
 ASSERT VALUE has_service_line = 'Yes' WHERE df_file_name = 'hipaa_277_claim_status_response.edi'
+ASSERT VALUE has_service_line = 'No' WHERE df_file_name = 'hipaa_278_services_review.edi'
 SELECT
     m.df_file_name,
     m.st_1,

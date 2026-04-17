@@ -104,6 +104,8 @@ ASSERT VALUE stage_count = 1 WHERE lifecycle_stage = 'Acknowledgment'
 ASSERT VALUE stage_count = 1 WHERE lifecycle_stage = 'Shipment'
 ASSERT VALUE stage_count = 1 WHERE lifecycle_stage = 'Shipment & Billing'
 ASSERT VALUE stage_count = 1 WHERE lifecycle_stage = 'Receipt'
+ASSERT VALUE stage_count = 1 WHERE lifecycle_stage = 'Application Advice'
+ASSERT VALUE stage_count = 1 WHERE lifecycle_stage = 'Acknowledgment (Func)'
 SELECT
     CASE st_1
         WHEN '850' THEN 'Order'
@@ -143,10 +145,16 @@ ORDER BY stage_count DESC, st_1;
 ASSERT ROW_COUNT = 3
 ASSERT VALUE po_number = '1000012' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE po_date = '20090827' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE party_code = 'ST' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE party_name = 'John Doe' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE line_items = '1' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE po_number = '4600000406' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE po_date = '20140724' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
 ASSERT VALUE party_name = 'Transplace Laredo' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE line_items = '3' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
 ASSERT VALUE po_number = 'XX-1234' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+ASSERT VALUE po_date = '20170301' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+ASSERT VALUE party_code = 'BY' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 ASSERT VALUE party_name = 'ABC AEROSPACE' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 SELECT
     df_file_name,
@@ -221,9 +229,15 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE lifecycle_stage = 'Shipment' WHERE df_file_name = 'x12_856_ship_notice.edi'
+ASSERT VALUE txn_type = '856' WHERE df_file_name = 'x12_856_ship_notice.edi'
 ASSERT VALUE shipment_id = '01140824' WHERE df_file_name = 'x12_856_ship_notice.edi'
 ASSERT VALUE shipment_date = '20051015' WHERE df_file_name = 'x12_856_ship_notice.edi'
+ASSERT VALUE party_name = 'WAL-MART DC 6094J-JIT' WHERE df_file_name = 'x12_856_ship_notice.edi'
+ASSERT VALUE lifecycle_stage = 'Shipment & Billing' WHERE df_file_name = 'x12_856_ship_bill_notice.edi'
+ASSERT VALUE txn_type = '857' WHERE df_file_name = 'x12_856_ship_bill_notice.edi'
+ASSERT VALUE shipment_id IS NULL WHERE df_file_name = 'x12_856_ship_bill_notice.edi'
 ASSERT VALUE lifecycle_stage = 'Receipt' WHERE df_file_name = 'x12_861_receiving_advice.edi'
+ASSERT VALUE txn_type = '861' WHERE df_file_name = 'x12_861_receiving_advice.edi'
 ASSERT VALUE receipt_id = 'C000548241' WHERE df_file_name = 'x12_861_receiving_advice.edi'
 SELECT
     df_file_name,
@@ -265,11 +279,14 @@ ORDER BY
 --   - document_id:      Primary document identifier
 --   - df_file_name:     Source file
 
-ASSERT ROW_COUNT >= 10
+ASSERT ROW_COUNT = 10
 ASSERT VALUE document_date = '20090827' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE document_date = '20140724' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE document_date = '20170301' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 ASSERT VALUE document_date = '20050102' WHERE df_file_name = 'x12_855_purchase_order_ack.edi'
 ASSERT VALUE document_date = '20051015' WHERE df_file_name = 'x12_856_ship_notice.edi'
 ASSERT VALUE document_date = '20000513' WHERE df_file_name = 'x12_810_invoice_edifabric.edi'
+ASSERT VALUE document_date = '20030310' WHERE df_file_name = 'x12_810_invoice_a.edi'
 SELECT
     COALESCE(beg_5, big_1, bsn_3, bak_4) AS document_date,
     CASE st_1
@@ -306,9 +323,15 @@ ORDER BY COALESCE(beg_5, big_1, bsn_3, bak_4);
 --   - stages:           Comma-separated list of lifecycle stages
 --   - document_count:   Total documents for this party
 
-ASSERT ROW_COUNT >= 4
+ASSERT ROW_COUNT = 7
 ASSERT VALUE document_count = 4 WHERE party_name = 'Aaron Copeland'
 ASSERT VALUE party_code = 'SO' WHERE party_name = 'Aaron Copeland'
+ASSERT VALUE document_count = 1 WHERE party_name = 'ABC AEROSPACE'
+ASSERT VALUE party_code = 'BY' WHERE party_name = 'ABC AEROSPACE'
+ASSERT VALUE document_count = 1 WHERE party_name = 'WAL-MART DC 6094J-JIT'
+ASSERT VALUE party_code = 'ST' WHERE party_name = 'WAL-MART DC 6094J-JIT'
+ASSERT VALUE document_count = 1 WHERE party_name = 'XYZ MANUFACTURING CO'
+ASSERT VALUE party_code = 'SF' WHERE party_name = 'XYZ MANUFACTURING CO'
 SELECT
     n1_2 AS party_name,
     n1_1 AS party_code,

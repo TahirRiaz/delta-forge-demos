@@ -89,8 +89,10 @@ GRANT ADMIN ON TABLE {{zone_name}}.edi_demos.eancom_messages TO USER {{current_u
 --   CPS_1  — Hierarchical ID number (DESADV only, consignment packing)
 --   QTY_1  — Quantity detail (DESADV only, composite e.g. "12:24:PCE")
 --
--- Note: When a segment appears multiple times in a message (e.g. multiple
--- NAD or LIN segments), the materialized column contains the LAST occurrence.
+-- Note: NAD, LIN, and QTY are repeating segments. Default config is
+-- mode=First, max_repeating_segments=1, so the FIRST occurrence is
+-- materialized. CPS is non-repeating, so the LAST CPS write wins when
+-- multiple CPS segments exist in a message (e.g. DESADV hierarchical packing).
 -- ============================================================================
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.eancom_materialized

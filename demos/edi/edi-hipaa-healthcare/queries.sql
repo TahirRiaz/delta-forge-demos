@@ -295,6 +295,9 @@ ORDER BY transaction_count DESC;
 -- for deep access without needing materialized_paths.
 
 ASSERT ROW_COUNT = 3
+ASSERT VALUE transaction_type = '270' WHERE df_file_name = 'hipaa_270_eligibility_request.edi'
+ASSERT VALUE transaction_type = '271' WHERE df_file_name = 'hipaa_271_eligibility_response.edi'
+ASSERT VALUE transaction_type = '276' WHERE df_file_name = 'hipaa_276_claim_status_request.edi'
 ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'hipaa_270_eligibility_request.edi'
 SELECT
     df_file_name,

@@ -82,11 +82,21 @@ ORDER BY df_file_name;
 -- ============================================================================
 -- The NAD (Name and Address) segment identifies trading partners by role.
 -- NAD_1 is the party qualifier: BY=buyer, SU=supplier, DP=delivery party,
--- SH=shipper. NAD_2 is the GLN (Global Location Number) / EAN-13 code.
--- When multiple NAD segments exist in a message, the LAST one is materialized.
--- Groups by role to show how many messages involve each party type.
+-- SH=shipper, FW=freight forwarder, CZ=consignor.
+-- NAD_2 is the GLN (Global Location Number) / EAN-13 code.
+-- NAD is a repeating segment (default mode=First, max=1), so the FIRST NAD
+-- of each message is materialized. Groups by role to show how many messages
+-- have each party type as their primary NAD.
+--
+-- First NAD per file (alphabetical):
+--   DESADV=SU, IFTSTA=FW, INVOIC=BY, ORDRSP=BY, PRICAT=BY, IFTMIN=CZ
+--   → BY=3, SU=1, FW=1, CZ=1 → 4 distinct roles
 
-ASSERT ROW_COUNT >= 3
+ASSERT ROW_COUNT = 4
+ASSERT VALUE partner_count = 3 WHERE role = 'BY'
+ASSERT VALUE partner_count = 1 WHERE role = 'SU'
+ASSERT VALUE partner_count = 1 WHERE role = 'FW'
+ASSERT VALUE partner_count = 1 WHERE role = 'CZ'
 SELECT
     nad_1 AS role,
     COUNT(*) AS partner_count

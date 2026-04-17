@@ -241,9 +241,12 @@ ORDER BY mhd_1;
 -- for deep access without needing materialized_paths.
 
 ASSERT ROW_COUNT = 3
-ASSERT VALUE df_transaction_json IS NOT NULL
+ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'tradacoms_order.edi' AND mhd_1 = '1'
+ASSERT VALUE df_transaction_json IS NOT NULL WHERE df_file_name = 'tradacoms_order.edi' AND mhd_1 = '2'
+ASSERT VALUE msg_type = 'ORDHDR:9' WHERE df_file_name = 'tradacoms_order.edi' AND mhd_1 = '1'
 SELECT
     df_file_name,
+    mhd_1,
     mhd_2 AS msg_type,
     df_transaction_json
 FROM {{zone_name}}.edi_demos.tradacoms_messages

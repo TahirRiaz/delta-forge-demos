@@ -47,8 +47,8 @@ size_bytes = 1298
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.edi.tradacoms_messages"
+name = "{{zone_name}}.edi_demos.tradacoms_messages"
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.edi.tradacoms_materialized"
+name = "{{zone_name}}.edi_demos.tradacoms_materialized"

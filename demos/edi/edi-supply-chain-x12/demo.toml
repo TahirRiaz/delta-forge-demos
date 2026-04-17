@@ -108,8 +108,8 @@ size_bytes = 581
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.edi.supply_chain_messages"
+name = "{{zone_name}}.edi_demos.supply_chain_messages"
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.edi.supply_chain_materialized"
+name = "{{zone_name}}.edi_demos.supply_chain_materialized"

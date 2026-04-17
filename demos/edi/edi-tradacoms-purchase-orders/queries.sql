@@ -208,6 +208,8 @@ ORDER BY ord_1;
 ASSERT ROW_COUNT = 2
 ASSERT VALUE declared_lines = '3' WHERE order_ref = '981::940321'
 ASSERT VALUE declared_lines = '2' WHERE order_ref = '982::940321'
+ASSERT VALUE declared_total = '6' WHERE order_ref = '981::940321'
+ASSERT VALUE declared_total = '13' WHERE order_ref = '982::940321'
 SELECT
     ord_1 AS order_ref,
     otr_1 AS declared_lines,

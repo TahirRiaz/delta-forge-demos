@@ -21,6 +21,7 @@ ASSERT VALUE st_1 = '270' WHERE df_file_name = 'hipaa_270_eligibility_request.ed
 ASSERT VALUE st_1 = '271' WHERE df_file_name = 'hipaa_271_eligibility_response.edi'
 ASSERT VALUE st_1 = '834' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
 ASSERT VALUE gs_1 = 'HC' WHERE df_file_name = 'hipaa_270_eligibility_request.edi'
+ASSERT VALUE gs_1 = 'HC' WHERE df_file_name = 'hipaa_271_eligibility_response.edi'
 ASSERT VALUE gs_1 = 'BE' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
 SELECT
     df_file_name,
@@ -71,7 +72,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE trace_number = '93175-012547'
 ASSERT VALUE request_purpose = '13'
 ASSERT VALUE response_purpose = '11'
-ASSERT VALUE payer_name = 'SMITH'
+ASSERT VALUE payer_name = 'ABC COMPANY'
 WITH request AS (
     SELECT trn_2 AS trace_number, bht_2 AS purpose, nm1_3 AS payer_name
     FROM {{zone_name}}.edi_demos.eligibility_messages
@@ -122,7 +123,7 @@ ASSERT VALUE purpose_code = '00' WHERE df_file_name = 'hipaa_834_benefit_enrollm
 ASSERT VALUE enrollment_ref = '12456' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
 ASSERT VALUE subscriber = 'Y' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
 ASSERT VALUE plan_code = '021' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
-ASSERT VALUE plan_type = 'VIS' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
+ASSERT VALUE plan_type = 'HLT' WHERE df_file_name = 'hipaa_834_benefit_enrollment.edi'
 SELECT
     df_file_name,
     bgn_1 AS purpose_code,
@@ -199,6 +200,8 @@ ASSERT ROW_COUNT = 5
 ASSERT VALUE result = 'PASS' WHERE check_name = 'total_files_3'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'eligibility_pair'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'enrollment_record'
+ASSERT VALUE result = 'PASS' WHERE check_name = 'hc_transactions'
+ASSERT VALUE result = 'PASS' WHERE check_name = 'be_transactions'
 SELECT check_name, result FROM (
 
     -- Check 1: Total transaction count = 3

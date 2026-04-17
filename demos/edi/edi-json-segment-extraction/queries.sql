@@ -40,14 +40,19 @@
 --   - df_file_name:      Source .edi file
 --   - txn_type:          X12 transaction set ID (850, 810, etc.)
 --   - body_segment_count: Number of body segments in df_transaction_json
---
--- Non-deterministic: exact body_segment_count depends on engine JSON internals
 
 ASSERT ROW_COUNT = 14
 ASSERT VALUE txn_type = '850' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE txn_type = '810' WHERE df_file_name = 'x12_810_invoice_a.edi'
 ASSERT VALUE txn_type = '997' WHERE df_file_name = 'x12_997_functional_acknowledgment.edi'
-ASSERT WARNING VALUE body_segment_count > 0 WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE txn_type = '855' WHERE df_file_name = 'x12_855_purchase_order_ack.edi'
+ASSERT VALUE txn_type = '856' WHERE df_file_name = 'x12_856_ship_notice.edi'
+ASSERT VALUE txn_type = '857' WHERE df_file_name = 'x12_856_ship_bill_notice.edi'
+ASSERT VALUE txn_type = '861' WHERE df_file_name = 'x12_861_receiving_advice.edi'
+ASSERT VALUE txn_type = '824' WHERE df_file_name = 'x12_824_application_advice.edi'
+-- Non-deterministic: exact body_segment_count depends on engine body-segment inclusion rules
+ASSERT WARNING VALUE body_segment_count BETWEEN 5 AND 15 WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT WARNING VALUE body_segment_count BETWEEN 40 AND 80 WHERE df_file_name = 'x12_810_invoice_b.edi'
 SELECT
     df_file_name,
     st_1 AS txn_type,
@@ -71,10 +76,11 @@ ORDER BY json_array_length(df_transaction_json) DESC, df_file_name;
 --   - size_class:  Simple, Medium, or Complex
 --   - txn_count:   Number of transactions in each class
 --
--- Non-deterministic: classification depends on engine body segment counts
+-- Non-deterministic: class distribution depends on engine body segment counts
 
-ASSERT ROW_COUNT >= 2
-ASSERT WARNING ROW_COUNT <= 3
+ASSERT WARNING ROW_COUNT = 3
+ASSERT WARNING VALUE txn_count BETWEEN 1 AND 10 WHERE size_class = 'Simple'
+ASSERT WARNING VALUE txn_count BETWEEN 1 AND 10 WHERE size_class = 'Complex'
 SELECT
     CASE
         WHEN json_array_length(df_transaction_json) < 15 THEN 'Simple'
@@ -109,7 +115,9 @@ ORDER BY
 ASSERT ROW_COUNT = 14
 ASSERT VALUE root_json_type = 'array' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE root_json_type = 'array' WHERE df_file_name = 'x12_810_invoice_a.edi'
-ASSERT VALUE first_segment_name IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE root_json_type = 'array' WHERE df_file_name = 'x12_997_functional_acknowledgment.edi'
+ASSERT VALUE first_segment_name = 'BEG' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE first_segment_name = 'BIG' WHERE df_file_name = 'x12_810_invoice_a.edi'
 SELECT
     df_file_name,
     st_1 AS txn_type,
@@ -132,9 +140,10 @@ ORDER BY df_file_name;
 --   810 → BIG (Beginning Segment for Invoice)
 --   855 → BAK (Beginning Segment for PO Acknowledgment)
 --   856 → BSN (Beginning Segment for Ship Notice)
+--   857 → BHT (Beginning Hierarchical Transaction)
 --   861 → BRA (Beginning Segment for Receiving Advice)
 --   997 → AK1 (Functional Group Response Header)
---   824 → OTI (Original Transaction Identification)
+--   824 → BGN (Beginning Segment for Application Advice)
 --
 -- What you'll see:
 --   - df_file_name:      Source file
@@ -143,8 +152,16 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 14
 ASSERT VALUE first_segment = 'BEG' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE first_segment = 'BEG' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE first_segment = 'BEG' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_a.edi'
+ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_edifabric.edi'
 ASSERT VALUE first_segment = 'AK1' WHERE df_file_name = 'x12_997_functional_acknowledgment.edi'
+ASSERT VALUE first_segment = 'BAK' WHERE df_file_name = 'x12_855_purchase_order_ack.edi'
+ASSERT VALUE first_segment = 'BSN' WHERE df_file_name = 'x12_856_ship_notice.edi'
+ASSERT VALUE first_segment = 'BHT' WHERE df_file_name = 'x12_856_ship_bill_notice.edi'
+ASSERT VALUE first_segment = 'BRA' WHERE df_file_name = 'x12_861_receiving_advice.edi'
+ASSERT VALUE first_segment = 'BGN' WHERE df_file_name = 'x12_824_application_advice.edi'
 SELECT
     df_file_name,
     st_1 AS txn_type,
@@ -176,10 +193,17 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 3
 ASSERT VALUE first_segment = 'BEG' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE first_segment = 'BEG' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE first_segment = 'BEG' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+ASSERT VALUE purpose_code = '00' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE purpose_code = '00' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE purpose_code = '00' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 ASSERT VALUE po_number = '1000012' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE po_date = '20090827' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE po_number = '4600000406' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE po_date = '20140724' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
 ASSERT VALUE po_number = 'XX-1234' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+ASSERT VALUE po_date = '20170301' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 SELECT
     df_file_name,
     json_extract_path_text(df_transaction_json, '0', 'segment') AS first_segment,
@@ -210,8 +234,16 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 5
 ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_a.edi'
+ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_b.edi'
+ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_c.edi'
+ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_d.edi'
+ASSERT VALUE first_segment = 'BIG' WHERE df_file_name = 'x12_810_invoice_edifabric.edi'
 ASSERT VALUE invoice_date = '20030310' WHERE df_file_name = 'x12_810_invoice_a.edi'
 ASSERT VALUE invoice_number = 'DO091003TESTINV01' WHERE df_file_name = 'x12_810_invoice_a.edi'
+ASSERT VALUE invoice_number = 'DO091003TESTINV01TAX' WHERE df_file_name = 'x12_810_invoice_b.edi'
+ASSERT VALUE invoice_date = '20030310' WHERE df_file_name = 'x12_810_invoice_b.edi'
+ASSERT VALUE invoice_number = 'DO091003TESTHDRINV01' WHERE df_file_name = 'x12_810_invoice_c.edi'
+ASSERT VALUE invoice_number = 'DO091003TESTHDRINV02' WHERE df_file_name = 'x12_810_invoice_d.edi'
 ASSERT VALUE invoice_number = 'SG427254' WHERE df_file_name = 'x12_810_invoice_edifabric.edi'
 ASSERT VALUE invoice_date = '20000513' WHERE df_file_name = 'x12_810_invoice_edifabric.edi'
 SELECT
@@ -242,8 +274,10 @@ ORDER BY df_file_name;
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE txn_type = '850' WHERE df_file_name = 'x12_850_purchase_order.edi'
-ASSERT VALUE first_segment_name IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
-ASSERT VALUE second_segment_name IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE first_segment_name = 'BEG' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE second_segment_name = 'REF' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE first_segment_description IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE second_segment_description IS NOT NULL WHERE df_file_name = 'x12_850_purchase_order.edi'
 SELECT
     df_file_name,
     st_1 AS txn_type,

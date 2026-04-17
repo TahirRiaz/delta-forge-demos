@@ -74,6 +74,10 @@ ASSERT ROW_COUNT = 3
 ASSERT VALUE line_number = '1' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE unit_price = '19.95' WHERE df_file_name = 'x12_850_purchase_order.edi'
 ASSERT VALUE quantity = '2500' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE line_number = '000100001' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE uom = 'YD' WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE quantity = '25' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+ASSERT VALUE unit_price = '36' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 SELECT
     df_file_name,
     po1_1 AS line_number,
@@ -99,8 +103,13 @@ ORDER BY df_file_name;
 --   - party_name:    N1 party name(s) — may be pipe-delimited in future
 
 ASSERT ROW_COUNT = 14
-ASSERT WARNING VALUE party_name = 'John Doe' WHERE df_file_name = 'x12_850_purchase_order.edi'
-ASSERT WARNING VALUE party_name = 'ABC AEROSPACE' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+-- Files with only one N1 occurrence have deterministic values in concat mode
+-- (no pipe delimiter since there is nothing to concatenate).
+ASSERT VALUE party_name = 'John Doe' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE party_name = 'ABC AEROSPACE' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+-- Non-deterministic: concat output for multi-N1 files depends on separator config
+-- (default '|'). The first element remains deterministic ('Aaron Copeland|...').
+ASSERT WARNING VALUE party_name LIKE 'Aaron Copeland%' WHERE df_file_name = 'x12_810_invoice_a.edi'
 SELECT
     df_file_name,
     n1_1 AS entity_code,
@@ -123,6 +132,12 @@ ORDER BY df_file_name;
 --   - party_name:    N1 party name(s) — may be JSON array in future
 
 ASSERT ROW_COUNT = 14
+-- Single-N1 files are fully deterministic regardless of serialization mode.
+ASSERT VALUE party_name = 'John Doe' WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE party_name = 'ABC AEROSPACE' WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
+-- Non-deterministic: JSON array element ordering & exact JSON format for
+-- multi-N1 files depends on engine serialization (with/without spacing, quoting).
+ASSERT WARNING VALUE party_name LIKE '%Aaron Copeland%' WHERE df_file_name = 'x12_810_invoice_a.edi'
 SELECT
     df_file_name,
     n1_1 AS entity_code,
@@ -144,6 +159,11 @@ ORDER BY df_file_name;
 --   - po_quantity: PO1 quantity value from each table
 
 ASSERT ROW_COUNT = 3
+ASSERT VALUE party_name = 'Transplace Laredo' WHERE mode = 'indexed'
+-- Non-deterministic: concat/JSON values differ by mode when multiple N1/PO1
+-- segments exist (5 N1s, 3 PO1s in this file). Indexed mode returns first only.
+ASSERT WARNING VALUE party_name LIKE 'Transplace Laredo%' WHERE mode = 'concatenate'
+ASSERT WARNING VALUE party_name LIKE '%Transplace Laredo%' WHERE mode = 'to_json'
 SELECT
     'indexed' AS mode,
     n1_2 AS party_name,
@@ -191,6 +211,9 @@ WHERE df_file_name = 'x12_850_purchase_order_a.edi';
 --   x12_850_purchase_order_edifabric.edi: 25 * 36 = 900.00
 
 ASSERT ROW_COUNT = 3
+ASSERT VALUE line_total = 19.95 WHERE df_file_name = 'x12_850_purchase_order.edi'
+ASSERT VALUE line_total = 6325.0 WHERE df_file_name = 'x12_850_purchase_order_a.edi'
+ASSERT VALUE line_total = 900.0 WHERE df_file_name = 'x12_850_purchase_order_edifabric.edi'
 SELECT
     df_file_name,
     po1_1 AS line_number,
@@ -199,7 +222,7 @@ SELECT
     po1_4 AS unit_price,
     CAST(po1_2 AS DOUBLE) * CAST(po1_4 AS DOUBLE) AS line_total
 FROM {{zone_name}}.edi_demos.repeating_indexed
-WHERE po1_4 IS NOT NULL
+WHERE st_1 = '850' AND po1_4 IS NOT NULL AND po1_4 <> ''
 ORDER BY df_file_name;
 
 
@@ -221,6 +244,12 @@ ORDER BY df_file_name;
 ASSERT ROW_COUNT = 8
 ASSERT VALUE doc_count = 5 WHERE txn_type = '810'
 ASSERT VALUE doc_count = 3 WHERE txn_type = '850'
+ASSERT VALUE doc_count = 1 WHERE txn_type = '824'
+ASSERT VALUE doc_count = 1 WHERE txn_type = '855'
+ASSERT VALUE doc_count = 1 WHERE txn_type = '856'
+ASSERT VALUE doc_count = 1 WHERE txn_type = '857'
+ASSERT VALUE doc_count = 1 WHERE txn_type = '861'
+ASSERT VALUE doc_count = 1 WHERE txn_type = '997'
 SELECT
     st_1 AS txn_type,
     COUNT(*) AS doc_count

@@ -41,6 +41,13 @@
 ASSERT ROW_COUNT = 8
 ASSERT VALUE msg_type = 'UTLHDR:3' WHERE source_file = 'tradacoms_utility_bill.edi' AND msg_ref = '1'
 ASSERT VALUE msg_type = 'UTLBIL:3' WHERE source_file = 'tradacoms_utility_bill.edi' AND msg_ref = '2'
+ASSERT VALUE msg_type = 'UVATLR:3' WHERE source_file = 'tradacoms_utility_bill.edi' AND msg_ref = '3'
+ASSERT VALUE msg_type = 'UTLTLR:3' WHERE source_file = 'tradacoms_utility_bill.edi' AND msg_ref = '4'
+ASSERT VALUE msg_type = 'UTLHDR:3' WHERE source_file = 'tradacoms_utility_bill_escape.edi' AND msg_ref = '1'
+ASSERT VALUE msg_type = 'UTLBIL:3' WHERE source_file = 'tradacoms_utility_bill_escape.edi' AND msg_ref = '2'
+ASSERT VALUE msg_type = 'UVATLR:3' WHERE source_file = 'tradacoms_utility_bill_escape.edi' AND msg_ref = '3'
+ASSERT VALUE msg_type = 'UTLTLR:3' WHERE source_file = 'tradacoms_utility_bill_escape.edi' AND msg_ref = '4'
+ASSERT VALUE sender = '1011101000000:SOME ELECTRIC COMPANY PLC' WHERE source_file = 'tradacoms_utility_bill.edi' AND msg_ref = '1'
 SELECT df_file_name AS source_file,
        mhd_1 AS msg_ref,
        mhd_2 AS msg_type,
@@ -66,6 +73,8 @@ ORDER BY df_file_name, mhd_1;
 ASSERT ROW_COUNT = 2
 ASSERT VALUE customer_name = 'SOME CLIENT' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE customer_name = 'GEORGE''S FRIED CHIKEN + SONS. Could be the best chicken yet?' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE supplier_name = 'SITE 1' WHERE source_file = 'tradacoms_utility_bill.edi'
+ASSERT VALUE supplier_name = 'SITE 1' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
 SELECT df_file_name AS source_file,
        sdt_2 AS supplier_name,
        cdt_2 AS customer_name
@@ -90,6 +99,9 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE billing_date = '141218' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE account_number = '0614438000016' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE billing_period = '140905:141204' WHERE source_file = 'tradacoms_utility_bill.edi'
+ASSERT VALUE billing_date = '141218' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE account_number = '0614438000016' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE billing_period = '140905:141204' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
 SELECT df_file_name AS source_file,
        bcd_1 AS billing_date,
        bcd_3 AS account_number,
@@ -118,6 +130,8 @@ ORDER BY df_file_name;
 ASSERT ROW_COUNT = 2
 ASSERT VALUE tariff = 'CCCCC:DOMESTIC RESTRICTED' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE volume = '1770000:KWH' WHERE source_file = 'tradacoms_utility_bill.edi'
+ASSERT VALUE tariff = 'CCCCC:DOMESTIC RESTRICTED' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE volume = '1770000:KWH' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
 SELECT df_file_name AS source_file,
        ccd_3 AS tariff,
        ccd_12 AS volume
@@ -146,6 +160,10 @@ ASSERT VALUE vat_rate = '91' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE net_amount = '11398' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE vat_amount = '569' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE gross_amount = '11967' WHERE source_file = 'tradacoms_utility_bill.edi'
+ASSERT VALUE vat_rate = '91' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE net_amount = '11398' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE vat_amount = '569' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE gross_amount = '11967' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
 SELECT df_file_name AS source_file,
        vat_2 AS vat_rate,
        vat_6 AS net_amount,
@@ -173,6 +191,9 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE total_charges = '11398' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE total_vat = '569' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE bill_total = '11967' WHERE source_file = 'tradacoms_utility_bill.edi'
+ASSERT VALUE total_charges = '11398' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE total_vat = '569' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE bill_total = '11967' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
 SELECT df_file_name AS source_file,
        btl_2 AS total_charges,
        btl_3 AS total_vat,
@@ -202,6 +223,9 @@ ASSERT ROW_COUNT = 2
 ASSERT VALUE total_net = '3090963' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE total_vat = '154343' WHERE source_file = 'tradacoms_utility_bill.edi'
 ASSERT VALUE total_gross = '3245306' WHERE source_file = 'tradacoms_utility_bill.edi'
+ASSERT VALUE total_net = '3090963' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE total_vat = '154343' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
+ASSERT VALUE total_gross = '3245306' WHERE source_file = 'tradacoms_utility_bill_escape.edi'
 SELECT df_file_name AS source_file,
        ttl_1 AS total_net,
        ttl_2 AS total_vat,
@@ -241,11 +265,13 @@ WHERE mhd_2 = 'UTLBIL:3';
 -- billing-specific fields are properly extracted.
 -- All checks should return PASS.
 
-ASSERT ROW_COUNT = 4
+ASSERT ROW_COUNT = 6
 ASSERT VALUE result = 'PASS' WHERE check_name = 'message_count_8'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'utlbil_count_2'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'vat_populated'
 ASSERT VALUE result = 'PASS' WHERE check_name = 'totals_match'
+ASSERT VALUE result = 'PASS' WHERE check_name = 'vat_reconcile'
+ASSERT VALUE result = 'PASS' WHERE check_name = 'ttl_reconcile'
 SELECT check_name, result FROM (
 
     -- Check 1: Total message count = 8 (4 per file x 2 files)
@@ -278,6 +304,24 @@ SELECT check_name, result FROM (
            CASE WHEN (SELECT COUNT(DISTINCT btl_5)
                        FROM {{zone_name}}.edi_demos.tradacoms_bill_details
                        WHERE mhd_2 = 'UTLBIL:3') = 1
+                THEN 'PASS' ELSE 'FAIL' END AS result
+
+    UNION ALL
+
+    -- Check 5: VAT reconciliation — net + vat = gross for every UTLBIL
+    SELECT 'vat_reconcile' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_bill_details
+                       WHERE mhd_2 = 'UTLBIL:3'
+                         AND CAST(vat_6 AS BIGINT) + CAST(vat_7 AS BIGINT) = CAST(vat_8 AS BIGINT)) = 2
+                THEN 'PASS' ELSE 'FAIL' END AS result
+
+    UNION ALL
+
+    -- Check 6: TTL reconciliation — ttl_net + ttl_vat = ttl_gross for every UTLTLR
+    SELECT 'ttl_reconcile' AS check_name,
+           CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.edi_demos.tradacoms_bill_details
+                       WHERE mhd_2 = 'UTLTLR:3'
+                         AND CAST(ttl_1 AS BIGINT) + CAST(ttl_2 AS BIGINT) = CAST(ttl_5 AS BIGINT)) = 2
                 THEN 'PASS' ELSE 'FAIL' END AS result
 
 ) checks
