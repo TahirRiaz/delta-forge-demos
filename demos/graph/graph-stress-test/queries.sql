@@ -58,12 +58,11 @@ RETURN count(n) AS total_employees;
 --   Batch 6:   490,000  (hub nodes)
 --   Batch 7:   319,998  (weak ties)
 
--- Use SQL COUNT on the backing edge table; Cypher MATCH + count() on a 5M
--- row graph can emit the raw rows rather than the aggregate in DF's engine.
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_connections = 5059998
-SELECT COUNT(*) AS total_connections
-FROM {{zone_name}}.stress_test_network.st_edges;
+USE {{zone_name}}.stress_test_network.stress_test_network
+MATCH (a)-[r]->(b)
+RETURN count(r) AS total_connections;
 
 
 -- ============================================================================
