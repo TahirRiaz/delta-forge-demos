@@ -195,14 +195,16 @@ LIMIT 30;
 -- 10. MUTUAL FRIENDSHIPS — Reciprocal KNOWS relationships
 -- ============================================================================
 -- If A knows B AND B knows A, that's a mutual friendship.
--- Cypher: MATCH (a)-[:KNOWS]->(b)-[:KNOWS]->(a) WHERE a.id < b.id
+-- Use SQL self-join to always return a single COUNT row (Cypher aggregates on
+-- empty matches can elide the row in DF's engine, so SQL is safer here).
 
 ASSERT VALUE mutual_friendship_count = 0
 ASSERT ROW_COUNT = 1
-USE {{zone_name}}.ldbc_social_network.ldbc_social_network
-MATCH (a)-[r1]->(b)-[r2]->(a)
-WHERE a.id < b.id
-RETURN count(*) AS mutual_friendship_count;
+SELECT COUNT(*) AS mutual_friendship_count
+FROM {{zone_name}}.ldbc_social_network.person_knows_person a
+JOIN {{zone_name}}.ldbc_social_network.person_knows_person b
+  ON a.src = b.dst AND a.dst = b.src
+WHERE a.src < a.dst;
 
 
 -- ============================================================================
