@@ -14,12 +14,28 @@ Forces GPU execution on all 5 GPU-accelerable algorithms (PageRank, \
 Connected Components, Louvain, Betweenness, Triangle Count) plus GPU MATCH \
 expansion — 10x scale-up from the 1M-node GPU stress test. Tests GPU \
 memory management, streaming property loading, and threshold fallback at \
-enterprise financial-services scale.
+enterprise financial-services scale. \
+\
+RESOURCE WARNING — RUN ON A HOST SIZED FOR THIS DEMO: the compute node's \
+RSS peaks at roughly 6-8 GB during the CSR build and again during full \
+algorithm runs (PageRank, Louvain, all-edge Triangle Count on 48M edges). \
+Per-query peaks depend on which analysis is running; betweenness sampling \
+and community detection are the heaviest. Setup + first Cypher query \
+together take ~5-10 minutes on a modern workstation; the HTTP client \
+should be run with DF_HTTP_TIMEOUT_SECS=0 (or at least 1800) so the \
+first CSR build doesn't hit a client-side timeout. If the compute node \
+has less than 16 GB of addressable memory, expect OOM during \
+algorithm runs — drop to graph-gpu-stress-test (1M/5M) instead.
 """
 categories = ["graph", "gpu"]
-tags = ["graph", "gpu", "finance", "fraud-detection", "stress-test", "performance", "benchmark", "10-million-scale", "cypher", "algorithms", "advanced"]
+tags = ["graph", "gpu", "finance", "fraud-detection", "stress-test", "performance", "benchmark", "10-million-scale", "cypher", "algorithms", "advanced", "high-memory"]
 difficulty = "advanced"
 estimated_time_minutes = 60
+# Peak resident memory observed on the compute node during this demo's
+# heaviest queries (connected components + betweenness + triangle count
+# against the full 48M-edge graph).  Display in the demo picker so users
+# on laptops / small hosts can skip it.
+peak_memory_gb = 8
 
 [demo.variables]
 data_path = { description = "Path to the demo data directory", required = true }

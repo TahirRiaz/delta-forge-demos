@@ -18,8 +18,20 @@
 --   2. gfn_accounts     — 10,000,000 vertex nodes (deterministic generation)
 --   3. gfn_transactions — ~48,000,000 directed edges (7 batches, deterministic)
 --
--- WARNING: This demo generates very large datasets. Setup may take 10-30
--- minutes depending on hardware.
+-- ┌────────────────────────────────────────────────────────────────────┐
+-- │ RESOURCE WARNING — READ BEFORE RUNNING                             │
+-- ├────────────────────────────────────────────────────────────────────┤
+-- │ * Setup takes 10-30 minutes depending on hardware.                 │
+-- │ * Peak compute-node memory: 6-8 GB RSS during the CSR build and    │
+-- │   again during full-graph algorithms (Connected Components,        │
+-- │   Louvain, Triangle Count).  Betweenness sampling is the worst     │
+-- │   single query.                                                    │
+-- │ * Require at least 16 GB of addressable memory on the compute      │
+-- │   node.  On smaller hosts, prefer graph-gpu-stress-test (1M/5M).   │
+-- │ * CLI:  Run with DF_HTTP_TIMEOUT_SECS=0 (or >=1800) so the first   │
+-- │   Cypher query — which triggers the 48M-edge CSR build — doesn't   │
+-- │   trip the 30-minute default HTTP timeout.                         │
+-- └────────────────────────────────────────────────────────────────────┘
 -- ============================================================================
 
 
