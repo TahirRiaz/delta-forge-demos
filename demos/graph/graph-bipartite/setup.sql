@@ -192,6 +192,31 @@ INSERT INTO {{zone_name}}.movie_recs.ratings VALUES
     (84, 25, 116, 2.2, 'watched', '2025-01-07');
 
 -- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters frequent filter columns (entity_type, genre) across
+-- files.  Z-ORDER rewrites files so rows with similar values on the ordering
+-- keys co-locate, giving Parquet min/max statistics much tighter ranges per
+-- file.  This benefits three hot paths:
+--
+--   1. CSR build from the ratings table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted subscriber or movie lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE e.entity_type = 'movie' AND e.genre = 'Sci-Fi'` skip entire
+--      files instead of reading the whole bipartite vertex table.
+--
+-- One-time cost at setup; every subsequent query benefits.  These OPTIMIZE
+-- statements also compact small files written by the batched rating load.
+OPTIMIZE {{zone_name}}.movie_recs.entities
+    ZORDER BY (id, entity_type, genre);
+
+OPTIMIZE {{zone_name}}.movie_recs.ratings
+    ZORDER BY (src, dst);
+
+-- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
 -- Bipartite graph: subscribers and movies as two vertex types, ratings as

@@ -367,6 +367,33 @@ WHERE src != dst;
 
 
 -- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters frequent filter columns (bank, account_type, etc.)
+-- across files.  Z-ORDER rewrites files so rows with similar values on the
+-- ordering keys co-locate, giving Parquet min/max statistics much tighter
+-- ranges per file.  This benefits three hot paths:
+--
+--   1. CSR build from the edge table — sequential I/O on `(src, dst)` ordering
+--      cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted id scans.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE a.account_type = 'retail' AND a.risk_tier = 'HIGH'` skip
+--      entire files instead of reading the whole table.
+--
+-- One-time cost at setup; every subsequent query benefits.  These OPTIMIZE
+-- statements also compact small files written by the seven-batch edge load.
+
+OPTIMIZE {{zone_name}}.gpu_finance_network.gfn_accounts
+    ZORDER BY (id, account_type, risk_tier);
+
+OPTIMIZE {{zone_name}}.gpu_finance_network.gfn_transactions
+    ZORDER BY (src, dst);
+
+
+-- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.gpu_finance_network.gpu_finance_network
@@ -382,5 +409,6 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.gpu_finance_network.gpu_finance_network
 -- At 10M nodes and 48M edges, CSR construction is expensive. Building it once
 -- upfront writes a .dcsr sidecar to disk so the first Cypher query loads in
 -- ~200 ms instead of rebuilding from Delta tables. Safe to re-run after bulk
--- edge loads to refresh the cache.
+-- edge loads to refresh the cache.  The ZORDER step above ensures CSR build
+-- reads edges in `(src, dst)` order — roughly sequential I/O.
 CREATE GRAPHCSR {{zone_name}}.gpu_finance_network.gpu_finance_network;

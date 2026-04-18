@@ -68,6 +68,31 @@ FROM {{zone_name}}.polbooks_raw.polbooks_vertices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.political_books.vertices TO USER {{current_user}};
 -- ############################################################################
+-- STEP 3b: Physical Layout — Z-ORDER for fast data skipping
+-- ############################################################################
+-- The data was loaded in vertex_id order, which has reasonable locality for
+-- `vertex_id` but scatters the frequent filter column (leaning) — the main
+-- community structure — across files.  Z-ORDER rewrites files so rows with
+-- similar values on the ordering keys co-locate, giving Parquet min/max
+-- statistics much tighter ranges per file.  This benefits three hot paths:
+--
+--   1. CSR build from the edges table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `vertex_id` co-location lets the Parquet
+--      reader skip almost every row group for targeted book lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE v.leaning = 'liberal'` skip entire files instead of reading
+--      the whole vertex table.
+--
+-- One-time cost at setup; every subsequent query benefits.
+
+OPTIMIZE {{zone_name}}.political_books.vertices
+    ZORDER BY (vertex_id, leaning);
+
+OPTIMIZE {{zone_name}}.political_books.edges
+    ZORDER BY (src, dst);
+
+-- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################
 -- Creates a named graph coupling book vertices with co-purchasing edges.

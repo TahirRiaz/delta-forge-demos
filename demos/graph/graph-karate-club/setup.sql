@@ -69,6 +69,31 @@ FROM {{zone_name}}.karate_club_raw.karate_vertices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.karate_club.vertices TO USER {{current_user}};
 -- ############################################################################
+-- STEP 3b: Physical Layout — Z-ORDER for fast data skipping
+-- ############################################################################
+-- The data was loaded in vertex_id order, which has reasonable locality for
+-- `vertex_id` but scatters the frequent filter column (role) across files.
+-- Z-ORDER rewrites files so rows with similar values on the ordering keys
+-- co-locate, giving Parquet min/max statistics much tighter ranges per file.
+-- This benefits three hot paths:
+--
+--   1. CSR build from the edges table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `vertex_id` co-location lets the Parquet
+--      reader skip almost every row group for targeted member lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE v.role = 'Mr. Hi'` skip entire files instead of reading the
+--      whole vertex table.
+--
+-- One-time cost at setup; every subsequent query benefits.
+
+OPTIMIZE {{zone_name}}.karate_club.vertices
+    ZORDER BY (vertex_id, role);
+
+OPTIMIZE {{zone_name}}.karate_club.edges
+    ZORDER BY (src, dst);
+
+-- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################
 -- Creates a named graph coupling member vertices with friendship edges.

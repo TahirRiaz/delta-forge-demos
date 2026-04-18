@@ -68,6 +68,32 @@ FROM {{zone_name}}.email_eu_core_raw.email_eu_vertices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.email_eu_core.vertices TO USER {{current_user}};
 -- ############################################################################
+-- STEP 3b: Physical Layout — Z-ORDER for fast data skipping
+-- ############################################################################
+-- The data was loaded in vertex_id order, which has reasonable locality for
+-- `vertex_id` but scatters the frequent filter column (department) across
+-- files.  Z-ORDER rewrites files so rows with similar values on the ordering
+-- keys co-locate, giving Parquet min/max statistics much tighter ranges per
+-- file.  This benefits three hot paths:
+--
+--   1. CSR build from the edges table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `vertex_id` co-location lets the Parquet
+--      reader skip almost every row group for targeted member lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE v.department = '14'` skip entire files instead of reading the
+--      whole vertex table.
+--
+-- One-time cost at setup; every subsequent query benefits.  These OPTIMIZE
+-- statements also compact small files written by the CSV→Delta load.
+
+OPTIMIZE {{zone_name}}.email_eu_core.vertices
+    ZORDER BY (vertex_id, department);
+
+OPTIMIZE {{zone_name}}.email_eu_core.edges
+    ZORDER BY (src, dst);
+
+-- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################
 -- Creates a named graph coupling member vertices with email edges.

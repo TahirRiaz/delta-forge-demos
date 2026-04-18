@@ -142,6 +142,31 @@ WHERE src != dst
   );
 
 -- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters frequent filter columns (specialty, hospital) across
+-- files.  Z-ORDER rewrites files so rows with similar values on the ordering
+-- keys co-locate, giving Parquet min/max statistics much tighter ranges per
+-- file.  This benefits three hot paths:
+--
+--   1. CSR build from the referrals table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted physician lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE p.specialty = 'Cardiology' AND p.hospital = 'General'` skip
+--      entire files instead of reading the whole physicians table.
+--
+-- One-time cost at setup; every subsequent query benefits.  These OPTIMIZE
+-- statements also compact small files written by the three-batch edge load.
+OPTIMIZE {{zone_name}}.hospital_referrals.physicians
+    ZORDER BY (id, specialty, hospital);
+
+OPTIMIZE {{zone_name}}.hospital_referrals.referrals
+    ZORDER BY (src, dst);
+
+-- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.hospital_referrals.hospital_referrals

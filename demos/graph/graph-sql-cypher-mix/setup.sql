@@ -402,6 +402,33 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.community_assign
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.community_assignments TO USER {{current_user}};
 
 -- ############################################################################
+-- STEP 6b: Physical Layout — Z-ORDER for fast data skipping
+-- ############################################################################
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters frequent filter columns (region, industry) across
+-- files.  Z-ORDER rewrites files so rows with similar values on the ordering
+-- keys co-locate, giving Parquet min/max statistics much tighter ranges per
+-- file.  This benefits three hot paths:
+--
+--   1. CSR build from the referrals table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted customer lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE c.region = 'EMEA' AND c.industry = 'Finance'` skip entire
+--      files instead of reading the whole customers table.
+--
+-- One-time cost at setup; every subsequent query benefits.  Orders and
+-- sales_reps are SQL-only tables; they don't participate in the graph and
+-- are not ZORDER'd.
+
+OPTIMIZE {{zone_name}}.customer_network.customers
+    ZORDER BY (id, region, industry);
+
+OPTIMIZE {{zone_name}}.customer_network.referrals
+    ZORDER BY (src, dst);
+
+-- ############################################################################
 -- STEP 7: Graph Definition
 -- ############################################################################
 -- Directed graph: customers are vertices, referrals are edges.

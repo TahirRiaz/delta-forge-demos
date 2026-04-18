@@ -236,6 +236,33 @@ FROM (
 ) sub
 WHERE src != dst;
 
+-- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters frequent filter columns (department, city) across
+-- files.  Z-ORDER rewrites files so rows with similar values on the ordering
+-- keys co-locate, giving Parquet min/max statistics much tighter ranges per
+-- file.  This benefits three hot paths:
+--
+--   1. CSR build from the edges table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted person lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE p.department = 'Engineering' AND p.city = 'SF'` skip entire
+--      files instead of reading the whole person table.
+--
+-- The same three-benefits reasoning applies to the HYBRID and JSON variants
+-- below; only the ordering keys differ because JSON/extras blobs are opaque
+-- to Parquet statistics.  One-time cost at setup; every subsequent query
+-- benefits.
+OPTIMIZE {{zone_name}}.storage_modes.persons_flat
+    ZORDER BY (id, department, city);
+
+OPTIMIZE {{zone_name}}.storage_modes.edges_flat
+    ZORDER BY (src, dst);
+
 -- Graph definition: FLATTENED (default — no PROPERTIES clause needed)
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.storage_modes.storage_flat
     VERTEX TABLE {{zone_name}}.storage_modes.persons_flat ID COLUMN id NODE TYPE COLUMN department NODE NAME COLUMN name
@@ -292,6 +319,14 @@ SELECT
     '", "rating": ' || CAST(rating AS VARCHAR) ||
     '}' AS extras
 FROM {{zone_name}}.storage_modes.edges_flat;
+
+-- Physical layout — hybrid tables ZORDER on (id, label) / (src, dst).
+-- Only promoted columns can be ordering keys; JSON extras are opaque.
+OPTIMIZE {{zone_name}}.storage_modes.persons_hybrid
+    ZORDER BY (id, label);
+
+OPTIMIZE {{zone_name}}.storage_modes.edges_hybrid
+    ZORDER BY (src, dst);
 
 -- Graph definition: HYBRID
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.storage_modes.storage_hybrid
@@ -351,6 +386,14 @@ SELECT
     '", "rating": ' || CAST(rating AS VARCHAR) ||
     '}' AS props
 FROM {{zone_name}}.storage_modes.edges_flat;
+
+-- Physical layout — JSON tables ZORDER on (id, label) / (src, dst).
+-- Ordering keys must be top-level columns; props blob is opaque.
+OPTIMIZE {{zone_name}}.storage_modes.persons_json
+    ZORDER BY (id, label);
+
+OPTIMIZE {{zone_name}}.storage_modes.edges_json
+    ZORDER BY (src, dst);
 
 -- Graph definition: JSON
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.storage_modes.storage_json

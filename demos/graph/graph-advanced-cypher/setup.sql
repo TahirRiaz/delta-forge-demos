@@ -160,6 +160,31 @@ WHERE src != dst
   AND src % 5 != dst % 5;
 
 -- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters frequent filter columns (department, rank) across
+-- files.  Z-ORDER rewrites files so rows with similar values on the ordering
+-- keys co-locate, giving Parquet min/max statistics much tighter ranges per
+-- file.  This benefits three hot paths:
+--
+--   1. CSR build from the collaborations table — sequential I/O on
+--      `(src, dst)` ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted researcher scans.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE r.department = 'Physics' AND r.rank = 'Full Professor'` skip
+--      entire files instead of reading the whole table.
+--
+-- One-time cost at setup; every subsequent query benefits.  These OPTIMIZE
+-- statements also compact small files written by the batched edge load.
+OPTIMIZE {{zone_name}}.research_network.researchers
+    ZORDER BY (id, department, rank);
+
+OPTIMIZE {{zone_name}}.research_network.collaborations
+    ZORDER BY (src, dst);
+
+-- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.research_network.research_network

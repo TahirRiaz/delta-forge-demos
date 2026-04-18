@@ -165,6 +165,31 @@ INSERT INTO {{zone_name}}.shipping_network.routes VALUES
     (55, 7,  4,    600.0, 2, 'transshipment',  90.00);
 
 -- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- The data was inserted in id-generation order, which has reasonable locality
+-- for `id` but scatters the frequent filter column (region) across files.
+-- Z-ORDER rewrites files so rows with similar values on the ordering keys
+-- co-locate, giving Parquet min/max statistics much tighter ranges per file.
+-- This benefits three hot paths:
+--
+--   1. CSR build from the routes table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted port lookups.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE p.region = 'Asia'` skip entire files instead of reading the
+--      whole ports table.
+--
+-- One-time cost at setup; every subsequent query benefits.  These OPTIMIZE
+-- statements also compact small files written by the five-batch route load.
+OPTIMIZE {{zone_name}}.shipping_network.ports
+    ZORDER BY (id, region);
+
+OPTIMIZE {{zone_name}}.shipping_network.routes
+    ZORDER BY (src, dst);
+
+-- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.shipping_network.shipping_network

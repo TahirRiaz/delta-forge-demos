@@ -483,6 +483,30 @@ FROM (
 WHERE src != dst;
 
 -- ============================================================================
+-- PHYSICAL LAYOUT — Z-ORDER for fast data skipping
+-- ============================================================================
+-- At 1M nodes / 5M edges, rows were inserted in id-generation order, which
+-- has reasonable locality for `id` but scatters frequent filter columns
+-- (department, level) across files.  Z-ORDER rewrites files so rows with
+-- similar values on the ordering keys co-locate, giving Parquet min/max
+-- statistics much tighter ranges per file.  This benefits three hot paths:
+--
+--   1. CSR build from the edges table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted person scans.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE p.department = 'Engineering' AND p.level = 'L5'` skip entire
+--      files instead of reading the whole table.
+--
+-- One-time cost at setup; every subsequent query benefits.
+OPTIMIZE {{zone_name}}.stress_test_network.st_people
+    ZORDER BY (id, department, level);
+
+OPTIMIZE {{zone_name}}.stress_test_network.st_edges
+    ZORDER BY (src, dst);
+
+-- ============================================================================
 -- GRAPH DEFINITION
 -- ============================================================================
 CREATE GRAPH IF NOT EXISTS {{zone_name}}.stress_test_network.stress_test_network

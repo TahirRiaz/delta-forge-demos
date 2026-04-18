@@ -575,6 +575,35 @@ FROM {{zone_name}}.ldbc_snb_raw.post_is_located_in_place;
 
 GRANT ADMIN ON TABLE {{zone_name}}.ldbc_social_network.post_is_located_in_place TO USER {{current_user}};
 -- ############################################################################
+-- STEP 3b: Physical Layout — Z-ORDER for fast data skipping
+-- ############################################################################
+-- The graph uses Person vertices + KNOWS edges; only those two tables are
+-- ZORDER'd since they drive CSR build and Cypher seed scans.  Data was loaded
+-- in id order, which has reasonable locality for `id` but scatters the
+-- frequent filter column (gender) across files.  Z-ORDER rewrites files so
+-- rows with similar values on the ordering keys co-locate, giving Parquet
+-- min/max statistics much tighter ranges per file.  This benefits three
+-- hot paths:
+--
+--   1. CSR build from the KNOWS edge table — sequential I/O on `(src, dst)`
+--      ordering cuts read time on the first cold load.
+--   2. Reverse-index lookups — `id` co-location lets the Parquet reader skip
+--      almost every row group for targeted person scans.
+--   3. Cypher→SQL translator seed queries — selective filters like
+--      `WHERE p.gender = 'female'` skip entire files instead of reading the
+--      whole person table.
+--
+-- One-time cost at setup; every subsequent query benefits.  Other LDBC
+-- entity/edge tables are SQL-only and kept as written.
+-- ############################################################################
+
+OPTIMIZE {{zone_name}}.ldbc_social_network.person
+    ZORDER BY (id, gender);
+
+OPTIMIZE {{zone_name}}.ldbc_social_network.person_knows_person
+    ZORDER BY (src, dst);
+
+-- ############################################################################
 -- STEP 4: Graph Definition
 -- ############################################################################
 -- Creates a named graph coupling Person vertices with KNOWS edges.
