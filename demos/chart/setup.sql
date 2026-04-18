@@ -143,11 +143,8 @@ INSERT INTO {{zone_name}}.retail.stock_prices (week_start, open_price, high_pric
     ('2026-03-09', 59.10, 61.40, 58.80, 60.80);
 
 -- --------------------------------------------------------------------------
--- Schema Detection & Permissions
+-- Permissions
 -- --------------------------------------------------------------------------
-
-DETECT SCHEMA FOR TABLE {{zone_name}}.retail.sales_daily;
-DETECT SCHEMA FOR TABLE {{zone_name}}.retail.stock_prices;
 
 GRANT ADMIN ON TABLE {{zone_name}}.retail.sales_daily TO USER {{current_user}};
 GRANT ADMIN ON TABLE {{zone_name}}.retail.stock_prices TO USER {{current_user}};

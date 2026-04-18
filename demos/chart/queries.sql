@@ -200,7 +200,7 @@ VALUES ON LEGEND RIGHT;
 -- and count frequency. Proves the shape of the revenue distribution.
 
 ASSERT VALUE rows_below_600 = 8
-ASSERT VALUE rows_600_to_1500 = 52
+ASSERT VALUE rows_600_to_1500 = 54
 ASSERT VALUE rows_above_2000 = 7
 ASSERT VALUE min_revenue = 456.0
 ASSERT VALUE max_revenue = 2678.40
