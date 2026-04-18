@@ -4939,6 +4939,55 @@
       ]
     },
     {
+      "id": "graph-auto-refresh-csr",
+      "path": "demos/graph/graph-auto-refresh-csr",
+      "iconPath": "icons/graph-auto-refresh-csr.svg",
+      "name": "Fleet Dispatch Network — AUTO REFRESH CSR: Live vs Batched Graph Views",
+      "summary": "30 distribution hubs across 6 regions with 100 directed delivery routes. Teaches the AUTO REFRESH CSR graph property by running identical Cypher queries against two paired graphs over the same tables — one declared AUTO REFRESH CSR (rebuilds on the first read after any DML), one declared NO AUTO REFRESH CSR (serves the last-built CSR until CREATE GRAPHCSR). Walks through UPDATE + DELETE and asserts the live view tracks Delta while the batched view stays intentionally stale until refreshed.",
+      "categories": [
+        "graph",
+        "delta",
+        "cypher"
+      ],
+      "tags": [
+        "graph",
+        "cypher",
+        "auto-refresh",
+        "csr",
+        "cache",
+        "update",
+        "delete",
+        "create-graphcsr",
+        "live-vs-batch",
+        "beginner"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 3,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-18T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.fleet_dispatch.hubs"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.fleet_dispatch.routes"
+        },
+        {
+          "objectType": "graph",
+          "name": "{{zone_name}}.fleet_dispatch.dispatch_live"
+        },
+        {
+          "objectType": "graph",
+          "name": "{{zone_name}}.fleet_dispatch.dispatch_batch"
+        }
+      ]
+    },
+    {
       "id": "graph-bipartite",
       "path": "demos/graph/graph-bipartite",
       "iconPath": "icons/graph-bipartite.svg",
