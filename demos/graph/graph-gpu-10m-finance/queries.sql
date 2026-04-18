@@ -71,17 +71,10 @@ ORDER BY headcount DESC;
 
 
 -- ############################################################################
--- CSR BUILD — Pre-build the compressed sparse row representation
--- ############################################################################
--- At 10M nodes and 48M edges, the CSR construction is expensive. Building it
--- once upfront avoids repeated reconstruction on each algorithm or MATCH call.
-
-CREATE GRAPHCSR {{zone_name}}.gpu_finance_network.gpu_finance_network;
-
-
--- ############################################################################
 -- PART 2: GPU ALGORITHMS — All 5 GPU-accelerable algorithms
 -- ############################################################################
+-- CSR topology is pre-built in setup.sql (CREATE GRAPHCSR), so the first
+-- algorithm below loads the graph in ~200 ms from the .dcsr sidecar.
 
 
 -- ============================================================================

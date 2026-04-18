@@ -375,3 +375,12 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.gpu_finance_network.gpu_finance_network
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN transaction_type
     DIRECTED;
+
+-- ============================================================================
+-- WARM CSR CACHE — Pre-build the Compressed Sparse Row topology
+-- ============================================================================
+-- At 10M nodes and 48M edges, CSR construction is expensive. Building it once
+-- upfront writes a .dcsr sidecar to disk so the first Cypher query loads in
+-- ~200 ms instead of rebuilding from Delta tables. Safe to re-run after bulk
+-- edge loads to refresh the cache.
+CREATE GRAPHCSR {{zone_name}}.gpu_finance_network.gpu_finance_network;

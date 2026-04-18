@@ -491,6 +491,16 @@ CREATE GRAPH IF NOT EXISTS {{zone_name}}.stress_test_network.stress_test_network
     WEIGHT COLUMN weight
     EDGE TYPE COLUMN relationship_type
     DIRECTED;
+
+-- ============================================================================
+-- WARM CSR CACHE — Pre-build the Compressed Sparse Row topology
+-- ============================================================================
+-- At 1M nodes and 5M edges, pre-building the CSR once upfront writes a .dcsr
+-- sidecar to disk so the first Cypher query loads in ~200 ms instead of
+-- rebuilding from Delta tables. Safe to re-run after bulk edge loads to
+-- refresh the cache.
+CREATE GRAPHCSR {{zone_name}}.stress_test_network.stress_test_network;
+
 -- ============================================================================
 -- VIEW 4: st_people_stats — per-person degree centrality
 -- ============================================================================
