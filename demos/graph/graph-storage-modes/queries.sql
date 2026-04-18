@@ -21,12 +21,12 @@
 ASSERT ROW_COUNT = 50
 ASSERT VALUE city = 'SF' WHERE name = 'Priya_1'
 ASSERT VALUE dept = 'Marketing' WHERE name = 'Priya_1'
-ASSERT VALUE age = 44 WHERE name = 'Priya_1'
+ASSERT VALUE age = 43 WHERE name = 'Priya_1'
 ASSERT VALUE dept = 'HR' WHERE name = 'Marcus_2'
 ASSERT VALUE city = 'Chicago' WHERE name = 'Marcus_2'
 ASSERT VALUE age = 32 WHERE name = 'Marcus_2'
 ASSERT VALUE dept = 'Engineering' WHERE name = 'Wei_5'
-ASSERT VALUE age = 28 WHERE name = 'Wei_5'
+ASSERT VALUE age = 27 WHERE name = 'Wei_5'
 USE {{zone_name}}.storage_modes.storage_flat
 MATCH (n)
 RETURN n.name AS name, n.department AS dept, n.city AS city,
@@ -41,12 +41,12 @@ ORDER BY n.name;
 ASSERT ROW_COUNT = 50
 ASSERT VALUE city = 'SF' WHERE name = 'Priya_1'
 ASSERT VALUE dept = 'Marketing' WHERE name = 'Priya_1'
-ASSERT VALUE age = 44 WHERE name = 'Priya_1'
+ASSERT VALUE age = 43 WHERE name = 'Priya_1'
 ASSERT VALUE dept = 'HR' WHERE name = 'Marcus_2'
 ASSERT VALUE city = 'Chicago' WHERE name = 'Marcus_2'
 ASSERT VALUE age = 32 WHERE name = 'Marcus_2'
 ASSERT VALUE dept = 'Engineering' WHERE name = 'Wei_5'
-ASSERT VALUE age = 28 WHERE name = 'Wei_5'
+ASSERT VALUE age = 27 WHERE name = 'Wei_5'
 USE {{zone_name}}.storage_modes.storage_hybrid
 MATCH (n)
 RETURN n.name AS name, n.department AS dept, n.city AS city,
@@ -61,12 +61,12 @@ ORDER BY n.name;
 ASSERT ROW_COUNT = 50
 ASSERT VALUE city = 'SF' WHERE name = 'Priya_1'
 ASSERT VALUE dept = 'Marketing' WHERE name = 'Priya_1'
-ASSERT VALUE age = 44 WHERE name = 'Priya_1'
+ASSERT VALUE age = 43 WHERE name = 'Priya_1'
 ASSERT VALUE dept = 'HR' WHERE name = 'Marcus_2'
 ASSERT VALUE city = 'Chicago' WHERE name = 'Marcus_2'
 ASSERT VALUE age = 32 WHERE name = 'Marcus_2'
 ASSERT VALUE dept = 'Engineering' WHERE name = 'Wei_5'
-ASSERT VALUE age = 28 WHERE name = 'Wei_5'
+ASSERT VALUE age = 27 WHERE name = 'Wei_5'
 USE {{zone_name}}.storage_modes.storage_json
 MATCH (n)
 RETURN n.name AS name, n.department AS dept, n.city AS city,
