@@ -19,7 +19,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- STEP 2: CSV external table — store locations
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.stores
 USING CSV
-LOCATION '{{data_subdir}}/stores.csv'
+LOCATION '{{data_path}}/stores.csv'
 OPTIONS (
     header = 'true'
 );
@@ -36,7 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales (
     quantity      INT,
     unit_price    DOUBLE,
     sale_date     VARCHAR
-) LOCATION '{{data_subdir}}/sales'
+) LOCATION '{{data_path}}/sales'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergVersion' = '2',

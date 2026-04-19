@@ -24,7 +24,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.employees (
     title       VARCHAR,
     salary      DOUBLE,
     is_active   BOOLEAN
-) LOCATION '{{data_subdir}}/employees'
+) LOCATION '{{data_path}}/employees'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergVersion' = '2',
