@@ -90,21 +90,29 @@ def verify_weather_readings(data_root, verbose=False):
     else:
         fail(f"AVG(precipitation_mm) excluding NULLs = {actual_avg_precip}, expected 25.01")
 
-    # Per-station average temperature (one station per region prefix)
+    # Per-station average temperature (one station per region prefix).
+    # WX-SA001's raw avg is 24.605000000000004, a float boundary that rounds
+    # to either 24.60 or 24.61 depending on summation order — accept both.
     for station, expected_avg in [
         ("WX-AF001", 23.84),
         ("WX-AS001", 12.98),
         ("WX-EU001", 12.99),
         ("WX-NA001", 12.46),
-        ("WX-SA001", 24.61),
+        ("WX-SA001", (24.60, 24.61)),
     ]:
         mask = pc.equal(table.column("station_id"), station)
         filtered = table.filter(mask)
         actual = round(pc.mean(filtered.column("temperature_c")).as_py(), 2)
-        if actual == expected_avg:
-            ok(f"Avg temp for {station} = {expected_avg}")
+        if isinstance(expected_avg, tuple):
+            if actual in expected_avg:
+                ok(f"Avg temp for {station} = {actual} (in {expected_avg})")
+            else:
+                fail(f"Avg temp for {station} = {actual}, expected one of {expected_avg}")
         else:
-            fail(f"Avg temp for {station} = {actual}, expected {expected_avg}")
+            if actual == expected_avg:
+                ok(f"Avg temp for {station} = {expected_avg}")
+            else:
+                fail(f"Avg temp for {station} = {actual}, expected {expected_avg}")
 
     # Per-year average temperature
     for year, expected_avg in [(2023, 16.65), (2024, 17.73), (2025, 17.18)]:
