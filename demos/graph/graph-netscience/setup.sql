@@ -42,7 +42,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.netscience_raw.netscience_edges TO USER {{cur
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience_collab.edges
-LOCATION '{{data_path}}/delta/edges'
+LOCATION 'delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -60,7 +60,7 @@ OPTIONS (header = 'true', delimiter = '|');
 GRANT ADMIN ON TABLE {{zone_name}}.netscience_raw.netscience_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience_collab.vertices
-LOCATION '{{data_path}}/delta/vertices'
+LOCATION 'delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

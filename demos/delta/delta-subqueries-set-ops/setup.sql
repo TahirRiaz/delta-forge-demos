@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.students (
     major           VARCHAR,
     gpa             DOUBLE,
     enrollment_year INT
-) LOCATION '{{data_path}}/students';
+) LOCATION 'students';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.students TO USER {{current_user}};
 
@@ -65,7 +65,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.enrollments (
     semester        VARCHAR,
     grade           VARCHAR,
     credits         INT
-) LOCATION '{{data_path}}/enrollments';
+) LOCATION 'enrollments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.enrollments TO USER {{current_user}};
 

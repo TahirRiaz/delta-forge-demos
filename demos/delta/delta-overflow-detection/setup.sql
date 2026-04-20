@@ -35,7 +35,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.transaction_ledger (
     running_balance INT,
     description     VARCHAR,
     tx_date         VARCHAR
-) LOCATION '{{data_path}}/transaction_ledger';
+) LOCATION 'transaction_ledger';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.transaction_ledger TO USER {{current_user}};
 

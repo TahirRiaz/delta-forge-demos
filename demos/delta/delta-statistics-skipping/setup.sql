@@ -35,7 +35,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.orders (
     quantity         INT,
     line_total      DOUBLE,
     order_date      VARCHAR
-) LOCATION '{{data_path}}/orders';
+) LOCATION 'orders';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.orders TO USER {{current_user}};
 

@@ -28,7 +28,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_inventory (
     price           DOUBLE,
     stock_qty       INT,
     status          VARCHAR
-) LOCATION '{{data_path}}/product_inventory';
+) LOCATION 'product_inventory';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_inventory TO USER {{current_user}};
 

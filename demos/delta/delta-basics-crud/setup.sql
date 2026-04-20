@@ -27,7 +27,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.products (
     price      DOUBLE,
     stock      INT,
     is_active  BOOLEAN
-) LOCATION '{{data_path}}/products';
+) LOCATION 'products';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.products TO USER {{current_user}};
 

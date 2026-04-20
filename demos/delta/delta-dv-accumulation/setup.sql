@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.patient_visits (
     visit_date    VARCHAR,
     cost          DECIMAL(10,2),
     status        VARCHAR
-) LOCATION '{{data_path}}/patient_visits';
+) LOCATION 'patient_visits';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.patient_visits TO USER {{current_user}};
 

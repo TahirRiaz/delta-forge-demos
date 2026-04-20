@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_facts (
     qty         INT,
     channel     VARCHAR,
     sale_date   VARCHAR
-) LOCATION '{{data_path}}/sales_facts'
+) LOCATION 'sales_facts'
 PARTITIONED BY (region);
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_facts TO USER {{current_user}};
@@ -130,7 +130,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.region_targets (
     region        VARCHAR,
     target_amount DOUBLE,
     target_qty    INT
-) LOCATION '{{data_path}}/region_targets';
+) LOCATION 'region_targets';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.region_targets TO USER {{current_user}};
 

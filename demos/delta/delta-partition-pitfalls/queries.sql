@@ -102,7 +102,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.events_by_month (
     amount       DOUBLE,
     created_at   VARCHAR,
     event_month  VARCHAR
-) LOCATION '{{data_path}}/events_by_month'
+) LOCATION 'events_by_month'
 PARTITIONED BY (event_month);
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.events_by_month TO USER {{current_user}};

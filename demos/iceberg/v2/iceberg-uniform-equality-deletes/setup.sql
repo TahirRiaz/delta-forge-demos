@@ -24,7 +24,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.products (
     category    VARCHAR,
     price       DOUBLE,
     in_stock    BOOLEAN
-) LOCATION '{{data_path}}/eq_del_products'
+) LOCATION 'eq_del_products'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergDeleteMode' = 'equality-delete',

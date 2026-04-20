@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.landmarks (
     country VARCHAR,
     lat DOUBLE,
     lng DOUBLE
-) LOCATION '{{data_path}}/landmarks';
+) LOCATION 'landmarks';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.landmarks TO USER {{current_user}};
 
@@ -68,7 +68,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.regions (
     country VARCHAR,
     polygon_wkt VARCHAR,
     timezone VARCHAR
-) LOCATION '{{data_path}}/regions';
+) LOCATION 'regions';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.regions TO USER {{current_user}};
 
@@ -93,7 +93,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.gps_points (
     lng DOUBLE,
     device_id VARCHAR,
     city VARCHAR
-) LOCATION '{{data_path}}/gps_points';
+) LOCATION 'gps_points';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.gps_points TO USER {{current_user}};
 

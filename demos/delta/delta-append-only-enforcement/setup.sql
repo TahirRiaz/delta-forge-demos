@@ -30,7 +30,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.compliance_ledger (
     counterparty    VARCHAR,
     txn_date        VARCHAR,
     reference       VARCHAR
-) LOCATION '{{data_path}}/compliance_ledger'
+) LOCATION 'compliance_ledger'
 TBLPROPERTIES (
     'delta.appendOnly' = 'true'
 );
@@ -73,7 +73,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.mutable_ledger (
     counterparty    VARCHAR,
     txn_date        VARCHAR,
     reference       VARCHAR
-) LOCATION '{{data_path}}/mutable_ledger';
+) LOCATION 'mutable_ledger';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.mutable_ledger TO USER {{current_user}};
 

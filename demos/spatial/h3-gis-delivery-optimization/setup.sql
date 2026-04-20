@@ -24,7 +24,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.logistics.warehouses (
     lat               DOUBLE,
     lng               DOUBLE,
     capacity_pallets  INT
-) LOCATION '{{data_path}}/logistics_warehouses';
+) LOCATION 'logistics_warehouses';
 
 GRANT ADMIN ON TABLE {{zone_name}}.logistics.warehouses TO USER {{current_user}};
 
@@ -51,7 +51,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.logistics.stores (
     lng             DOUBLE,
     warehouse_id    INT,
     monthly_orders  INT
-) LOCATION '{{data_path}}/logistics_stores';
+) LOCATION 'logistics_stores';
 
 GRANT ADMIN ON TABLE {{zone_name}}.logistics.stores TO USER {{current_user}};
 

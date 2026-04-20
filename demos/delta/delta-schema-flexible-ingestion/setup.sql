@@ -37,7 +37,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_telemetry (
     unit           VARCHAR,
     metadata       VARCHAR,
     recorded_at    VARCHAR
-) LOCATION '{{data_path}}/sensor_telemetry';
+) LOCATION 'sensor_telemetry';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_telemetry TO USER {{current_user}};
 

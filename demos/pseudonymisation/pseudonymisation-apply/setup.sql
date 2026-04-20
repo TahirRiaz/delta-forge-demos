@@ -57,7 +57,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.trial_part
     treatment_arm   VARCHAR,
     efficacy_score  DOUBLE,
     outcome         VARCHAR
-) LOCATION '{{data_path}}/trial_participants';
+) LOCATION 'trial_participants';
 
 GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.trial_participants TO USER {{current_user}};
 

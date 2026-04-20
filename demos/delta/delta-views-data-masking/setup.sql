@@ -34,7 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_orders (
     order_status      VARCHAR,
     order_date        VARCHAR,
     region            VARCHAR
-) LOCATION '{{data_path}}/customer_orders';
+) LOCATION 'customer_orders';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_orders TO USER {{current_user}};
 

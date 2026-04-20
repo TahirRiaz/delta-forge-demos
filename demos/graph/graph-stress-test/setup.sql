@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.stress_test_network.st_department
     floor_num   INT,
     budget_k    INT,
     region      STRING
-) LOCATION '{{data_path}}/st_departments';
+) LOCATION 'st_departments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.stress_test_network.st_departments TO USER {{current_user}};
 
@@ -87,7 +87,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.stress_test_network.st_people (
     level           STRING,
     salary_band     STRING,
     active          BOOLEAN
-) LOCATION '{{data_path}}/st_people';
+) LOCATION 'st_people';
 
 GRANT ADMIN ON TABLE {{zone_name}}.stress_test_network.st_people TO USER {{current_user}};
 
@@ -204,7 +204,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.stress_test_network.st_edges (
     weight              DOUBLE,
     relationship_type   STRING,
     since_year          INT
-) LOCATION '{{data_path}}/st_edges';
+) LOCATION 'st_edges';
 
 GRANT ADMIN ON TABLE {{zone_name}}.stress_test_network.st_edges TO USER {{current_user}};
 -- ============================================================================

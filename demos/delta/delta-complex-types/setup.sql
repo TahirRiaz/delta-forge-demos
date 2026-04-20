@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.employees (
     is_active        BOOLEAN,
     manager_id       INT,
     level            VARCHAR
-) LOCATION '{{data_path}}/employees';
+) LOCATION 'employees';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.employees TO USER {{current_user}};
 

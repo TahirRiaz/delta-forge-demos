@@ -36,7 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.device_telemetry (
     avg_latency     DOUBLE,
     status          VARCHAR,
     reported_date   VARCHAR
-) LOCATION '{{data_path}}/device_telemetry';
+) LOCATION 'device_telemetry';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.device_telemetry TO USER {{current_user}};
 

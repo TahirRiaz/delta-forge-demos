@@ -41,7 +41,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.polbooks_raw.polbooks_edges TO USER {{current
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.political_books.edges
-LOCATION '{{data_path}}/delta/edges'
+LOCATION 'delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -59,7 +59,7 @@ OPTIONS (header = 'true', delimiter = '|');
 GRANT ADMIN ON TABLE {{zone_name}}.polbooks_raw.polbooks_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.political_books.vertices
-LOCATION '{{data_path}}/delta/vertices'
+LOCATION 'delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

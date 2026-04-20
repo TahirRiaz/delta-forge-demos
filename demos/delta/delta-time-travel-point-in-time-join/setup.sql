@@ -30,7 +30,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.fx_trades (
     amount     DOUBLE,
     direction  VARCHAR,
     traded_at  VARCHAR
-) LOCATION '{{data_path}}/fx_trades';
+) LOCATION 'fx_trades';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.fx_trades TO USER {{current_user}};
 
@@ -59,7 +59,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.fx_rates (
     pair           VARCHAR,
     rate           DOUBLE,
     effective_from VARCHAR
-) LOCATION '{{data_path}}/fx_rates';
+) LOCATION 'fx_rates';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.fx_rates TO USER {{current_user}};
 

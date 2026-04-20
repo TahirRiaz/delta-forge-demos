@@ -46,7 +46,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.karate_manual_raw.karate_vertices TO USER {{c
 -- === Edge Table ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_manual.edges
-LOCATION '{{data_path}}/delta/edges'
+LOCATION 'delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -59,7 +59,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.karate_manual.edges TO USER {{current_user}};
 -- === Vertex Table ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_manual.vertices
-LOCATION '{{data_path}}/delta/vertices'
+LOCATION 'delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

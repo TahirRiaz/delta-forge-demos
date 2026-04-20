@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.config_singleton (
     version         INT,
     updated_by      VARCHAR,
     updated_at      VARCHAR
-) LOCATION '{{data_path}}/config_singleton';
+) LOCATION 'config_singleton';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.config_singleton TO USER {{current_user}};
 
@@ -72,7 +72,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.wide_metrics (
     m26_click_rate      DOUBLE,
     m27_social_reach    INT,
     m28_engagement_rate DOUBLE
-) LOCATION '{{data_path}}/wide_metrics';
+) LOCATION 'wide_metrics';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.wide_metrics TO USER {{current_user}};
 
@@ -109,7 +109,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.empty_staging (
     raw_data        VARCHAR,
     status          VARCHAR,
     received_at     VARCHAR
-) LOCATION '{{data_path}}/empty_staging';
+) LOCATION 'empty_staging';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.empty_staging TO USER {{current_user}};
 

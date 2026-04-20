@@ -25,7 +25,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_events (
     channel         VARCHAR,
     revenue         DOUBLE,
     event_date      VARCHAR
-) LOCATION '{{data_path}}/customer_events';
+) LOCATION 'customer_events';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_events TO USER {{current_user}};
 

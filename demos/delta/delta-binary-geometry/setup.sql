@@ -36,7 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.document_store (
     content_hash    VARCHAR,
     size_bytes      INT,
     created_at      VARCHAR
-) LOCATION '{{data_path}}/document_store';
+) LOCATION 'document_store';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.document_store TO USER {{current_user}};
 
@@ -80,7 +80,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.geo_locations (
     latitude    DOUBLE,
     longitude   DOUBLE,
     region      VARCHAR
-) LOCATION '{{data_path}}/geo_locations';
+) LOCATION 'geo_locations';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.geo_locations TO USER {{current_user}};
 

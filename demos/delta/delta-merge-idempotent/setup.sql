@@ -40,7 +40,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_readings (
     value       DOUBLE,
     recorded_at VARCHAR,
     ingested_at VARCHAR
-) LOCATION '{{data_path}}/sensor_readings';
+) LOCATION 'sensor_readings';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_readings TO USER {{current_user}};
 
@@ -91,7 +91,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_batch (
     value       DOUBLE,
     recorded_at VARCHAR,
     batch_id    VARCHAR
-) LOCATION '{{data_path}}/sensor_batch';
+) LOCATION 'sensor_batch';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sensor_batch TO USER {{current_user}};
 

@@ -42,7 +42,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.karate_club_raw.karate_edges TO USER {{curren
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_club.edges
-LOCATION '{{data_path}}/delta/edges'
+LOCATION 'delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -60,7 +60,7 @@ OPTIONS (header = 'true', delimiter = '|');
 GRANT ADMIN ON TABLE {{zone_name}}.karate_club_raw.karate_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_club.vertices
-LOCATION '{{data_path}}/delta/vertices'
+LOCATION 'delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

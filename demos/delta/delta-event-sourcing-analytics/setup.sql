@@ -40,7 +40,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.ed_events (
     severity       VARCHAR,
     payload        VARCHAR,
     event_time     VARCHAR
-) LOCATION '{{data_path}}/ed_events';
+) LOCATION 'ed_events';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.ed_events TO USER {{current_user}};
 

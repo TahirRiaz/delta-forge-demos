@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_network.researchers (
     rank        STRING,
     h_index     INT,
     active      BOOLEAN
-) LOCATION '{{data_path}}/researchers';
+) LOCATION 'researchers';
 
 GRANT ADMIN ON TABLE {{zone_name}}.research_network.researchers TO USER {{current_user}};
 
@@ -68,7 +68,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_network.collaborations (
     collab_type     STRING,
     project_count   INT,
     since_year      INT
-) LOCATION '{{data_path}}/collaborations';
+) LOCATION 'collaborations';
 
 GRANT ADMIN ON TABLE {{zone_name}}.research_network.collaborations TO USER {{current_user}};
 

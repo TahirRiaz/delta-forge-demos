@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.activity_log (
     page           VARCHAR,
     duration_secs  INT,
     logged_at      VARCHAR
-) LOCATION '{{data_path}}/activity_log';
+) LOCATION 'activity_log';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.activity_log TO USER {{current_user}};
 

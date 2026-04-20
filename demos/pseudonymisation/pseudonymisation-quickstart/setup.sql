@@ -56,7 +56,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pseudonymisation_demos.bank_custo
     account_tier   VARCHAR,
     balance        DOUBLE,
     active         BOOLEAN
-) LOCATION '{{data_path}}/bank_customers';
+) LOCATION 'bank_customers';
 
 GRANT ADMIN ON TABLE {{zone_name}}.pseudonymisation_demos.bank_customers TO USER {{current_user}};
 

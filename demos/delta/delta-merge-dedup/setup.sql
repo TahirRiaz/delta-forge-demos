@@ -41,7 +41,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.events (
     amount      DOUBLE,
     version     INT,
     received_at VARCHAR
-) LOCATION '{{data_path}}/events';
+) LOCATION 'events';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.events TO USER {{current_user}};
 
@@ -87,6 +87,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.events_deduped (
     amount      DOUBLE,
     version     INT,
     received_at VARCHAR
-) LOCATION '{{data_path}}/events_deduped';
+) LOCATION 'events_deduped';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.events_deduped TO USER {{current_user}};

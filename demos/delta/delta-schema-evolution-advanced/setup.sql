@@ -21,7 +21,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_catalog (
     category VARCHAR,
     price    DOUBLE,
     stock    INT
-) LOCATION '{{data_path}}/product_catalog';
+) LOCATION 'product_catalog';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_catalog TO USER {{current_user}};
 

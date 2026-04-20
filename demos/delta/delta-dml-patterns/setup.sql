@@ -34,7 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_history (
     status      VARCHAR,
     region      VARCHAR,
     order_date  VARCHAR
-) LOCATION '{{data_path}}/order_history';
+) LOCATION 'order_history';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_history TO USER {{current_user}};
 
@@ -51,7 +51,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_archive (
     status      VARCHAR,
     region      VARCHAR,
     order_date  VARCHAR
-) LOCATION '{{data_path}}/order_archive';
+) LOCATION 'order_archive';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.order_archive TO USER {{current_user}};
 

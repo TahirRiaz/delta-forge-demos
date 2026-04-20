@@ -32,7 +32,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_catalog (
     stock      INT,
     supplier   VARCHAR,
     category   VARCHAR
-) LOCATION '{{data_path}}/product_catalog'
+) LOCATION 'product_catalog'
 PARTITIONED BY (category);
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_catalog TO USER {{current_user}};
@@ -135,7 +135,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.supplier_feed (
     stock      INT,
     supplier   VARCHAR,
     category   VARCHAR
-) LOCATION '{{data_path}}/supplier_feed';
+) LOCATION 'supplier_feed';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.supplier_feed TO USER {{current_user}};
 

@@ -31,7 +31,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.quarterly_revenue (
     tax_rate   DOUBLE,
     total      DOUBLE
 ) PARTITIONED BY (quarter)
-  LOCATION '{{data_path}}/quarterly_revenue';
+  LOCATION 'quarterly_revenue';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.quarterly_revenue TO USER {{current_user}};
 

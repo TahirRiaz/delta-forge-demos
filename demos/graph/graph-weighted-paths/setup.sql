@@ -34,7 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.shipping_network.ports (
     region          STRING,
     capacity_teu    INT,
     crane_count     INT
-) LOCATION '{{data_path}}/ports';
+) LOCATION 'ports';
 
 GRANT ADMIN ON TABLE {{zone_name}}.shipping_network.ports TO USER {{current_user}};
 
@@ -80,7 +80,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.shipping_network.routes (
     transit_days    INT,
     route_type      STRING,
     fuel_cost_usd   DOUBLE
-) LOCATION '{{data_path}}/routes';
+) LOCATION 'routes';
 
 GRANT ADMIN ON TABLE {{zone_name}}.shipping_network.routes TO USER {{current_user}};
 

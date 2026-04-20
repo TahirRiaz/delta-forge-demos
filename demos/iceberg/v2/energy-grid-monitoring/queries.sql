@@ -194,7 +194,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_delta
     energy_kwh         DOUBLE,
     power_factor       INT,
     grid_frequency_hz  DOUBLE
-) LOCATION '{{data_path}}/grid_readings_delta'
+) LOCATION 'grid_readings_delta'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.columnMapping.mode' = 'id'

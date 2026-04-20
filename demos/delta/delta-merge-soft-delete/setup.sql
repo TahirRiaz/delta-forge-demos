@@ -34,7 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.vendors (
     is_active       INT,
     status_note     VARCHAR,
     last_verified   VARCHAR
-) LOCATION '{{data_path}}/vendors';
+) LOCATION 'vendors';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.vendors TO USER {{current_user}};
 
@@ -66,7 +66,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.vendor_feed (
     vendor_name     VARCHAR,
     category        VARCHAR,
     annual_spend    DOUBLE
-) LOCATION '{{data_path}}/vendor_feed';
+) LOCATION 'vendor_feed';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.vendor_feed TO USER {{current_user}};
 

@@ -38,7 +38,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.zones (
     country VARCHAR,
     polygon_wkt VARCHAR,
     surcharge_pct DOUBLE
-) LOCATION '{{data_path}}/pip_zones';
+) LOCATION 'pip_zones';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.zones TO USER {{current_user}};
 
@@ -111,7 +111,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.driver_positions (
     lng DOUBLE,
     driver_id VARCHAR,
     city VARCHAR
-) LOCATION '{{data_path}}/pip_driver_positions';
+) LOCATION 'pip_driver_positions';
 
 GRANT ADMIN ON TABLE {{zone_name}}.spatial_demos.driver_positions TO USER {{current_user}};
 

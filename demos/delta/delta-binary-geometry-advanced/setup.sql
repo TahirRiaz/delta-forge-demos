@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.documents (
     size_bytes      INT,
     location_id     INT,
     created_at      VARCHAR
-) LOCATION '{{data_path}}/documents';
+) LOCATION 'documents';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.documents TO USER {{current_user}};
 
@@ -95,7 +95,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.locations (
     longitude   DOUBLE,
     region      VARCHAR,
     elevation_m INT
-) LOCATION '{{data_path}}/locations';
+) LOCATION 'locations';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.locations TO USER {{current_user}};
 
@@ -144,7 +144,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.audit_log (
     user_name   VARCHAR,
     action      VARCHAR,
     accessed_at VARCHAR
-) LOCATION '{{data_path}}/audit_log';
+) LOCATION 'audit_log';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.audit_log TO USER {{current_user}};
 

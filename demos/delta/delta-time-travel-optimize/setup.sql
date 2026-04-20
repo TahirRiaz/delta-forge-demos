@@ -33,7 +33,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory (
     qty       INT,
     price     DOUBLE,
     warehouse VARCHAR
-) LOCATION '{{data_path}}/inventory';
+) LOCATION 'inventory';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory TO USER {{current_user}};
 

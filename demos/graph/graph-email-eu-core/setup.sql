@@ -41,7 +41,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.email_eu_core_raw.email_eu_edges TO USER {{cu
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.email_eu_core.edges
-LOCATION '{{data_path}}/delta/edges'
+LOCATION 'delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -59,7 +59,7 @@ OPTIONS (header = 'true', delimiter = '|');
 GRANT ADMIN ON TABLE {{zone_name}}.email_eu_core_raw.email_eu_vertices TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.email_eu_core.vertices
-LOCATION '{{data_path}}/delta/vertices'
+LOCATION 'delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

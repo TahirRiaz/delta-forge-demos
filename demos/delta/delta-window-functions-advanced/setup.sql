@@ -28,7 +28,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_reps (
     revenue       DOUBLE,
     deals_closed  INT,
     quota         DOUBLE
-) LOCATION '{{data_path}}/sales_reps';
+) LOCATION 'sales_reps';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_reps TO USER {{current_user}};
 -- Rep 1: Alice Chen — North, strong performer

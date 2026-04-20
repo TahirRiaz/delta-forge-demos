@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_stress_network.gpu_st_departm
     floor_num   INT,
     budget_k    INT,
     region      STRING
-) LOCATION '{{data_path}}/gpu_st_departments';
+) LOCATION 'gpu_st_departments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_stress_network.gpu_st_departments TO USER {{current_user}};
 
@@ -80,7 +80,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_stress_network.gpu_st_people 
     level           STRING,
     salary_band     STRING,
     active          BOOLEAN
-) LOCATION '{{data_path}}/gpu_st_people';
+) LOCATION 'gpu_st_people';
 
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_stress_network.gpu_st_people TO USER {{current_user}};
 
@@ -168,7 +168,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_stress_network.gpu_st_edges (
     weight              DOUBLE,
     relationship_type   STRING,
     since_year          INT
-) LOCATION '{{data_path}}/gpu_st_edges';
+) LOCATION 'gpu_st_edges';
 
 GRANT ADMIN ON TABLE {{zone_name}}.gpu_stress_network.gpu_st_edges TO USER {{current_user}};
 -- ============================================================================

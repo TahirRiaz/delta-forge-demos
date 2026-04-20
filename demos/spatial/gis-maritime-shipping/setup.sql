@@ -26,7 +26,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.maritime.ports (
     lat          DOUBLE,
     lng          DOUBLE,
     harbor_wkt   VARCHAR
-) LOCATION '{{data_path}}/maritime_ports';
+) LOCATION 'maritime_ports';
 
 GRANT ADMIN ON TABLE {{zone_name}}.maritime.ports TO USER {{current_user}};
 
@@ -52,7 +52,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.maritime.vessels (
     vessel_type    VARCHAR,
     flag_country   VARCHAR,
     deadweight_tons INT
-) LOCATION '{{data_path}}/maritime_vessels';
+) LOCATION 'maritime_vessels';
 
 GRANT ADMIN ON TABLE {{zone_name}}.maritime.vessels TO USER {{current_user}};
 
@@ -77,7 +77,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.maritime.positions (
     lng          DOUBLE,
     speed_knots  DOUBLE,
     recorded_at  VARCHAR
-) LOCATION '{{data_path}}/maritime_positions';
+) LOCATION 'maritime_positions';
 
 GRANT ADMIN ON TABLE {{zone_name}}.maritime.positions TO USER {{current_user}};
 

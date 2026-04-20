@@ -32,7 +32,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.products (
     category    VARCHAR,
     price       DOUBLE,
     in_stock    INT
-) LOCATION '{{data_path}}/products';
+) LOCATION 'products';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.products TO USER {{current_user}};
 
@@ -67,7 +67,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_feed (
     category    VARCHAR,
     price       DOUBLE,
     in_stock    INT
-) LOCATION '{{data_path}}/product_feed';
+) LOCATION 'product_feed';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.product_feed TO USER {{current_user}};
 

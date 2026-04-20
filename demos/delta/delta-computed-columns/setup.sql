@@ -28,7 +28,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_invoices (
     sales_rep    VARCHAR,
     commission   DOUBLE,
     invoice_date VARCHAR
-) LOCATION '{{data_path}}/sales_invoices';
+) LOCATION 'sales_invoices';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.sales_invoices TO USER {{current_user}};
 

@@ -32,7 +32,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.legacy_data (
     order_status      VARCHAR,
     created_date      VARCHAR,
     migrated_flag     INT
-) LOCATION '{{data_path}}/legacy_data';
+) LOCATION 'legacy_data';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.legacy_data TO USER {{current_user}};
 

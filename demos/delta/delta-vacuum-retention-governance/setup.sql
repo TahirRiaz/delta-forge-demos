@@ -30,7 +30,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.settlement_records (
     settlement_date   VARCHAR,
     status            VARCHAR,
     trader            VARCHAR
-) LOCATION '{{data_path}}/settlement_records';
+) LOCATION 'settlement_records';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.settlement_records TO USER {{current_user}};
 

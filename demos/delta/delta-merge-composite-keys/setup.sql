@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.fleet_daily_summary (
     stop_count         INT,
     idle_minutes       INT,
     last_sync          VARCHAR
-) LOCATION '{{data_path}}/fleet_daily_summary';
+) LOCATION 'fleet_daily_summary';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.fleet_daily_summary TO USER {{current_user}};
 
@@ -87,7 +87,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.telemetry_batch (
     stop_count         INT,
     idle_minutes       INT,
     last_sync          VARCHAR
-) LOCATION '{{data_path}}/telemetry_batch';
+) LOCATION 'telemetry_batch';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.telemetry_batch TO USER {{current_user}};
 

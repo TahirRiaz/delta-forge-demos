@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.customers (
     industry   STRING,
     tier       STRING,
     annual_contract INT
-) LOCATION '{{data_path}}/sales/customers';
+) LOCATION 'sales/customers';
 
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.customers TO USER {{current_user}};
 
@@ -103,7 +103,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.referrals (
     weight         DOUBLE,
     referral_type  STRING,
     year_established INT
-) LOCATION '{{data_path}}/sales/referrals';
+) LOCATION 'sales/referrals';
 
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.referrals TO USER {{current_user}};
 
@@ -226,7 +226,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.orders (
     amount      DOUBLE,
     product     STRING,
     quarter     STRING
-) LOCATION '{{data_path}}/sales/orders';
+) LOCATION 'sales/orders';
 
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.orders TO USER {{current_user}};
 
@@ -368,7 +368,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.sales_reps (
     rep_name  STRING,
     territory STRING,
     quota     INT
-) LOCATION '{{data_path}}/sales/sales_reps';
+) LOCATION 'sales/sales_reps';
 
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.sales_reps TO USER {{current_user}};
 
@@ -390,14 +390,14 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.influence_scores
     customer_id     BIGINT,
     influence_score DOUBLE,
     influence_rank  BIGINT
-) LOCATION '{{data_path}}/sales/influence_scores';
+) LOCATION 'sales/influence_scores';
 
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.influence_scores TO USER {{current_user}};
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.customer_network.community_assignments (
     customer_id  BIGINT,
     community_id BIGINT
-) LOCATION '{{data_path}}/sales/community_assignments';
+) LOCATION 'sales/community_assignments';
 
 GRANT ADMIN ON TABLE {{zone_name}}.customer_network.community_assignments TO USER {{current_user}};
 

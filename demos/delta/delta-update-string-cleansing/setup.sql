@@ -40,7 +40,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.customer_imports (
     phone          VARCHAR,
     city           VARCHAR,
     country_code   VARCHAR
-) LOCATION '{{data_path}}/customer_imports';
+) LOCATION 'customer_imports';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.customer_imports TO USER {{current_user}};
 

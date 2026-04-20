@@ -26,7 +26,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_master (
     qty             INT,
     supplier        VARCHAR,
     last_updated    VARCHAR
-) LOCATION '{{data_path}}/inventory_master';
+) LOCATION 'inventory_master';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_master TO USER {{current_user}};
 
@@ -87,7 +87,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_updates (
     qty             INT,
     supplier        VARCHAR,
     last_updated    VARCHAR
-) LOCATION '{{data_path}}/inventory_updates';
+) LOCATION 'inventory_updates';
 
 GRANT ADMIN ON TABLE {{zone_name}}.delta_demos.inventory_updates TO USER {{current_user}};
 
