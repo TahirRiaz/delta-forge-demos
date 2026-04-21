@@ -12,54 +12,44 @@
 -- localization teams.
 --
 -- Pipeline:
---   1. Vault backend           — OS keychain (no cloud setup needed)
---   2. Vault entry             — placeholder API token (REST Countries
---                                doesn't require auth, but we exercise
---                                the full credential path so production
---                                APIs that DO require auth use the same
---                                pattern verbatim)
---   3. Zone + schema           — bronze landing + travel_geo for the
+--   1. Vault entry             — placeholder API token in the OS keychain
+--                                (the always-on default credential
+--                                storage). REST Countries doesn't require
+--                                auth, but we exercise the full credential
+--                                path so production APIs that DO require
+--                                auth use the same pattern verbatim.
+--   2. Zone + schema           — bronze landing + travel_geo for the
 --                                queryable external table
---   4. REST API connection     — base URL + auth_mode + storage_zone +
+--   3. REST API connection     — base URL + auth_mode + storage_zone +
 --                                base_path on the data source
---   5. API ingest endpoint     — qualified name + endpoint path +
+--   4. API ingest endpoint     — qualified name + endpoint path +
 --                                response format
---   6. INVOKE                  — actual HTTP GET, writes raw JSON to
+--   5. INVOKE                  — actual HTTP GET, writes raw JSON to
 --                                bronze under a timestamped per-run folder
---   7. External table          — JSON over the bronze landing with
+--   6. External table          — JSON over the bronze landing with
 --                                json_flatten_config to project nested
 --                                fields into flat columns
 -- ============================================================================
 
 -- --------------------------------------------------------------------------
--- 1. Credential storage backend (OS keychain — local, no cloud SDK setup)
+-- 1. Vault entry (the API token itself)
 -- --------------------------------------------------------------------------
--- The OS keychain backend stores secrets in the OS-native vault (Windows
--- Credential Manager / macOS Keychain / Linux Secret Service). Suitable
--- for desktop + dev environments; production deployments would point at
--- TYPE AZURE / AWS / GCP instead.
-
-CREATE CREDENTIAL STORAGE IF NOT EXISTS local_keychain
-    TYPE OS_KEYCHAIN
-    DESCRIPTION 'Local OS-native keychain for development credentials';
-
--- --------------------------------------------------------------------------
--- 2. Vault entry (the API token itself)
--- --------------------------------------------------------------------------
--- Stored in the keychain backend by name. The literal SECRET below is a
--- placeholder — REST Countries v3 is fully public and ignores the
--- Authorization header. The same syntax + flow applies unchanged for
--- bearer-protected APIs (GitHub, Stripe, etc.); only the literal value
--- changes.
+-- The OS keychain backend (Windows Credential Manager / macOS Keychain /
+-- Linux Secret Service) is the always-on default storage — no explicit
+-- registration needed. CREATE CREDENTIAL writes to it directly.
+--
+-- The literal SECRET below is a placeholder — REST Countries v3 is fully
+-- public and ignores the Authorization header. The same syntax + flow
+-- applies unchanged for bearer-protected APIs (GitHub, Stripe, etc.);
+-- only the literal value changes.
 
 CREATE CREDENTIAL IF NOT EXISTS travel_api_token
-    TYPE CREDENTIAL
+    TYPE = CREDENTIAL
     SECRET 'demo-placeholder-token-restcountries-is-public'
-    IN CREDENTIAL STORAGE local_keychain
     DESCRIPTION 'Bearer token for the REST Countries reference catalog sync';
 
 -- --------------------------------------------------------------------------
--- 3. Zone + schema
+-- 2. Zone + schema
 -- --------------------------------------------------------------------------
 -- Zone is the permission boundary. INVOKE writes downloaded files under
 -- <zone-root>/<source>/<endpoint>/<run-ts>/page_NNNN.json — `bronze`
@@ -72,7 +62,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.travel_geo
     COMMENT 'Travel geography reference data — country, currency, language metadata';
 
 -- --------------------------------------------------------------------------
--- 4. REST API connection (a `data_sources` row of source_type = rest_api)
+-- 3. REST API connection (a `data_sources` row of source_type = rest_api)
 -- --------------------------------------------------------------------------
 -- Carries the host, auth mode, and storage destination. CREDENTIAL = …
 -- references the vault entry above by name; the executor resolves the
@@ -90,7 +80,7 @@ CREATE CONNECTION IF NOT EXISTS rest_countries
     CREDENTIAL = travel_api_token;
 
 -- --------------------------------------------------------------------------
--- 5. API ingest endpoint (definition only — no HTTP yet)
+-- 4. API ingest endpoint (definition only — no HTTP yet)
 -- --------------------------------------------------------------------------
 -- Qualified name `<zone>.<source>.<endpoint>` ties the endpoint to its
 -- destination zone in one place. SHOW API INGESTS lists this row;
@@ -101,7 +91,7 @@ CREATE API INGEST {{zone_name}}.rest_countries.europe
     RESPONSE FORMAT JSON;
 
 -- --------------------------------------------------------------------------
--- 6. INVOKE — actual HTTP fetch, lands raw JSON under bronze
+-- 5. INVOKE — actual HTTP fetch, lands raw JSON under bronze
 -- --------------------------------------------------------------------------
 -- Single-page response (REST Countries returns the full European array in
 -- one call), so pagination isn't needed. The engine writes one
@@ -110,7 +100,7 @@ CREATE API INGEST {{zone_name}}.rest_countries.europe
 INVOKE API INGEST {{zone_name}}.rest_countries.europe;
 
 -- --------------------------------------------------------------------------
--- 7. External table over the landed JSON
+-- 6. External table over the landed JSON
 -- --------------------------------------------------------------------------
 -- LOCATION is relative to the zone's storage_root, so it resolves to the
 -- same path the ingest engine wrote to. `recursive` walks the
