@@ -162,11 +162,11 @@ INTO $next_country, $next_year;
 -- 7. INVOKE with runtime-resolved path params via USING (...)
 -- --------------------------------------------------------------------------
 -- The USING clause supplies per-call overrides that get merged into
--- the ingest's stored config at INVOKE time. Dotted keys are single-
--- quoted (LHS is a string literal so the dot is preserved verbatim,
--- matching the CREATE OPTIONS convention). RHS is any scalar
--- expression — here the $params captured in step 6, but it also
--- accepts literals, function calls, and (SELECT ...) subqueries.
+-- the ingest's stored config at INVOKE time. Keys are unquoted
+-- `<kind>.<key>` where <kind> is path_param / query_param / header —
+-- a different grammar from CREATE OPTIONS (where dotted keys are
+-- quoted). RHS is any scalar expression: literals, $params, function
+-- calls, or (SELECT ...) subqueries.
 --
 -- The engine substitutes $next_year → 2025 and $next_country → 'NO'
 -- at execution time, merges those into the ingest's path_param map,
@@ -179,8 +179,8 @@ INTO $next_country, $next_year;
 
 INVOKE API INGEST {{zone_name}}.nager_date_holidays.public_holidays
     USING (
-        'path_param.year'         = $next_year,
-        'path_param.country_code' = $next_country
+        path_param.year         = $next_year,
+        path_param.country_code = $next_country
     );
 
 -- --------------------------------------------------------------------------
