@@ -42,8 +42,8 @@
       "id": "api-public-holiday-calendar-sync",
       "path": "demos/api/public-holiday-calendar-sync",
       "iconPath": "icons/api-public-holiday-calendar-sync.svg",
-      "name": "Public Holiday Calendar Sync — Path-Parameter Incremental Enrichment",
-      "summary": "Path-parameter-driven REST API ingest against a distinct public source (Nager.Date, https://date.nager.at) — picked deliberately to avoid reusing REST Countries from the reference-catalog demo. A multinational HR platform syncs public-holiday calendars per (country, year) for its time-off tracker and billable-day calculator. Launch seed = Norway 2024 + Sweden 2024 (8 rows); this demo runs one wave — Norway 2025 — by substituting path_param.year and path_param.country_code into the endpoint template /api/v3/PublicHolidays/{year}/{country_code}. Walks the 'check target → compute gap → parameterise → invoke' pattern: an anti-join against silver computes the missing (country, year) combos, path_params are set accordingly, INVOKE fetches just Norway 2025 over HTTPS, and a NOT EXISTS merge on the composite key (country_code, holiday_year, holiday_date) keeps replays idempotent. 6 queries with 30+ assertions cover wave composition, fixed-date wire proof (NO Constitution Day, NO Christmas Day), the exact anti-join a pipeline runs for the next wave, bronze narrowing to one country, seed preservation, and Delta history. Requires internet — INVOKE issues a real GET against https://date.nager.at.",
+      "name": "Public Holiday Calendar Sync — Script-Parameter Incremental Enrichment",
+      "summary": "Target-table-driven REST API ingest using the newly-landed script parameters (SELECT ... INTO $params) and INVOKE ... USING (...) override grammar. Distinct public source: Nager.Date (https://date.nager.at), a no-auth public-holiday service. A multinational HR platform syncs public-holiday calendars per (country, year); launch seed = Norway 2024 + Sweden 2024 (8 rows). The ingest is defined with an endpoint template /api/v3/PublicHolidays/{year}/{country_code} but NO stored path_params — every INVOKE supplies its own values via USING. A single SELECT ... INTO $next_country, $next_year reads silver to capture the next-wave gap, then INVOKE ... USING ('path_param.year' = $next_year, 'path_param.country_code' = $next_country) fetches only that combo. NO hardcoded literals propagate through the ingest definition. 6 queries with 30+ assertions cover wave composition, fixed-date wire proof (NO Constitution Day, NO Christmas Day), the anti-join pattern for the next wave, bronze narrowing to one country, seed preservation, and Delta history. Requires internet — INVOKE issues a real GET against https://date.nager.at.",
       "categories": [
         "api",
         "rest-ingest",
@@ -56,7 +56,10 @@
         "ingest",
         "incremental",
         "parameters",
-        "path-param",
+        "script-params",
+        "invoke-using",
+        "into-capture",
+        "target-driven",
         "nager-date",
         "holidays",
         "hr",
@@ -74,7 +77,7 @@
       "dataSizeBytes": 0,
       "fileCount": 0,
       "author": "Delta Forge Team",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
         {
