@@ -115,9 +115,14 @@ ORDER BY holiday_date;
 -- groups are still present. If either count moved, the merge's
 -- composite-key guard is broken.
 
+-- ASSERT VALUE ... WHERE only supports a single-column predicate, so we
+-- rely on `source_batch = 'launch_seed'` in the SELECT to pin the year
+-- to 2024 and match ASSERT VALUE rows by country_code alone.
 ASSERT ROW_COUNT = 2
-ASSERT VALUE holiday_count = 4 WHERE country_code = 'NO' AND holiday_year = 2024
-ASSERT VALUE holiday_count = 4 WHERE country_code = 'SE' AND holiday_year = 2024
+ASSERT VALUE holiday_count = 4 WHERE country_code = 'NO'
+ASSERT VALUE holiday_count = 4 WHERE country_code = 'SE'
+ASSERT VALUE holiday_year = 2024 WHERE country_code = 'NO'
+ASSERT VALUE holiday_year = 2024 WHERE country_code = 'SE'
 SELECT country_code, holiday_year, COUNT(*) AS holiday_count
 FROM {{zone_name}}.hr_calendar.country_holidays
 WHERE source_batch = 'launch_seed'
