@@ -1,52 +1,39 @@
 -- ============================================================================
 -- Demo: Public Holiday Calendar Sync — Script-Parameter Incremental Enrichment
--- Feature: Target-table-driven INVOKE USING (...) overrides on a REST API ingest
+-- Feature: Target-table-driven INVOKE USING via SET / INTO / $variables
 -- ============================================================================
 --
 -- Real-world story: a multinational HR platform syncs public-holiday
 -- calendars per (country, year) so its time-off tracker and billable-day
 -- calculator stay accurate. At launch, a Nordic pair was hand-seeded
--- (Norway 2024 and Sweden 2024 — the core holidays payroll cares about).
--- Every December the ops team runs the next wave: each onboarded country
--- gets its next-year calendar fetched from Nager.Date and merged into
--- the silver catalog. This demo runs one such wave — the next missing
--- Norway year — with NO hardcoded literals propagated through the
--- ingest definition.
+-- (Norway 2024 and Sweden 2024). Every December the ops team runs the
+-- next wave: each onboarded country gets its next-year calendar fetched
+-- from Nager.Date and merged into the silver catalog.
 --
--- What's different from a static ingest:
---   • The ingest is defined WITHOUT any path_param OPTIONS. The
---     endpoint template still has {year}/{country_code} placeholders,
---     but the ingest itself never commits to values for them.
---   • A target-table SELECT ... INTO $next_country, $next_year reads
---     the silver catalog and captures the next wave's params into
---     session-scoped script parameters.
---   • INVOKE API INGEST ... USING (...) supplies the path params on a
---     per-call basis, referencing the captured $params directly.
+-- This demo runs one such wave — the next missing Norway year — using
+-- the script-parameter pattern end-to-end:
 --
--- The three pieces together give the authentic "read target → compute
--- gap → parameterise → invoke" shape purely in SQL:
+--   1. Read silver: `SELECT 'NO', MAX(year)+1 FROM silver ...
+--                     INTO $next_country, $next_year;`
+--      Captures the next wave's gap into session-scoped script params.
 --
---     SELECT <next-wave-projection> FROM silver WHERE ...
---         INTO $next_country, $next_year;
---     INVOKE API INGEST ... USING (
---         'path_param.year'         = $next_year,
---         'path_param.country_code' = $next_country
---     );
+--   2. INVOKE with runtime overrides: `USING (path_param.year = $next_year,
+--                                             path_param.country_code = $next_country);`
+--      The engine resolves $next_year / $next_country from the script
+--      bag against the actual ScalarValues, merges them into the ingest's
+--      path_param map, and issues the HTTPS GET against:
+--         https://date.nager.at/api/v3/PublicHolidays/2025/NO
 --
--- Delta Forge mechanics exercised:
---   • Bearer credential in the OS keychain (CREATE CREDENTIAL)
---   • REST API data source (CREATE CONNECTION TYPE = rest_api)
---   • CREATE API INGEST with an endpoint template but NO path_param
---     options — params are deferred to the caller
---   • Script parameters — SELECT ... INTO $params captures the gap
---     projection from a target-table read
---   • INVOKE API INGEST ... USING (...) — per-call parameter overrides,
---     values resolved at INVOKE time from the captured $params
---   • json_flatten_config on a top-level JSON array response
---   • NOT EXISTS composite-key merge for idempotent incremental load
+--   3. Merge bronze → silver, stamping each new row with $next_year.
+--      NOT EXISTS on (country_code, holiday_year, holiday_date) keeps
+--      the merge idempotent on replay.
 --
--- Public API: Nager.Date (https://date.nager.at) — a no-auth public
--- holiday service used by scheduling tools and HR platforms worldwide.
+-- IMPORTANT: this demo's statements share script-scoped parameters. The
+-- demo harness MUST execute this file as a SINGLE multi-statement script
+-- (one `execute_script_stream` call), not statement-by-statement. The
+-- script param bag is cleared between script invocations, so splitting
+-- the INTO / INVOKE / INSERT across separate HTTP calls would wipe
+-- $next_year / $next_country between step 6 and step 7.
 --
 -- NOTE: requires internet. INVOKE issues a real GET against
 -- https://date.nager.at/api/v3/PublicHolidays/<year>/<country>.
@@ -74,9 +61,6 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hr_calendar
 -- --------------------------------------------------------------------------
 -- 3. Silver catalog — seeded with the launch Nordic pair (2024)
 -- --------------------------------------------------------------------------
--- This is the SOURCE OF INCREMENTAL TRUTH. The INTO capture below
--- reads THIS table to decide which (country, year) combo the next
--- wave should fetch.
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.hr_calendar.country_holidays (
     country_code   STRING,
@@ -103,7 +87,7 @@ INSERT INTO {{zone_name}}.hr_calendar.country_holidays VALUES
 GRANT ADMIN ON TABLE {{zone_name}}.hr_calendar.country_holidays TO USER {{current_user}};
 
 -- --------------------------------------------------------------------------
--- 4. REST API connection — Nager.Date public endpoint
+-- 4. REST API connection
 -- --------------------------------------------------------------------------
 
 CREATE CONNECTION IF NOT EXISTS nager_date_holidays
@@ -120,36 +104,19 @@ CREATE CONNECTION IF NOT EXISTS nager_date_holidays
 -- --------------------------------------------------------------------------
 -- 5. API ingest — endpoint template only, NO stored path_params
 -- --------------------------------------------------------------------------
--- The ingest is deliberately defined without any path_param OPTIONS.
--- The {year} and {country_code} placeholders in the endpoint template
--- stay unresolved at CREATE time; each INVOKE supplies its own values
--- via USING (...). That makes this one ingest row reusable across
--- every wave (every country, every year) without ALTER-ing its
--- options between runs.
 
 CREATE API INGEST {{zone_name}}.nager_date_holidays.public_holidays
     ENDPOINT '/api/v3/PublicHolidays/{year}/{country_code}'
     RESPONSE FORMAT JSON;
 
 -- --------------------------------------------------------------------------
--- 6. Incremental gap lookup — read target, capture next-wave params
+-- 6. Capture next-wave params from target silver
 -- --------------------------------------------------------------------------
--- The single compound step that replaces a hardcoded wave config.
--- The SELECT projection decides "which country + year do we fetch
--- next?" — here by walking the most recent year we have for Norway
--- and adding one. COALESCE handles the bootstrap case where Norway
--- has no rows yet (falls back to 2024 so the first wave grabs 2025).
---
--- INTO $next_country, $next_year captures the row into two session-
--- scoped script parameters. Because the SELECT is an aggregate, it
+-- Single aggregate SELECT binds two session-scoped script parameters
+-- ($next_country, $next_year). Because MAX() is aggregate, the query
 -- always returns exactly one row — safe for the INTO grammar's
--- single-row contract.
---
--- The same pattern works unchanged with:
---   • `GET INCREMENTAL FILTER FROM <target> COLUMNS (...) INTO $filter;`
---     for key-based watermarks
---   • Any composite projection producing one row — the harness is
---     generic over the producer.
+-- single-row contract. COALESCE bootstraps at 2024 when silver has
+-- no Norway rows yet (first wave fetches 2025).
 
 SELECT
     'NO'                                                  AS next_country,
@@ -161,21 +128,12 @@ INTO $next_country, $next_year;
 -- --------------------------------------------------------------------------
 -- 7. INVOKE with runtime-resolved path params via USING (...)
 -- --------------------------------------------------------------------------
--- The USING clause supplies per-call overrides that get merged into
--- the ingest's stored config at INVOKE time. Keys are unquoted
--- `<kind>.<key>` where <kind> is path_param / query_param / header —
--- a different grammar from CREATE OPTIONS (where dotted keys are
--- quoted). RHS is any scalar expression: literals, $params, function
--- calls, or (SELECT ...) subqueries.
---
--- The engine substitutes $next_year → 2025 and $next_country → 'NO'
--- at execution time, merges those into the ingest's path_param map,
--- then assembles the URL:
+-- The engine resolves $next_year / $next_country against the script
+-- param bag populated in step 6, merges the ScalarValues into the
+-- ingest's path_param map, and assembles the URL:
 --     https://date.nager.at/api/v3/PublicHolidays/2025/NO
--- fetches, and writes the response to the per-run landing folder.
---
--- Nothing about the ingest definition needs to change between waves —
--- the SAME ingest is re-used with different USING params every time.
+-- The SAME ingest row is reusable across every wave — only the USING
+-- clause's resolved values change between calls.
 
 INVOKE API INGEST {{zone_name}}.nager_date_holidays.public_holidays
     USING (
@@ -186,9 +144,6 @@ INVOKE API INGEST {{zone_name}}.nager_date_holidays.public_holidays
 -- --------------------------------------------------------------------------
 -- 8. Bronze external table over the landed JSON
 -- --------------------------------------------------------------------------
--- Nager.Date returns a bare top-level array of holiday objects.
--- root_path = "$" walks that array element-by-element and maps the
--- six fields we'll merge into silver.
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hr_calendar.public_holidays_bronze
 USING JSON
@@ -225,12 +180,9 @@ GRANT ADMIN ON TABLE {{zone_name}}.hr_calendar.public_holidays_bronze TO USER {{
 -- --------------------------------------------------------------------------
 -- 9. Anti-join merge — bronze → silver on composite key
 -- --------------------------------------------------------------------------
--- holiday_year is sourced from $next_year so the silver row records
--- the year we asked for, not a value re-derived from the payload
--- (Nager.Date's response doesn't carry year as a separate field; it's
--- implicit in the path we requested). NOT EXISTS on (country_code,
--- holiday_year, holiday_date) makes the INSERT idempotent across
--- replays.
+-- $next_year is stamped onto every merged row so silver records the
+-- year we asked for, not a value re-derived from the payload. NOT EXISTS
+-- on (country_code, holiday_year, holiday_date) keeps replays idempotent.
 
 INSERT INTO {{zone_name}}.hr_calendar.country_holidays
 SELECT
