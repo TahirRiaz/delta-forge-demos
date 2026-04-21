@@ -8809,6 +8809,46 @@
       ]
     },
     {
+      "id": "xml-fhir-multi-vendor-patients",
+      "path": "demos/xml/fhir-multi-vendor-patients",
+      "iconPath": "icons/xml-fhir-multi-vendor-patients.svg",
+      "name": "FHIR Multi-Vendor Patients (XML) — URI-Based Namespace Resolution",
+      "summary": "Demonstrates URI-based XML namespace resolution. A regional Health Information Exchange ingests FHIR Patient resources from three EHR vendors that use different prefix conventions for the same FHIR namespace (http://hl7.org/fhir): Vendor A uses fhir:, Vendor B uses fh:, Vendor C uses default xmlns with bare element names. ONE external table with namespaces={\"f\":\"http://hl7.org/fhir\"} and paths like /f:Bundle/.../f:Patient/... matches all three because the matcher resolves prefixes to URIs before comparing. 9 patients across 3 files; 8 queries with 30+ assertions cover per-file row counts, vendor-specific lookups (proving each prefix style resolves), gender breakdown, identifier-system distribution, and a bronze-to-silver Delta promotion.",
+      "categories": [
+        "xml",
+        "healthcare"
+      ],
+      "tags": [
+        "xml",
+        "intermediate",
+        "xpath",
+        "namespace",
+        "uri-resolution",
+        "fhir",
+        "interoperability",
+        "multi-vendor",
+        "flatten",
+        "bronze-silver"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 5124,
+      "fileCount": 3,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-21T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.hie.patients"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.hie.patients_silver"
+        }
+      ]
+    },
+    {
       "id": "xml-nyt-news-rss",
       "path": "demos/xml/nyt-news-rss",
       "iconPath": "icons/xml-nyt-news-rss.svg",
