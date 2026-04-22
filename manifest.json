@@ -3,6 +3,49 @@
   "generatedAt": "2026-03-29T12:00:00Z",
   "demos": [
     {
+      "id": "api-arxiv-ai-research-feed",
+      "path": "demos/api/arxiv-ai-research-feed",
+      "iconPath": "icons/api-arxiv-ai-research-feed.svg",
+      "name": "arXiv AI Research Feed — RESPONSE FORMAT XML",
+      "summary": "A corporate R&D library syncs the 50 most-recently-submitted cs.AI papers from arXiv. This is the only API demo that exercises RESPONSE FORMAT XML on CREATE API ENDPOINT — every other demo uses JSON. The Atom 1.0 feed is flattened with xml_flatten_config using row_xpath = '//entry', an explicit namespaces map (atom:, arxiv:, opensearch:), strip_namespace_prefixes for clean column names, and join_comma repeat handling so multi-author papers land as comma-separated strings. 7 queries with 20+ assertions cover the 50-row determinism, arXiv URL shape, RFC-3339 timestamp format, and the join_comma activation. Requires internet — INVOKE issues a real GET against http://export.arxiv.org/api/query.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "xml",
+        "research"
+      ],
+      "tags": [
+        "api",
+        "advanced",
+        "rest",
+        "ingest",
+        "xml",
+        "response-format-xml",
+        "arxiv",
+        "atom",
+        "namespace-stripping",
+        "join-comma",
+        "research-feed"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.research_intel.arxiv_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.research_intel.arxiv_silver"
+        }
+      ]
+    },
+    {
       "id": "api-european-travel-reference-catalog",
       "path": "demos/api/european-travel-reference-catalog",
       "iconPath": "icons/api-european-travel-reference-catalog.svg",
@@ -35,6 +78,312 @@
         {
           "objectType": "external_table",
           "name": "{{zone_name}}.travel_geo.european_countries"
+        }
+      ]
+    },
+    {
+      "id": "api-frankfurter-fx-rate-catalog",
+      "path": "demos/api/frankfurter-fx-rate-catalog",
+      "iconPath": "icons/api-frankfurter-fx-rate-catalog.svg",
+      "name": "Frankfurter FX Rate Catalog — ALTER API ENDPOINT + Multi-Endpoint",
+      "summary": "A fintech risk desk maintains two FX feeds under ONE connection to Frankfurter (ECB-backed public FX data): a daily latest-rate snapshot from EUR to a 6-currency settlement basket, and a historical anchor rate from 1999-01-04 (the euro launch day) used for long-horizon benchmark comparisons. Exercises ALTER API ENDPOINT with SET URL + SET OPTIONS + RENAME TO chained in a single statement, DESCRIBE API ENDPOINT for post-change verification, SHOW API ENDPOINTS IN CONNECTION (before and after ALTER), and SHOW API ENDPOINT RUNS per stream. Two endpoints under one connection demonstrates the multi-endpoint pattern. 6 queries with 15+ assertions cover 2-endpoint fan-in, base-currency split (EUR + USD), the 1999-01-04 anchor date round-trip proving ALTER SET URL took effect, and base_amount = 1.0 convention. Requires internet — INVOKE issues real GETs against https://api.frankfurter.dev.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "alter",
+        "finance"
+      ],
+      "tags": [
+        "api",
+        "advanced",
+        "rest",
+        "ingest",
+        "alter-api-endpoint",
+        "rename",
+        "multi-endpoint",
+        "show-api-endpoints",
+        "describe-api-endpoint",
+        "show-runs",
+        "frankfurter",
+        "ecb",
+        "fx",
+        "finance"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.fx_catalog.fx_rates_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.fx_catalog.fx_rates_silver"
+        }
+      ]
+    },
+    {
+      "id": "api-github-topic-repo-discovery",
+      "path": "demos/api/github-topic-repo-discovery",
+      "iconPath": "icons/api-github-topic-repo-discovery.svg",
+      "name": "GitHub Topic Repo Discovery — Link-Header Pagination + FULL REFRESH",
+      "summary": "A data-platform DevRel team tracks the Delta Lake open-source ecosystem via GitHub's public search API. Fetches the top 90 public repos tagged topic:delta-lake (3 pages × 30 per page, bounded by max_pages) ordered by star count. Demonstrates pagination = 'link_header' (following GitHub's RFC-5988 Link headers rather than synthesising page/offset URLs), INVOKE API ENDPOINT ... FULL REFRESH mode, header.* endpoint options (Accept: application/vnd.github+json), and JSON flatten with root_path = '$.items' for wrapped search responses plus nested $.owner.login descent. 7 queries with 18+ assertions cover exact 90-row budget, distinct repo IDs across pages, URL host invariant, owner/repo name shape, non-fork majority, and bronze↔silver parity. Requires internet — INVOKE issues real GETs against https://api.github.com/search/repositories.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "pagination",
+        "github"
+      ],
+      "tags": [
+        "api",
+        "advanced",
+        "rest",
+        "ingest",
+        "pagination",
+        "link-header",
+        "full-refresh",
+        "json",
+        "github",
+        "github-search",
+        "topic-filter",
+        "nested-flatten",
+        "oss-intelligence"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.oss_intel.delta_lake_repos_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.oss_intel.delta_lake_repos_silver"
+        }
+      ]
+    },
+    {
+      "id": "api-httpbin-auth-smoke-test",
+      "path": "demos/api/httpbin-auth-smoke-test",
+      "iconPath": "icons/api-httpbin-auth-smoke-test.svg",
+      "name": "Vendor Auth Smoke Test — api_key_header + Explicit CREDENTIAL STORAGE",
+      "summary": "A DevOps team smoke-tests their REST API ingest pipeline against httpbin.org before hooking up a real vendor. Exercises auth_mode = 'api_key_header' (the X-API-Key companion to NASA APOD's api_key_query). Distinctly from every other API demo, this one explicitly declares a CREATE CREDENTIAL STORAGE with TYPE = OS_KEYCHAIN and binds the CREDENTIAL to it via IN CREDENTIAL STORAGE local_os_vault — surfacing the backend layer as a first-class catalog object for security reviews. httpbin's /headers endpoint echoes every request header back in its response, so the bronze table literally asserts that the X-API-Key value that reached the server matches the vault secret — end-to-end auth-path round-trip proof. Also demonstrates DROP API ENDPOINT as a standalone statement (the 'typo cleanup' pattern during authoring), SHOW CREDENTIAL STORAGES, and DESCRIBE CREDENTIAL STORAGE. 6 queries with 15+ assertions. Requires internet — INVOKE issues real GETs against https://httpbin.org.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "auth",
+        "devops"
+      ],
+      "tags": [
+        "api",
+        "advanced",
+        "rest",
+        "ingest",
+        "credential-storage",
+        "os-keychain",
+        "api-key-header",
+        "httpbin",
+        "multi-endpoint",
+        "drop-endpoint",
+        "smoke-test"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.vendor_smoke.headers_bronze"
+        },
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.vendor_smoke.uuid_bronze"
+        }
+      ]
+    },
+    {
+      "id": "api-jsonplaceholder-blog-moderation-corpus",
+      "path": "demos/api/jsonplaceholder-blog-moderation-corpus",
+      "iconPath": "icons/api-jsonplaceholder-blog-moderation-corpus.svg",
+      "name": "Blog Moderation Corpus — Page-Based Pagination Walkthrough",
+      "summary": "An NLP content-moderation team uses JSONPlaceholder's /posts endpoint as a fixed-shape staging corpus — 100 fake blog posts split 20 per page over 5 pages. Deterministic 100-row shape makes it a perfect smoke test for Delta Forge's page-pagination engine. Exercises pagination = 'page' with page_param = '_page', page_start = 1, max_pages = 5, and query_param._limit = 20 as the per-page size carrier. Also walks the catalog-inspection triad that's specific to API endpoints: SHOW API ENDPOINTS IN CONNECTION, DESCRIBE API ENDPOINT, and SHOW API ENDPOINT RUNS. 7 queries with 20+ assertions cover exact 100-row count, contiguous 1..100 post_id range, 10 distinct authors with 10 posts each (even distribution spot-check on authors 1/5/10), and a deterministic post-1 title fingerprint. Requires internet — INVOKE issues real GETs against https://jsonplaceholder.typicode.com/posts.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "pagination"
+      ],
+      "tags": [
+        "api",
+        "intermediate",
+        "rest",
+        "ingest",
+        "pagination",
+        "page-pagination",
+        "json",
+        "jsonplaceholder",
+        "show-endpoints",
+        "describe-endpoint",
+        "show-runs",
+        "catalog-inspection"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.content_moderation.posts_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.content_moderation.posts_silver"
+        }
+      ]
+    },
+    {
+      "id": "api-nasa-apod-planetarium-archive",
+      "path": "demos/api/nasa-apod-planetarium-archive",
+      "iconPath": "icons/api-nasa-apod-planetarium-archive.svg",
+      "name": "Planetarium APOD Archive — api_key_query Auth + Header Overrides",
+      "summary": "A science-center planetarium builds a historical archive of NASA's Astronomy Picture of the Day (APOD) over an 8-day Christmas-week 2024 window — 8 daily entries with title, explanation, and HD image URLs. NASA's APIs use query-string API keys which map to auth_mode = 'api_key_query': the engine pulls the NASA DEMO_KEY from a CREATE CREDENTIAL vault entry and splices ?api_key=<secret> into every request automatically. The INVOKE USING clause covers the third OverrideKind — header.* — by supplying a custom X-Request-ID header alongside query_param.start_date / query_param.end_date. Between this demo (header.*), Farm Weather Pulse (query_param.*), and Public Holiday Calendar Sync (path_param.*), all three OverrideKinds are covered end-to-end. 7 queries with 18+ assertions cover exact 8-row window, date range bounds (2024-12-20..27), Christmas-Day anchor presence, media_type enum, and URL scheme sanity. Requires internet — INVOKE issues real GETs against https://api.nasa.gov/planetary/apod.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "auth",
+        "space"
+      ],
+      "tags": [
+        "api",
+        "advanced",
+        "rest",
+        "ingest",
+        "api-key-query",
+        "credential",
+        "invoke-using",
+        "header-override",
+        "query-param-override",
+        "nasa",
+        "apod",
+        "space"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.space_imagery.apod_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.space_imagery.apod_silver"
+        }
+      ]
+    },
+    {
+      "id": "api-openmeteo-farm-weather-pulse",
+      "path": "demos/api/openmeteo-farm-weather-pulse",
+      "iconPath": "icons/api-openmeteo-farm-weather-pulse.svg",
+      "name": "Farm Weather Pulse — Query-Param Overrides via USING",
+      "summary": "An agritech platform fetches live weather observations from Open-Meteo for 3 partner farms — Oslo (Norway), Hamburg (Germany), Dublin (Ireland). ONE endpoint, THREE farms, THREE INVOKE lines. The endpoint has NO hardcoded coordinates; each INVOKE supplies query_param.latitude + query_param.longitude via USING, pulled from script-scoped $lat_X / $lon_X parameters. This is the query_param analog of the public-holiday demo's path_param USING clause — between them, runtime override coverage is complete across path_param, query_param, and header OverrideKinds. 6 queries with 20+ assertions cover exact 3-row count, per-farm coordinate round-trip (latitude/longitude correctly substituted by USING), physical-plausibility ranges (temperature -50..60°C, humidity 0..100, non-negative wind and precipitation), and CASE-based farm_name labeling. Requires internet — INVOKE issues real GETs against https://api.open-meteo.com/v1/forecast.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "overrides",
+        "weather"
+      ],
+      "tags": [
+        "api",
+        "intermediate",
+        "rest",
+        "ingest",
+        "invoke-using",
+        "query-param-override",
+        "script-params",
+        "set",
+        "open-meteo",
+        "weather",
+        "multi-site",
+        "json"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.agri_telemetry.weather_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.agri_telemetry.weather_silver"
+        }
+      ]
+    },
+    {
+      "id": "api-pokeapi-pokedex-first-generation",
+      "path": "demos/api/pokeapi-pokedex-first-generation",
+      "iconPath": "icons/api-pokeapi-pokedex-first-generation.svg",
+      "name": "Pokédex First-Generation Reference — Offset Pagination + CALL Preview",
+      "summary": "A mobile game studio maintains an internal Pokédex reference catalog pulling the first 100 National Dex entries (Bulbasaur #1 through Voltorb #100) from PokeAPI. Exercises pagination = 'offset' with offset_param, limit_param, limit = 20, max_pages = 5 → 5 × 20 = 100 rows. Before the full INVOKE, runs CALL API ENDPOINT ... LIMIT 1 PAGE to capture the first response body raw — the 'preview while authoring' affordance. PokeAPI wraps paged results as {count, next, previous, results: [...]}, so the external table uses root_path = '$.results' to dive into wrapped arrays (distinct from the rust-release demo's bare-array pattern). Silver table parses dex_id from the detail_url via REGEXP_REPLACE + CAST to BIGINT. 7 queries with 20+ assertions cover 100-row contiguity, canon-entry anchors (Bulbasaur #1, Pikachu #25, Voltorb #100), dex_id parse round-trip, and lowercase-name invariant. Requires internet — INVOKE issues real GETs against https://pokeapi.co/api/v2/pokemon.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "pagination"
+      ],
+      "tags": [
+        "api",
+        "intermediate",
+        "rest",
+        "ingest",
+        "pagination",
+        "offset-pagination",
+        "json",
+        "pokeapi",
+        "call-preview",
+        "root-path-nested"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "Delta Forge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.game_ref.pokedex_bronze"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.game_ref.pokedex_silver"
         }
       ]
     },
