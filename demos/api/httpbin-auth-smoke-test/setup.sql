@@ -79,11 +79,12 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.vendor_smoke
 CREATE CONNECTION IF NOT EXISTS httpbin_smoke
     TYPE = rest_api
     OPTIONS (
-        base_url     = 'https://httpbin.org',
-        auth_mode    = 'api_key_header',
-        storage_zone = '{{zone_name}}',
-        base_path    = 'httpbin_smoke',
-        timeout_secs = '30'
+        base_url         = 'https://httpbin.org',
+        auth_mode        = 'api_key_header',
+        auth_header_name = 'X-API-Key',
+        storage_zone     = '{{zone_name}}',
+        base_path        = 'httpbin_smoke',
+        timeout_secs     = '30'
     )
     CREDENTIAL = vendor_smoke_api_key;
 
