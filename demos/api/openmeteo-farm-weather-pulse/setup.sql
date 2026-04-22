@@ -52,67 +52,36 @@ CREATE CONNECTION IF NOT EXISTS openmeteo_api
     );
 
 -- --------------------------------------------------------------------------
--- 3. Single endpoint — shared options only, no per-farm coordinates
+-- 3. Three endpoints — one per farm, coordinates baked into the URL
 -- --------------------------------------------------------------------------
--- `query_param.current` and `query_param.timezone` are the shared
--- knobs every farm uses the same way. latitude + longitude are
--- DELIBERATELY omitted — each INVOKE supplies them via USING.
+-- Each endpoint targets a single farm's coordinates. Shared knobs
+-- (current= fields, timezone= UTC) live directly in each URL.
 
-CREATE API ENDPOINT {{zone_name}}.openmeteo_api.current_observation
-    URL '/v1/forecast'
+CREATE API ENDPOINT {{zone_name}}.openmeteo_api.observation_oslo
+    URL '/v1/forecast?latitude=59.91&longitude=10.75&current=temperature_2m,wind_speed_10m,relative_humidity_2m,precipitation&timezone=UTC'
     RESPONSE FORMAT JSON
-    OPTIONS (
-        query_param.current  = 'temperature_2m,wind_speed_10m,relative_humidity_2m,precipitation',
-        query_param.timezone = 'UTC',
-        rate_limit_rps       = '2'
-    );
+    OPTIONS (rate_limit_rps = '2');
+
+CREATE API ENDPOINT {{zone_name}}.openmeteo_api.observation_hamburg
+    URL '/v1/forecast?latitude=53.55&longitude=9.99&current=temperature_2m,wind_speed_10m,relative_humidity_2m,precipitation&timezone=UTC'
+    RESPONSE FORMAT JSON
+    OPTIONS (rate_limit_rps = '2');
+
+CREATE API ENDPOINT {{zone_name}}.openmeteo_api.observation_dublin
+    URL '/v1/forecast?latitude=53.35&longitude=-6.26&current=temperature_2m,wind_speed_10m,relative_humidity_2m,precipitation&timezone=UTC'
+    RESPONSE FORMAT JSON
+    OPTIONS (rate_limit_rps = '2');
 
 -- --------------------------------------------------------------------------
--- 4. Per-farm coordinates as script params
+-- 4. Three INVOKEs — one per farm
 -- --------------------------------------------------------------------------
--- SET $x = <scalar-expr> binds a script-scoped parameter. The parameter
--- bag lives for the duration of this multi-statement script. Standalone
--- floats are scalar expressions — DataFusion evaluates them at SET time
--- and stores the resolved ScalarValue. Each INVOKE below references
--- two of these params by name.
+-- Each INVOKE writes a distinct JSON page into its endpoint's per-run folder.
 
-SET $lat_oslo     = 59.91;
-SET $lon_oslo     = 10.75;
+INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.observation_oslo;
 
-SET $lat_hamburg  = 53.55;
-SET $lon_hamburg  = 9.99;
+INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.observation_hamburg;
 
-SET $lat_dublin   = 53.35;
-SET $lon_dublin   = -6.26;
-
--- --------------------------------------------------------------------------
--- 5. Three INVOKEs with per-farm USING (...) overrides
--- --------------------------------------------------------------------------
--- Each INVOKE merges its `query_param.latitude / .longitude` overrides
--- on top of the endpoint's stored options. The engine evaluates each
--- expression (`$lat_oslo` → ScalarValue → URL-encoded string), assembles
--- the full URL, and fetches:
---     /v1/forecast?latitude=59.91&longitude=10.75
---                 &current=...&timezone=UTC
--- Each run writes a distinct JSON page into the per-run folder.
-
-INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.current_observation
-    USING (
-        query_param.latitude  = $lat_oslo,
-        query_param.longitude = $lon_oslo
-    );
-
-INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.current_observation
-    USING (
-        query_param.latitude  = $lat_hamburg,
-        query_param.longitude = $lon_hamburg
-    );
-
-INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.current_observation
-    USING (
-        query_param.latitude  = $lat_dublin,
-        query_param.longitude = $lon_dublin
-    );
+INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.observation_dublin;
 
 -- --------------------------------------------------------------------------
 -- 6. External table — flatten the nested `$.current` block
@@ -124,7 +93,7 @@ INVOKE API ENDPOINT {{zone_name}}.openmeteo_api.current_observation
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.agri_telemetry.weather_bronze
 USING JSON
-LOCATION 'openmeteo_api/current_observation'
+LOCATION 'openmeteo_api'
 OPTIONS (
     recursive = 'true',
     json_flatten_config = '{
