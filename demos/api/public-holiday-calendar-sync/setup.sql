@@ -55,14 +55,14 @@ CREATE CREDENTIAL IF NOT EXISTS holiday_api_token
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hr_calendar
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.holiday_calendar
     COMMENT 'HR platform public-holiday calendars, wave-loaded per country/year';
 
 -- --------------------------------------------------------------------------
 -- 3. Silver catalog — seeded with the launch Nordic pair (2024)
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.hr_calendar.country_holidays (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.holiday_calendar.country_holidays (
     country_code   STRING,
     holiday_year   INT,
     holiday_date   DATE,
@@ -74,7 +74,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.hr_calendar.country_holidays (
 )
 LOCATION 'silver/country_holidays';
 
-INSERT INTO {{zone_name}}.hr_calendar.country_holidays VALUES
+INSERT INTO {{zone_name}}.holiday_calendar.country_holidays VALUES
     ('NO', 2024, DATE '2024-01-01', 'Forste nyttarsdag',    'New Year''s Day',   true, true, 'launch_seed'),
     ('NO', 2024, DATE '2024-05-01', 'Arbeidernes dag',      'Labour Day',        true, true, 'launch_seed'),
     ('NO', 2024, DATE '2024-05-17', 'Grunnlovsdag',         'Constitution Day',  true, true, 'launch_seed'),
@@ -84,19 +84,19 @@ INSERT INTO {{zone_name}}.hr_calendar.country_holidays VALUES
     ('SE', 2024, DATE '2024-06-06', 'Sveriges nationaldag', 'National Day',      true, true, 'launch_seed'),
     ('SE', 2024, DATE '2024-12-25', 'Juldagen',             'Christmas Day',     true, true, 'launch_seed');
 
-GRANT ADMIN ON TABLE {{zone_name}}.hr_calendar.country_holidays TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.holiday_calendar.country_holidays TO USER {{current_user}};
 
 -- --------------------------------------------------------------------------
 -- 4. REST API connection
 -- --------------------------------------------------------------------------
 
-CREATE CONNECTION IF NOT EXISTS nager_date_holidays
+CREATE CONNECTION IF NOT EXISTS holiday_calendar
     TYPE = rest_api
     OPTIONS (
         base_url     = 'https://date.nager.at',
         auth_mode    = 'bearer',
         storage_zone = '{{zone_name}}',
-        base_path    = 'nager_date_holidays',
+        base_path    = 'holiday_calendar',
         timeout_secs = '30'
     )
     CREDENTIAL = holiday_api_token;
@@ -105,7 +105,7 @@ CREATE CONNECTION IF NOT EXISTS nager_date_holidays
 -- 5. API endpoint — URL template only, NO stored path_params
 -- --------------------------------------------------------------------------
 
-CREATE API ENDPOINT {{zone_name}}.nager_date_holidays.public_holidays
+CREATE API ENDPOINT {{zone_name}}.holiday_calendar.public_holidays
     URL '/api/v3/PublicHolidays/{year}/{country_code}'
     RESPONSE FORMAT JSON;
 
@@ -121,7 +121,7 @@ CREATE API ENDPOINT {{zone_name}}.nager_date_holidays.public_holidays
 SELECT
     'NO'                                                  AS next_country,
     COALESCE(MAX(holiday_year), 2024) + 1                 AS next_year
-FROM {{zone_name}}.hr_calendar.country_holidays
+FROM {{zone_name}}.holiday_calendar.country_holidays
 WHERE country_code = 'NO'
 INTO $next_country, $next_year;
 
@@ -135,7 +135,7 @@ INTO $next_country, $next_year;
 -- The SAME endpoint row is reusable across every wave — only the USING
 -- clause's resolved values change between calls.
 
-INVOKE API ENDPOINT {{zone_name}}.nager_date_holidays.public_holidays
+INVOKE API ENDPOINT {{zone_name}}.holiday_calendar.public_holidays
     USING (
         path_param.year         = $next_year,
         path_param.country_code = $next_country
@@ -145,9 +145,9 @@ INVOKE API ENDPOINT {{zone_name}}.nager_date_holidays.public_holidays
 -- 8. Bronze external table over the landed JSON
 -- --------------------------------------------------------------------------
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hr_calendar.public_holidays_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.holiday_calendar.public_holidays_bronze
 USING JSON
-LOCATION 'nager_date_holidays/public_holidays'
+LOCATION 'holiday_calendar/public_holidays'
 OPTIONS (
     recursive = 'true',
     json_flatten_config = '{
@@ -174,8 +174,8 @@ OPTIONS (
     }'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.hr_calendar.public_holidays_bronze;
-GRANT ADMIN ON TABLE {{zone_name}}.hr_calendar.public_holidays_bronze TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.holiday_calendar.public_holidays_bronze;
+GRANT ADMIN ON TABLE {{zone_name}}.holiday_calendar.public_holidays_bronze TO USER {{current_user}};
 
 -- --------------------------------------------------------------------------
 -- 9. Anti-join merge — bronze → silver on composite key
@@ -184,7 +184,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.hr_calendar.public_holidays_bronze TO USER {{
 -- year we asked for, not a value re-derived from the payload. NOT EXISTS
 -- on (country_code, holiday_year, holiday_date) keeps replays idempotent.
 
-INSERT INTO {{zone_name}}.hr_calendar.country_holidays
+INSERT INTO {{zone_name}}.holiday_calendar.country_holidays
 SELECT
     b.country_code,
     $next_year                     AS holiday_year,
@@ -194,10 +194,10 @@ SELECT
     CAST(b.is_fixed  AS BOOLEAN)   AS is_fixed,
     CAST(b.is_global AS BOOLEAN)   AS is_global,
     'nager_api'                    AS source_batch
-FROM {{zone_name}}.hr_calendar.public_holidays_bronze b
+FROM {{zone_name}}.holiday_calendar.public_holidays_bronze b
 WHERE NOT EXISTS (
     SELECT 1
-    FROM {{zone_name}}.hr_calendar.country_holidays s
+    FROM {{zone_name}}.holiday_calendar.country_holidays s
     WHERE s.country_code = b.country_code
       AND s.holiday_year = $next_year
       AND s.holiday_date = CAST(b.holiday_date AS DATE)

@@ -9,22 +9,22 @@
 -- ============================================================================
 
 -- 1. Silver Delta table (drops its log + parquet files)
-DROP DELTA TABLE IF EXISTS {{zone_name}}.travel_geo.european_countries_silver WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.travel_catalog.european_countries_silver WITH FILES;
 
 -- 2. Bronze external table (also removes the JSON files INVOKE wrote)
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.travel_geo.european_countries WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.travel_catalog.european_countries WITH FILES;
 
 -- 3. API endpoint definition (cascades its run history)
-DROP API ENDPOINT IF EXISTS {{zone_name}}.rest_countries.europe;
+DROP API ENDPOINT IF EXISTS {{zone_name}}.travel_catalog.europe;
 
 -- 4. REST API connection (data source)
-DROP CONNECTION IF EXISTS rest_countries;
+DROP CONNECTION IF EXISTS travel_catalog;
 
 -- 5. Vault credential entry
 DROP CREDENTIAL IF EXISTS travel_api_token;
 
 -- 6. Schema then zone (zone last — schemas live under it)
-DROP SCHEMA IF EXISTS {{zone_name}}.travel_geo;
+DROP SCHEMA IF EXISTS {{zone_name}}.travel_catalog;
 -- Zone left in place by default — many demos may share `bronze`. Uncomment
 -- if this demo runs in an isolated environment where the zone should go too.
 -- DROP ZONE IF EXISTS {{zone_name}};

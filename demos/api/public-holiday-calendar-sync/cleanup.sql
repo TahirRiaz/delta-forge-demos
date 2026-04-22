@@ -9,19 +9,19 @@
 -- ============================================================================
 
 -- 1. Bronze external table (removes the JSON pages INVOKE wrote)
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.hr_calendar.public_holidays_bronze WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.holiday_calendar.public_holidays_bronze WITH FILES;
 
 -- 2. Silver Delta table (removes its Delta log + parquet)
-DROP DELTA TABLE IF EXISTS {{zone_name}}.hr_calendar.country_holidays WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.holiday_calendar.country_holidays WITH FILES;
 
 -- 3. API endpoint definition (cascades its run history)
-DROP API ENDPOINT IF EXISTS {{zone_name}}.nager_date_holidays.public_holidays;
+DROP API ENDPOINT IF EXISTS {{zone_name}}.holiday_calendar.public_holidays;
 
 -- 4. REST API connection
-DROP CONNECTION IF EXISTS nager_date_holidays;
+DROP CONNECTION IF EXISTS holiday_calendar;
 
 -- 5. Credential vault entry (OS keychain backend is never dropped)
 DROP CREDENTIAL IF EXISTS holiday_api_token;
 
 -- 6. Schema (zone left in place — sibling API demos share `bronze`)
-DROP SCHEMA IF EXISTS {{zone_name}}.hr_calendar;
+DROP SCHEMA IF EXISTS {{zone_name}}.holiday_calendar;

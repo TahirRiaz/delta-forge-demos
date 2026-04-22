@@ -18,7 +18,7 @@
 --                                auth, but we exercise the full credential
 --                                path so production APIs that DO require
 --                                auth use the same pattern verbatim.
---   2. Zone + schema           — bronze landing + travel_geo for the
+--   2. Zone + schema           — bronze landing + travel_catalog for the
 --                                queryable external table
 --   3. REST API connection     — base URL + auth_mode + storage_zone +
 --                                base_path on the data source
@@ -65,7 +65,7 @@ CREATE CREDENTIAL IF NOT EXISTS travel_api_token
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.travel_geo
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.travel_catalog
     COMMENT 'Travel geography reference data — country, currency, language metadata';
 
 -- --------------------------------------------------------------------------
@@ -75,13 +75,13 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.travel_geo
 -- references the vault entry above by name; the executor resolves the
 -- secret material at INVOKE time without it ever crossing back into SQL.
 
-CREATE CONNECTION IF NOT EXISTS rest_countries
+CREATE CONNECTION IF NOT EXISTS travel_catalog
     TYPE = rest_api
     OPTIONS (
         base_url      = 'https://restcountries.com',
         auth_mode     = 'bearer',
         storage_zone  = '{{zone_name}}',
-        base_path     = 'rest_countries',
+        base_path     = 'travel_catalog',
         timeout_secs  = '30'
     )
     CREDENTIAL = travel_api_token;
@@ -93,7 +93,7 @@ CREATE CONNECTION IF NOT EXISTS rest_countries
 -- destination zone in one place. SHOW API ENDPOINTS lists this row;
 -- DESCRIBE API ENDPOINT shows its full config.
 
-CREATE API ENDPOINT {{zone_name}}.rest_countries.europe
+CREATE API ENDPOINT {{zone_name}}.travel_catalog.europe
     URL '/v3.1/region/europe'
     RESPONSE FORMAT JSON;
 
@@ -104,7 +104,7 @@ CREATE API ENDPOINT {{zone_name}}.rest_countries.europe
 -- one call), so pagination isn't needed. The engine writes one
 -- `page_0001.json` under a timestamped per-run folder.
 
-INVOKE API ENDPOINT {{zone_name}}.rest_countries.europe;
+INVOKE API ENDPOINT {{zone_name}}.travel_catalog.europe;
 
 -- --------------------------------------------------------------------------
 -- 6. External table over the landed JSON
@@ -118,9 +118,9 @@ INVOKE API ENDPOINT {{zone_name}}.rest_countries.europe;
 -- in the response array and maps them to friendly flat column names —
 -- the queryable shape the localization + compliance teams want.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.travel_geo.european_countries
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.travel_catalog.european_countries
 USING JSON
-LOCATION 'rest_countries/europe'
+LOCATION 'travel_catalog/europe'
 OPTIONS (
     recursive = 'true',
     json_flatten_config = '{
@@ -163,8 +163,8 @@ OPTIONS (
 -- Schema detection + permissions (bronze)
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.travel_geo.european_countries;
-GRANT ADMIN ON TABLE {{zone_name}}.travel_geo.european_countries TO USER {{current_user}};
+DETECT SCHEMA FOR TABLE {{zone_name}}.travel_catalog.european_countries;
+GRANT ADMIN ON TABLE {{zone_name}}.travel_catalog.european_countries TO USER {{current_user}};
 
 -- --------------------------------------------------------------------------
 -- 7. Silver layer — curated Delta table promoted from the bronze landing
@@ -188,7 +188,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.travel_geo.european_countries TO USER {{curre
 -- when this INSERT (or a downstream MERGE in a real pipeline) runs.
 -- That separation is what makes the medallion model auditable.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.travel_geo.european_countries_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.travel_catalog.european_countries_silver (
     name_common     STRING,
     name_official   STRING,
     cca2            STRING,
@@ -204,7 +204,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.travel_geo.european_countries_sil
 )
 LOCATION 'silver/european_countries';
 
-INSERT INTO {{zone_name}}.travel_geo.european_countries_silver
+INSERT INTO {{zone_name}}.travel_catalog.european_countries_silver
 SELECT
     name_common,
     name_official,
@@ -218,6 +218,6 @@ SELECT
     is_independent,
     is_un_member,
     is_landlocked
-FROM {{zone_name}}.travel_geo.european_countries;
+FROM {{zone_name}}.travel_catalog.european_countries;
 
-GRANT ADMIN ON TABLE {{zone_name}}.travel_geo.european_countries_silver TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.travel_catalog.european_countries_silver TO USER {{current_user}};

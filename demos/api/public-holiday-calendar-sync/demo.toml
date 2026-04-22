@@ -51,8 +51,8 @@ zone_name = { description = "Target zone for the bronze landing path and the sil
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.hr_calendar.country_holidays"
+name = "{{zone_name}}.holiday_calendar.country_holidays"
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.hr_calendar.public_holidays_bronze"
+name = "{{zone_name}}.holiday_calendar.public_holidays_bronze"

@@ -34,7 +34,7 @@
 ASSERT ROW_COUNT = 1
 ASSERT VALUE country_count BETWEEN 40 AND 60
 SELECT COUNT(*) AS country_count
-FROM {{zone_name}}.travel_geo.european_countries;
+FROM {{zone_name}}.travel_catalog.european_countries;
 
 -- ============================================================================
 -- Query 2: Norway Reference Lookup — proves the JSON flatten worked
@@ -52,7 +52,7 @@ ASSERT VALUE cca3 = 'NOR' WHERE cca2 = 'NO'
 ASSERT VALUE capital = 'Oslo' WHERE cca2 = 'NO'
 ASSERT VALUE region = 'Europe' WHERE cca2 = 'NO'
 SELECT name_common, cca2, cca3, capital, region, subregion
-FROM {{zone_name}}.travel_geo.european_countries
+FROM {{zone_name}}.travel_catalog.european_countries
 WHERE cca2 = 'NO';
 
 -- ============================================================================
@@ -67,7 +67,7 @@ ASSERT VALUE distinct_regions = 1
 ASSERT VALUE region_value = 'Europe'
 SELECT COUNT(DISTINCT region) AS distinct_regions,
        MAX(region)            AS region_value
-FROM {{zone_name}}.travel_geo.european_countries;
+FROM {{zone_name}}.travel_catalog.european_countries;
 
 -- ============================================================================
 -- Query 4: Population Aggregate — Europe total in the expected range (silver)
@@ -81,7 +81,7 @@ FROM {{zone_name}}.travel_geo.european_countries;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_population BETWEEN 700000000 AND 800000000
 SELECT SUM(population) AS total_population
-FROM {{zone_name}}.travel_geo.european_countries_silver;
+FROM {{zone_name}}.travel_catalog.european_countries_silver;
 
 -- ============================================================================
 -- Query 5: ISO-Code Coverage — three small sovereign states all present
@@ -95,7 +95,7 @@ ASSERT VALUE name_common = 'Iceland' WHERE cca2 = 'IS'
 ASSERT VALUE name_common = 'Malta'   WHERE cca2 = 'MT'
 ASSERT VALUE name_common = 'Monaco'  WHERE cca2 = 'MC'
 SELECT cca2, cca3, name_common
-FROM {{zone_name}}.travel_geo.european_countries
+FROM {{zone_name}}.travel_catalog.european_countries
 WHERE cca2 IN ('IS', 'MT', 'MC')
 ORDER BY cca2;
 
@@ -111,7 +111,7 @@ ORDER BY cca2;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE subregion_count BETWEEN 4 AND 6
 SELECT COUNT(DISTINCT subregion) AS subregion_count
-FROM {{zone_name}}.travel_geo.european_countries
+FROM {{zone_name}}.travel_catalog.european_countries
 WHERE subregion IS NOT NULL;
 
 -- ============================================================================
@@ -134,13 +134,13 @@ ASSERT VALUE row_count_delta = 0
 ASSERT VALUE distinct_cca2_delta = 0
 ASSERT VALUE silver_population BETWEEN 700000000 AND 800000000
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.travel_geo.european_countries)
-        - (SELECT COUNT(*) FROM {{zone_name}}.travel_geo.european_countries_silver)
+    (SELECT COUNT(*) FROM {{zone_name}}.travel_catalog.european_countries)
+        - (SELECT COUNT(*) FROM {{zone_name}}.travel_catalog.european_countries_silver)
                                                                                       AS row_count_delta,
-    (SELECT COUNT(DISTINCT cca2) FROM {{zone_name}}.travel_geo.european_countries)
-        - (SELECT COUNT(DISTINCT cca2) FROM {{zone_name}}.travel_geo.european_countries_silver)
+    (SELECT COUNT(DISTINCT cca2) FROM {{zone_name}}.travel_catalog.european_countries)
+        - (SELECT COUNT(DISTINCT cca2) FROM {{zone_name}}.travel_catalog.european_countries_silver)
                                                                                       AS distinct_cca2_delta,
-    (SELECT SUM(population) FROM {{zone_name}}.travel_geo.european_countries_silver)  AS silver_population;
+    (SELECT SUM(population) FROM {{zone_name}}.travel_catalog.european_countries_silver)  AS silver_population;
 
 -- ============================================================================
 -- Query 8: Silver Delta Time-Travel — DESCRIBE HISTORY shows v0 + v1
@@ -152,7 +152,7 @@ SELECT
 -- from a bare external JSON table.
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.travel_geo.european_countries_silver;
+DESCRIBE HISTORY {{zone_name}}.travel_catalog.european_countries_silver;
 
 -- ============================================================================
 -- Query 9: Silver Boolean Filter — typed columns enable native predicates
@@ -167,7 +167,7 @@ DESCRIBE HISTORY {{zone_name}}.travel_geo.european_countries_silver;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE un_member_count BETWEEN 40 AND 50
 SELECT COUNT(*) AS un_member_count
-FROM {{zone_name}}.travel_geo.european_countries_silver
+FROM {{zone_name}}.travel_catalog.european_countries_silver
 WHERE is_un_member = true;
 
 -- ============================================================================
@@ -192,6 +192,6 @@ SELECT
     SUM(CASE WHEN cca2 = 'NO' THEN 1 ELSE 0 END)                                               AS has_norway,
     SUM(population)                                                                            AS total_population,
     CASE WHEN COUNT(DISTINCT region) = 1 AND MAX(region) = 'Europe' THEN 1 ELSE 0 END          AS region_invariant_holds,
-    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.travel_geo.european_countries)
+    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.travel_catalog.european_countries)
          THEN 1 ELSE 0 END                                                                     AS silver_matches_bronze
-FROM {{zone_name}}.travel_geo.european_countries_silver;
+FROM {{zone_name}}.travel_catalog.european_countries_silver;

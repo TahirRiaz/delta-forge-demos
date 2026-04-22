@@ -36,7 +36,7 @@ SELECT
     SUM(CASE WHEN source_batch = 'launch_seed' THEN 1 ELSE 0 END) AS seed_count,
     SUM(CASE WHEN source_batch = 'nager_api'   THEN 1 ELSE 0 END) AS api_count,
     COUNT(*)                                                      AS total_count
-FROM {{zone_name}}.hr_calendar.country_holidays;
+FROM {{zone_name}}.holiday_calendar.country_holidays;
 
 -- ============================================================================
 -- Query 2: Fixed-date wire proof — NO Constitution Day 2025
@@ -54,7 +54,7 @@ ASSERT VALUE country_code = 'NO'
 ASSERT VALUE english_name = 'Constitution Day'
 ASSERT VALUE source_batch = 'nager_api'
 SELECT holiday_year, country_code, english_name, source_batch
-FROM {{zone_name}}.hr_calendar.country_holidays
+FROM {{zone_name}}.holiday_calendar.country_holidays
 WHERE country_code = 'NO'
   AND holiday_year = 2025
   AND holiday_date = DATE '2025-05-17';
@@ -84,7 +84,7 @@ ASSERT VALUE missing_combos = 0
 SELECT COUNT(*) AS missing_combos
 FROM (VALUES ('NO', 2025)) AS wanted(country_code, holiday_year)
 WHERE NOT EXISTS (
-    SELECT 1 FROM {{zone_name}}.hr_calendar.country_holidays t
+    SELECT 1 FROM {{zone_name}}.holiday_calendar.country_holidays t
     WHERE t.country_code = wanted.country_code
       AND t.holiday_year = wanted.holiday_year
 );
@@ -103,7 +103,7 @@ WHERE NOT EXISTS (
 ASSERT ROW_COUNT >= 10
 ASSERT ROW_COUNT <= 16
 SELECT holiday_date, local_name, english_name, is_global
-FROM {{zone_name}}.hr_calendar.public_holidays_bronze
+FROM {{zone_name}}.holiday_calendar.public_holidays_bronze
 ORDER BY holiday_date;
 
 -- ============================================================================
@@ -124,7 +124,7 @@ ASSERT VALUE holiday_count = 4 WHERE country_code = 'SE'
 ASSERT VALUE holiday_year = 2024 WHERE country_code = 'NO'
 ASSERT VALUE holiday_year = 2024 WHERE country_code = 'SE'
 SELECT country_code, holiday_year, COUNT(*) AS holiday_count
-FROM {{zone_name}}.hr_calendar.country_holidays
+FROM {{zone_name}}.holiday_calendar.country_holidays
 WHERE source_batch = 'launch_seed'
 GROUP BY country_code, holiday_year
 ORDER BY country_code, holiday_year;
@@ -138,7 +138,7 @@ ORDER BY country_code, holiday_year;
 -- VERSION AS OF time-travel rollback if a wave lands bad data.
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.hr_calendar.country_holidays;
+DESCRIBE HISTORY {{zone_name}}.holiday_calendar.country_holidays;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -171,4 +171,4 @@ SELECT
     SUM(CASE WHEN country_code='SE' AND holiday_year=2024 THEN 1 ELSE 0 END)              AS se_2024_count,
     SUM(CASE WHEN country_code='NO' AND holiday_year=2025 THEN 1 ELSE 0 END)              AS no_2025_count,
     CASE WHEN SUM(CASE WHEN source_batch IS NULL THEN 1 ELSE 0 END) = 0 THEN 1 ELSE 0 END AS every_row_labeled
-FROM {{zone_name}}.hr_calendar.country_holidays;
+FROM {{zone_name}}.holiday_calendar.country_holidays;
