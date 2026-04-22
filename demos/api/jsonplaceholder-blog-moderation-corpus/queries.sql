@@ -36,9 +36,9 @@ ASSERT VALUE distinct_post_ids = 100
 ASSERT VALUE min_post_id = 1
 ASSERT VALUE max_post_id = 100
 SELECT
-    COUNT(DISTINCT post_id) AS distinct_post_ids,
-    MIN(post_id)            AS min_post_id,
-    MAX(post_id)            AS max_post_id
+    COUNT(DISTINCT CAST(post_id AS BIGINT)) AS distinct_post_ids,
+    MIN(CAST(post_id AS BIGINT))            AS min_post_id,
+    MAX(CAST(post_id AS BIGINT))            AS max_post_id
 FROM {{zone_name}}.content_moderation.posts_bronze;
 
 -- ============================================================================
