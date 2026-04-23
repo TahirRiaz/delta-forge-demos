@@ -114,6 +114,7 @@ OPTIONS (
     recursive = 'true',
     json_flatten_config = '{
         "root_path": "$.results",
+        "explode_paths": ["$.results"],
         "include_paths": [
             "$.name",
             "$.url"
