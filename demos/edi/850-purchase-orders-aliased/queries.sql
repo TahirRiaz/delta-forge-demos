@@ -68,11 +68,11 @@ ASSERT VALUE po_number = 'BBM-2026-99812' WHERE df_file_name = 'po_bigbox_002.ed
 ASSERT VALUE po_number = 'DYN-RETAIL-505012' WHERE df_file_name = 'po_dynamart_004.edi'
 SELECT
     df_file_name,
-    purchaseordertypecode_beg_1 AS purpose_code,
-    releasenumber_beg_3        AS po_number,
-    contractnumber_beg_5       AS po_date
+    json_extract_path_text(purchaseordertypecode_beg_1, '0') AS purpose_code,
+    json_extract_path_text(releasenumber_beg_3, '0')        AS po_number,
+    json_extract_path_text(contractnumber_beg_5, '0')       AS po_date
 FROM {{zone_name}}.commerce.purchase_orders
-WHERE purchaseordertypecode_beg_1 = '00'
+WHERE json_extract_path_text(purchaseordertypecode_beg_1, '0') = '00'
 ORDER BY df_file_name;
 
 
@@ -185,8 +185,8 @@ ASSERT VALUE po_number = 'DYN-RETAIL-505012' WHERE df_file_name = 'po_dynamart_0
 ASSERT VALUE line_count = 5              WHERE df_file_name = 'po_dynamart_004.edi'
 SELECT
     df_file_name,
-    releasenumber_beg_3                                AS po_number,
-    contractnumber_beg_5                               AS po_date,
+    json_extract_path_text(releasenumber_beg_3, '0')   AS po_number,
+    json_extract_path_text(contractnumber_beg_5, '0')  AS po_date,
     json_array_length(productserviceidqualifier_po1_7) AS line_count
 FROM {{zone_name}}.commerce.purchase_orders
 ORDER BY df_file_name;
