@@ -209,7 +209,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback
 USING ICEBERG
-LOCATION '{{data_path}}/grid_readings_delta';
+LOCATION 'grid_readings_delta';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback TO USER {{current_user}};
 -- ============================================================================

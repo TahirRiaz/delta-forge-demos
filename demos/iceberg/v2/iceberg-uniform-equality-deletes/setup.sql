@@ -57,6 +57,6 @@ DELETE FROM {{zone_name}}.iceberg_demos.products WHERE id IN (2, 5, 8);
 -- delete file, to verify the deletes are correctly applied.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.products_iceberg
 USING ICEBERG
-LOCATION '{{data_path}}/eq_del_products';
+LOCATION 'eq_del_products';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.products_iceberg TO USER {{current_user}};

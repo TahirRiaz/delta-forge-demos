@@ -57,6 +57,6 @@ DELETE FROM {{zone_name}}.iceberg_demos.products WHERE id IN (2, 5, 8);
 -- deletion vector, to verify the deletes are correctly applied.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.products_iceberg
 USING ICEBERG
-LOCATION '{{data_path}}/puffin_dv_products';
+LOCATION 'puffin_dv_products';
 
 GRANT ADMIN ON TABLE {{zone_name}}.iceberg_demos.products_iceberg TO USER {{current_user}};
