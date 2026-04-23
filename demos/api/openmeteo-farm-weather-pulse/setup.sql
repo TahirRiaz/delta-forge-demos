@@ -153,9 +153,9 @@ LOCATION 'silver/farm_weather';
 INSERT INTO {{zone_name}}.agri_telemetry.weather_silver
 SELECT
     CASE
-        WHEN latitude BETWEEN 59 AND 60 THEN 'oslo'
-        WHEN latitude BETWEEN 53.4 AND 53.8 AND longitude > 9 THEN 'hamburg'
-        WHEN latitude BETWEEN 53.0 AND 53.5 AND longitude < 0 THEN 'dublin'
+        WHEN longitude BETWEEN 10.5 AND 11 THEN 'oslo'
+        WHEN longitude BETWEEN 9.5 AND 10.5 THEN 'hamburg'
+        WHEN longitude BETWEEN -7 AND -5 THEN 'dublin'
         ELSE 'unknown'
     END                                 AS farm_name,
     CAST(latitude AS DOUBLE)            AS latitude,
