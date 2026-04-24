@@ -46,42 +46,6 @@
       ]
     },
     {
-      "id": "api-european-travel-reference-catalog",
-      "path": "demos/api/european-travel-reference-catalog",
-      "iconPath": "icons/api-european-travel-reference-catalog.svg",
-      "name": "European Travel Reference Catalog — REST API Ingest End-to-End",
-      "summary": "End-to-end REST API ingest demo. A travel-tech startup syncs the public REST Countries API to keep its European country reference data (population for GDPR thresholds, languages for localization, currencies for the multi-currency cart) fresh in bronze. Walks the full Phase 1 path: CREATE CREDENTIAL STORAGE (OS keychain), CREATE CREDENTIAL with vault-stored secret, CREATE CONNECTION TYPE = rest_api, CREATE API INGEST with a 3-part qualified name, INVOKE API INGEST (live HTTP fetch), and CREATE EXTERNAL TABLE USING JSON with json_flatten_config to project the nested response into a flat queryable shape. 6 queries with 22 assertions cover row-count range, ISO-code lookups (Norway, Iceland, Malta, Monaco), region invariant, total-population aggregate, and a cross-cutting VERIFY block. Requires internet — INVOKE issues a real GET against https://restcountries.com.",
-      "categories": [
-        "json",
-        "api",
-        "rest-ingest"
-      ],
-      "tags": [
-        "api",
-        "advanced",
-        "rest",
-        "ingest",
-        "credentials",
-        "keychain",
-        "json",
-        "flatten",
-        "external-table"
-      ],
-      "difficulty": "advanced",
-      "estimatedTimeMinutes": 5,
-      "dataSizeBytes": 0,
-      "fileCount": 0,
-      "author": "DeltaForge Team",
-      "version": "1.0.0",
-      "updatedAt": "2026-04-21T12:00:00Z",
-      "targetObjects": [
-        {
-          "objectType": "external_table",
-          "name": "{{zone_name}}.travel_geo.european_countries"
-        }
-      ]
-    },
-    {
       "id": "api-frankfurter-fx-rate-catalog",
       "path": "demos/api/frankfurter-fx-rate-catalog",
       "iconPath": "icons/api-frankfurter-fx-rate-catalog.svg",
@@ -436,6 +400,46 @@
         {
           "objectType": "external_table",
           "name": "{{zone_name}}.hr_calendar.public_holidays_bronze"
+        }
+      ]
+    },
+    {
+      "id": "api-rust-release-catalog",
+      "path": "demos/api/rust-release-catalog",
+      "iconPath": "icons/api-rust-release-catalog.svg",
+      "name": "Rust Release Catalog — GitHub Releases REST Ingest + Bronze→Silver",
+      "summary": "A platform/DevRel team tracks the cadence of upstream rust-lang/rust releases (used by their build toolchain) by syncing from GitHub's public releases API. Walks the full Phase 1 path: CREATE CONNECTION TYPE = rest_api with auth_mode = 'none', CREATE API ENDPOINT with a 3-part qualified name, INVOKE API ENDPOINT (live HTTPS fetch), CREATE EXTERNAL TABLE USING JSON with json_flatten_config to project nested release records into a flat queryable bronze shape, and a bronze→silver promotion into a typed Delta table that dashboards aggregate over. 9 queries with 29 assertions cover exact row count (per_page=30 pin), author invariant (rustbot), 'Rust ' name prefix, numeric 1.xx.y tag shape, draft/prerelease = false, and bronze↔silver parity. Requires internet — INVOKE issues a real GET against https://api.github.com/repos/rust-lang/rust/releases?per_page=30.",
+      "categories": [
+        "api",
+        "rest-ingest",
+        "json"
+      ],
+      "tags": [
+        "api",
+        "advanced",
+        "rest",
+        "ingest",
+        "json",
+        "flatten",
+        "external-table",
+        "bronze-silver",
+        "github"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-22T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "external_table",
+          "name": "{{zone_name}}.release_intel.rust_releases"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.release_intel.rust_releases_silver"
         }
       ]
     },
@@ -9332,6 +9336,12 @@
       "name": "IoT & Sensors",
       "icon": "cpu",
       "description": "IoT telemetry, sensor data, and time-series demos"
+    },
+    {
+      "id": "api",
+      "name": "API",
+      "icon": "globe",
+      "description": "REST API ingest demos — CREATE CONNECTION TYPE = rest_api, CREATE API ENDPOINT, INVOKE, and JSON/XML flattening into bronze + silver Delta tables"
     },
     {
       "id": "csv",
