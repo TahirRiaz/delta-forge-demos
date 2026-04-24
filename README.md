@@ -1,10 +1,10 @@
-# Delta Forge Demos
+# DeltaForge Demos
 
 180+ self-contained, ASSERT-validated demonstrations across every supported format and industry vertical.
 
 ## Overview
 
-Delta Forge Demos is a structured library of end-to-end demonstrations that exercise the full breadth of the SQL engine. Each demo is a self-contained unit with setup SQL, analytical queries, cleanup SQL, and mathematically validated expected results. Demos serve a dual purpose: they are both interactive learning material for users and the source of truth for the automated correctness test suite.
+DeltaForge Demos is a structured library of end-to-end demonstrations that exercise the full breadth of the SQL engine. Each demo is a self-contained unit with setup SQL, analytical queries, cleanup SQL, and mathematically validated expected results. Demos serve a dual purpose: they are both interactive learning material for users and the source of truth for the automated correctness test suite.
 
 ## Key Features
 

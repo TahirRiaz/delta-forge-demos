@@ -2,7 +2,7 @@
 id = "iceberg-uniform-concurrent-writes"
 name = "Iceberg UniForm — Concurrent Multi-Pipeline Writes"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "concurrent"
 description = """\
 Simulates concurrent writes from multiple ETL pipelines into a shared \

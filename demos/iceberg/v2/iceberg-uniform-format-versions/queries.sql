@@ -5,7 +5,7 @@
 -- ---------------------------------
 -- All queries below read through the Delta transaction log. The Iceberg
 -- metadata is generated automatically by the post-commit hook and is
--- never read by Delta Forge.
+-- never read by DeltaForge.
 --
 -- The `delta.universalFormat.icebergVersion` property controls which
 -- Iceberg spec version the metadata conforms to:

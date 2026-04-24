@@ -2,7 +2,7 @@
 id = "json-typed-billing-events"
 name = "JSON Typed Billing Events — type_hints + as_list"
 version = "1.0.1"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Subscription billing webhook events delivered as Stripe-style NDJSON: numeric \
 amounts and booleans arrive as quoted strings, tag arrays arrive as native JSON \

@@ -2,7 +2,7 @@
 id = "delta-feature-activation-lifecycle"
 name = "Delta Feature Activation Lifecycle — Evolving Table Capabilities"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A platform team manages a customer_events table that started as a plain \
 Delta table. As business requirements grow — first CDC for incremental ETL, \

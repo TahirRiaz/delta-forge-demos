@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI Transportation & Logistics -- Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge unifies X12 EDI transportation
+-- Queries showcasing how DeltaForge unifies X12 EDI transportation
 -- documents across modes (motor, rail, warehouse) and trading partners
 -- into queryable tables.
 --
@@ -129,7 +129,7 @@ ORDER BY gs_1;
 -- ============================================================================
 -- Groups by ISA_12 (Interchange Control Version Number) to show which
 -- X12 standard versions are represented. The dataset spans five versions
--- demonstrating Delta Forge parsing multiple X12 versions in a single table.
+-- demonstrating DeltaForge parsing multiple X12 versions in a single table.
 --
 -- What you'll see:
 --   - x12_version:   ISA_12 version code

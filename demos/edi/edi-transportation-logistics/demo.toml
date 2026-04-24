@@ -2,9 +2,9 @@
 id = "edi-transportation-logistics"
 name = "EDI Transportation & Logistics — X12 Freight Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates how Delta Forge ingests X12 EDI transactions spanning the \
+Demonstrates how DeltaForge ingests X12 EDI transactions spanning the \
 full freight lifecycle: load tendering (204/990), freight invoicing (210), \
 shipment tracking (214), rail transport (404), warehouse operations (945), \
 payment remittance (820), and price catalogs (832). Twelve real-world \

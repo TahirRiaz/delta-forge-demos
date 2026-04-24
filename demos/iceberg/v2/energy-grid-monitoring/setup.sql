@@ -2,7 +2,7 @@
 -- Iceberg Energy Grid Monitoring — Setup
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg table
--- (format v2). Delta Forge reads the Iceberg metadata chain directly:
+-- (format v2). DeltaForge reads the Iceberg metadata chain directly:
 -- metadata.json → manifest list → manifests → Parquet data files.
 --
 -- Dataset: 600 smart meter readings across 3 regions (North, South, East)
@@ -20,7 +20,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg table
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema and data files automatically.
+-- DeltaForge parses metadata.json to discover schema and data files automatically.
 --
 -- NOTE: Most Iceberg tools (PyIceberg, Spark, Trino, DuckDB) have issues
 -- resolving Windows-style paths (e.g. B:\data\...). If running on Windows,

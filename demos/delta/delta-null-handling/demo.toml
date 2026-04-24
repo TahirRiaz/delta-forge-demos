@@ -2,7 +2,7 @@
 id = "delta-null-handling"
 name = "Customer Survey Data Cleansing"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A SaaS company cleanses customer satisfaction survey data where many fields are \
 optional. COALESCE replaces NULLs with sensible defaults, NULLIF converts sentinel \

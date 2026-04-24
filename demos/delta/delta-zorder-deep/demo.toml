@@ -2,7 +2,7 @@
 id = "delta-zorder-deep"
 name = "Delta Z-ORDER — Multi-Column Data Layout Optimization"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Z-ORDER is a Delta Lake optimization that reorganizes data files using a \
 space-filling curve to co-locate rows with similar values across multiple \

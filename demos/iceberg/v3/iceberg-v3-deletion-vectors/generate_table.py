@@ -14,7 +14,7 @@ encoded as a RoaringBitmap stored in a Puffin file. This is the most
 efficient row-level delete representation in Iceberg.
 
 Output: shipment_manifests/ directory with Iceberg V3 metadata, data
-files, and Puffin deletion vector files — ready for Delta Forge to read.
+files, and Puffin deletion vector files — ready for DeltaForge to read.
 """
 import os
 import sys

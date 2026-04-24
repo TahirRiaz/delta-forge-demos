@@ -2,7 +2,7 @@
 id = "delta-append-only-event-sourcing"
 name = "Delta Append-Only Event Sourcing"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Append-only Delta tables (delta.appendOnly = true) reject UPDATE and DELETE, \
 making them ideal for immutable event logs. This demo builds a 60-event order \

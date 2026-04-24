@@ -1,6 +1,6 @@
 # XML NYT News — RSS Feed Analysis
 
-Demonstrates how Delta Forge handles real-world namespaced XML with repeating elements, self-closing elements, and multi-file reading. Seven NYT RSS feed exports from different regions are read into two external tables showing different repeating element strategies.
+Demonstrates how DeltaForge handles real-world namespaced XML with repeating elements, self-closing elements, and multi-file reading. Seven NYT RSS feed exports from different regions are read into two external tables showing different repeating element strategies.
 
 ## Data Story
 

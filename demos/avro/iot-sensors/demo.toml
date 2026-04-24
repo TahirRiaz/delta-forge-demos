@@ -2,7 +2,7 @@
 id = "avro-iot-sensors"
 name = "Avro IoT Sensors — Smart Building Telemetry"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Avro reading features using 5 building-floor sensor files \
 (2,500 rows) with schema evolution and mixed compression codecs. Three tables \

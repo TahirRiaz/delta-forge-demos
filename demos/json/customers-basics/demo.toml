@@ -2,7 +2,7 @@
 id = "json-customers-basics"
 name = "JSON Customers — Basics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates JSON fundamentals: creating an external table from a JSON array \
 file, applying column mappings for clean names, and using type inference for \

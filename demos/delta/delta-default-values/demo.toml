@@ -2,7 +2,7 @@
 id = "delta-default-values"
 name = "Delta Column Default Values"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 NULLs in analytics pipelines silently corrupt COUNT, SUM, and GROUP BY \
 results. This demo first shows the damage — inserting rows without defaults, \

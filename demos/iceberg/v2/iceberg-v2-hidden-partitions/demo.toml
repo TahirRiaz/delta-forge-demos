@@ -2,7 +2,7 @@
 id = "iceberg-v2-hidden-partitions"
 name = "Iceberg V2 — Hidden Partitions (Ride-Share Trip Analytics)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "iceberg-v2-hidden-partitions"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading with \

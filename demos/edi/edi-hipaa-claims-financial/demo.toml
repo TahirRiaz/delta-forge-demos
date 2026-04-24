@@ -2,7 +2,7 @@
 id = "edi-hipaa-claims-financial"
 name = "EDI HIPAA Claims Financial — Charge & Remittance Analysis"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates financial analysis of HIPAA X12 healthcare claims using SQL \
 aggregate functions, CAST expressions, and HAVING clauses — features not \

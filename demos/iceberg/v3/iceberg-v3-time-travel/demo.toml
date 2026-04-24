@@ -2,7 +2,7 @@
 id = "iceberg-v3-time-travel"
 name = "Iceberg V3 UniForm — Investment Portfolio Audit Trail"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates time travel (VERSION AS OF) and version history (DESCRIBE \
 HISTORY) on a Delta table with Iceberg UniForm V3 metadata. An investment \

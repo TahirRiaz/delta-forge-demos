@@ -16,7 +16,7 @@
 --   - policy_holder_id: tokenize (opaque token, scope person)
 --   - description:      mask (partial visibility, first 10 chars)
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   zone_name     — Target zone name (defaults to 'external')
 --   data_path     — Root path where demo data files are stored
 --   current_user  — Username of the current logged-in user

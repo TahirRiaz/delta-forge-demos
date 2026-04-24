@@ -2,7 +2,7 @@
 id = "delta-partitioning"
 name = "Delta Partitioning — Organize & Query by Region"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta table partitioning physically organizes data files into directories \
 by partition column values, enabling partition pruning that skips entire \

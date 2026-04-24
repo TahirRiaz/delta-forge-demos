@@ -2,7 +2,7 @@
 id = "iceberg-uniform-column-stats"
 name = "Iceberg UniForm — Column-Level Statistics Verification"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "column-stats"
 description = """\
 Verifies that column-level min/max/null-count statistics in Iceberg \

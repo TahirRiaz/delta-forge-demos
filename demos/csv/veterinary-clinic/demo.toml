@@ -2,7 +2,7 @@
 id = "csv-veterinary-clinic"
 name = "Veterinary Clinic Patient Records"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A multi-branch veterinary clinic tracks pet visits across 3 branches \
 (North, South, East). Tests recursive directory scanning, file_filter \

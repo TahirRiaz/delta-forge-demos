@@ -2,7 +2,7 @@
 id = "delta-audit-trail-versioning"
 name = "Delta Audit Trail — Native Version-Based Compliance"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Financial regulators demand a tamper-proof record of every account event. \
 Instead of building manual audit columns, this demo leverages Delta's native \

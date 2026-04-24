@@ -2,7 +2,7 @@
 id = "xml-nyt-news-rss"
 name = "XML NYT News — RSS Feed Analysis"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates XML namespace handling, repeating element modes, and multi-file \
 reading using real NYT World News RSS feeds. Seven regional XML files \

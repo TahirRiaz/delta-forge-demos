@@ -2,7 +2,7 @@
 id = "delta-dv-accumulation"
 name = "Delta DV Accumulation — Performance Degradation & Recovery"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Deletion vectors (DVs) enable lightweight row-level deletes without rewriting \
 Parquet files, but each individual DELETE creates a new DV bitmap file. In \

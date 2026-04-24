@@ -2,7 +2,7 @@
 id = "delta-collations"
 name = "Delta Collations — Language-Aware Sorting & Comparison"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Collation defines how strings are compared, sorted, and matched — critical for \
 multilingual data where naive byte-order sorting produces incorrect results \

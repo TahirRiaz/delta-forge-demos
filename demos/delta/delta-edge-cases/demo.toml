@@ -2,7 +2,7 @@
 id = "delta-edge-cases"
 name = "Delta Edge Cases — Empty, Wide & Minimal Tables"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta tables gracefully handle boundary conditions that often trip up \
 traditional data systems, including single-row tables, wide schemas, \

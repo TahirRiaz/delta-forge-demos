@@ -12,7 +12,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count
 -- ============================================================================
--- Verifies that Delta Forge discovered all 15 partitioned Parquet data files
+-- Verifies that DeltaForge discovered all 15 partitioned Parquet data files
 -- via the Iceberg v2 manifest chain (metadata.json -> manifest list ->
 -- manifest -> files). 5 regions x 3 years x 30 readings = 450 rows.
 

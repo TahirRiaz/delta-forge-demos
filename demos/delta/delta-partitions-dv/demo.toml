@@ -2,7 +2,7 @@
 id = "delta-partitions-dv"
 name = "Delta Partitions & Deletion Vectors"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Deletion vectors (DVs) are a Delta protocol optimization that marks rows \
 as deleted in a lightweight sidecar file instead of rewriting entire \

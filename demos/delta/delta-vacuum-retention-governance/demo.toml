@@ -2,7 +2,7 @@
 id = "delta-vacuum-retention-governance"
 name = "Delta VACUUM Retention Governance — Compliance-Driven Data Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Financial regulators may request historical snapshots of trade settlement \
 data at any time. VACUUM's retention period controls how far back time \

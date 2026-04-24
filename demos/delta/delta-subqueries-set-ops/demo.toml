@@ -2,7 +2,7 @@
 id = "delta-subqueries-set-ops"
 name = "University Course Enrollment Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A university tracks student course enrollments across departments and semesters. \
 Correlated subqueries identify students enrolled in multiple departments, EXISTS \

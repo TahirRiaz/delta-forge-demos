@@ -2,7 +2,7 @@
 id = "iceberg-uniform-partitioned"
 name = "Iceberg UniForm — Partitioned Tables"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Iceberg UniForm on a partitioned Delta table. The Iceberg \
 metadata includes partition specs that map directly from the Delta partition \

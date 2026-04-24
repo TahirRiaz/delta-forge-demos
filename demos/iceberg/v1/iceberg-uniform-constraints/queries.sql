@@ -100,7 +100,7 @@ WHERE currency NOT IN ('USD', 'EUR', 'GBP');
 -- Query 8: Latest Balance per Account
 -- ============================================================================
 -- Finds the most recent transaction per account via CTE + ROW_NUMBER + JOIN
--- (Delta Forge does not currently support correlated scalar subqueries).
+-- (DeltaForge does not currently support correlated scalar subqueries).
 
 ASSERT ROW_COUNT = 5
 ASSERT VALUE balance_after = 8000.00 WHERE account_id = 'ACC-1001'

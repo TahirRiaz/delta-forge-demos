@@ -2,7 +2,7 @@
 id = "delta-dml-patterns"
 name = "Delta DML Patterns — INSERT, UPDATE & DELETE"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Lake supports full DML (INSERT, UPDATE, DELETE) on top of immutable \
 Parquet files by recording add/remove file actions in the transaction log, \

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Demonstrates how Delta Forge ingests TRADACOMS — the UK-specific EDI standard
+Demonstrates how DeltaForge ingests TRADACOMS — the UK-specific EDI standard
 used predominantly in retail and utilities. Four files cover purchase orders,
 product planning forecasts, and utility bills, including escape character
 handling for special characters in trading partner names. Two external tables
@@ -11,11 +11,11 @@ with key trading partner and document type fields extracted.
 
 ## Business Scenario
 
-A UK retail chain uses Delta Forge to consolidate TRADACOMS messages from
+A UK retail chain uses DeltaForge to consolidate TRADACOMS messages from
 multiple trading partners. Purchase orders flow to manufacturers, product
 planning forecasts coordinate stock levels with suppliers, and utility bills
 arrive from energy providers. Each TRADACOMS transmission contains multiple
-message types (header, detail, trailer), and Delta Forge exposes every message
+message types (header, detail, trailer), and DeltaForge exposes every message
 as a queryable row — no custom parser or ETL pipeline required.
 
 ## TRADACOMS Features Demonstrated

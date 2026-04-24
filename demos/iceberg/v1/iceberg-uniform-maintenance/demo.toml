@@ -3,7 +3,7 @@ id = "iceberg-uniform-maintenance"
 name = "Iceberg UniForm — OPTIMIZE & VACUUM Maintenance"
 icon = "maintenance"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates table maintenance operations (OPTIMIZE compaction and VACUUM \
 cleanup) on a UniForm-enabled Delta table, verifying that Iceberg metadata \

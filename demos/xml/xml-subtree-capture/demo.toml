@@ -2,7 +2,7 @@
 id = "xml-subtree-capture"
 name = "XML Subtree Capture — xml_paths & nested_output_format"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates xml_paths for capturing complex XML subtrees as serialized \
 string columns instead of flattening. Two tables show the same product \

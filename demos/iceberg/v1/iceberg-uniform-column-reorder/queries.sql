@@ -6,7 +6,7 @@
 -- All queries below read through the Delta transaction log. The Iceberg
 -- metadata in metadata/ is generated automatically as a shadow.
 --
--- When ALTER TABLE ALTER COLUMN ... FIRST or ... AFTER runs, Delta Forge:
+-- When ALTER TABLE ALTER COLUMN ... FIRST or ... AFTER runs, DeltaForge:
 --   1. Updates the Delta schema in _delta_log/ with new column positions
 --   2. Adds a new schema entry to metadata.json's "schemas" array with
 --      field IDs in the updated order (Iceberg uses column IDs, not names,

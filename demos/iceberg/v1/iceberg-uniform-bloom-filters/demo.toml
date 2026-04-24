@@ -2,7 +2,7 @@
 id = "iceberg-uniform-bloom-filters"
 name = "Customer Loyalty Program — Bloom Filters with UniForm"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Tests BLOOM FILTER COLUMNS on a UniForm Iceberg table. 40 loyalty members
 across 4 tiers exercise point lookups by member_id and full_name, which

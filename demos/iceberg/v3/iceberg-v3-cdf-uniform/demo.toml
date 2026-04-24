@@ -2,7 +2,7 @@
 id = "iceberg-v3-cdf-uniform"
 name = "Iceberg V3 UniForm — CDF Payment Reconciliation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates that Change Data Feed (CDF) and Iceberg UniForm V3 coexist \
 correctly on the same Delta table. A payment processing dataset with 30 \

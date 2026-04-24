@@ -2,7 +2,7 @@
 id = "delta-binary-geometry-advanced"
 name = "Delta Binary & Geometry Advanced"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Advanced analytics over binary hashes, spatial WKT geometry, and \
 cross-table document/location relationships in Delta tables. Covers \

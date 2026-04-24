@@ -3,7 +3,7 @@ id = "iceberg-uniform-merge"
 name = "Iceberg UniForm — MERGE INTO (CDC Upsert)"
 icon = "merge"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates MERGE INTO on a UniForm-enabled Delta table for change-data-capture \
 (CDC) order fulfillment. Two successive MERGE operations simulate a daily sync \

@@ -2,7 +2,7 @@
 id = "delta-null-statistics"
 name = "Delta NULL Statistics — NULL-Aware Query Optimization"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Healthcare patient records have optional fields (diagnosis_code, discharge_date, \
 secondary_insurance) that start NULL and get populated over time. Delta tracks \

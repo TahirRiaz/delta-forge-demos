@@ -2,7 +2,7 @@
 id = "iceberg-v2-complex-types"
 name = "Iceberg V2 — Complex Types (Struct & Array)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading with \
 complex/nested column types. An e-commerce order processing dataset of \

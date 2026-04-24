@@ -10,7 +10,7 @@ undergo 4 snapshots:
   4. Discontinued — DELETE 10 specific SKUs → 90 total
 
 Output: inventory/ directory with Iceberg V2 metadata, data files, and
-position delete files — ready for Delta Forge to read.
+position delete files — ready for DeltaForge to read.
 """
 import os
 import sys

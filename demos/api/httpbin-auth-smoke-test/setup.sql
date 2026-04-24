@@ -5,7 +5,7 @@
 --          standalone DROP API ENDPOINT
 -- ============================================================================
 --
--- Real-world story: a DevOps team vets the Delta Forge REST API ingest
+-- Real-world story: a DevOps team vets the DeltaForge REST API ingest
 -- pipeline against httpbin.org before wiring up a new real vendor. The
 -- goal is to prove the credential, auth-mode, and endpoint plumbing
 -- all work correctly in isolation — an always-green smoke test the

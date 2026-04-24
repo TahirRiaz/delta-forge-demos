@@ -3,7 +3,7 @@
 -- ============================================================================
 -- HOW UNIFORM WORKS
 -- -----------------
--- Delta Forge reads and writes data through the Delta protocol as usual.
+-- DeltaForge reads and writes data through the Delta protocol as usual.
 -- All queries below go through the Delta transaction log — nothing changes
 -- about how you query the table.
 --
@@ -19,7 +19,7 @@
 --     version-hint.text
 --
 -- The Iceberg metadata is a SHADOW — it mirrors the Delta state but is
--- never read by Delta Forge itself. Its purpose is interoperability:
+-- never read by DeltaForge itself. Its purpose is interoperability:
 -- any Iceberg engine (Spark, Trino, DuckDB, Snowflake) can read the
 -- same table using the metadata/ directory.
 --

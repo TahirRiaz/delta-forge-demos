@@ -7,7 +7,7 @@
 -- and verify the current snapshot correctly reflects all mutations.
 --
 -- The table uses merge-on-read (position delete files) for UPDATE and
--- DELETE operations, which Delta Forge resolves transparently.
+-- DELETE operations, which DeltaForge resolves transparently.
 -- ============================================================================
 
 

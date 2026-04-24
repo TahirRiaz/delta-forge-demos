@@ -2,7 +2,7 @@
 id = "delta-time-travel-row-diff"
 name = "Delta Time Travel — Row-Level Change Detection"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 When Change Data Feed isn't enabled, time travel is your fallback for \
 answering "what changed?" Self-JOINs and LEFT JOINs across VERSION AS OF \

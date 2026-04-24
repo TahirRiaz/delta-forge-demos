@@ -125,7 +125,7 @@ FROM {{zone_name}}.delta_demos.survey_responses;
 -- LEARN: NULL Sorting — NULLS FIRST vs NULLS LAST
 -- ============================================================================
 -- By default, NULLs sort to the end in ascending order (implementation-defined
--- in SQL, but most engines including Delta Forge place them last). Explicit
+-- in SQL, but most engines including DeltaForge place them last). Explicit
 -- NULLS FIRST / NULLS LAST gives you control.
 --
 -- For reports, you often want missing ratings at the top (NULLS FIRST) so

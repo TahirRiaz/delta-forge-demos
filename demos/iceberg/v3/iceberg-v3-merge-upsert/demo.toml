@@ -2,7 +2,7 @@
 id = "iceberg-v3-merge-upsert"
 name = "Iceberg V3 UniForm — Supply Chain Inventory MERGE Sync"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates MERGE INTO (upsert) on a Delta table with Iceberg UniForm V3 \
 metadata. A supply chain inventory of 30 SKUs across 3 warehouses undergoes \

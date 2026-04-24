@@ -2,7 +2,7 @@
 
 ## Overview
 
-Demonstrates how Delta Forge ingests X12 EDI transactions spanning the full
+Demonstrates how DeltaForge ingests X12 EDI transactions spanning the full
 freight lifecycle: load tendering (204/990), freight invoicing (210), shipment
 tracking (214), rail transport (404), warehouse operations (945), payment
 remittance (820), and price catalogs (832). Two external tables provide
@@ -14,7 +14,7 @@ logistics fields extracted as first-class columns.
 A freight company operates across multiple transportation modes -- motor
 carrier, rail, and warehouse -- exchanging EDI documents with shippers,
 carriers, consignees, and financial partners. Each trading partner uses a
-different X12 version and functional group code. Delta Forge reads all `.edi`
+different X12 version and functional group code. DeltaForge reads all `.edi`
 files and produces structured tables -- no custom parser, version mapping, or
 ETL pipeline required. Analysts can query shipment statuses alongside payment
 remittances and load tenders in a single SQL interface.

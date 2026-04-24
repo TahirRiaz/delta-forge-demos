@@ -2,7 +2,7 @@
 id = "delta-protocol-feature-inspection"
 name = "Delta Protocol Feature Inspection — Metadata Forensics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A data engineering team inherits three Delta tables from a departed colleague \
 and must determine which protocol features are enabled before building \

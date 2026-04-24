@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Iceberg V3 Position Delete Files — Queries
 -- ============================================================================
--- Demonstrates Iceberg position delete file handling: Delta Forge reads the
+-- Demonstrates Iceberg position delete file handling: DeltaForge reads the
 -- V3 metadata chain (upgraded from V2), discovers the position delete file,
 -- and applies row-level deletions before returning results. The dataset
 -- contains 480 equity trades with 24 erroneous ALGO-X99 trades retracted
@@ -12,7 +12,7 @@
 -- ============================================================================
 -- Query 1: Post-Delete Row Count
 -- ============================================================================
--- Verifies that Delta Forge correctly applies the position delete file.
+-- Verifies that DeltaForge correctly applies the position delete file.
 -- Original table has 480 rows; 24 are marked for deletion, leaving 456.
 
 ASSERT ROW_COUNT = 456

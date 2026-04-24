@@ -2,7 +2,7 @@
 id = "excel-multi-sheet-reporting"
 name = "Excel Multi-Sheet Reporting — Regional Sales Review"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Excel multi-sheet reading using quarterly field-office reports \
 from two regions (East and West). Each workbook contains three sheets — Sales \

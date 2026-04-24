@@ -2,7 +2,7 @@
 id = "hl7-chemistry-panel-typed"
 name = "HL7 Chemistry Panel — Typed Multi-OBX Ingestion"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Hospital lab results dashboard for Comprehensive Metabolic Panels (CMP). \
 Four ORU^R01 messages — each carrying 14 OBX segments for the standard CMP \

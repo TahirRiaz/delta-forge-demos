@@ -2,7 +2,7 @@
 -- FHIR Patient Demographics — Queries
 -- ============================================================================
 -- Explore FHIR R5 Patient resources ingested from both bulk NDJSON exports
--- and individual JSON files. These queries demonstrate how Delta Forge
+-- and individual JSON files. These queries demonstrate how DeltaForge
 -- flattens deeply nested FHIR structures into queryable columns.
 -- ============================================================================
 
@@ -87,7 +87,7 @@ ORDER BY patient_id;
 -- ============================================================================
 -- FHIR resources have many optional fields. Different source systems populate
 -- different subsets. This query shows which optional fields are present in
--- each patient file, demonstrating how Delta Forge handles schema variation
+-- each patient file, demonstrating how DeltaForge handles schema variation
 -- across files by unioning all discovered columns and filling gaps with NULL.
 
 ASSERT ROW_COUNT = 7

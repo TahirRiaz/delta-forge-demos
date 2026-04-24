@@ -256,7 +256,7 @@ LIMIT 10;
 -- Louvain is non-deterministic — community count varies by node ordering.
 --
 -- Deterministic invariants (independent of run):
---   • 3-6 communities (verified across NetworkX, igraph, Delta Forge)
+--   • 3-6 communities (verified across NetworkX, igraph, DeltaForge)
 --   • All 34 members assigned (sum of members = 34)
 
 -- Non-deterministic: Louvain is stochastic — community count varies by node ordering

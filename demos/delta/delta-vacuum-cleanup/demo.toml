@@ -2,7 +2,7 @@
 id = "delta-vacuum-cleanup"
 name = "Delta VACUUM — Cleanup Orphaned Files"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 VACUUM is a Delta Lake maintenance command that removes data files no longer \
 referenced by the current table version, reclaiming storage after UPDATEs, \

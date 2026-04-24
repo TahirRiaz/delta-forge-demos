@@ -2,7 +2,7 @@
 id = "delta-column-mapping"
 name = "Delta Column Mapping — Physical & Logical Names"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Column Mapping (mode 'name') decouples logical column names in the \
 schema from physical column names in Parquet files, enabling ALTER TABLE \

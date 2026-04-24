@@ -8,7 +8,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count
 -- ============================================================================
--- Verifies that Delta Forge discovered all 3 Parquet data files via the
+-- Verifies that DeltaForge discovered all 3 Parquet data files via the
 -- Iceberg manifest chain (metadata.json → manifest list → manifest → files).
 
 ASSERT ROW_COUNT = 600

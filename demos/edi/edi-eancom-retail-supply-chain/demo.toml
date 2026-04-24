@@ -2,7 +2,7 @@
 id = "edi-eancom-retail-supply-chain"
 name = "EANCOM Retail Supply Chain"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 European retailer's EDI hub processing GS1/EANCOM messages across the retail \
 supply chain. Covers despatch advices (DESADV) for warehouse receiving, invoices \

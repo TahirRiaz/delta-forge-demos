@@ -2,7 +2,7 @@
 id = "northwind-database"
 name = "Northwind Trading Company"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 The Northwind database is a classic sample dataset representing a fictional specialty \
 food trading company. It includes 11 interconnected tables covering customers, orders, \

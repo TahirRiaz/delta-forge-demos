@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Sales Schema Evolution Demo — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge unifies CSV files with evolving schemas.
+-- Queries showcasing how DeltaForge unifies CSV files with evolving schemas.
 -- Missing columns from older files surface as NULL when queried together.
 --
 -- Evolution timeline:
@@ -159,7 +159,7 @@ ORDER BY id;
 -- ============================================================================
 -- 6. File Metadata — Which File Each Record Came From
 -- ============================================================================
--- Delta Forge injects file metadata columns (df_file_name, df_row_number)
+-- DeltaForge injects file metadata columns (df_file_name, df_row_number)
 -- so you can trace each row back to its source file.
 --
 -- Expected: 3 per file

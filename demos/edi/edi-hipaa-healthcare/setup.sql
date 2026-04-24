@@ -18,7 +18,7 @@
 --   1. hipaa_messages      — Compact: ISA/GS/ST headers + full JSON + transaction ID
 --   2. hipaa_materialized  — Materialized: headers + key BHT/NM1/CLM/BPR fields
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   data_path     — Local or cloud path where demo data files were downloaded
 --   current_user  — Username of the current logged-in user
 --   zone_name     — Target zone name (defaults to 'external')

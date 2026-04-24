@@ -2,7 +2,7 @@
 id = "graph-auto-refresh-csr"
 name = "Fleet Dispatch Network — AUTO REFRESH CSR: Live vs Batched Graph Views"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Teaches the AUTO REFRESH CSR graph property by running identical Cypher \
 queries against two paired graphs defined over the same vertex/edge \

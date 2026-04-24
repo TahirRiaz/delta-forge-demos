@@ -1,6 +1,6 @@
 # Apache Iceberg Demos
 
-SQL demos for the Apache Iceberg table format across V1, V2, and V3 specs. All queries run inside the Delta Forge GUI with built-in assertions.
+SQL demos for the Apache Iceberg table format across V1, V2, and V3 specs. All queries run inside the DeltaForge GUI with built-in assertions.
 
 ## What's Covered
 
@@ -11,7 +11,7 @@ SQL demos for the Apache Iceberg table format across V1, V2, and V3 specs. All q
 
 ## Running a Demo
 
-1. Open the Delta Forge GUI
+1. Open the DeltaForge GUI
 2. Select a demo from this category
 3. Run **setup.sql** to create tables and load seed data
 4. Step through **queries.sql** -- assertions verify each result

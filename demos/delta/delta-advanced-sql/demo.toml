@@ -2,7 +2,7 @@
 id = "delta-advanced-sql"
 name = "Delta Advanced SQL — Windows, CTEs & Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta tables support the full power of SQL analytics including window \
 functions, CTEs, and advanced aggregations, making them a drop-in \

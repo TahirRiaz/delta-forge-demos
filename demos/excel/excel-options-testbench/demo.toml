@@ -2,7 +2,7 @@
 id = "excel-options-testbench"
 name = "Excel Options Testbench — Connector Validation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Verifies that each Excel parsing option is correctly wired through to the \
 backend. Each table exercises a specific option (sheet_name, has_header, \

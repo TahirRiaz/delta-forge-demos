@@ -2,7 +2,7 @@
 id = "iceberg-uniform-schema-evolution"
 name = "Iceberg UniForm — Schema Evolution Across Formats"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates schema evolution on a UniForm-enabled Delta table. When columns \
 are added via ALTER TABLE ADD COLUMN, both the Delta schema and the Iceberg \

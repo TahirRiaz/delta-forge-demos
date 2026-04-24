@@ -2,7 +2,7 @@
 id = "iceberg-uniform-partition-transforms"
 name = "Iceberg UniForm — Partition Transforms"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "partition-transform"
 description = """\
 Demonstrates Iceberg UniForm on a Delta table partitioned by date using \

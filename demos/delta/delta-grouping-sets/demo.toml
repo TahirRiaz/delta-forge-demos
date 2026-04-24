@@ -2,7 +2,7 @@
 id = "delta-grouping-sets"
 name = "Manufacturing Production Reporting"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A widget factory generates multi-level production reports from a single query. \
 GROUPING SETS produces per-line, per-shift, and per-line+shift subtotals without \

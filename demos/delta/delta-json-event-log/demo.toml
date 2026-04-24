@@ -2,7 +2,7 @@
 id = "delta-json-event-log"
 name = "Delta JSON Event Log — Payment Gateway Analysis"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A fintech payment gateway logs every API transaction with JSON payloads in \
 VARCHAR columns — each transaction type (charge, refund, auth, payout) has \

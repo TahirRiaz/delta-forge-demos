@@ -2,7 +2,7 @@
 id = "edi-hipaa-eligibility-enrollment"
 name = "EDI HIPAA Eligibility & Enrollment — Coverage Verification"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates HIPAA eligibility verification and benefit enrollment \
 analysis using CTEs, JOINs, and COALESCE — SQL patterns not found in \

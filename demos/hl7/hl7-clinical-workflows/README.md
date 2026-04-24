@@ -2,7 +2,7 @@
 
 ## Overview
 
-Demonstrates how Delta Forge handles HL7 v2 clinical workflow messages
+Demonstrates how DeltaForge handles HL7 v2 clinical workflow messages
 beyond the core ADT and lab types. Includes MDM (Medical Document Management)
 with a full History & Physical narrative, SIU (Scheduling) with appointment
 booking from two different systems, and a comprehensive edge-case file testing
@@ -14,7 +14,7 @@ A hospital's clinical systems generate diverse HL7 message types. The
 documentation system (MDM) produces authenticated clinical notes. The
 scheduling system (SIU) books and confirms appointments across clinics.
 Meanwhile, the integration engine must handle messages with unusual formatting
-— escape sequences, empty fields, and special characters. Delta Forge reads
+— escape sequences, empty fields, and special characters. DeltaForge reads
 all of these into structured tables without custom parsing logic.
 
 ## HL7 Features Demonstrated

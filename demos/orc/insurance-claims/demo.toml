@@ -2,7 +2,7 @@
 id = "orc-insurance-claims"
 name = "ORC Insurance Claims — Policy Cross-Reference"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates multi-table ORC queries with complex JOINs and subqueries. \
 Two ORC files — policies (80 rows) and claims (200 rows, 20 orphaned) — \

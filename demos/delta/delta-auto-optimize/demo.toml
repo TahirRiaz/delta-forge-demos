@@ -2,7 +2,7 @@
 id = "delta-auto-optimize"
 name = "Delta Auto-Optimize — Automatic Compaction & Write Optimization"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Auto-Optimize uses SET AUTO OPTIMIZE to enable automatic post-write \
 compaction. Without it, frequent small INSERTs create a "small files problem" \

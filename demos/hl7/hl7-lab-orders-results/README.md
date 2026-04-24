@@ -5,7 +5,7 @@
 Models the complete laboratory workflow using HL7 v2 ORM (Order) and ORU
 (Observation Result) messages. Orders are placed for lab tests and radiology
 procedures; results come back with individual observations, reference ranges,
-and abnormal flags. Delta Forge reads the raw `.hl7` files and produces
+and abnormal flags. DeltaForge reads the raw `.hl7` files and produces
 structured, queryable tables — no custom parser needed.
 
 ## Clinical Scenario

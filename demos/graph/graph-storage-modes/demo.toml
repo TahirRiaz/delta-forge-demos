@@ -2,9 +2,9 @@
 id = "graph-storage-modes"
 name = "Graph Storage Modes — Flattened vs Hybrid vs JSON"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
-Proves that Delta Forge's three graph property storage modes — FLATTENED \
+Proves that DeltaForge's three graph property storage modes — FLATTENED \
 (all columns), HYBRID (columns + JSON extras), and JSON (single JSON blob) — \
 produce identical Cypher query results. Creates the same 50-employee startup \
 graph three times with different storage layouts, runs the same queries against \

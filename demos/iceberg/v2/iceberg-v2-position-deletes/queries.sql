@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Iceberg V2 Position Deletes — Queries
 -- ============================================================================
--- Validates that Delta Forge correctly applies Iceberg V2 position delete
+-- Validates that DeltaForge correctly applies Iceberg V2 position delete
 -- vectors when reading the table. The original dataset has 600 rows; 30 rows
 -- from faulty sensor SENSOR-F01 were retracted. Every query must reflect the
 -- corrected 570-row dataset — if position deletes are not applied, assertions

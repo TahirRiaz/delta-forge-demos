@@ -2,7 +2,7 @@
 id = "delta-update-cross-partition"
 name = "Delta Cross-Partition Updates"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 When an UPDATE predicate does not align with the partition key, Delta must \
 create deletion vectors (DVs) in every partition that contains matching rows. \

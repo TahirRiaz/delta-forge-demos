@@ -2,7 +2,7 @@
 id = "delta-partition-merge"
 name = "Delta Partition MERGE — Catalog Sync by Category"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 MERGE into a partitioned Delta table demonstrates how upsert operations \
 target only the partition directories that contain matching rows. When a \

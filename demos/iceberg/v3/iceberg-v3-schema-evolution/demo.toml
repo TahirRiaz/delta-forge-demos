@@ -2,7 +2,7 @@
 id = "iceberg-v3-schema-evolution"
 name = "Iceberg V3 UniForm — Pharmaceutical Drug Registry Schema Evolution"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates schema evolution (ADD COLUMN) on a Delta table with Iceberg \
 UniForm V3 metadata generation. A pharmaceutical drug registry with 30 \

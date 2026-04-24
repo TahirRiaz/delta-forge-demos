@@ -2,7 +2,7 @@
 id = "graph-bipartite"
 name = "Graph Bipartite — Movie Recommendation Engine"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Bipartite movie recommendation graph with 25 subscribers and 20 movies \
 connected by ~84 rating edges. The two-type vertex graph enables \

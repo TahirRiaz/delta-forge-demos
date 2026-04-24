@@ -2,7 +2,7 @@
 id = "delta-gdpr-data-erasure"
 name = "Delta GDPR Data Erasure — Right to Erasure Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 GDPR Article 17 ("right to erasure") requires organizations to permanently \
 delete personal data on request. In Delta Lake, erasure is atomic and \

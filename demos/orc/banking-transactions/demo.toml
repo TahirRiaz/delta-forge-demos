@@ -2,7 +2,7 @@
 id = "orc-banking-transactions"
 name = "ORC Banking Transactions — Transaction Monitoring"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates ORC format reading with branch-level banking transaction \
 records for fraud monitoring. Two ORC files (100 rows total) across two \

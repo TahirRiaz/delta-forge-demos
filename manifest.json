@@ -31,7 +31,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -71,7 +71,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -113,7 +113,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -158,7 +158,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -201,7 +201,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -220,7 +220,7 @@
       "path": "demos/api/jsonplaceholder-blog-moderation-corpus",
       "iconPath": "icons/api-jsonplaceholder-blog-moderation-corpus.svg",
       "name": "Blog Moderation Corpus — Page-Based Pagination Walkthrough",
-      "summary": "An NLP content-moderation team uses JSONPlaceholder's /posts endpoint as a fixed-shape staging corpus — 100 fake blog posts split 20 per page over 5 pages. Deterministic 100-row shape makes it a perfect smoke test for Delta Forge's page-pagination engine. Exercises pagination = 'page' with page_param = '_page', page_start = 1, max_pages = 5, and query_param._limit = 20 as the per-page size carrier. Also walks the catalog-inspection triad that's specific to API endpoints: SHOW API ENDPOINTS IN CONNECTION, DESCRIBE API ENDPOINT, and SHOW API ENDPOINT RUNS. 7 queries with 20+ assertions cover exact 100-row count, contiguous 1..100 post_id range, 10 distinct authors with 10 posts each (even distribution spot-check on authors 1/5/10), and a deterministic post-1 title fingerprint. Requires internet — INVOKE issues real GETs against https://jsonplaceholder.typicode.com/posts.",
+      "summary": "An NLP content-moderation team uses JSONPlaceholder's /posts endpoint as a fixed-shape staging corpus — 100 fake blog posts split 20 per page over 5 pages. Deterministic 100-row shape makes it a perfect smoke test for DeltaForge's page-pagination engine. Exercises pagination = 'page' with page_param = '_page', page_start = 1, max_pages = 5, and query_param._limit = 20 as the per-page size carrier. Also walks the catalog-inspection triad that's specific to API endpoints: SHOW API ENDPOINTS IN CONNECTION, DESCRIBE API ENDPOINT, and SHOW API ENDPOINT RUNS. 7 queries with 20+ assertions cover exact 100-row count, contiguous 1..100 post_id range, 10 distinct authors with 10 posts each (even distribution spot-check on authors 1/5/10), and a deterministic post-1 title fingerprint. Requires internet — INVOKE issues real GETs against https://jsonplaceholder.typicode.com/posts.",
       "categories": [
         "api",
         "rest-ingest",
@@ -244,7 +244,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -288,7 +288,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -332,7 +332,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -373,7 +373,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-22T12:00:00Z",
       "targetObjects": [
@@ -425,7 +425,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "2.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -463,7 +463,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 6534,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -505,7 +505,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 8551,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -546,7 +546,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 102679,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -592,7 +592,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-18T12:00:00Z",
       "targetObjects": [
@@ -627,7 +627,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 3200,
       "fileCount": 8,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-22T12:00:00Z",
       "targetObjects": [
@@ -688,7 +688,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 512000,
       "fileCount": 11,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-11T12:00:00Z",
       "targetObjects": [
@@ -758,7 +758,7 @@
       "estimatedTimeMinutes": 2,
       "dataSizeBytes": 2048,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-11T12:00:00Z",
       "targetObjects": [
@@ -790,7 +790,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 6495,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -831,7 +831,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -864,7 +864,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -901,7 +901,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -935,7 +935,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -968,7 +968,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1001,7 +1001,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1034,7 +1034,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1076,7 +1076,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -1117,7 +1117,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1149,7 +1149,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -1182,7 +1182,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1214,7 +1214,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1248,7 +1248,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1281,7 +1281,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1314,7 +1314,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1346,7 +1346,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1380,7 +1380,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -1413,7 +1413,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1451,7 +1451,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1483,7 +1483,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -1517,7 +1517,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -1549,7 +1549,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1581,7 +1581,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1613,7 +1613,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1645,7 +1645,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1681,7 +1681,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -1714,7 +1714,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -1747,7 +1747,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1783,7 +1783,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -1826,7 +1826,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -1859,7 +1859,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -1893,7 +1893,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -1927,7 +1927,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -1959,7 +1959,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -1992,7 +1992,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2024,7 +2024,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -2059,7 +2059,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2092,7 +2092,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -2131,7 +2131,7 @@
       "estimatedTimeMinutes": 15,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2168,7 +2168,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2206,7 +2206,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2243,7 +2243,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2282,7 +2282,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2321,7 +2321,7 @@
       "estimatedTimeMinutes": 15,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2368,7 +2368,7 @@
       "estimatedTimeMinutes": 15,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2406,7 +2406,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2445,7 +2445,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2483,7 +2483,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "2.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2520,7 +2520,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2561,7 +2561,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -2594,7 +2594,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2627,7 +2627,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2660,7 +2660,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2692,7 +2692,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2726,7 +2726,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2762,7 +2762,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2800,7 +2800,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2835,7 +2835,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2868,7 +2868,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2900,7 +2900,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -2932,7 +2932,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -2965,7 +2965,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -2997,7 +2997,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3038,7 +3038,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -3072,7 +3072,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3105,7 +3105,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -3139,7 +3139,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3173,7 +3173,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3207,7 +3207,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3239,7 +3239,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3271,7 +3271,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -3305,7 +3305,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -3339,7 +3339,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3373,7 +3373,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3406,7 +3406,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3439,7 +3439,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3473,7 +3473,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -3510,7 +3510,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3541,7 +3541,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -3573,7 +3573,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3609,7 +3609,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3642,7 +3642,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3674,7 +3674,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "2.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3706,7 +3706,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "2.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3739,7 +3739,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3773,7 +3773,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3807,7 +3807,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -3840,7 +3840,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3874,7 +3874,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3910,7 +3910,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3945,7 +3945,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -3981,7 +3981,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -4013,7 +4013,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -4046,7 +4046,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-09T12:00:00Z",
       "targetObjects": [
@@ -4080,7 +4080,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4114,7 +4114,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4147,7 +4147,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4181,7 +4181,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4213,7 +4213,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-24T12:00:00Z",
       "targetObjects": [
@@ -4247,7 +4247,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -4283,7 +4283,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "2.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4318,7 +4318,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4357,7 +4357,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 2311,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -4392,7 +4392,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 19192,
       "fileCount": 14,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4428,7 +4428,7 @@
       "estimatedTimeMinutes": 7,
       "dataSizeBytes": 4844,
       "fileCount": 6,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T13:13:28Z",
       "targetObjects": [
@@ -4464,7 +4464,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 6593,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T13:13:28Z",
       "targetObjects": [
@@ -4502,7 +4502,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 66560,
       "fileCount": 22,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T13:13:28Z",
       "targetObjects": [
@@ -4534,7 +4534,7 @@
       "estimatedTimeMinutes": 7,
       "dataSizeBytes": 3137,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T13:13:28Z",
       "targetObjects": [
@@ -4574,7 +4574,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 2629,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4616,7 +4616,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 4135,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4657,7 +4657,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 1986,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4696,7 +4696,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 39936,
       "fileCount": 11,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -4733,7 +4733,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 19192,
       "fileCount": 14,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4767,7 +4767,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 19192,
       "fileCount": 14,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4801,7 +4801,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 19192,
       "fileCount": 14,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4843,7 +4843,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 36864,
       "fileCount": 14,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -4881,7 +4881,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 1716,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4915,7 +4915,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 747,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -4953,7 +4953,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 16384,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -4992,7 +4992,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 2544,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -5029,7 +5029,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 37888,
       "fileCount": 12,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -5063,7 +5063,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 31228,
       "fileCount": 6,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -5110,7 +5110,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 14589,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -5151,7 +5151,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 1593005,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "2.0.0",
       "updatedAt": "2026-03-25T12:00:00Z",
       "targetObjects": [
@@ -5191,7 +5191,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 104620,
       "fileCount": 15,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -5233,7 +5233,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 103830,
       "fileCount": 22,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -5280,7 +5280,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 16864,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -5321,7 +5321,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 128341,
       "fileCount": 16,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -5360,7 +5360,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 265646,
       "fileCount": 8,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -5401,7 +5401,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 46658,
       "fileCount": 16,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -5435,7 +5435,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -5480,7 +5480,7 @@
       "estimatedTimeMinutes": 3,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-18T12:00:00Z",
       "targetObjects": [
@@ -5522,7 +5522,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -5562,7 +5562,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 680951,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
       "targetObjects": [
@@ -5609,7 +5609,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 4604,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-16T12:00:00Z",
       "targetObjects": [
@@ -5652,7 +5652,7 @@
       "estimatedTimeMinutes": 30,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-16T12:00:00Z",
       "targetObjects": [
@@ -5705,7 +5705,7 @@
       "resourceWarning": "Compute-node RSS peaks at ~10 GB during the heavy Cypher algorithms (betweenness and Louvain). CSR topology build is cheaper. Recommended host memory: 24 GB+. Set DF_HTTP_TIMEOUT_SECS=0 (or >=1800) on the CLI so the initial cold-path Cypher query doesn't hit the client-side timeout.",
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-16T12:00:00Z",
       "targetObjects": [
@@ -5749,7 +5749,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 4412,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
       "targetObjects": [
@@ -5796,7 +5796,7 @@
       "estimatedTimeMinutes": 15,
       "dataSizeBytes": 65011712,
       "fileCount": 33,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-06T12:00:00Z",
       "targetObjects": [
@@ -5959,7 +5959,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 4412,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-30T12:00:00Z",
       "targetObjects": [
@@ -6007,7 +6007,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6047,7 +6047,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 233840,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
       "targetObjects": [
@@ -6090,7 +6090,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 27088,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-08T12:00:00Z",
       "targetObjects": [
@@ -6117,7 +6117,7 @@
       "path": "demos/graph/graph-sql-cypher-mix",
       "iconPath": "icons/graph-sql-cypher-mix.svg",
       "name": "Sales Territory Optimization — SQL + Cypher Interop",
-      "summary": "40 enterprise customers (graph) with 96 referral edges, 120 orders, and 8 sales reps (relational). Demonstrates Delta Forge's unique SQL-Cypher interoperability: cypher() table function in SQL JOINs, INSERT INTO from Cypher results (PageRank, Louvain), mixed CTEs combining graph degree centrality with SQL revenue aggregation, and 4-way JOINs across Cypher-populated and relational tables.",
+      "summary": "40 enterprise customers (graph) with 96 referral edges, 120 orders, and 8 sales reps (relational). Demonstrates DeltaForge's unique SQL-Cypher interoperability: cypher() table function in SQL JOINs, INSERT INTO from Cypher results (PageRank, Louvain), mixed CTEs combining graph degree centrality with SQL revenue aggregation, and 4-way JOINs across Cypher-populated and relational tables.",
       "categories": [
         "graph"
       ],
@@ -6134,7 +6134,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6190,7 +6190,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6256,7 +6256,7 @@
       "estimatedTimeMinutes": 30,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-04T12:00:00Z",
       "targetObjects": [
@@ -6299,7 +6299,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6344,7 +6344,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 7157,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -6379,7 +6379,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 10240,
       "fileCount": 4,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -6418,7 +6418,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 24576,
       "fileCount": 8,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -6456,7 +6456,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 21504,
       "fileCount": 8,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -6492,7 +6492,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -6525,7 +6525,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6558,7 +6558,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6591,7 +6591,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6625,7 +6625,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6659,7 +6659,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6693,7 +6693,7 @@
       "estimatedTimeMinutes": 15,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6730,7 +6730,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6763,7 +6763,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -6797,7 +6797,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6834,7 +6834,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6867,7 +6867,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6899,7 +6899,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -6932,7 +6932,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -6965,7 +6965,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -6998,7 +6998,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7030,7 +7030,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -7062,7 +7062,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7096,7 +7096,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7130,7 +7130,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -7164,7 +7164,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7201,7 +7201,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 26383,
       "fileCount": 9,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T00:00:00Z",
       "targetObjects": [
@@ -7233,7 +7233,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 27933,
       "fileCount": 6,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -7267,7 +7267,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 231392,
       "fileCount": 41,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7302,7 +7302,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 259356,
       "fileCount": 82,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7337,7 +7337,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 79560,
       "fileCount": 17,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7371,7 +7371,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 93654,
       "fileCount": 19,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -7402,7 +7402,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7440,7 +7440,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -7483,7 +7483,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 5362,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -7518,7 +7518,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 25365,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -7551,7 +7551,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 82138,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -7586,7 +7586,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 615,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -7624,7 +7624,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 29080,
       "fileCount": 9,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T00:00:00Z",
       "targetObjects": [
@@ -7657,7 +7657,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 46761,
       "fileCount": 6,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -7690,7 +7690,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 69704,
       "fileCount": 15,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -7725,7 +7725,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 42473,
       "fileCount": 9,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7759,7 +7759,7 @@
       "estimatedTimeMinutes": 7,
       "dataSizeBytes": 96023,
       "fileCount": 7,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -7793,7 +7793,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 4601,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -7824,7 +7824,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -7857,7 +7857,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7895,7 +7895,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -7928,7 +7928,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 38706,
       "fileCount": 9,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T00:00:00Z",
       "targetObjects": [
@@ -7962,7 +7962,7 @@
       "estimatedTimeMinutes": 7,
       "dataSizeBytes": 44530,
       "fileCount": 9,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -7996,7 +7996,7 @@
       "estimatedTimeMinutes": 7,
       "dataSizeBytes": 37132,
       "fileCount": 9,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -8030,7 +8030,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8064,7 +8064,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8099,7 +8099,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 4885,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8133,7 +8133,7 @@
       "estimatedTimeMinutes": 7,
       "dataSizeBytes": 46630,
       "fileCount": 10,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-29T12:00:00Z",
       "targetObjects": [
@@ -8166,7 +8166,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8200,7 +8200,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8233,7 +8233,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 560111,
       "fileCount": 10,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -8267,7 +8267,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 43694,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -8298,7 +8298,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 5112,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-01T12:00:00Z"
     },
@@ -8324,7 +8324,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 1095591,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -8363,7 +8363,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 12528,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -8399,7 +8399,7 @@
       "estimatedTimeMinutes": 4,
       "dataSizeBytes": 9600,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -8435,7 +8435,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 19227,
       "fileCount": 1,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8468,7 +8468,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 93741,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8501,7 +8501,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 18603,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8537,7 +8537,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 222482,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -8574,7 +8574,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 7644,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8607,7 +8607,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 9882,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -8644,7 +8644,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 1288428,
       "fileCount": 14,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -8689,7 +8689,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 3072,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-27T12:00:00Z",
       "targetObjects": [
@@ -8728,7 +8728,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 4068,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8769,7 +8769,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 3370,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-27T12:00:00Z",
       "targetObjects": [
@@ -8806,7 +8806,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -8842,7 +8842,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -8883,7 +8883,7 @@
       "estimatedTimeMinutes": 4,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -8916,7 +8916,7 @@
       "estimatedTimeMinutes": 3,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-26T12:00:00Z",
       "targetObjects": [
@@ -8951,7 +8951,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -8993,7 +8993,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -9036,7 +9036,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-28T12:00:00Z",
       "targetObjects": [
@@ -9074,7 +9074,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -9116,7 +9116,7 @@
       "estimatedTimeMinutes": 12,
       "dataSizeBytes": 0,
       "fileCount": 0,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -9150,7 +9150,7 @@
       "estimatedTimeMinutes": 5,
       "dataSizeBytes": 4300,
       "fileCount": 5,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-22T12:00:00Z",
       "targetObjects": [
@@ -9184,7 +9184,7 @@
       "estimatedTimeMinutes": 10,
       "dataSizeBytes": 6015,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -9224,7 +9224,7 @@
       "estimatedTimeMinutes": 6,
       "dataSizeBytes": 5124,
       "fileCount": 3,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-04-21T12:00:00Z",
       "targetObjects": [
@@ -9261,7 +9261,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 492058,
       "fileCount": 7,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-02-26T12:00:00Z",
       "targetObjects": [
@@ -9297,7 +9297,7 @@
       "estimatedTimeMinutes": 8,
       "dataSizeBytes": 5538,
       "fileCount": 2,
-      "author": "Delta Forge Team",
+      "author": "DeltaForge Team",
       "version": "1.0.0",
       "updatedAt": "2026-03-01T12:00:00Z"
     }
@@ -9307,7 +9307,7 @@
       "id": "getting-started",
       "name": "Getting Started",
       "icon": "rocket",
-      "description": "Quick introductory demos to learn Delta Forge basics"
+      "description": "Quick introductory demos to learn DeltaForge basics"
     },
     {
       "id": "retail",

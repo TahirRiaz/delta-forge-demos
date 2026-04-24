@@ -2,7 +2,7 @@
 id = "graph-email-eu-core"
 name = "Email-Eu-core — European Institution Email Network"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Email-Eu-core communication network (SNAP dataset, Leskovec et al.): a directed \
 email graph from a European research institution. 1,005 vertices represent \

@@ -2,7 +2,7 @@
 id = "delta-overflow-detection"
 name = "Delta Overflow Detection — Treasury Balance Monitoring"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Financial systems must detect when running balances approach the INT limit \
 (2,147,483,647) before silent overflow corrupts data. This demo models a \

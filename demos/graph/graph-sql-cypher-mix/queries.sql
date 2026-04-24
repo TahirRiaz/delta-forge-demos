@@ -7,7 +7,7 @@
 -- ############################################################################
 -- ############################################################################
 --
--- Demonstrates Delta Forge's unique ability to mix SQL and Cypher in the
+-- Demonstrates DeltaForge's unique ability to mix SQL and Cypher in the
 -- same interface, sharing the same Delta tables:
 --
 --   1. cypher() table function — embed Cypher results inside SQL queries

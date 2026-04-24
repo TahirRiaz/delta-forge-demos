@@ -2,7 +2,7 @@
 id = "delta-string-statistics"
 name = "Delta String Statistics — Truncation & Bloom Filter Bridge"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta stores min/max statistics for string columns, but only the first 32 \
 characters. Short strings like SKU codes get full statistics and efficient data \

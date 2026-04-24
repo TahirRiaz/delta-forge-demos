@@ -1,7 +1,7 @@
 -- ============================================================================
 -- HL7 Lab Orders & Results — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge unifies ORM (order) and ORU (result)
+-- Queries showcasing how DeltaForge unifies ORM (order) and ORU (result)
 -- messages from multiple LIS/EHR systems into queryable lab data.
 --
 -- Two tables are available:

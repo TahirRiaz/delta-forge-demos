@@ -2,7 +2,7 @@
 id = "delta-partition-time-series"
 name = "Delta Time-Based Partitioning — Monthly Sensor Data"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Time-based partitioning is the most common strategy in production data lakes, \
 organizing files into directories by time period (year_month, event_date, etc.). \

@@ -2,7 +2,7 @@
 id = "json-music-catalog"
 name = "JSON Music Catalog — Nested Arrays & Explode"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates nested JSON flattening with array explosion. A digital music \
 distributor receives catalog feeds as JSON arrays with nested vendor objects \

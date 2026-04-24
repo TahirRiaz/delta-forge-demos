@@ -2,7 +2,7 @@
 id = "iceberg-uniform-change-data-feed"
 name = "E-Commerce Order Lifecycle — Change Data Feed with UniForm"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Tests Change Data Feed (CDF) integration with UniForm Iceberg metadata.
 Inserts 30 e-commerce orders, updates pending orders to processing, deletes

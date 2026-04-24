@@ -2,7 +2,7 @@
 id = "pseudonymisation-quickstart"
 name = "Pseudonymisation Quickstart — Banking KYC"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A retail bank must pseudonymise customer PII for its analytics team while \
 keeping account-level aggregations accurate. This beginner demo teaches the \

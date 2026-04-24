@@ -2,9 +2,9 @@
 id = "hl7-clinical-workflows"
 name = "HL7 Clinical Workflows — Documents, Scheduling & Edge Cases"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates how Delta Forge handles HL7 v2 clinical workflow messages \
+Demonstrates how DeltaForge handles HL7 v2 clinical workflow messages \
 beyond the core ADT/ORM/ORU types. Includes MDM (Medical Document \
 Management) with a full History & Physical narrative, SIU (Scheduling) \
 with appointment booking from two different systems, and a comprehensive \

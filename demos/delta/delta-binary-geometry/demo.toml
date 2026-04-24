@@ -2,7 +2,7 @@
 id = "delta-binary-geometry"
 name = "Delta Binary & Spatial Data Types"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta tables store binary-like data (hashes, checksums) and spatial geometry \
 as VARCHAR columns using conventions like SHA-256 hex strings and WKT \

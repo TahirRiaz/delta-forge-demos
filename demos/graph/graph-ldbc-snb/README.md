@@ -1,6 +1,6 @@
 # LDBC Social Network Benchmark — Full Model Graph Verification
 
-Verifies Delta Forge graph algorithms and SQL/Cypher queries against the
+Verifies DeltaForge graph algorithms and SQL/Cypher queries against the
 industry-standard LDBC Social Network Benchmark with official golden values.
 
 ## Data Source
@@ -104,7 +104,7 @@ parameters produced by the LDBC reference implementation.
 
 ## Mixed SQL + Cypher Queries (queries 26–30)
 
-Demonstrates Delta Forge's ability to join Cypher graph results with Delta
+Demonstrates DeltaForge's ability to join Cypher graph results with Delta
 tables using the `cypher()` table function. Cypher handles graph traversal and
 algorithms; SQL enriches results with relational data.
 

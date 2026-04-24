@@ -2,7 +2,7 @@
 id = "iceberg-v3-position-deletes"
 name = "Iceberg V3 — Position Delete Files"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Apache Iceberg position delete file handling using an equity \
 trading desk dataset. Contains 480 stock trades across 4 exchanges (NYSE, \

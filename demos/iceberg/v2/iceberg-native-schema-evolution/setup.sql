@@ -12,7 +12,7 @@
 --
 -- Iceberg uses field-id stability for schema evolution: renaming a column
 -- updates the metadata but the underlying Parquet files retain the original
--- column name. Delta Forge must resolve the current schema from the latest
+-- column name. DeltaForge must resolve the current schema from the latest
 -- metadata.json and map columns by field-id, not by name.
 --
 -- Dataset: 360 employees across 5 departments (Engineering, Sales,
@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg v2 table with evolved schema
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses the latest metadata.json (v7) which contains the final
+-- DeltaForge parses the latest metadata.json (v7) which contains the final
 -- schema with 7 columns including the renamed 'department' column.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.employee_directory
 USING ICEBERG

@@ -23,7 +23,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg v2 table with hidden month partitioning
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema, partition spec, and data files.
+-- DeltaForge parses metadata.json to discover schema, partition spec, and data files.
 -- The partition-spec uses months(pickup_date) — a hidden partition transform.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.trips
 USING ICEBERG

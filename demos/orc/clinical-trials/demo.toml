@@ -2,7 +2,7 @@
 id = "orc-clinical-trials"
 name = "ORC Clinical Trials — Patient Outcome Analysis"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates ORC format with heavily nullable data for NULL handling and \
 conditional logic. 150 clinical trial patient records with NULLs in 6 of \

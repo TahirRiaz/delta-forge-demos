@@ -2,7 +2,7 @@
 id = "delta-in-commit-timestamps"
 name = "Delta In-Commit Timestamps — Reliable Version Timing"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 In-commit timestamps embed a reliable, monotonically increasing timestamp \
 directly into each Delta transaction log commit, solving the problem of \

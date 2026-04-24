@@ -2,7 +2,7 @@
 id = "iceberg-v3-clinical-trials"
 name = "Iceberg V3 — Clinical Trial Lab Results"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates native Apache Iceberg format-version 3 table reading using a \
 pharmaceutical clinical trial lab results dataset (480 samples across 3 \

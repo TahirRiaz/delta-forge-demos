@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDIFACT Invoice Reconciliation — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge reconciles EDIFACT procurement documents
+-- Queries showcasing how DeltaForge reconciles EDIFACT procurement documents
 -- across the order-to-invoice cycle: purchase orders (ORDERS), order responses
 -- (ORDRSP), and invoices (INVOIC) from multiple trading partners and EDIFACT
 -- directory versions.

@@ -3,7 +3,7 @@
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg v2 table
 -- with multi-column partitioning: region (identity) + years(observation_date).
--- Delta Forge reads the Iceberg metadata chain directly:
+-- DeltaForge reads the Iceberg metadata chain directly:
 -- metadata.json -> manifest list -> manifests -> Parquet data files.
 --
 -- Multi-column partitioning enables partition pruning on both the region
@@ -24,7 +24,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg v2 table
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema and data files automatically.
+-- DeltaForge parses metadata.json to discover schema and data files automatically.
 -- The table is partitioned by region (identity) and years(observation_date).
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.weather_readings
 USING ICEBERG

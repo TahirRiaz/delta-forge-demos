@@ -2,7 +2,7 @@
 id = "iceberg-v3-maintenance"
 name = "Iceberg V3 UniForm — SaaS Billing OPTIMIZE & VACUUM"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates OPTIMIZE and VACUUM maintenance operations on a Delta table \
 with Iceberg UniForm V3 metadata. A SaaS subscription billing table starts \

@@ -2,7 +2,7 @@
 id = "graph-polbooks"
 name = "Political Books — Co-Purchasing Network with Ground-Truth Communities"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Political Books Network (Krebs, compiled by Newman): 105 books about US \
 politics sold on Amazon, with 441 undirected edges representing frequent \

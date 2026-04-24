@@ -2,7 +2,7 @@
 id = "delta-time-travel-vacuum-boundary"
 name = "Delta Time Travel — VACUUM Retention Boundary"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 VACUUM permanently removes old Parquet files that are no longer referenced \
 by the latest table version. While this reclaims storage, it also destroys \

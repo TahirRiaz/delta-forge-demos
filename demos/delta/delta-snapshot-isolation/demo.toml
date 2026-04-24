@@ -2,7 +2,7 @@
 id = "delta-snapshot-isolation"
 name = "Delta Snapshot Isolation — Portfolio Rebalancing"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Every Delta Lake write — INSERT, UPDATE, OPTIMIZE — is an atomic transaction \
 that produces a new table version. Concurrent readers always see a complete, \

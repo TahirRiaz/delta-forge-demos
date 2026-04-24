@@ -2,7 +2,7 @@
 id = "edi-edifact-international-trade"
 name = "EDI EDIFACT International Trade"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates UN/EDIFACT and EANCOM message parsing across 22 files covering \
 international trade, logistics, customs, and passenger data. Message types \

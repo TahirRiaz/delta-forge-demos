@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI TRADACOMS — Purchase Order Line Items — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge extracts order line items from a
+-- Queries showcasing how DeltaForge extracts order line items from a
 -- TRADACOMS purchase order file. The file contains 4 MHD messages following
 -- the Header-Detail-Trailer pattern:
 --   ORDHDR:9  — Order header (trading partners, document type)

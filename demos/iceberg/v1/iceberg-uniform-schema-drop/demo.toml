@@ -3,7 +3,7 @@ id = "iceberg-uniform-schema-drop"
 name = "Iceberg UniForm — Drop Columns (GDPR PII Removal)"
 icon = "column-drop"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates dropping columns on a UniForm-enabled Delta table for GDPR \
 compliance. When columns are dropped via ALTER TABLE DROP COLUMN, the Delta \

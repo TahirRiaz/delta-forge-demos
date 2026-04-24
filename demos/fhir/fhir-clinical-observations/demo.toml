@@ -2,7 +2,7 @@
 id = "fhir-clinical-observations"
 name = "FHIR Clinical Observations — Vital Signs & Lab Results"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates FHIR R5 Observation resource ingestion across two data sources: \
 a bulk NDJSON export of 100 heart rate observations and 14 individual clinical \

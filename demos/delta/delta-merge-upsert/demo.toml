@@ -2,7 +2,7 @@
 id = "delta-merge-upsert"
 name = "Delta MERGE — CDC Upsert with BY SOURCE"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 The MERGE INTO upsert pattern is the foundation of change data capture \
 (CDC) pipelines, atomically applying inserts, updates, and deletes from \

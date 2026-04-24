@@ -12,7 +12,7 @@
 --       those partition directories — skipping the rest entirely.
 --
 -- HOW TO OBSERVE PRUNING:
---   The Delta Forge engine logs partition pruning activity at INFO level.
+--   The DeltaForge engine logs partition pruning activity at INFO level.
 --   After each query, the compute engine outputs a line like:
 --
 --     File filtering: 2 of 4 files skipped

@@ -15,7 +15,7 @@ This exercises Iceberg's field-id stability for column renames and
 NULL handling for columns added after initial data load.
 
 Output: employee_directory/ directory with Iceberg V2 metadata showing
-schema evolution history — ready for Delta Forge to read.
+schema evolution history — ready for DeltaForge to read.
 """
 import os
 import sys

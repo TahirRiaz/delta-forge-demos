@@ -2,7 +2,7 @@
 id = "delta-cross-timezone-scheduling"
 name = "Delta Cross-Timezone Scheduling — Global Conference Planner"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Cross-timezone scheduling demonstrates the dual local/UTC column pattern for \
 coordinating events across global offices. Each meeting stores both a local \

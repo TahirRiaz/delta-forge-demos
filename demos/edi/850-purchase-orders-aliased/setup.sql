@@ -41,7 +41,7 @@
 -- Data: 4 synthetic 850 transactions, one per .edi file, with 3-6 PO1 line
 -- items each (18 total line items across the corpus).
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   data_path     — Local or cloud path where demo data files were downloaded
 --   current_user  — Username of the current logged-in user
 --   zone_name     — Target zone name (defaults to 'external')

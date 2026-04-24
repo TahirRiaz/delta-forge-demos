@@ -2,7 +2,7 @@
 id = "delta-merge-multi-source"
 name = "Delta MERGE — Multi-Source Sequential Updates"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Order fulfillment pipelines receive updates from multiple independent systems \
 — shipping, payments, and returns — each arriving on its own schedule. Each \

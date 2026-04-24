@@ -2,7 +2,7 @@
 id = "json-country-factbook"
 name = "JSON Country Factbook — Deep Nesting & Schema Evolution"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates deep JSON nesting (3+ levels), schema evolution, and selective \
 path extraction using CIA World Factbook data for 10 African countries. Each \

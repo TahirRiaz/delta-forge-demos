@@ -2,7 +2,7 @@
 -- FHIR Clinical Observations — Queries
 -- ============================================================================
 -- Explore FHIR R5 Observation resources covering vital signs, lab results,
--- and clinical assessments. These queries demonstrate how Delta Forge
+-- and clinical assessments. These queries demonstrate how DeltaForge
 -- flattens complex FHIR clinical data into analyst-friendly SQL tables.
 -- ============================================================================
 

@@ -430,7 +430,7 @@ ORDER BY depth;
 -- ############################################################################
 -- PART 4: MIXED SQL + CYPHER — Joining Graph Results with Delta Tables
 -- ############################################################################
--- Delta Forge can mix Cypher graph traversal results with Delta table SQL
+-- DeltaForge can mix Cypher graph traversal results with Delta table SQL
 -- queries using the cypher() table function. This enables powerful patterns:
 -- run a graph algorithm or pattern match via Cypher, then enrich or filter
 -- the results by joining with the full relational model in SQL.

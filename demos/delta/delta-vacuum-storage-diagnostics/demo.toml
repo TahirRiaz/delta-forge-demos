@@ -2,7 +2,7 @@
 id = "delta-vacuum-storage-diagnostics"
 name = "Delta VACUUM Storage Diagnostics — Measuring Cleanup Impact"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 After every UPDATE and DELETE, Delta's copy-on-write model orphans old Parquet \
 files on disk. Storage grows silently until someone asks: "How much space are \

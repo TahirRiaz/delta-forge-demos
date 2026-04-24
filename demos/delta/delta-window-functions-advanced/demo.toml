@@ -2,7 +2,7 @@
 id = "delta-window-functions-advanced"
 name = "Retail Sales Rep Leaderboard"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A retail chain ranks its sales reps by quarterly revenue using advanced window \
 functions. DENSE_RANK assigns leaderboard positions, NTILE splits reps into \

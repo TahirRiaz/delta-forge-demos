@@ -2,7 +2,7 @@
 id = "delta-convert-to-delta"
 name = "Delta Convert to Delta — Migrating from Raw Parquet"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Converting Parquet files to Delta Lake adds a transaction log (_delta_log) \
 on top of existing data files, unlocking ACID transactions, schema \

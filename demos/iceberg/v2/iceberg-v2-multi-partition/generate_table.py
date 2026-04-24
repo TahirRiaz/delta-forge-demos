@@ -6,7 +6,7 @@ partitioned by region (identity) AND years(observation_date). Tests
 multi-column partitioning in Iceberg V2 with partition pruning.
 
 Output: weather_readings/ directory with Iceberg V2 metadata, partitioned
-Parquet data files — ready for Delta Forge to read.
+Parquet data files — ready for DeltaForge to read.
 """
 import os
 import sys

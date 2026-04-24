@@ -2,7 +2,7 @@
 id = "delta-bloom-filters"
 name = "Delta Bloom Filters — Probabilistic Index for Fast Lookups"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Bloom filters are probabilistic data structures stored alongside Delta \
 data files that enable data-skipping for point lookups on high-cardinality \

@@ -3,7 +3,7 @@ id = "iceberg-uniform-schema-rename"
 name = "Iceberg UniForm — Column Rename (Field-ID Stability)"
 icon = "rename"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates column renaming on a UniForm-enabled Delta table. When columns \
 are renamed via ALTER TABLE RENAME COLUMN, the underlying Iceberg field IDs \

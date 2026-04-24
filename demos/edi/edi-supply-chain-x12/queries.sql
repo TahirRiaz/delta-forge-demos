@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI Supply Chain X12 — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge unifies X12 EDI transactions from
+-- Queries showcasing how DeltaForge unifies X12 EDI transactions from
 -- multiple trading partners and transaction types into queryable tables.
 --
 -- Two tables are available:
@@ -219,7 +219,7 @@ ORDER BY txn_count DESC;
 -- ============================================================================
 -- Shows how many transactions came from each X12 interchange control
 -- version. ISA-12 identifies the version of the ISA envelope standard.
--- This demonstrates Delta Forge parsing multiple X12 versions in a
+-- This demonstrates DeltaForge parsing multiple X12 versions in a
 -- single table without any version-specific configuration.
 --
 -- What you'll see:

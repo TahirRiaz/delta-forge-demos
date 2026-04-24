@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDIFACT Customs & Border Control — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge parses UN/EDIFACT messages from a port
+-- Queries showcasing how DeltaForge parses UN/EDIFACT messages from a port
 -- authority customs system into queryable tables for border security, trade
 -- compliance, and vessel operations.
 --

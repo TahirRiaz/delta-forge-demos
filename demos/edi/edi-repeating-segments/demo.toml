@@ -2,9 +2,9 @@
 id = "edi-repeating-segments"
 name = "EDI Repeating Segments — Multi-Occurrence X12 Handling"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates Delta Forge's three strategies for handling repeating X12 \
+Demonstrates DeltaForge's three strategies for handling repeating X12 \
 segments — Indexed, Concatenate, and ToJson. When EDI transactions contain \
 multiple occurrences of the same segment (e.g., multiple N1 party loops or \
 multiple PO1 line items), the engine can: (1) fan out each occurrence into \

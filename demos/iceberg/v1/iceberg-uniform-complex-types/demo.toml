@@ -2,7 +2,7 @@
 id = "iceberg-uniform-complex-types"
 name = "Iceberg UniForm — Complex Types"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "complex-types"
 description = """\
 Demonstrates Iceberg UniForm on a Delta table with complex nested types: \

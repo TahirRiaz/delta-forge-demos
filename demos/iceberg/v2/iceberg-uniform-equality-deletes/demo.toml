@@ -2,7 +2,7 @@
 id = "iceberg-uniform-equality-deletes"
 name = "Iceberg UniForm — Equality Delete Write & Read"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Full-cycle demonstration of Iceberg equality delete file generation via \
 UniForm. Creates a Delta table with equality delete mode enabled, seeds \

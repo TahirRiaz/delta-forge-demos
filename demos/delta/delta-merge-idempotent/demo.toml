@@ -2,7 +2,7 @@
 id = "delta-merge-idempotent"
 name = "Delta MERGE — Idempotent Pipeline (Timestamp Guards)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Production data pipelines must handle retries gracefully. An idempotent \
 MERGE uses timestamp guards (source.recorded_at > target.recorded_at) to \

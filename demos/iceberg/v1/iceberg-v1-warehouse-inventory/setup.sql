@@ -2,7 +2,7 @@
 -- Iceberg V1 Warehouse Inventory — Setup
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg v1 table.
--- Delta Forge reads the Iceberg metadata chain directly:
+-- DeltaForge reads the Iceberg metadata chain directly:
 -- metadata.json → manifest list → manifests → Parquet data files.
 --
 -- Dataset: 489 warehouse inventory SKUs across 3 warehouses (Portland-OR,
@@ -21,7 +21,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg v1 table
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema and data files automatically.
+-- DeltaForge parses metadata.json to discover schema and data files automatically.
 -- The format-version field in metadata.json is 1 (original Iceberg spec).
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory
 USING ICEBERG

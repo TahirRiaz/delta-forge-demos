@@ -2,7 +2,7 @@
 id = "json-subtree-capture"
 name = "JSON Subtree Capture — json_paths"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates json_paths for capturing complex JSON subtrees as serialized \
 string columns instead of flattening. Two tables show the same property \

@@ -2,9 +2,9 @@
 id = "edi-supply-chain-x12"
 name = "EDI Supply Chain X12 — Order-to-Cash Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates how Delta Forge ingests X12 EDI transactions spanning the \
+Demonstrates how DeltaForge ingests X12 EDI transactions spanning the \
 full supply chain order-to-cash lifecycle. Fourteen real-world transactions \
 cover purchase orders (850), invoices (810), PO acknowledgments (855), \
 ship notices (856/857), receiving advice (861), functional acknowledgments \

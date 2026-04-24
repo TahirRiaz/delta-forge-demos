@@ -14,7 +14,7 @@ These are Iceberg-native transforms that Delta Lake cannot produce,
 making this a pure Iceberg read test.
 
 Output: network_traffic/ directory with Iceberg V2 metadata and partitioned
-Parquet data files — ready for Delta Forge to read.
+Parquet data files — ready for DeltaForge to read.
 """
 import os
 import sys

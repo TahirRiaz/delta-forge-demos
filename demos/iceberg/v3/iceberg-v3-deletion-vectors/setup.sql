@@ -4,7 +4,7 @@
 -- Creates an external table backed by a native Apache Iceberg v3 table that
 -- uses Puffin-encoded deletion vectors for row-level deletes.
 --
--- Delta Forge reads the Iceberg metadata chain directly:
+-- DeltaForge reads the Iceberg metadata chain directly:
 -- v3.metadata.json → manifest list → manifests → Parquet data file
 -- and applies the Puffin deletion vector to retract invalidated rows.
 --
@@ -31,7 +31,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg v3 table with deletion vectors
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses v3.metadata.json to discover schema, data files, and the
+-- DeltaForge parses v3.metadata.json to discover schema, data files, and the
 -- Puffin deletion vector. The format-version field in metadata.json is 3.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.shipment_manifests
 USING ICEBERG

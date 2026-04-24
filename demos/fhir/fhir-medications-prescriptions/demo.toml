@@ -2,7 +2,7 @@
 id = "fhir-medications-prescriptions"
 name = "FHIR Medications — Prescriptions & Coverage"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates FHIR R5 MedicationRequest and Coverage resource ingestion. \
 12 MedicationRequest resources show prescriptions with contained Medication \

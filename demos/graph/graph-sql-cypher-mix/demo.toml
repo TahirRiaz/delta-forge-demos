@@ -2,7 +2,7 @@
 id = "graph-sql-cypher-mix"
 name = "Sales Territory Optimization — SQL + Cypher Interoperability"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 B2B sales territory optimization using mixed SQL and Cypher queries \
 against the same Delta tables. 40 enterprise customers connected by \
@@ -11,7 +11,7 @@ against the same Delta tables. 40 enterprise customers connected by \
 clusters via Cypher, then results are persisted into Delta tables and \
 JOINed with relational order data using standard SQL. \
 \
-Demonstrates Delta Forge's unique SQL/Cypher interoperability: \
+Demonstrates DeltaForge's unique SQL/Cypher interoperability: \
 cypher() table function, INSERT INTO ... SELECT FROM cypher(), \
 SQL JOINs on Cypher-populated tables, and mixed CTEs combining \
 graph analytics with relational aggregation in a single query.

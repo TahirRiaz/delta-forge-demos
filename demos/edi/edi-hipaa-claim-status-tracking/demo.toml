@@ -2,7 +2,7 @@
 id = "edi-hipaa-claim-status-tracking"
 name = "EDI HIPAA Claim Status — Inquiry & Authorization Tracking"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates HIPAA claim status tracking and prior authorization \
 review using CASE expressions on composite status codes, LIKE pattern \

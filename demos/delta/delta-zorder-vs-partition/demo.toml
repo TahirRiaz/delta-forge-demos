@@ -2,7 +2,7 @@
 id = "delta-zorder-vs-partition"
 name = "Delta Z-ORDER vs Partitioning — Choosing the Right Data Layout"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 The most common Delta table design question: should I partition or Z-ORDER? \
 This demo builds the same e-commerce order dataset in two tables — one \

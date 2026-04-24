@@ -2,7 +2,7 @@
 id = "iceberg-uniform-schema-widen"
 name = "Iceberg UniForm — Type Widening (INT→BIGINT, FLOAT→DOUBLE)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "type-widen"
 description = """\
 Demonstrates column type widening on a UniForm-enabled Delta table. IoT \

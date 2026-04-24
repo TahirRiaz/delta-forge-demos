@@ -2,7 +2,7 @@
 id = "delta-update-multi-pass"
 name = "Delta UPDATE Multi-Pass — ETL Pipeline Stages"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Sequential UPDATE passes transform raw e-commerce orders through a 3-stage \
 ETL pipeline: (1) Normalize — standardize status codes with UPPER(TRIM()), \

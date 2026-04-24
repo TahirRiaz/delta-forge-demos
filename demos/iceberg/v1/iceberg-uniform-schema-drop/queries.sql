@@ -6,7 +6,7 @@
 -- All queries below read through the Delta transaction log. The Iceberg
 -- metadata in metadata/ is generated automatically as a shadow.
 --
--- When ALTER TABLE DROP COLUMN runs, Delta Forge:
+-- When ALTER TABLE DROP COLUMN runs, DeltaForge:
 --   1. Removes the column from the Delta schema in _delta_log/
 --   2. Adds a new schema entry to metadata.json's "schemas" array
 --      with the dropped column removed from the field list

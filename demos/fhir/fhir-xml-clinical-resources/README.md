@@ -1,6 +1,6 @@
 # FHIR XML Clinical Resources
 
-Demonstrates Delta Forge's XML flattening capabilities with HL7 FHIR R4 clinical
+Demonstrates DeltaForge's XML flattening capabilities with HL7 FHIR R4 clinical
 data in native XML format. FHIR XML has a unique structure: all primitive values
 are stored as `@value` attributes rather than element text content.
 
@@ -14,7 +14,7 @@ organization, contact persons, and communication preferences; others have only
 basic demographics. Observation resources span vital signs (body weight, height,
 BMI, temperature, blood pressure) and lab results (glucose, CO2, base excess).
 
-Delta Forge reads these native FHIR XML files without any pre-processing,
+DeltaForge reads these native FHIR XML files without any pre-processing,
 handling the namespace, extracting `@value` attributes, flattening nested coding
 blocks, joining repeating elements, and preserving complex subtrees as JSON.
 

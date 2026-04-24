@@ -2,7 +2,7 @@
 id = "excel-sales-analytics"
 name = "Excel Sales Analytics — Superstore Orders"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates multi-file Excel analytics using 4 years of Superstore sales data \
 (2014–2017, 9,994 orders). Two tables exercise sheet_name, file_filter, \

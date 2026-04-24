@@ -2,7 +2,7 @@
 id = "iceberg-v2-multi-partition"
 name = "Iceberg V2 — Multi-Column Partitioning"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading with \
 multi-column partitioning using a global weather station readings dataset \

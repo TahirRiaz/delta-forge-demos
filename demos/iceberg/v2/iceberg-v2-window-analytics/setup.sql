@@ -2,7 +2,7 @@
 -- Iceberg V2 — Airline Loyalty Window Analytics — Setup
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg V2 table.
--- Delta Forge reads the Iceberg metadata chain directly:
+-- DeltaForge reads the Iceberg metadata chain directly:
 -- metadata.json -> manifest list -> manifests -> Parquet data files.
 --
 -- Dataset: 60 airline frequent flyer members across 4 tiers (Bronze,

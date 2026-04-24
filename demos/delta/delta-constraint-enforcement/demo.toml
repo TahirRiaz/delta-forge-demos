@@ -2,7 +2,7 @@
 id = "delta-constraint-enforcement"
 name = "Delta Constraint Enforcement — NOT NULL & CHECK"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Lake CHECK constraints enforce data quality invariants at the protocol \
 level, rejecting any commit whose rows violate the declared expressions. \

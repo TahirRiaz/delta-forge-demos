@@ -134,7 +134,7 @@ print("\n" + "=" * 80)
 print("QUERY 3: JSON Type Inspection")
 print("=" * 80)
 print(f"ROW_COUNT = {len(rows)}")
-# In Delta Forge, df_transaction_json is always an array of segment objects
+# In DeltaForge, df_transaction_json is always an array of segment objects
 # root_json_type = 'array' for all rows
 # first_element_type = 'object' for all rows (each segment is an object)
 print("  root_json_type = 'array' for all 14 rows")

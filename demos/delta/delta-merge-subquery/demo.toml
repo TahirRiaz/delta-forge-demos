@@ -2,7 +2,7 @@
 id = "delta-merge-subquery"
 name = "Delta MERGE — Subquery & CTE Source Patterns"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Real-world MERGE sources are rarely clean tables — they require deduplication, \
 aggregation, or joins before merging. This demo merges aggregated e-commerce \

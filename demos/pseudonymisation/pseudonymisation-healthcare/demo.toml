@@ -2,7 +2,7 @@
 id = "pseudonymisation-healthcare"
 name = "Healthcare Pseudonymisation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates GDPR-compliant pseudonymisation across three healthcare data formats: \
 HL7 v2 ADT patient admissions, FHIR R4 Patient resources, and EDI HIPAA X12 claims. \

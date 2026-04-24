@@ -2,7 +2,7 @@
 id = "delta-update-string-cleansing"
 name = "Delta UPDATE String Cleansing — CRM Data Normalization"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 UPDATE statements with string functions clean messy data in place. This demo \
 imports 25 customer records from a legacy CRM system — emails in mixed case, \

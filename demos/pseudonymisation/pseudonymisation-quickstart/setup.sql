@@ -18,7 +18,7 @@
 --   GDPR Article 4(5)  — Pseudonymisation as a safeguard measure
 --   KYC Regulations    — Customer due diligence with data protection
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   zone_name     — Target zone name
 --   data_path     — Root path where demo data files are stored
 --   current_user  — Username of the current logged-in user

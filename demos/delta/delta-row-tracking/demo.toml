@@ -2,7 +2,7 @@
 id = "delta-row-tracking"
 name = "Delta Row Tracking — Stable Row IDs & Audit Trail"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Row tracking is a Delta Lake protocol feature that assigns stable, unique \
 identifiers to each row so that changes can be traced across versions. It \

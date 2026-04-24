@@ -2,7 +2,7 @@
 id = "graph-mutations"
 name = "Graph Mutations — Hospital Referral Network DML"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Tests graph write operations on a hospital patient referral network. 30 physicians \
 across 6 specialties and 3 hospitals are connected by ~75 directed referral edges. \

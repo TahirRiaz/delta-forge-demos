@@ -11,7 +11,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count
 -- ============================================================================
--- Verifies that Delta Forge correctly resolves 360 rows across 3 data files
+-- Verifies that DeltaForge correctly resolves 360 rows across 3 data files
 -- via the Iceberg metadata chain, including the merge-on-read UPDATE that
 -- replaced 60 rows with location-enriched versions.
 

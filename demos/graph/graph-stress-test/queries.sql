@@ -14,7 +14,7 @@
 -- percentage of bridge/liaison employees connect the clusters.
 --
 -- All proof values were independently computed using DuckDB against
--- the same deterministic generation formulas. Delta Forge must reproduce
+-- the same deterministic generation formulas. DeltaForge must reproduce
 -- every value exactly — proving correct execution at enterprise scale.
 --
 -- PART 1: EXPLORE & ANALYZE (queries 1–16)

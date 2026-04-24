@@ -1,7 +1,7 @@
 -- ============================================================================
 -- FHIR XML Clinical Resources — Query Showcase
 -- ============================================================================
--- Demonstrates Delta Forge's XML flattening capabilities with HL7 FHIR data.
+-- Demonstrates DeltaForge's XML flattening capabilities with HL7 FHIR data.
 -- FHIR XML is unique: ALL primitive values are stored in @value attributes
 -- (e.g., <id value="f001"/>) rather than as element text content.
 -- ============================================================================
@@ -11,7 +11,7 @@
 -- QUERY 1: FHIR XML @value Extraction — The Core FHIR XML Pattern
 -- ============================================================================
 -- In FHIR XML, every primitive value is an attribute: <gender value="male"/>,
--- <birthDate value="1974-12-25"/>. Delta Forge extracts these via XPath
+-- <birthDate value="1974-12-25"/>. DeltaForge extracts these via XPath
 -- @value selectors and maps them to analyst-friendly column names.
 -- ============================================================================
 
@@ -83,7 +83,7 @@ ORDER BY patient_id;
 -- ============================================================================
 -- FHIR CodeableConcept structures nest 4 levels deep:
 --   <maritalStatus> → <coding> → <code value="M"/> + <display value="Married"/>
--- Delta Forge navigates this hierarchy using XPath to extract coded values
+-- DeltaForge navigates this hierarchy using XPath to extract coded values
 -- alongside their human-readable display text.
 -- ============================================================================
 

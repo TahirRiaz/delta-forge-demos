@@ -2,7 +2,7 @@
 id = "delta-restore-rollback"
 name = "Delta RESTORE — Rollback to Previous Versions"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 RESTORE is a Delta Lake operation that rewinds a table to any previous \
 version by writing a new commit that recreates the old snapshot. It solves \

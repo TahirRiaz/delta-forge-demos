@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI TRADACOMS — UK Energy Billing & VAT Reconciliation — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge extracts and reconciles utility billing
+-- Queries showcasing how DeltaForge extracts and reconciles utility billing
 -- data from TRADACOMS UTLHDR/UTLBIL/UVATLR/UTLTLR messages.
 --
 -- Two files are ingested:

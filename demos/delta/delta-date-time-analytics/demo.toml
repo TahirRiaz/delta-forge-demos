@@ -2,7 +2,7 @@
 id = "delta-date-time-analytics"
 name = "Employee Attendance Tracking"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 An HR department analyzes employee attendance patterns using date/time functions. \
 DATE_TRUNC groups records by week and month for payroll periods. EXTRACT and \

@@ -2,7 +2,7 @@
 id = "delta-restore-selective-recovery"
 name = "Delta Selective Recovery — VERSION AS OF Extraction"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Full RESTORE rewinds an entire table to a prior version — but sometimes only \
 part of the data is corrupted while other parts have good changes you want to \

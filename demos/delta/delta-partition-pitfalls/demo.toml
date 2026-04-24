@@ -2,7 +2,7 @@
 id = "delta-partition-pitfalls"
 name = "Delta Partition Pitfalls — Over-Partitioning & Repartitioning"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Over-partitioning is one of the most common Delta table design mistakes. When \
 a table is partitioned by a high-cardinality column (like customer_id), each \

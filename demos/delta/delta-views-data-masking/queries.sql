@@ -2,7 +2,7 @@
 -- Delta Views & Data Masking — MASK() Function Demo — Educational Queries
 -- ============================================================================
 -- WHAT: The MASK() function applies pseudonymisation transforms inline in SQL,
---       reusing Delta Forge's pseudonymisation engine (redact, keyed_hash,
+--       reusing DeltaForge's pseudonymisation engine (redact, keyed_hash,
 --       generalize, encrypt, tokenize) as a composable scalar function.
 -- WHY:  Production databases serve multiple audiences. Views with MASK() let
 --       SQL authors enforce role-based data access without table-level policy.

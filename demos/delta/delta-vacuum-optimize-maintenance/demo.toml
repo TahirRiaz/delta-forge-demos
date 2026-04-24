@@ -2,7 +2,7 @@
 id = "delta-vacuum-optimize-maintenance"
 name = "Delta Maintenance Playbook — OPTIMIZE Then VACUUM"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 The standard Delta Lake maintenance playbook is a two-step sequence: \
 OPTIMIZE first to compact fragmented small files into larger ones, then \

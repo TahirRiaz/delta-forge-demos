@@ -2,7 +2,7 @@
 id = "graph-advanced-cypher"
 name = "Graph Advanced Cypher — University Research Collaboration Network"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 University research collaboration network with 40 researchers across 5 \
 departments. Tests advanced Cypher patterns: negative patterns (WHERE NOT), \

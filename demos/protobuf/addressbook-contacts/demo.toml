@@ -2,7 +2,7 @@
 id = "proto-addressbook-contacts"
 name = "Protobuf Address Book — Contact Directory"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Protocol Buffers (proto3) reading features using the classic \
 Google addressbook example. Three binary files contain 13 contacts across \

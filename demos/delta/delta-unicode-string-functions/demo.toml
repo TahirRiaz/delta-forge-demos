@@ -2,7 +2,7 @@
 id = "delta-unicode-string-functions"
 name = "Delta Unicode String Functions — Multi-Byte Operations"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A multilingual customer support platform (PolyglotDesk) receives tickets from \
 15+ countries with customer names and messages in Japanese, Greek, Cyrillic, \

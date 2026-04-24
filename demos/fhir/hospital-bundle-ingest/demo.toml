@@ -2,7 +2,7 @@
 id = "fhir-hospital-bundle-ingest"
 name = "FHIR Hospital Bundle Ingest — Dedicated FHIR Provider with Unbundle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Hospital interoperability gateway lands one FHIR R4 transaction Bundle per \
 patient encounter (admit/discharge/transfer plus observations and \

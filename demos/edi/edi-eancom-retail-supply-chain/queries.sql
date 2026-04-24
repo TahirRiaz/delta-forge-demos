@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EANCOM Retail Supply Chain — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge parses GS1/EANCOM messages from a
+-- Queries showcasing how DeltaForge parses GS1/EANCOM messages from a
 -- European retailer's EDI hub into queryable tables. Six files cover the
 -- full retail supply chain: despatch advices, invoices, order responses,
 -- price catalogues, transport status, and transport instructions.

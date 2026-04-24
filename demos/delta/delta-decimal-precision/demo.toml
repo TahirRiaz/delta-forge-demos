@@ -2,7 +2,7 @@
 id = "delta-decimal-precision"
 name = "Delta Decimal Precision & Arithmetic"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Lake stores DECIMAL types as fixed-point numbers in Parquet, preserving \
 exact precision without the rounding errors inherent in DOUBLE/FLOAT types. \

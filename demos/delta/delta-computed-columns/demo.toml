@@ -2,7 +2,7 @@
 id = "delta-computed-columns"
 name = "Delta Computed Fields — Formulas, Defaults & Derived Values"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Computed columns are derived values calculated from other columns using \
 SQL expressions, ensuring consistency without storing redundant data. \

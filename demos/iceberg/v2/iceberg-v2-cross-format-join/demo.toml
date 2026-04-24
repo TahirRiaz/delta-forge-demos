@@ -2,7 +2,7 @@
 id = "iceberg-v2-cross-format-join"
 name = "Iceberg Cross-Format Join — Retail Store Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates cross-format interoperability by joining a UniForm Iceberg \
 Delta table (sales transactions) with a CSV external table (store \

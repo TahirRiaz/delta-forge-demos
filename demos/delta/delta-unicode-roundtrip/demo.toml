@@ -2,7 +2,7 @@
 id = "delta-unicode-roundtrip"
 name = "Delta Unicode Roundtrip — Mutation Fidelity Proof"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 An international e-commerce marketplace (GlobalBazaar) stores product listings \
 in sellers' native scripts — Japanese kanji, Chinese simplified, Korean hangul, \

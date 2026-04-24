@@ -2,7 +2,7 @@
 id = "delta-vacuum-cdc-interaction"
 name = "Delta VACUUM & CDC Interaction — Retention & Change Tracking"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Change Data Feed (CDF) records row-level changes (inserts, updates, deletes) in \
 special _change_data files alongside the main Delta data, enabling downstream \

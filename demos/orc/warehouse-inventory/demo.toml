@@ -2,7 +2,7 @@
 id = "orc-warehouse-inventory"
 name = "ORC Warehouse Inventory — Stock Level Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates ORC format with window functions on warehouse inventory data. \
 Two ORC files (100 rows across 2 warehouses) with mixed numeric types \

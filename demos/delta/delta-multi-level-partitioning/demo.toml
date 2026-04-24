@@ -2,7 +2,7 @@
 id = "delta-multi-level-partitioning"
 name = "Delta Multi-Level Partitioning — Compound Partition Pruning"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Multi-level partitioning creates a hierarchy of partition directories \
 (e.g., region=us-east/quarter=Q1-2024/) that enables compound pruning: \

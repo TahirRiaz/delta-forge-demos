@@ -2,7 +2,7 @@
 id = "xml-ecommerce-order-lines"
 name = "XML E-Commerce — Order Line Explosion"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates deep XML nesting (3+ levels), explode_paths for one-row-per-line-item, \
 CDATA sections with embedded HTML, exclude_paths, column_mappings, \

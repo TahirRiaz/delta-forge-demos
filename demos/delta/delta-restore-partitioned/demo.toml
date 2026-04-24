@@ -2,7 +2,7 @@
 id = "delta-restore-partitioned"
 name = "Delta Recovery Strategy — RESTORE vs Partition Replace"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Full RESTORE rewinds an entire table to a prior version — but when only one \
 partition is corrupted, it also destroys good changes in other partitions. This \

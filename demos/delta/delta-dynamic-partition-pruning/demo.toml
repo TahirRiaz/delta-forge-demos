@@ -2,7 +2,7 @@
 id = "delta-dynamic-partition-pruning"
 name = "Delta Dynamic Partition Pruning — Smart Query Filtering"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Dynamic partition pruning is a query optimization where the engine skips \
 entire partitions of a fact table based on filter values derived from a \

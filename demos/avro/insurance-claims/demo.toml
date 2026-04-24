@@ -2,7 +2,7 @@
 id = "avro-insurance-claims"
 name = "Avro Insurance Claims — Claims Processing with Schema Evolution"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Avro reading features using 3 insurance claim files \
 (90 rows) with schema evolution (v1→v2 adds adjuster_name, settlement_date) \

@@ -18,7 +18,7 @@
 --   GDPR Article 4(5)  — Pseudonymisation as a safeguard measure
 --   HITECH Act         — Breach notification safe harbor for encrypted PHI
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   zone_name     — Target zone name (defaults to 'external')
 --   data_path     — Root path where demo data files are stored
 --   current_user  — Username of the current logged-in user

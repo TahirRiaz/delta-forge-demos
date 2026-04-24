@@ -18,7 +18,7 @@ deletes or DVs). We create the base V3 table with Spark, then manually
 construct the equality delete file and metadata using PyArrow + fastavro.
 
 Output: patient_visits/ directory with Iceberg V3 metadata, data files,
-and Parquet equality delete files — ready for Delta Forge to read.
+and Parquet equality delete files — ready for DeltaForge to read.
 """
 import os
 import sys

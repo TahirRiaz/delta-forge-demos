@@ -11,7 +11,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count
 -- ============================================================================
--- Verifies that Delta Forge discovered all 78 partitioned Parquet data files
+-- Verifies that DeltaForge discovered all 78 partitioned Parquet data files
 -- via the Iceberg v2 manifest chain across bucket and day partitions.
 
 ASSERT ROW_COUNT = 480

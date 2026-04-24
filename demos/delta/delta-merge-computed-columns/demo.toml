@@ -2,7 +2,7 @@
 id = "delta-merge-computed-columns"
 name = "Delta MERGE — Computed Columns & CASE Logic"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Business logic often belongs inside the MERGE itself, not in a separate \
 transformation step. This demo shows how to use CASE expressions, \

@@ -2,7 +2,7 @@
 id = "iceberg-uniform-crud-lifecycle"
 name = "Iceberg UniForm — CRUD & Snapshot Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Walks through the complete lifecycle of a UniForm-enabled Delta table: \
 INSERT, UPDATE, DELETE, and MERGE operations, each producing a new Iceberg \

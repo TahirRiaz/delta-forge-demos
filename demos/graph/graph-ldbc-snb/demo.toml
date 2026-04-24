@@ -2,10 +2,10 @@
 id = "graph-ldbc-snb"
 name = "LDBC Social Network Benchmark — Full Model Graph Verification"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Full LDBC Social Network Benchmark (SF0.1) with 8 entity types, 23 \
-relationship types, and ~1.2 million rows. Verifies Delta Forge graph \
+relationship types, and ~1.2 million rows. Verifies DeltaForge graph \
 algorithms and Cypher queries against official golden values from the \
 LDBC reference implementation validation parameters. \
 \

@@ -2,7 +2,7 @@
 id = "edi-850-purchase-orders-aliased"
 name = "Wholesale Distributor PO Inbox — Aliased Columns + JSON Line Items"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Wholesale-distributor purchase-order inbox built on the just-landed EDI \
 engine wiring. A wholesale distributor receives X12 850 Purchase Orders \

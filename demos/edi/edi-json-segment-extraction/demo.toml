@@ -2,7 +2,7 @@
 id = "edi-json-segment-extraction"
 name = "EDI JSON Segment Extraction — On-Demand X12 Deep Access"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates SQL JSON functions for on-demand exploration and extraction of \
 X12 EDI transaction segments — without pre-materializing fields. Rather than \

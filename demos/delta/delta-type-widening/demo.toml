@@ -2,7 +2,7 @@
 id = "delta-type-widening"
 name = "Delta Type Widening — IoT Fleet Counter Overflow"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Type widening is a Delta protocol feature that allows a column's data type to \
 be safely promoted to a wider type (e.g., INT to BIGINT, FLOAT to DOUBLE) \

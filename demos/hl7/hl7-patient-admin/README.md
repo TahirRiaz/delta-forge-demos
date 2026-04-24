@@ -2,7 +2,7 @@
 
 ## Overview
 
-Demonstrates how Delta Forge ingests HL7 v2 ADT (Admit-Discharge-Transfer)
+Demonstrates how DeltaForge ingests HL7 v2 ADT (Admit-Discharge-Transfer)
 messages from multiple EHR systems and HL7 versions. Eight real-world messages
 cover the full patient lifecycle — admission (A01), demographics update (A08),
 and discharge (A03). Two external tables provide different views: a compact
@@ -13,7 +13,7 @@ header-only table and a materialized table with key patient fields extracted.
 A hospital integration engine receives ADT messages from six different EHR
 systems: EPIC, Folio3/MCM, Ritten, AWS, MegaReg, and Contoso/Azure. Each
 system uses a different HL7 version (v2.3 through v2.6) and includes
-different segments. Delta Forge reads all `.hl7` files and produces
+different segments. DeltaForge reads all `.hl7` files and produces
 structured tables — no custom parser or ETL pipeline required.
 
 ## HL7 Features Demonstrated

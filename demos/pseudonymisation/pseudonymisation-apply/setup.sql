@@ -18,7 +18,7 @@
 --   ICH GCP E6(R2)   — Good Clinical Practice data integrity requirements
 --   21 CFR Part 11    — Electronic records / electronic signatures
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   zone_name     — Target zone name (defaults to 'external')
 --   data_path     — Root path where demo data files are stored
 --   current_user  — Username of the current logged-in user

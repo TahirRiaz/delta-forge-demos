@@ -3,7 +3,7 @@ id = "iceberg-uniform-zorder"
 name = "Iceberg UniForm — Z-ORDER Spatial Optimization"
 icon = "zorder"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Z-ORDER optimization on a UniForm-enabled Delta table for \
 geospatial delivery tracking data. Seeds 36 deliveries across 6 US cities \

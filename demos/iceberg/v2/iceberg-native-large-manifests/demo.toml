@@ -2,7 +2,7 @@
 id = "iceberg-native-large-manifests"
 name = "Iceberg Native — Large Manifests (Web Analytics)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "scale-test"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading with \

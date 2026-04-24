@@ -2,7 +2,7 @@
 id = "delta-vacuum-storage-savings"
 name = "Delta VACUUM — Storage Cost Savings"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Every UPDATE, DELETE, and MERGE in Delta Lake uses copy-on-write, creating \
 new Parquet files while leaving old ones orphaned on disk. Without VACUUM, \

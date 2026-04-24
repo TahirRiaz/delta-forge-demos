@@ -2,7 +2,7 @@
 id = "delta-restore-advanced"
 name = "Delta RESTORE — Advanced Recovery Scenarios"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta RESTORE TO VERSION rolls an entire table back to a previous \
 transaction log version, undoing all intermediate commits in a single \

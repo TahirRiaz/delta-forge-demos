@@ -2,7 +2,7 @@
 id = "delta-merge-scd2"
 name = "Delta MERGE — SCD Type 2 (Slowly Changing Dimensions)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Slowly Changing Dimension Type 2 is the standard pattern for tracking \
 historical changes in dimension tables. When an attribute changes, the \

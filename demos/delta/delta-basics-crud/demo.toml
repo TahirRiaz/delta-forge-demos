@@ -2,7 +2,7 @@
 id = "delta-basics-crud"
 name = "Delta Basics — Create, Insert, Update, Delete"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Lake extends Parquet with a transaction log that enables full CRUD \
 (Create, Read, Update, Delete) operations — something plain Parquet cannot do. \

@@ -2,7 +2,7 @@
 id = "iceberg-uniform-column-reorder"
 name = "Iceberg UniForm — Column Reorder (FHIR-Compliant Layout)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "reorder"
 description = """\
 Demonstrates column reordering on a UniForm-enabled Delta table. Healthcare \

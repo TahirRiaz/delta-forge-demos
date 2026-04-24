@@ -11,7 +11,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count
 -- ============================================================================
--- Verifies that Delta Forge can parse the V3 metadata chain and discover
+-- Verifies that DeltaForge can parse the V3 metadata chain and discover
 -- all data files. This is the first test of V3 format compatibility.
 
 ASSERT ROW_COUNT = 480

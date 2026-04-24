@@ -2,7 +2,7 @@
 id = "iceberg-uniform-basics"
 name = "Iceberg UniForm — Enable Dual-Format Metadata"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates the core Iceberg UniForm feature: enabling automatic Iceberg \
 metadata generation on a Delta table by setting \

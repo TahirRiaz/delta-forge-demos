@@ -2,7 +2,7 @@
 id = "pseudonymisation-apply"
 name = "Pseudonymisation Apply — Clinical Trial De-identification"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A pharmaceutical company must permanently de-identify clinical trial \
 participant data before sharing results with external researchers. Unlike \

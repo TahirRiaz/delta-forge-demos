@@ -2,10 +2,10 @@
 id = "chart-gallery"
 name = "Mira's Mercantile — Retail Analytics Chart Gallery"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 An end-to-end showcase of every CREATE CHART visualization type supported by \
-Delta Forge, grounded in a regional retail chain (Mira's Mercantile, 4 stores \
+DeltaForge, grounded in a regional retail chain (Mira's Mercantile, 4 stores \
 x 4 product categories x 5 weekdays = 80 rows) plus 10 weeks of parent-company \
 stock OHLC. Renders BAR, HBAR, LINE, AREA (stacked), SCATTER, PIE, HISTOGRAM, \
 HEATMAP, RADAR, and CANDLESTICK charts. Every chart is preceded by a validated \

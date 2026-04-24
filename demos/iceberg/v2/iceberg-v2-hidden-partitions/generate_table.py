@@ -12,7 +12,7 @@ Columns: trip_id, driver_id, rider_id, pickup_date, pickup_time, dropoff_time,
          distance_miles, fare_amount, tip_amount, payment_type, city
 
 Output: trips/ directory with Iceberg V2 metadata and partitioned Parquet
-data files — ready for Delta Forge to read.
+data files — ready for DeltaForge to read.
 """
 import os
 import sys

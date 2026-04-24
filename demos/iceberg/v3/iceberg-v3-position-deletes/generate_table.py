@@ -15,7 +15,7 @@ V3 table with V2-style position delete files — a real-world scenario when
 upgrading existing V2 tables to V3.
 
 Output: equity_trades/ directory with Iceberg V3 metadata, Parquet data
-files, and Parquet position delete files — ready for Delta Forge to read.
+files, and Parquet position delete files — ready for DeltaForge to read.
 """
 import os
 import sys

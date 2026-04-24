@@ -12,7 +12,7 @@ with title, explanation, and HD image URLs.
 
 The auth-mode story is what makes this demo distinct. NASA's public
 APIs use **query-string API keys** (`?api_key=DEMO_KEY`), which maps
-to Delta Forge's `auth_mode = 'api_key_query'`. The engine pulls the
+to DeltaForge's `auth_mode = 'api_key_query'`. The engine pulls the
 secret from a `CREATE CREDENTIAL`-registered vault entry and splices
 it into every request's query string automatically — the endpoint
 URL does not (and must not) hardcode the key. The secret value here

@@ -2,7 +2,7 @@
 id = "delta-case-conditional-logic"
 name = "Insurance Claim Classification"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 An insurance company classifies and processes claims using CASE expressions. \
 Searched CASE categorizes claims by severity tier (minor/moderate/major/catastrophic). \

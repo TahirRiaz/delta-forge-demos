@@ -2,7 +2,7 @@
 id = "edi-edifact-customs-border"
 name = "EDIFACT Customs & Border Control"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Port authority customs system processing UN/EDIFACT messages for border \
 security and trade compliance. Parses cargo manifests (CUSCAR) with consignment \

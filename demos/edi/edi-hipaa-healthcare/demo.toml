@@ -2,9 +2,9 @@
 id = "edi-hipaa-healthcare"
 name = "EDI HIPAA Healthcare — Claims Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates how Delta Forge ingests HIPAA X12 healthcare EDI transactions \
+Demonstrates how DeltaForge ingests HIPAA X12 healthcare EDI transactions \
 covering the complete claims lifecycle. Eleven real-world transactions span \
 eligibility verification (270/271), claim status inquiry (276/277), healthcare \
 claims (837 professional, dental, institutional), payment and remittance \

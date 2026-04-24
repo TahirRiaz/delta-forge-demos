@@ -6,7 +6,7 @@
 -- All queries below read through the Delta transaction log. The Iceberg
 -- metadata in metadata/ is generated automatically as a shadow.
 --
--- When ALTER TABLE RENAME COLUMN runs, Delta Forge:
+-- When ALTER TABLE RENAME COLUMN runs, DeltaForge:
 --   1. Updates the column name in _delta_log/ column mapping metadata
 --   2. Updates the field name in the Iceberg schema within metadata.json
 --   3. Crucially, the Iceberg field-id stays the same — only the name changes

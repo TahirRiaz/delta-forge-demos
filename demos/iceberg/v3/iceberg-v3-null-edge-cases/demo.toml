@@ -2,7 +2,7 @@
 id = "iceberg-v3-null-edge-cases"
 name = "Iceberg V3 — Clinical Lab NULL Edge Cases"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates NULL handling edge cases on a native Apache Iceberg \
 format-version 3 table. A hospital clinical lab dataset with 50 test \

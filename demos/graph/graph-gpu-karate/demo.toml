@@ -2,7 +2,7 @@
 id = "graph-gpu-karate"
 name = "GPU-Accelerated Karate Club — Algorithm Quality Verification"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 GPU algorithm quality verification using Zachary's Karate Club (1977), \
 the most studied graph in network science. 34 members, 78 undirected \

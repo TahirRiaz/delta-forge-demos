@@ -2,7 +2,7 @@
 id = "iceberg-v2-position-deletes"
 name = "Iceberg V2 — Position Delete Vectors"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Validates Iceberg format-version 2 position delete (deletion vector) support \
 using a pharmaceutical cold-chain monitoring dataset. A faulty temperature \

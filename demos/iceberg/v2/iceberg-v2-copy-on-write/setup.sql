@@ -4,7 +4,7 @@
 -- Creates an external table backed by an Iceberg format-version 2 table that
 -- uses copy-on-write mode for updates and deletes. Unlike merge-on-read,
 -- copy-on-write rewrites entire data files — there are NO delete files.
--- Delta Forge reads clean data files directly from the current snapshot.
+-- DeltaForge reads clean data files directly from the current snapshot.
 --
 -- Scenario: Logistics shipment tracking — 120 shipments initially loaded,
 -- 20 updated from "In Transit" to "Delivered", 10 cancelled shipments

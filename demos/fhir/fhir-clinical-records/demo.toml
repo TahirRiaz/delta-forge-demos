@@ -2,7 +2,7 @@
 id = "fhir-clinical-records"
 name = "FHIR Clinical Records — Conditions, Procedures & Allergies"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates advanced FHIR R5 resource ingestion across three clinical \
 resource types: Condition (8 diagnoses), Procedure (8 surgical/clinical \

@@ -11,7 +11,7 @@
 --
 -- Together they enable charge-to-payment reconciliation via JOIN.
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   data_path     — Local or cloud path where demo data files were downloaded
 --   current_user  — Username of the current logged-in user
 --   zone_name     — Target zone name (defaults to 'external')

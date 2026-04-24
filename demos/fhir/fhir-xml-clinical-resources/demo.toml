@@ -2,7 +2,7 @@
 id = "fhir-xml-clinical-resources"
 name = "FHIR XML — Clinical Patients & Observations"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates HL7 FHIR R4 clinical data in native XML format. FHIR XML is \
 unique: all primitive values are stored as @value attributes rather than \

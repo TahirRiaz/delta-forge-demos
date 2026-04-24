@@ -2,7 +2,7 @@
 id = "gis-emergency-response"
 name = "GIS Emergency Response Network — Multi-Step Spatial Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates complex multi-step GIS analytics using an NYC emergency dispatch \
 scenario. 8 hospitals, 12 incidents, and 4 response zones exercise nearest-neighbor \

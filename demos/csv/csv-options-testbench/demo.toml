@@ -2,9 +2,9 @@
 id = "csv-options-testbench"
 name = "CSV Advanced Options Testbench"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
-Verifies that every CSV parsing option available in the Delta Forge GUI is \
+Verifies that every CSV parsing option available in the DeltaForge GUI is \
 correctly wired through to the backend. Each table exercises a specific \
 option (delimiter, null_value, comment_char, skip_starting_rows, max_rows, \
 trim_whitespace, quote, escape) with data designed so that incorrect parsing \

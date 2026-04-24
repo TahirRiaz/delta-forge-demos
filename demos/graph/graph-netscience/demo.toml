@@ -2,7 +2,7 @@
 id = "graph-netscience"
 name = "NetScience — Coauthorship Network of Network Scientists"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 NetScience coauthorship network (Newman, 2006): a collaboration graph of \
 scientists working in network theory and experiment. 1,461 vertices represent \

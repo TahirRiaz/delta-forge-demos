@@ -2,7 +2,7 @@
 id = "delta-append-only-enforcement"
 name = "Delta Append-Only Ledger — Immutable Financial Compliance"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A financial services firm builds an immutable transaction ledger using \
 Delta's append-only table property. This demo creates the ledger with \

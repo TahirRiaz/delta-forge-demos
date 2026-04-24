@@ -2,7 +2,7 @@
 id = "delta-duration-arithmetic"
 name = "Delta Duration Arithmetic — Maritime Canal Transit"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Duration arithmetic on timestamp strings demonstrates how to compute time \
 intervals, identify SLA breaches, and aggregate throughput statistics using \

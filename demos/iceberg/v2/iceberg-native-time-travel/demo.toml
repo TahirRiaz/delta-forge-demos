@@ -2,7 +2,7 @@
 id = "iceberg-native-time-travel"
 name = "Iceberg Native — Time Travel (Stock Prices)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "time-travel"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading after \

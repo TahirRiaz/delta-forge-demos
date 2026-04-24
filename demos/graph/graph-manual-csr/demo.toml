@@ -2,10 +2,10 @@
 id = "graph-manual-csr"
 name = "Manual CSR Cache Management — Graph Performance Control"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates the NO AUTO CACHE CSR graph attribute, which disables automatic \
-Compressed Sparse Row (CSR) disk caching. By default, Delta Forge auto-writes \
+Compressed Sparse Row (CSR) disk caching. By default, DeltaForge auto-writes \
 a .dcsr file after every graph rebuild for fast subsequent loads (~70ms vs 6-14s). \
 \
 This demo creates a graph with auto-caching disabled, runs queries that rebuild \

@@ -70,7 +70,7 @@ GRANT ADMIN ON TABLE {{zone_name}}.fhir_demos.observations_bulk TO USER {{curren
 --   - Clinical Assessments: Glasgow Coma Scale
 --
 -- Each observation type populates different fields (e.g., blood pressure uses
--- component[] instead of valueQuantity). This demonstrates how Delta Forge
+-- component[] instead of valueQuantity). This demonstrates how DeltaForge
 -- handles schema evolution across different observation categories.
 -- ============================================================================
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fhir_demos.observations_clinical

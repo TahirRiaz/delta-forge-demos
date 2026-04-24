@@ -2,7 +2,7 @@
 id = "delta-merge-soft-delete"
 name = "Delta MERGE — Soft Delete with BY SOURCE"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Production CDC pipelines rarely hard-delete records. Instead, rows that \
 disappear from the source are soft-deleted: marked inactive with a \

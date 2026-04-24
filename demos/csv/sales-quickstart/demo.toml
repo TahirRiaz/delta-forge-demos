@@ -2,9 +2,9 @@
 id = "sales-quickstart"
 name = "Sales Schema Evolution"
 version = "2.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
-See how Delta Forge handles CSV files whose columns change over time. \
+See how DeltaForge handles CSV files whose columns change over time. \
 Five quarterly sales files span 2024-Q1 to 2025-Q1 — columns are added \
 (sales_rep, discount_pct, territory, channel) and retired (region, discount_pct) \
 across the series. A single external table unifies them all; missing columns \

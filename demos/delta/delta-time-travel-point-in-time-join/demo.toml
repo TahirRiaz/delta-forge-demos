@@ -2,7 +2,7 @@
 id = "delta-time-travel-point-in-time-join"
 name = "Delta Time Travel — Point-in-Time Joins"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Regulatory reporting requires valuing each trade using the exchange rate \
 that was active at the time of the trade — not today's rate. When the \

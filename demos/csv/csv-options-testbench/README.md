@@ -1,6 +1,6 @@
 # CSV Advanced Options Testbench
 
-Verifies that every CSV parsing option available in the Delta Forge GUI is correctly wired through to the SQL backend. Each table exercises a specific option with data designed so that incorrect parsing produces obviously wrong results.
+Verifies that every CSV parsing option available in the DeltaForge GUI is correctly wired through to the SQL backend. Each table exercises a specific option with data designed so that incorrect parsing produces obviously wrong results.
 
 ## Tables
 

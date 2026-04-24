@@ -2,7 +2,7 @@
 id = "delta-merge-dedup"
 name = "Delta MERGE — Deduplication (Keep Latest)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Duplicate records are inevitable in event-driven pipelines: at-least-once \
 delivery, replay after failures, or overlapping batch windows all produce \

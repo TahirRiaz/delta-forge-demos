@@ -2,7 +2,7 @@
 id = "delta-update-null-backfill"
 name = "Delta UPDATE NULL Backfill — Patient Data Recovery"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Hospital patient records migrated from a legacy database arrived with messy \
 data: NULLs mixed with sentinel values (-999 for unknown age, 'N/A' for \

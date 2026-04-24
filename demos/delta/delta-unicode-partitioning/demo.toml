@@ -2,7 +2,7 @@
 id = "delta-unicode-partitioning"
 name = "Delta Unicode Partitioning — Non-ASCII Partition Keys"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A global content delivery network (StreamNet CDN) partitions content metadata \
 by region names written in their native script: 日本語, العربية, Русский, \

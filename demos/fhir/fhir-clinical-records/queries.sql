@@ -2,7 +2,7 @@
 -- FHIR Clinical Records — Queries
 -- ============================================================================
 -- Explore FHIR R5 Condition, Procedure, and AllergyIntolerance resources.
--- These queries demonstrate how Delta Forge handles three different but
+-- These queries demonstrate how DeltaForge handles three different but
 -- related clinical resource types from a single directory, each with its
 -- own schema and nested structure.
 -- ============================================================================

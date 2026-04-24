@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Iceberg V2 Snapshot Consistency — Queries
 -- ============================================================================
--- Validates that Delta Forge correctly reads the final consistent state of an
+-- Validates that DeltaForge correctly reads the final consistent state of an
 -- Iceberg V2 table that underwent 4 snapshots: initial load (80 products),
 -- restocking INSERT (20 new → 100), price UPDATE (Electronics +8%), and
 -- discontinuation DELETE (10 removed → 90 final). All merge-on-read position

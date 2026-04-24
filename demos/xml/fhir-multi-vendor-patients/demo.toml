@@ -2,7 +2,7 @@
 id = "xml-fhir-multi-vendor-patients"
 name = "FHIR Multi-Vendor Patients (XML) — URI-Based Namespace Resolution"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 A regional Health Information Exchange (HIE) ingests FHIR Patient \
 resources from three EHR vendors that each pick a different namespace \

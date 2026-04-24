@@ -2,7 +2,7 @@
 id = "graph-karate-club"
 name = "Zachary's Karate Club — Classic Graph Benchmark"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Zachary's Karate Club (1977): the most studied graph in network science. \
 34 members of a university karate club, 78 undirected edges representing \

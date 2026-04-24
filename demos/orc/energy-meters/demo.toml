@@ -2,7 +2,7 @@
 id = "orc-energy-meters"
 name = "ORC Energy Meters — Utility Billing Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates ORC format at scale with 1,500 smart meter readings across \
 3 monthly files (50 meters × 10 days × 3 months). Exercises advanced \

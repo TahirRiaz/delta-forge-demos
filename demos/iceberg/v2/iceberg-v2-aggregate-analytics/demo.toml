@@ -2,14 +2,14 @@
 id = "iceberg-v2-aggregate-analytics"
 name = "Iceberg V2 — Retail Multi-Dimensional Aggregation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates multi-dimensional aggregate analytics on a native Apache \
 Iceberg format-version 2 table. A retail chain sales dataset with 120 \
 transactions across 4 stores, 3 regions, and 5 product categories \
 exercises GROUPING SETS, ROLLUP, FILTER clause, DISTINCT aggregates, \
 and HAVING predicates. These patterns are essential for OLAP-style \
-reporting and prove the Delta Forge query engine supports complex \
+reporting and prove the DeltaForge query engine supports complex \
 aggregation on Iceberg data without conversion.
 """
 categories = ["iceberg"]

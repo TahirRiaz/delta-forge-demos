@@ -2,7 +2,7 @@
 
 ## Overview
 
-Demonstrates how Delta Forge ingests X12 EDI transactions spanning the full
+Demonstrates how DeltaForge ingests X12 EDI transactions spanning the full
 supply chain order-to-cash lifecycle. Fourteen real-world transactions cover
 purchase orders, invoices, shipping notices, acknowledgments, receiving advice,
 and application advice. Two external tables provide different views: a compact
@@ -14,7 +14,7 @@ A company's EDI integration hub receives X12 transactions from multiple trading
 partners: a parts supplier (000123456), a music supply company (ABCMUSICSUPPLY),
 a general sender (SENDER1), and an acknowledgment partner (TO/FROM). Each
 partner sends different transaction types using different X12 versions (00401
-and 00204). Delta Forge reads all `.edi` files and produces structured tables
+and 00204). DeltaForge reads all `.edi` files and produces structured tables
 covering the entire order-to-cash cycle — no custom parser or ETL pipeline
 required.
 

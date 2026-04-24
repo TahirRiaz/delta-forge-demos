@@ -2,7 +2,7 @@
 id = "delta-merge-composite-keys"
 name = "Delta MERGE — Composite Keys & Subquery Source"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Real-world tables rarely have single-column primary keys. Fleet management, \
 IoT telemetry, and multi-tenant systems use composite keys (vehicle + date, \

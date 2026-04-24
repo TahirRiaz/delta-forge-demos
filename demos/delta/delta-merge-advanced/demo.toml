@@ -2,7 +2,7 @@
 id = "delta-merge-advanced"
 name = "Delta MERGE — Advanced Patterns & Conditional Logic"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta MERGE INTO supports multiple WHEN MATCHED clauses with conditional \
 predicates, enabling complex write patterns in a single atomic operation. \

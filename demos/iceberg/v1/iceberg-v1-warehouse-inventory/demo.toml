@@ -2,7 +2,7 @@
 id = "iceberg-v1-warehouse-inventory"
 name = "Iceberg V1 — Warehouse Inventory Snapshots"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates native Apache Iceberg format-version 1 table reading using a \
 retail warehouse inventory dataset (489 SKUs across 3 warehouses and 5 \

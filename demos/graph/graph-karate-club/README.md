@@ -78,7 +78,7 @@ automatically. For UNDIRECTED graphs `algo.degree()` reports
 
 ## Algorithms Demonstrated
 
-All 15 graph algorithms supported by Delta Forge are covered (queries 10-24).
+All 15 graph algorithms supported by DeltaForge are covered (queries 10-24).
 
 | Algorithm | Query | YIELD columns | Description |
 |-----------|-------|---------------|-------------|

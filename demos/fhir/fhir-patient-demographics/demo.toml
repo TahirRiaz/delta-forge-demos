@@ -2,9 +2,9 @@
 id = "fhir-patient-demographics"
 name = "FHIR Patient Demographics — Basics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates FHIR R5 Patient resource ingestion using Delta Forge's JSON \
+Demonstrates FHIR R5 Patient resource ingestion using DeltaForge's JSON \
 flattener. A bulk NDJSON export of 50 patient records is combined with 7 \
 detailed individual Patient resources. Two tables show the dual-view \
 pattern: patients_bulk (flat demographics from NDJSON) and patients_detailed \

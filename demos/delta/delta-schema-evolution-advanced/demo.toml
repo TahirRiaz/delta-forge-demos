@@ -2,7 +2,7 @@
 id = "delta-schema-evolution-advanced"
 name = "Delta Advanced Schema Evolution — Add, Widen & Restructure"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Advanced schema evolution demonstrates multiple rounds of ALTER TABLE ADD \
 COLUMN on a single table, evolving from 5 to 8 columns across separate \

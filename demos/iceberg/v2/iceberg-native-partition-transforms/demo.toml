@@ -2,7 +2,7 @@
 id = "iceberg-native-partition-transforms"
 name = "Iceberg Native — Partition Transforms (Bucket + Day)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 icon = "bucket-partition"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading with \

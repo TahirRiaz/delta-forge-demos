@@ -8,7 +8,7 @@ readings across 4 shipment routes. 30 readings from a faulty sensor
 570 valid readings.
 
 Output: cold_chain_readings/ directory with Iceberg V2 metadata, data
-files, and position delete files — ready for Delta Forge to read.
+files, and position delete files — ready for DeltaForge to read.
 """
 import os
 import sys

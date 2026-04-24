@@ -4,7 +4,7 @@
 -- Demonstrates advanced window function analytics on a native Iceberg V2
 -- table. All queries are read-only — the table contains 60 frequent flyer
 -- members across 4 tiers and 5 airports. Each query exercises a different
--- window function pattern, proving Delta Forge handles complex analytical
+-- window function pattern, proving DeltaForge handles complex analytical
 -- SQL on Iceberg data without conversion.
 -- ============================================================================
 

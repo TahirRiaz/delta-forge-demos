@@ -2,7 +2,7 @@
 
 ## Overview
 
-See how Delta Forge handles CSV files whose columns change over time. Five
+See how DeltaForge handles CSV files whose columns change over time. Five
 quarterly sales files span 2024-Q1 to 2025-Q1.  Columns are **added** and
 **retired** across the series, yet a single external table queries all of them
 seamlessly — missing columns from older files surface as `NULL`.

@@ -2,7 +2,7 @@
 id = "delta-restore-time-travel"
 name = "Delta RESTORE + Time Travel — Inspect Before You Recover"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 In production, restoring blindly to "some earlier version" is risky — you \
 might undo wanted changes or pick the wrong snapshot. This demo teaches the \

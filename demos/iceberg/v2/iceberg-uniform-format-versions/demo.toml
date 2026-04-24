@@ -2,7 +2,7 @@
 id = "iceberg-uniform-format-versions"
 name = "Iceberg UniForm — V1, V2, V3 Format Comparison"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Compares Iceberg format versions V1, V2, and V3 side by side. Creates three \
 identical Delta tables with the same seed data, each configured with a \

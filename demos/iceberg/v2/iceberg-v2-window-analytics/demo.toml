@@ -2,14 +2,14 @@
 id = "iceberg-v2-window-analytics"
 name = "Iceberg V2 — Airline Loyalty Window Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates advanced window function analytics on a native Apache \
 Iceberg format-version 2 table. An airline loyalty program dataset with \
 60 frequent flyer members across 4 tiers (Bronze, Silver, Gold, Platinum) \
 and 5 home airports exercises ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, \
 NTILE, and running SUM window functions. Queries use CTEs for top-N-per-\
-group patterns, proving the Delta Forge query engine handles complex \
+group patterns, proving the DeltaForge query engine handles complex \
 analytical SQL on native Iceberg data without conversion.
 """
 categories = ["iceberg"]

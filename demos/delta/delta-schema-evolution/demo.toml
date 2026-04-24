@@ -2,7 +2,7 @@
 id = "delta-schema-evolution"
 name = "Delta Schema Evolution — Add Columns & NULL Filling"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Schema evolution lets you add new columns to a Delta table without \
 rewriting existing data files. This solves the real-world problem of \

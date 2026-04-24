@@ -2,7 +2,7 @@
 id = "delta-partition-replace"
 name = "Delta Partition Replace — Monthly Sales Pipeline"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Production ETL pipelines frequently need to replace an entire partition's \
 data when corrections arrive — for example, re-stating a month's revenue \

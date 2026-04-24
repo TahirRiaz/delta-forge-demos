@@ -2,7 +2,7 @@
 id = "delta-time-travel-optimize"
 name = "Delta Time Travel & OPTIMIZE — Version History"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 OPTIMIZE is a Delta Lake maintenance command that compacts many small \
 Parquet files into fewer, larger ones for dramatically faster read \

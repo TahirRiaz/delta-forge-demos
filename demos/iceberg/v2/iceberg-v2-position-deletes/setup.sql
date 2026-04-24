@@ -2,7 +2,7 @@
 -- Iceberg V2 Position Deletes — Setup
 -- ============================================================================
 -- Creates an external table backed by an Iceberg format-version 2 table that
--- contains position delete files. Delta Forge must parse the full metadata
+-- contains position delete files. DeltaForge must parse the full metadata
 -- chain (metadata.json → manifest list → data manifest + delete manifest →
 -- data Parquet + delete Parquet) and apply row-level exclusions at query time.
 --

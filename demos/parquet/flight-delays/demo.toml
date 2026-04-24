@@ -2,7 +2,7 @@
 id = "parquet-flight-delays"
 name = "Parquet Flight Delays — Airline Delay Analysis"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Parquet schema evolution using 3 quarterly flight-delay files \
 (120 rows). Q1 has base columns, Q2 adds delay_reason, Q3 adds carrier_code. \

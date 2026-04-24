@@ -2,7 +2,7 @@
 id = "iceberg-v3-deletion-vectors"
 name = "Iceberg V3 — Deletion Vectors (Puffin)"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Apache Iceberg format-version 3 deletion vectors using a \
 supply-chain logistics dataset (540 shipment manifest records across 3 \

@@ -2,7 +2,7 @@
 id = "edi-order-lifecycle-tracking"
 name = "EDI Order Lifecycle Tracking — Cross-Document Traceability"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates cross-document traceability by joining and correlating different \
 X12 transaction types within a single unified EDI table. A finance team at a \

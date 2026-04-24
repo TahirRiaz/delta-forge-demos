@@ -13,7 +13,7 @@
 -- ============================================================================
 -- Query 1: Post-Delete Row Count
 -- ============================================================================
--- Verifies that Delta Forge correctly applies the Puffin deletion vector.
+-- Verifies that DeltaForge correctly applies the Puffin deletion vector.
 -- The original data file contains 540 rows; the DV retracts 36, leaving 504.
 
 ASSERT ROW_COUNT = 504

@@ -2,7 +2,7 @@
 id = "edi-compliance-validation"
 name = "EDI Compliance Validation — 997/824 Error & Rejection Analysis"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates EDI compliance monitoring using 997 (Functional Acknowledgment) \
 and 824 (Application Advice) transactions — the two X12 document types that \

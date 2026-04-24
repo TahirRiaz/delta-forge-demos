@@ -10,7 +10,7 @@
 --
 -- The current snapshot (final state) contains 138 rows. Iceberg V2
 -- merge-on-read mode uses position delete files for UPDATE and DELETE
--- operations, which Delta Forge resolves during query execution.
+-- operations, which DeltaForge resolves during query execution.
 --
 -- Schema: ticker, company_name, price, volume, market_cap, sector, trade_date
 -- ============================================================================
@@ -24,7 +24,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg V2 table
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema, snapshots, and data files.
+-- DeltaForge parses metadata.json to discover schema, snapshots, and data files.
 -- Position delete files are resolved automatically during merge-on-read.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.stock_prices
 USING ICEBERG

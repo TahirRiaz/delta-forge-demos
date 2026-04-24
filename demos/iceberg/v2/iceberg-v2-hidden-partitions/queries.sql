@@ -11,7 +11,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Total Row Count & Schema Spot Checks
 -- ============================================================================
--- Verifies that Delta Forge discovered all 6 monthly partitioned Parquet
+-- Verifies that DeltaForge discovered all 6 monthly partitioned Parquet
 -- data files via the Iceberg v2 manifest chain. Checks total rows, distinct
 -- trip IDs, and fare/distance extremes.
 

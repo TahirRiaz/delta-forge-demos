@@ -2,7 +2,7 @@
 id = "edi-tradacoms-utility-billing"
 name = "EDI TRADACOMS — UK Energy Billing & VAT Reconciliation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 A UK energy company sends utility bills via TRADACOMS UTLHDR/UTLBIL/UVATLR/UTLTLR \
 messages. This demo extracts billing details from CCD (Charge Calculation Detail) \

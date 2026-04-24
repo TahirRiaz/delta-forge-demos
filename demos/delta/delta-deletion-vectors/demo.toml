@@ -2,7 +2,7 @@
 id = "delta-deletion-vectors"
 name = "Delta Deletion Vectors — Efficient Soft Deletes"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Deletion vectors (DVs) are a Delta Lake protocol feature that marks individual \
 rows as deleted using lightweight bitmap files, avoiding the costly rewrite of \

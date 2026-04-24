@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Iceberg V2 Copy-on-Write — Queries
 -- ============================================================================
--- Validates that Delta Forge correctly reads an Iceberg V2 table using
+-- Validates that DeltaForge correctly reads an Iceberg V2 table using
 -- copy-on-write mode. The table had 120 shipments initially; 20 were updated
 -- from "In Transit" to "Delivered" (overwrite), then 10 were deleted
 -- (overwrite). Copy-on-write rewrites data files — NO delete files exist.

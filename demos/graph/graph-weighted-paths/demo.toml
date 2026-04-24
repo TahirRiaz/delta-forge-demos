@@ -2,7 +2,7 @@
 id = "graph-weighted-paths"
 name = "Graph Weighted Paths — Global Shipping Route Optimization"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Maritime logistics network with 25 major world ports connected by 55 \
 directed shipping routes. Each route carries distance (nautical miles) \

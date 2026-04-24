@@ -2,7 +2,7 @@
 id = "edi-tradacoms-json-deep-access"
 name = "EDI TRADACOMS — JSON Deep Segment Extraction"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates on-demand extraction of deeply nested TRADACOMS segments \
 using SQL JSON functions against the df_transaction_json column. While \

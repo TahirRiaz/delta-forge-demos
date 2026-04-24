@@ -2,7 +2,7 @@
 id = "iceberg-uniform-puffin-dv"
 name = "Iceberg UniForm — Puffin Deletion Vector Write & Read"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Full-cycle demonstration of Iceberg V3 Puffin deletion vector generation \
 via UniForm. Creates a Delta table with puffin-v1 delete mode enabled, \

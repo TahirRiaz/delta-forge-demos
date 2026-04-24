@@ -2,7 +2,7 @@
 id = "delta-table-properties-lifecycle"
 name = "Delta Table Properties — Configuration Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta tables are configured through TBLPROPERTIES that control storage \
 behavior, optimization, and data protection. This demo walks through the \

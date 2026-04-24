@@ -2,7 +2,7 @@
 id = "delta-funnel-analysis"
 name = "Delta Funnel Analysis — SaaS Conversion Tracking"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 SaaS companies track users through a conversion funnel: trial_start → activation \
 → subscription → renewal. Each stage has a natural drop-off rate, and identifying \

@@ -2,7 +2,7 @@
 id = "delta-optimize-version-proof"
 name = "Delta OPTIMIZE — Cross-Version Data Integrity Proof"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A logistics company tracks shipment manifests across three carriers. Daily \
 uploads from merchant integrations fragment the table into many small Parquet \

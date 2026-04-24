@@ -2,7 +2,7 @@
 
 ## Overview
 
-Demonstrates how Delta Forge ingests HIPAA X12 healthcare EDI transactions
+Demonstrates how DeltaForge ingests HIPAA X12 healthcare EDI transactions
 covering the complete claims lifecycle. Eleven transactions span eligibility
 verification, claim status inquiry, healthcare claims, payment/remittance,
 benefit enrollment, and prior authorization. Two external tables provide
@@ -14,7 +14,7 @@ key clinical and financial fields extracted.
 A health insurance clearinghouse receives HIPAA EDI transactions from multiple
 trading partners — providers, payers, employers, and third-party administrators.
 Each transaction type follows a different HIPAA 5010 implementation guide, but
-all share the common X12 envelope structure (ISA/GS/ST). Delta Forge reads all
+all share the common X12 envelope structure (ISA/GS/ST). DeltaForge reads all
 `.edi` files and produces structured tables — no custom parser, segment mapping,
 or ETL pipeline required. Analysts can immediately query across the full claims
 lifecycle using standard SQL.

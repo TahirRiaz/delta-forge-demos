@@ -2,7 +2,7 @@
 id = "gis-maritime-shipping"
 name = "GIS Maritime Shipping — PostGIS-Compatible Geospatial Functions"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates all 18 PostGIS-compatible st_* functions using a global maritime \
 shipping scenario. Tracks 5 cargo vessels across 10 world ports, computing \

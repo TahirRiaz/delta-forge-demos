@@ -2,7 +2,7 @@
 id = "delta-complex-types"
 name = "Delta Complex Types — Structs, Arrays & Maps"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Lake supports complex data modelling through struct-like multi-column \
 patterns, array-like delimited strings, and map-like key=value pairs — \

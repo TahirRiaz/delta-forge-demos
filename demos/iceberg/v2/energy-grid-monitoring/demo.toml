@@ -2,7 +2,7 @@
 id = "iceberg-energy-grid-monitoring"
 name = "Iceberg Energy Grid — Native Table Reading"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates native Apache Iceberg table reading using a smart energy grid \
 monitoring dataset (600 meter readings across 3 regions). The table uses \

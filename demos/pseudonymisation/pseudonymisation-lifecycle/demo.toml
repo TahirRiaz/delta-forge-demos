@@ -2,7 +2,7 @@
 id = "pseudonymisation-lifecycle"
 name = "Pseudonymisation Lifecycle — Insurance Claims"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 An insurance company manages pseudonymisation rules across the claims \
 processing lifecycle. Rules are created for routine analytics, temporarily \

@@ -2,7 +2,7 @@
 id = "delta-partition-delete"
 name = "Delta Partition-Scoped DELETE"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 E-commerce fulfillment teams routinely purge cancelled, returned, and \
 low-value orders from their warehouse tables. When the table is partitioned \

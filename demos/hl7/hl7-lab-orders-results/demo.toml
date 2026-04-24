@@ -2,7 +2,7 @@
 id = "hl7-lab-orders-results"
 name = "HL7 Lab Orders & Results — ORM/ORU Workflow"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Models the complete laboratory workflow using HL7 v2 ORM (Order) and ORU \
 (Observation Result) messages. Three ORM messages place lab orders — CBC, \
@@ -10,7 +10,7 @@ metabolic panel, urine culture, glucose, and radiology — while five ORU \
 messages return results including a 14-analyte comprehensive metabolic panel, \
 immunization records, glucose readings, and radiology reports. Sources span \
 multiple EHR and LIS systems across HL7 v2.3 through v2.5.1, demonstrating \
-how Delta Forge unifies heterogeneous lab interfaces into queryable order and \
+how DeltaForge unifies heterogeneous lab interfaces into queryable order and \
 result tables.
 """
 categories = ["hl7", "healthcare"]

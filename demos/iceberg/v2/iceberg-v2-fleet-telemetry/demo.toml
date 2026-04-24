@@ -2,7 +2,7 @@
 id = "iceberg-v2-fleet-telemetry"
 name = "Iceberg V2 — Fleet Telemetry Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates native Apache Iceberg format-version 2 table reading using a \
 commercial fleet telemetry dataset (450 GPS pings across 3 regional fleets). \

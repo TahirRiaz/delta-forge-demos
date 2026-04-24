@@ -1,6 +1,6 @@
 # XML Books — Schema Evolution
 
-Demonstrates how Delta Forge handles XML schema evolution across multiple files with different element structures. A single external table reads all 5 files and produces a unified schema where missing elements become SQL NULL.
+Demonstrates how DeltaForge handles XML schema evolution across multiple files with different element structures. A single external table reads all 5 files and produces a unified schema where missing elements become SQL NULL.
 
 ## Data Story
 

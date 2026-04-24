@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI TRADACOMS UK Retail — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge parses TRADACOMS — the UK retail EDI
+-- Queries showcasing how DeltaForge parses TRADACOMS — the UK retail EDI
 -- standard — into queryable tables. Four files cover purchase orders,
 -- product planning forecasts, and utility bills (including escape handling).
 --
@@ -205,7 +205,7 @@ ORDER BY stx_4;
 -- TRADACOMS uses ? as an escape character. The escape test file contains
 -- names like "GEORGE?'S FRIED CHIKEN ?+ SONS" where ?' escapes the
 -- apostrophe (segment delimiter) and ?+ escapes the plus sign (data
--- element separator). Delta Forge decodes these automatically.
+-- element separator). DeltaForge decodes these automatically.
 --
 -- What you'll see:
 --   - msg_type:       Message type from the escape test file

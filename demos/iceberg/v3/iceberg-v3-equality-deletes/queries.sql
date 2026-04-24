@@ -12,7 +12,7 @@
 -- ============================================================================
 -- Query 1: Post-Delete Row Count
 -- ============================================================================
--- Verifies that Delta Forge correctly applies equality deletes. The data
+-- Verifies that DeltaForge correctly applies equality deletes. The data
 -- file contains 500 rows, but the equality delete file removes all rows
 -- matching 4 patient_id values (55 rows total), leaving 445 visible.
 

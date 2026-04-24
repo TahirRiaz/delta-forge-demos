@@ -2,7 +2,7 @@
 id = "delta-schema-flexible-ingestion"
 name = "Delta Flexible Ingestion — JSON to Typed Columns"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A smart factory ingests IoT sensor telemetry into a Delta table with a JSON \
 metadata column. As analysts query the same JSON fields repeatedly, the team \

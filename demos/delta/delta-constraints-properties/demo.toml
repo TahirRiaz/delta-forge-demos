@@ -2,7 +2,7 @@
 id = "delta-constraints-properties"
 name = "Delta Constraints & Table Properties"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta TBLPROPERTIES store table-level configuration in the transaction log, \
 including CHECK constraints and behavioral flags like delta.appendOnly. \

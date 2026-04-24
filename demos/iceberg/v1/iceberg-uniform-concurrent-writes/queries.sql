@@ -4,7 +4,7 @@
 -- HOW UNIFORM WORKS
 -- -----------------
 -- All queries below read through the Delta transaction log — standard
--- Delta Forge behaviour. The Iceberg metadata in metadata/ is generated
+-- DeltaForge behaviour. The Iceberg metadata in metadata/ is generated
 -- automatically by the post-commit hook and is never read by these queries.
 --
 -- Each DML operation (INSERT, UPDATE, DELETE, MERGE) creates:

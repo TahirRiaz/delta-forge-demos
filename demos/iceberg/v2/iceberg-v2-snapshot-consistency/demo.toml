@@ -2,7 +2,7 @@
 id = "iceberg-v2-snapshot-consistency"
 name = "Iceberg V2 — Snapshot Consistency"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Validates Iceberg format-version 2 snapshot consistency using a retail \
 store inventory ledger. The table undergoes 4 snapshots: initial stock \

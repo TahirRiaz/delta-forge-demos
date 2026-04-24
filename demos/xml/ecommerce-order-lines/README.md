@@ -1,6 +1,6 @@
 # XML E-Commerce — Order Line Explosion
 
-Demonstrates how Delta Forge handles deeply nested XML with explode_paths, CDATA sections, exclude_paths, column_mappings, and default_repeat_handling. Two daily order batch exports are read into an exploded line-item table and a per-order summary table.
+Demonstrates how DeltaForge handles deeply nested XML with explode_paths, CDATA sections, exclude_paths, column_mappings, and default_repeat_handling. Two daily order batch exports are read into an exploded line-item table and a per-order summary table.
 
 ## Data Story
 

@@ -3,7 +3,7 @@ id = "iceberg-uniform-partitioned-merge"
 name = "Iceberg UniForm — Partitioned MERGE (Inventory Sync)"
 icon = "partition-merge"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates MERGE INTO on a partitioned UniForm-enabled Delta table for \
 multi-warehouse inventory synchronization. The table is partitioned by \

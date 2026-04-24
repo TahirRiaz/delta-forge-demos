@@ -2,7 +2,7 @@
 id = "h3-point-in-polygon"
 name = "H3 Point-in-Polygon — 1M Row Performance"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates blazing-fast point-in-polygon queries using H3 hexagonal spatial \
 indexing. A ride-share company needs to determine which pricing zone each of \

@@ -3,7 +3,7 @@
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg table that
 -- uses Parquet position delete files to retract erroneous trades.
--- Delta Forge reads the Iceberg metadata chain directly:
+-- DeltaForge reads the Iceberg metadata chain directly:
 -- metadata.json -> manifest list -> manifests -> Parquet data + delete files.
 --
 -- The table was originally created as Iceberg V2, then upgraded to V3 —
@@ -25,7 +25,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg table with position deletes
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema, data files, and position
+-- DeltaForge parses metadata.json to discover schema, data files, and position
 -- delete files automatically. The table was upgraded from V2 to V3 format.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.equity_trades
 USING ICEBERG

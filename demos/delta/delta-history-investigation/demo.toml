@@ -2,7 +2,7 @@
 id = "delta-history-investigation"
 name = "Delta DESCRIBE HISTORY — Root-Cause Investigation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A SaaS platform's reporting dashboard suddenly shows inflated revenue for the \
 Americas region. A data engineer uses DESCRIBE HISTORY to list every version of \

@@ -2,7 +2,7 @@
 id = "iceberg-uniform-restore"
 name = "Regulatory Compliance Recovery — RESTORE with UniForm"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Tests RESTORE TO VERSION on a UniForm Iceberg table. 20 compliance records
 are seeded, updated (non_compliant to under_review), then accidentally deleted.

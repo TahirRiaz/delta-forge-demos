@@ -2,7 +2,7 @@
 id = "orc-server-logs"
 name = "ORC Server Logs — HTTP Access Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates ORC reading features using 5 server access log files \
 (2,500 rows) with schema evolution and ORC's self-describing format. \

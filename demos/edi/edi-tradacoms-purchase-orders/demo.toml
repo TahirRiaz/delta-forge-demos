@@ -2,7 +2,7 @@
 id = "edi-tradacoms-purchase-orders"
 name = "EDI TRADACOMS — Purchase Order Line Items"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 A UK grocery retailer sends purchase orders to a supplier via TRADACOMS \
 ORDHDR/ORDERS/ORDTLR messages. This demo extracts order line items (OLD \

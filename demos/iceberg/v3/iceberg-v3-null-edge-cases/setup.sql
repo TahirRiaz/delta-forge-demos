@@ -2,7 +2,7 @@
 -- Iceberg V3 — Clinical Lab NULL Edge Cases — Setup
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg V3 table.
--- Delta Forge reads the Iceberg metadata chain directly.
+-- DeltaForge reads the Iceberg metadata chain directly.
 --
 -- Dataset: 50 clinical lab results with intentional NULLs:
 --   - result_value: 5 NULLs (pending tests)

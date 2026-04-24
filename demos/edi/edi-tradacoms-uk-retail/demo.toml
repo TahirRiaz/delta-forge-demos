@@ -2,13 +2,13 @@
 id = "edi-tradacoms-uk-retail"
 name = "EDI TRADACOMS UK Retail — Orders, Planning & Utilities"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates how Delta Forge ingests TRADACOMS — the UK-specific EDI standard \
+Demonstrates how DeltaForge ingests TRADACOMS — the UK-specific EDI standard \
 used predominantly in retail and utilities. Four files cover purchase orders, \
 product planning forecasts, and utility bills, including escape character \
 handling for special characters in trading partner names. Each TRADACOMS file \
-contains multiple MHD (Message Header) segments; Delta Forge produces one row \
+contains multiple MHD (Message Header) segments; DeltaForge produces one row \
 per message, enabling granular analysis of order lines, billing details, and \
 forecast data within a single SQL query.
 """

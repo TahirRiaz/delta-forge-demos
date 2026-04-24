@@ -2,7 +2,7 @@
 id = "iceberg-uniform-constraints"
 name = "Bank Transaction Validation — CHECK Constraints with UniForm"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Tests CHECK constraints (delta.constraints.*) on a UniForm Iceberg table.
 25 bank transactions across 5 accounts and 3 currencies enforce positive

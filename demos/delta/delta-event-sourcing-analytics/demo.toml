@@ -2,7 +2,7 @@
 id = "delta-event-sourcing-analytics"
 name = "Delta Event Sourcing Analytics — ED Patient Flow"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A hospital emergency department tracks patient flow as an event stream: \
 triage, admit, transfer, discharge. Each event records a patient, department, \

@@ -2,7 +2,7 @@
 id = "delta-statistics-skipping"
 name = "Delta Data Skipping — Range Statistics in Action"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 E-commerce order data arrives in monthly batches with naturally non-overlapping \
 price ranges. Per-file min/max statistics allow the query engine to skip entire \

@@ -12,7 +12,7 @@
 -- ============================================================================
 -- Query 1: Baseline — Full Scan
 -- ============================================================================
--- Verifies that Delta Forge discovered the Parquet data file via the
+-- Verifies that DeltaForge discovered the Parquet data file via the
 -- Iceberg v2 manifest chain and correctly reads all 100 orders including
 -- nested STRUCT and ARRAY columns.
 

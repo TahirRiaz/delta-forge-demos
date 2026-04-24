@@ -2,7 +2,7 @@
 id = "delta-restore-vacuum-lifecycle"
 name = "Delta RESTORE + VACUUM — Incident Response Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 A cold-storage facility monitors temperature sensors across three rooms. When a \
 faulty sensor batch injects false alert readings, the team uses RESTORE TO VERSION \

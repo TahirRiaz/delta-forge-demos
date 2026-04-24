@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI EDIFACT International Trade — Demo Queries
 -- ============================================================================
--- Overview of how Delta Forge unifies EDIFACT and EANCOM messages from
+-- Overview of how DeltaForge unifies EDIFACT and EANCOM messages from
 -- shipping lines, customs authorities, airlines, and retail supply chains
 -- into a single queryable table.
 --
@@ -68,7 +68,7 @@ ORDER BY msg_count DESC, unh_2;
 -- 3. Syntax Version Distribution
 -- ============================================================================
 -- Shows how many messages came from each UN/EDIFACT syntax identifier.
--- Demonstrates Delta Forge parsing six syntax variants in a single table
+-- Demonstrates DeltaForge parsing six syntax variants in a single table
 -- without version-specific configuration.
 
 ASSERT ROW_COUNT >= 4

@@ -2,7 +2,7 @@
 id = "delta-constraints-lifecycle"
 name = "Delta Constraints Lifecycle — Validate, Mutate, Verify"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 CHECK constraints protect data quality, but the real proof is that they \
 survive every DML operation. This demo creates a product catalog with three \

@@ -2,7 +2,7 @@
 -- Iceberg V3 Equality Delete Files — Setup
 -- ============================================================================
 -- Creates an external table backed by a native Apache Iceberg V3 table that
--- includes equality delete files. Delta Forge reads the Iceberg metadata
+-- includes equality delete files. DeltaForge reads the Iceberg metadata
 -- chain directly: metadata.json -> manifest list -> manifests -> Parquet
 -- data files + equality delete files.
 --
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 
 -- STEP 2: Register the Iceberg V3 table with equality deletes
 -- The LOCATION points to the Iceberg table root (containing metadata/ and data/).
--- Delta Forge parses metadata.json to discover schema, data files, and equality
+-- DeltaForge parses metadata.json to discover schema, data files, and equality
 -- delete files automatically. The format-version field in metadata.json is 3.
 -- The delete file uses equality semantics on the patient_id column.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.patient_visits

@@ -1,7 +1,7 @@
 -- ============================================================================
 -- Sales Schema Evolution Demo — Setup Script
 -- ============================================================================
--- Demonstrates how Delta Forge handles CSV files whose columns change over
+-- Demonstrates how DeltaForge handles CSV files whose columns change over
 -- time: new columns get added, old columns get retired.  A single external
 -- table spans 5 quarterly files (2024-Q1 → 2025-Q1); missing columns from
 -- older files surface as NULL when queried together.
@@ -13,7 +13,7 @@
 --   Q4 2024  - region (retired), + territory
 --   Q1 2025  - discount_pct (retired), + channel
 --
--- Variables (auto-injected by Delta Forge):
+-- Variables (auto-injected by DeltaForge):
 --   data_path     — Local or cloud path where demo data files were downloaded
 --   current_user  — Username of the current logged-in user
 --   zone_name     — Target zone name (defaults to 'external')
@@ -59,7 +59,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.csv_demos
 --   sales_2024_q3.csv  8 cols  (+ discount_pct)
 --   sales_2024_q4.csv  8 cols  (region removed, + territory)
 --   sales_2025_q1.csv  8 cols  (discount_pct removed, + channel)
--- Delta Forge unifies all schemas; missing columns appear as NULL.
+-- DeltaForge unifies all schemas; missing columns appear as NULL.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.csv_demos.sales
 USING CSV
 LOCATION '{{data_path}}/sales*.csv'

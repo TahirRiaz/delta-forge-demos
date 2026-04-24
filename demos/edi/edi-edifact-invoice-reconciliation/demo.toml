@@ -2,7 +2,7 @@
 id = "edi-edifact-invoice-reconciliation"
 name = "EDIFACT Invoice Reconciliation"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Accounts payable reconciliation matching EDIFACT purchase orders (ORDERS) with \
 order responses (ORDRSP) and invoices (INVOIC) across the procurement cycle. \

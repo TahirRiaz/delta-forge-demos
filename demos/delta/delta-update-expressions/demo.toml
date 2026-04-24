@@ -2,7 +2,7 @@
 id = "delta-update-expressions"
 name = "Delta UPDATE Expressions — Portfolio Rebalancing"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 UPDATE statements in Delta go beyond simple value assignment. This demo \
 showcases computed expressions in SET clauses: arithmetic adjustments \

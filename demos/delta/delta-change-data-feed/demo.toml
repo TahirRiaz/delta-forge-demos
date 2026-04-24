@@ -2,7 +2,7 @@
 id = "delta-change-data-feed"
 name = "Delta Change Data Feed — Track Row-Level Changes"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Delta Change Data Feed (CDF) tracks row-level changes (inserts, updates, \
 deletes) across table versions, enabling efficient incremental ETL pipelines. \

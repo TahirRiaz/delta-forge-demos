@@ -6,7 +6,7 @@
 -- All queries below read through the Delta transaction log. The Iceberg
 -- metadata in metadata/ is generated automatically as a shadow.
 --
--- When ALTER TABLE CHANGE COLUMN ... TYPE runs, Delta Forge:
+-- When ALTER TABLE CHANGE COLUMN ... TYPE runs, DeltaForge:
 --   1. Updates the Delta schema in _delta_log/ (what these queries read)
 --   2. Adds a new schema entry to metadata.json's "schemas" array with the
 --      widened type (Iceberg V2/V3 track multiple schema versions)

@@ -89,7 +89,7 @@ for row in rows:
     print(f"  {row[0]}: count={row[1]}, avg_delay={row[2]}")
 
 print("\n=== QUERY 7: File metadata — distinct file count ===")
-print("  (file_metadata comes from Delta Forge, not duckdb — just verify 3 files expected)")
+print("  (file_metadata comes from DeltaForge, not duckdb — just verify 3 files expected)")
 
 print("\n=== VERIFY: Grand totals ===")
 r = con.execute("""

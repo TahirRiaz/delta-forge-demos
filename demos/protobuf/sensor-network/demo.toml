@@ -2,7 +2,7 @@
 id = "protobuf-sensor-network"
 name = "Protobuf IoT Sensor Network — Manufacturing Floor Sensors"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Protocol Buffers (proto3) reading with IoT manufacturing sensor \
 data. Three binary files contain 20 sensors across two factory floors and a \

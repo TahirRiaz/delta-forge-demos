@@ -2,7 +2,7 @@
 id = "protobuf-freight-shipping-manifest"
 name = "Protobuf Freight Shipping — Multi-Carrier Manifest"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates protobuf features not covered by existing demos: boolean fields \
 (is_express, is_insured, requires_signature), int64 monetary values \

@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI Compliance Validation — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge monitors EDI compliance using 997
+-- Queries showcasing how DeltaForge monitors EDI compliance using 997
 -- (Functional Acknowledgment) and 824 (Application Advice) transactions.
 -- These two X12 document types are the mechanism trading partners use to
 -- report acceptance, rejection, and specific errors back to the sender.

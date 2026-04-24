@@ -2,7 +2,7 @@
 -- FHIR Medications & Prescriptions — Queries
 -- ============================================================================
 -- Explore FHIR R5 MedicationRequest and Coverage resources. These queries
--- demonstrate how Delta Forge handles deeply nested FHIR structures including
+-- demonstrate how DeltaForge handles deeply nested FHIR structures including
 -- contained resources, dosage instructions, and insurance coverage classes.
 -- ============================================================================
 
@@ -64,7 +64,7 @@ ORDER BY rx_count DESC;
 -- 4. DOSAGE INSTRUCTIONS — Preserved as JSON for full clinical detail
 -- ============================================================================
 -- FHIR dosageInstruction[] is a complex array containing timing, route,
--- dose ranges, patient instructions, and additional warnings. Delta Forge
+-- dose ranges, patient instructions, and additional warnings. DeltaForge
 -- preserves this as a JSON blob (via json_paths) so downstream systems can
 -- parse the full clinical detail. Each prescription may have multiple
 -- dosage steps (e.g., escalating doses over time).
@@ -101,7 +101,7 @@ ORDER BY prescription_id;
 -- FHIR allows resources to be "contained" inside other resources. Many
 -- MedicationRequest files contain an embedded Medication resource with the
 -- drug's SNOMED code, display name, and form. This avoids needing separate
--- Medication resource files. Delta Forge preserves these as JSON blobs.
+-- Medication resource files. DeltaForge preserves these as JSON blobs.
 
 -- 9 of 12 prescriptions have embedded Medication definitions
 ASSERT ROW_COUNT = 9

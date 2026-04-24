@@ -6,7 +6,7 @@ multiple directory versions and syntax identifiers.
 
 ## Data Story
 
-A global logistics company uses Delta Forge to unify EDIFACT messages arriving
+A global logistics company uses DeltaForge to unify EDIFACT messages arriving
 from shipping lines, customs authorities, airlines, and retail supply chains.
 Messages flow in from trading partners worldwide using different EDIFACT
 directory versions (D:96A through D:13B), syntax character sets (UNOA through

@@ -8,7 +8,7 @@ file compaction with OPTIMIZE.
 A warehouse inventory system tracks 25 items. Over time, low-stock items
 are restocked, discontinued products are removed, new items are added, and
 the table is optimized for faster reads. Each operation creates a new
-version that can be browsed in the Delta Forge GUI.
+version that can be browsed in the DeltaForge GUI.
 
 ## Table
 

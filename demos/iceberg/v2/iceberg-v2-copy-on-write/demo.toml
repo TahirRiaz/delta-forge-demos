@@ -2,7 +2,7 @@
 id = "iceberg-v2-copy-on-write"
 name = "Iceberg V2 — Copy-on-Write Mode"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Validates Iceberg format-version 2 copy-on-write support using a logistics \
 shipment tracking dataset. Unlike merge-on-read (which creates delete files), \

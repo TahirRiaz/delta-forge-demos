@@ -2,9 +2,9 @@
 id = "hl7-patient-admin"
 name = "HL7 Patient Administration — ADT Lifecycle"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
-Demonstrates how Delta Forge ingests HL7 v2 ADT (Admit-Discharge-Transfer) \
+Demonstrates how DeltaForge ingests HL7 v2 ADT (Admit-Discharge-Transfer) \
 messages from multiple EHR systems and HL7 versions. Eight real-world messages \
 cover the full patient lifecycle: admission (A01), demographics update (A08), \
 and discharge (A03). Sources span EPIC, Folio3, Ritten, MegaReg, and Contoso \

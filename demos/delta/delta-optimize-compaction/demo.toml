@@ -2,7 +2,7 @@
 id = "delta-optimize-compaction"
 name = "Delta OPTIMIZE — Manual File Compaction & TARGET SIZE"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 OPTIMIZE is a Delta Lake maintenance command that compacts small Parquet files \
 into larger, optimally-sized ones. Frequent small INSERTs — such as daily batch \

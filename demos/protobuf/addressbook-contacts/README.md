@@ -1,6 +1,6 @@
 # Protobuf Address Book — Contact Directory
 
-Demonstrates how Delta Forge reads Protocol Buffers (proto3) binary files using the classic Google addressbook schema. Three team roster files are read into a flattened contacts table and an exploded phone-number table, showcasing nested message flattening, repeated field handling, enum decoding, and well-known type support.
+Demonstrates how DeltaForge reads Protocol Buffers (proto3) binary files using the classic Google addressbook schema. Three team roster files are read into a flattened contacts table and an exploded phone-number table, showcasing nested message flattening, repeated field handling, enum decoding, and well-known type support.
 
 ## Data Story
 

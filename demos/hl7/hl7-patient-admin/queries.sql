@@ -1,7 +1,7 @@
 -- ============================================================================
 -- HL7 Patient Administration — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge unifies ADT messages from multiple EHR
+-- Queries showcasing how DeltaForge unifies ADT messages from multiple EHR
 -- systems and HL7 versions (v2.3 through v2.6) into queryable tables.
 --
 -- Two tables are available:
@@ -90,7 +90,7 @@ ORDER BY pid_5;
 -- 3. HL7 Version Distribution
 -- ============================================================================
 -- Shows how many messages came from each HL7 protocol version.
--- This demonstrates Delta Forge parsing multiple HL7 versions in a
+-- This demonstrates DeltaForge parsing multiple HL7 versions in a
 -- single table without any version-specific configuration.
 --
 -- What you'll see:

@@ -2,7 +2,7 @@
 id = "iceberg-v3-equality-deletes"
 name = "Iceberg V3 — Equality Delete Files"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Apache Iceberg V3 equality delete file handling using a \
 healthcare EHR platform dataset. The table contains 500 patient visit \

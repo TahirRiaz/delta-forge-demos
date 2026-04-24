@@ -2,7 +2,7 @@
 id = "parquet-supply-chain"
 name = "Parquet Supply Chain — Order Analytics"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """\
 Demonstrates Parquet reading features using 14 quarterly order files (2012–2016, \
 73,089 rows) organized in year-based subdirectories. Four tables exercise \

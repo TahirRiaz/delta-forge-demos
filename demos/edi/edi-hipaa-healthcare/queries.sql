@@ -1,7 +1,7 @@
 -- ============================================================================
 -- EDI HIPAA Healthcare — Demo Queries
 -- ============================================================================
--- Queries showcasing how Delta Forge ingests HIPAA X12 healthcare
+-- Queries showcasing how DeltaForge ingests HIPAA X12 healthcare
 -- transactions across the complete claims lifecycle into queryable tables.
 --
 -- Two tables are available:

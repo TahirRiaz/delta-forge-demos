@@ -2,7 +2,7 @@
 id = "h3-gps-fleet-tracker"
 name = "H3 GPS Fleet Tracker"
 version = "1.0.0"
-author = "Delta Forge Team"
+author = "DeltaForge Team"
 description = """
 Demonstrates H3 hexagonal spatial indexing with Delta tables for geographic \
 analysis. Creates GPS tracking points across 5 world cities, defines region \
