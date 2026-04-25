@@ -194,7 +194,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_delta
     energy_kwh         DOUBLE,
     power_factor       INT,
     grid_frequency_hz  DOUBLE
-) LOCATION 'grid_readings_delta'
+) LOCATION 'energy-grid-monitoring/grid_readings_delta'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.columnMapping.mode' = 'id'
@@ -208,7 +208,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.grid_readings_iceberg_readback
 USING ICEBERG
-LOCATION 'grid_readings_delta';
+LOCATION 'energy-grid-monitoring/grid_readings_delta';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — All 600 Readings via Iceberg Reader

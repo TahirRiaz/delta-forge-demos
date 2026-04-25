@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.students (
     major           VARCHAR,
     gpa             DOUBLE,
     enrollment_year INT
-) LOCATION 'students';
+) LOCATION 'delta-subqueries-set-ops/students';
 
 
 INSERT INTO {{zone_name}}.delta_demos.students VALUES
@@ -64,7 +64,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.enrollments (
     semester        VARCHAR,
     grade           VARCHAR,
     credits         INT
-) LOCATION 'enrollments';
+) LOCATION 'delta-subqueries-set-ops/enrollments';
 
 
 -- Alice Chen (1) — CS major, takes CS + Math courses

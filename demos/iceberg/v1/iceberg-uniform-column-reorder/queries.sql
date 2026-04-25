@@ -196,7 +196,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.patient_records_iceber
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.patient_records_iceberg
 USING ICEBERG
-LOCATION 'patient_records';
+LOCATION 'iceberg-uniform-column-reorder/patient_records';
 
 -- ============================================================================
 -- Iceberg Verify 1: Full Row Count and Aggregates

@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.patient_records (
     admission_date       VARCHAR,
     discharge_date       VARCHAR,
     attending_physician  VARCHAR
-) LOCATION 'patient_records'
+) LOCATION 'iceberg-uniform-column-reorder/patient_records'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergVersion' = '2',

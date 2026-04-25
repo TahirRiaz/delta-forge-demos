@@ -1,5 +1,5 @@
 [demo]
-id = "edi-850-purchase-orders-aliased"
+id = "850-purchase-orders-aliased"
 name = "Wholesale Distributor PO Inbox — Aliased Columns + JSON Line Items"
 version = "1.0.0"
 author = "DeltaForge Team"

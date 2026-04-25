@@ -263,7 +263,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg WIT
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v1_iceberg
 USING ICEBERG
-LOCATION 'sensors_v1';
+LOCATION 'iceberg-uniform-format-versions/sensors_v1';
 
 -- ============================================================================
 -- Iceberg Read-Back: Register V2 as External Iceberg Table
@@ -274,7 +274,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg WIT
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v2_iceberg
 USING ICEBERG
-LOCATION 'sensors_v2';
+LOCATION 'iceberg-uniform-format-versions/sensors_v2';
 
 -- ============================================================================
 -- Iceberg Read-Back: Register V3 as External Iceberg Table
@@ -285,7 +285,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg WIT
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensors_v3_iceberg
 USING ICEBERG
-LOCATION 'sensors_v3';
+LOCATION 'iceberg-uniform-format-versions/sensors_v3';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Counts — All Three Format Versions

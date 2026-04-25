@@ -40,7 +40,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_readings (
     value       DOUBLE,
     recorded_at VARCHAR,
     ingested_at VARCHAR
-) LOCATION 'sensor_readings';
+) LOCATION 'delta-merge-idempotent/sensor_readings';
 
 
 INSERT INTO {{zone_name}}.delta_demos.sensor_readings VALUES
@@ -90,7 +90,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_batch (
     value       DOUBLE,
     recorded_at VARCHAR,
     batch_id    VARCHAR
-) LOCATION 'sensor_batch';
+) LOCATION 'delta-merge-idempotent/sensor_batch';
 
 
 INSERT INTO {{zone_name}}.delta_demos.sensor_batch VALUES

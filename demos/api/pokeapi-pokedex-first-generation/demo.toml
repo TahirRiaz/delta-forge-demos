@@ -1,5 +1,5 @@
 [demo]
-id = "api-pokeapi-pokedex-first-generation"
+id = "pokeapi-pokedex-first-generation"
 name = "Pokédex First-Generation Reference — Offset Pagination + CALL Preview"
 version = "1.0.0"
 description = """

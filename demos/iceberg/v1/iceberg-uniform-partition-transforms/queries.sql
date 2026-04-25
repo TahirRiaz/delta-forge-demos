@@ -263,7 +263,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_events_iceberg WIT
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.app_events_iceberg
 USING ICEBERG
-LOCATION 'app_events';
+LOCATION 'iceberg-uniform-partition-transforms/app_events';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count + Spot-Check Individual Rows

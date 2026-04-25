@@ -27,5 +27,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- The format-version field in metadata.json is 2 (enhanced Iceberg spec).
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.fleet_telemetry
 USING ICEBERG
-LOCATION 'fleet_telemetry';
+LOCATION 'iceberg-v2-fleet-telemetry/fleet_telemetry';
 

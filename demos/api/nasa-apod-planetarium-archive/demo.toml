@@ -1,5 +1,5 @@
 [demo]
-id = "api-nasa-apod-planetarium-archive"
+id = "nasa-apod-planetarium-archive"
 name = "Planetarium APOD Archive — api_key_query Auth + Header Overrides"
 version = "1.0.0"
 description = """

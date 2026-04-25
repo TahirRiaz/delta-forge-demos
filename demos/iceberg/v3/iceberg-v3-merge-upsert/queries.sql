@@ -230,7 +230,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory_ic
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 USING ICEBERG
-LOCATION 'warehouse_inventory';
+LOCATION 'iceberg-v3-merge-upsert/warehouse_inventory';
 
 
 -- ============================================================================

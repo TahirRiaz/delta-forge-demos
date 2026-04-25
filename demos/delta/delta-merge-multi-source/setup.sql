@@ -43,7 +43,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_status (
     return_reason    VARCHAR,
     refund_amount    DOUBLE,
     last_updated     VARCHAR
-) LOCATION 'order_status';
+) LOCATION 'delta-merge-multi-source/order_status';
 
 
 INSERT INTO {{zone_name}}.delta_demos.order_status VALUES
@@ -82,7 +82,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.shipping_updates (
     tracking_number  VARCHAR,
     ship_date        VARCHAR,
     last_updated     VARCHAR
-) LOCATION 'shipping_updates';
+) LOCATION 'delta-merge-multi-source/shipping_updates';
 
 
 INSERT INTO {{zone_name}}.delta_demos.shipping_updates VALUES
@@ -114,7 +114,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.payment_updates (
     payment_method   VARCHAR,
     transaction_id   VARCHAR,
     last_updated     VARCHAR
-) LOCATION 'payment_updates';
+) LOCATION 'delta-merge-multi-source/payment_updates';
 
 
 INSERT INTO {{zone_name}}.delta_demos.payment_updates VALUES
@@ -148,7 +148,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.return_updates (
     return_reason    VARCHAR,
     refund_amount    DOUBLE,
     last_updated     VARCHAR
-) LOCATION 'return_updates';
+) LOCATION 'delta-merge-multi-source/return_updates';
 
 
 INSERT INTO {{zone_name}}.delta_demos.return_updates VALUES

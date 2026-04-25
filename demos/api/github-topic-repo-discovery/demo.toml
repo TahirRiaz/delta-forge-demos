@@ -1,5 +1,5 @@
 [demo]
-id = "api-github-topic-repo-discovery"
+id = "github-topic-repo-discovery"
 name = "GitHub Topic Repo Discovery — Link-Header Pagination + FULL REFRESH"
 version = "1.0.0"
 description = """

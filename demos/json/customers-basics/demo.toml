@@ -1,5 +1,5 @@
 [demo]
-id = "json-customers-basics"
+id = "customers-basics"
 name = "JSON Customers — Basics"
 version = "1.0.0"
 author = "DeltaForge Team"

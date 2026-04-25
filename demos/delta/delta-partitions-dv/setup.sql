@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.cloud_events (
     message     VARCHAR,
     latency_ms  INT,
     event_time  VARCHAR
-) LOCATION 'cloud_events'
+) LOCATION 'delta-partitions-dv/cloud_events'
 PARTITIONED BY (region)
 TBLPROPERTIES (
     'delta.enableDeletionVectors' = 'true'

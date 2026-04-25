@@ -34,7 +34,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.gpu_karate
 -- ############################################################################
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.gpu_karate_raw.karate_edges
-USING CSV LOCATION 'edges.csv'
+USING CSV LOCATION 'graph-gpu-karate/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
@@ -45,7 +45,7 @@ OPTIONS (header = 'true', delimiter = '|');
 -- === Edge Table (from external CSV) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_karate.edges
-LOCATION 'delta/edges'
+LOCATION 'graph-gpu-karate/delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -57,12 +57,12 @@ FROM {{zone_name}}.gpu_karate_raw.karate_edges;
 -- === Vertex Table (from CSV with member names and roles) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.gpu_karate_raw.karate_vertices
-USING CSV LOCATION 'vertices.csv'
+USING CSV LOCATION 'graph-gpu-karate/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_karate.vertices
-LOCATION 'delta/vertices'
+LOCATION 'graph-gpu-karate/delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

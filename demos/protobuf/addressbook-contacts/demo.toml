@@ -1,5 +1,5 @@
 [demo]
-id = "proto-addressbook-contacts"
+id = "addressbook-contacts"
 name = "Protobuf Address Book — Contact Directory"
 version = "1.0.0"
 author = "DeltaForge Team"

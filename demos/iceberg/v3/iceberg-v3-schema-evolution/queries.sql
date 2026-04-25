@@ -276,7 +276,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.drug_registry_iceberg 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.drug_registry_iceberg
 USING ICEBERG
-LOCATION 'drug_registry';
+LOCATION 'iceberg-v3-schema-evolution/drug_registry';
 
 
 -- ============================================================================

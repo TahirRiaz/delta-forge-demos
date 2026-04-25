@@ -26,7 +26,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.library_catalog (
     copies       INT,
     available    INT,
     branch       VARCHAR
-) LOCATION 'library_catalog';
+) LOCATION 'delta-row-index-catalog-rebuild/library_catalog';
 
 
 INSERT INTO {{zone_name}}.delta_demos.library_catalog VALUES

@@ -1,5 +1,5 @@
 [demo]
-id = "api-public-holiday-calendar-sync"
+id = "public-holiday-calendar-sync"
 name = "Public Holiday Calendar Sync — Script-Parameter Incremental Enrichment"
 version = "2.0.0"
 description = """

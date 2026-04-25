@@ -33,7 +33,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.monthly_settlements (
     currency          VARCHAR,
     counterparty      VARCHAR,
     settled_at        VARCHAR
-) LOCATION 'monthly_settlements'
+) LOCATION 'delta-partition-replace-dv/monthly_settlements'
 PARTITIONED BY (settlement_month);
 
 

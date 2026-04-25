@@ -35,7 +35,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.subscriptions (
     tier            VARCHAR,
     discount_pct    DOUBLE,
     priority_score  DOUBLE
-) LOCATION 'subscriptions';
+) LOCATION 'delta-merge-computed-columns/subscriptions';
 
 
 INSERT INTO {{zone_name}}.delta_demos.subscriptions VALUES
@@ -64,7 +64,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.subscription_changes 
     plan            VARCHAR,
     monthly_amount  DOUBLE,
     months_active   INT
-) LOCATION 'subscription_changes';
+) LOCATION 'delta-merge-computed-columns/subscription_changes';
 
 
 INSERT INTO {{zone_name}}.delta_demos.subscription_changes VALUES

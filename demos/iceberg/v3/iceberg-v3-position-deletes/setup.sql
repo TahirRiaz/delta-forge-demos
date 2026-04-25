@@ -29,5 +29,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- delete files automatically. The table was upgraded from V2 to V3 format.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.equity_trades
 USING ICEBERG
-LOCATION 'equity_trades';
+LOCATION 'iceberg-v3-position-deletes/equity_trades';
 

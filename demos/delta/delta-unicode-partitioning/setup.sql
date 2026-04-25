@@ -36,7 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.cdn_content (
     origin_city     VARCHAR,
     locale          VARCHAR
 ) PARTITIONED BY (locale)
-  LOCATION 'cdn_content';
+  LOCATION 'delta-unicode-partitioning/cdn_content';
 
 
 -- STEP 2: Insert 30 content items across 5 locales

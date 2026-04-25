@@ -63,7 +63,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_bills
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-tradacoms-utility-billing/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "tradacoms",
@@ -102,7 +102,7 @@ OPTIONS (
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.tradacoms_bill_details
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-tradacoms-utility-billing/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "tradacoms",

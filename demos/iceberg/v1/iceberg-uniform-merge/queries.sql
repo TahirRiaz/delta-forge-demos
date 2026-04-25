@@ -296,7 +296,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.order_fulfillment_iceb
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.order_fulfillment_iceberg
 USING ICEBERG
-LOCATION 'order_fulfillment';
+LOCATION 'iceberg-uniform-merge/order_fulfillment';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 36 Orders After Both MERGEs

@@ -34,7 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.user_events (
     revenue     INT,
     channel     VARCHAR,
     event_date  VARCHAR
-) LOCATION 'user_events';
+) LOCATION 'delta-funnel-analysis/user_events';
 
 
 -- ============================================================================

@@ -35,7 +35,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.stock_prices (
     high_price  DOUBLE,
     low_price   DOUBLE,
     volume      BIGINT
-) LOCATION 'stock_prices';
+) LOCATION 'delta-advanced-sql/stock_prices';
 
 
 -- AAPL: base=185, amplitude=5

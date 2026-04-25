@@ -1,5 +1,5 @@
 [demo]
-id = "api-httpbin-auth-smoke-test"
+id = "httpbin-auth-smoke-test"
 name = "Vendor Auth Smoke Test — api_key_header + Explicit CREDENTIAL STORAGE"
 version = "1.0.0"
 description = """

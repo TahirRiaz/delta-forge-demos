@@ -1,5 +1,5 @@
 [demo]
-id = "csv-veterinary-clinic"
+id = "veterinary-clinic"
 name = "Veterinary Clinic Patient Records"
 version = "1.0.0"
 author = "DeltaForge Team"

@@ -26,7 +26,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_master (
     qty             INT,
     supplier        VARCHAR,
     last_updated    VARCHAR
-) LOCATION 'inventory_master';
+) LOCATION 'delta-merge-advanced/inventory_master';
 
 
 INSERT INTO {{zone_name}}.delta_demos.inventory_master VALUES
@@ -86,7 +86,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory_updates (
     qty             INT,
     supplier        VARCHAR,
     last_updated    VARCHAR
-) LOCATION 'inventory_updates';
+) LOCATION 'delta-merge-advanced/inventory_updates';
 
 
 INSERT INTO {{zone_name}}.delta_demos.inventory_updates VALUES

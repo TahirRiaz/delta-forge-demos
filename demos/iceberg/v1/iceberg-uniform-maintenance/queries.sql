@@ -285,7 +285,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg WITH 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.app_logs_iceberg
 USING ICEBERG
-LOCATION 'app_logs';
+LOCATION 'iceberg-uniform-maintenance/app_logs';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 60 Logs After Full Maintenance Lifecycle

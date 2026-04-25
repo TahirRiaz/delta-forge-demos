@@ -1,5 +1,5 @@
 [demo]
-id = "api-frankfurter-fx-rate-catalog"
+id = "frankfurter-fx-rate-catalog"
 name = "Frankfurter FX Rate Catalog — ALTER API ENDPOINT + Multi-Endpoint"
 version = "1.0.0"
 description = """

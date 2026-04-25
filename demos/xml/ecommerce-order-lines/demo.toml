@@ -1,5 +1,5 @@
 [demo]
-id = "xml-ecommerce-order-lines"
+id = "ecommerce-order-lines"
 name = "XML E-Commerce — Order Line Explosion"
 version = "1.0.0"
 author = "DeltaForge Team"

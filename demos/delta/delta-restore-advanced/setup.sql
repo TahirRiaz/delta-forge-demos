@@ -28,7 +28,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.config_settings (
     is_active   INT,
     updated_by  VARCHAR,
     updated_at  VARCHAR
-) LOCATION 'config_settings';
+) LOCATION 'delta-restore-advanced/config_settings';
 
 
 INSERT INTO {{zone_name}}.delta_demos.config_settings VALUES

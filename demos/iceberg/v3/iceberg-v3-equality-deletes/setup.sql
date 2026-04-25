@@ -34,5 +34,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- The delete file uses equality semantics on the patient_id column.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.patient_visits
 USING ICEBERG
-LOCATION 'patient_visits';
+LOCATION 'iceberg-v3-equality-deletes/patient_visits';
 

@@ -30,7 +30,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.compliance_ledger (
     counterparty    VARCHAR,
     txn_date        VARCHAR,
     reference       VARCHAR
-) LOCATION 'compliance_ledger'
+) LOCATION 'delta-append-only-enforcement/compliance_ledger'
 TBLPROPERTIES (
     'delta.appendOnly' = 'true'
 );
@@ -72,7 +72,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.mutable_ledger (
     counterparty    VARCHAR,
     txn_date        VARCHAR,
     reference       VARCHAR
-) LOCATION 'mutable_ledger';
+) LOCATION 'delta-append-only-enforcement/mutable_ledger';
 
 
 -- Same 20 transactions for comparison

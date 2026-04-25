@@ -101,7 +101,7 @@ CREATE DELTA TABLE IF NOT EXISTS clinical_silver.fhir_silver.encounter_observati
     observation_unit STRING,
     effective_at STRING,
     source_file STRING
-) LOCATION '_silver_encounter_observations';
+) LOCATION 'hospital-bundle-ingest/_silver_encounter_observations';
 
 INSERT INTO clinical_silver.fhir_silver.encounter_observations
 SELECT

@@ -252,7 +252,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.ad_clicks_iceberg WITH
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.ad_clicks_iceberg
 USING ICEBERG
-LOCATION 'ad_clicks';
+LOCATION 'iceberg-uniform-column-stats/ad_clicks';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count + Seed Data Spot-Check

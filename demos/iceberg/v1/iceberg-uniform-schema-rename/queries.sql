@@ -200,7 +200,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.financial_transactions
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.financial_transactions_iceberg
 USING ICEBERG
-LOCATION 'financial_transactions';
+LOCATION 'iceberg-uniform-schema-rename/financial_transactions';
 
 -- ============================================================================
 -- Iceberg Verify 1: Data Integrity — Spot-Check Rows via Renamed Columns

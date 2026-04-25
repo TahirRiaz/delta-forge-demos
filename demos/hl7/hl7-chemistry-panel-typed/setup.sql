@@ -48,7 +48,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.hl7_demos
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.hl7_demos.chem_panels_typed
 USING HL7
-LOCATION '*.hl7'
+LOCATION 'hl7-chemistry-panel-typed/*.hl7'
 OPTIONS (
     hl7_config = '{
         "infer_timestamps": true,

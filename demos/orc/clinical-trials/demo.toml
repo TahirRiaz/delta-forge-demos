@@ -1,5 +1,5 @@
 [demo]
-id = "orc-clinical-trials"
+id = "clinical-trials"
 name = "ORC Clinical Trials — Patient Outcome Analysis"
 version = "1.0.0"
 author = "DeltaForge Team"

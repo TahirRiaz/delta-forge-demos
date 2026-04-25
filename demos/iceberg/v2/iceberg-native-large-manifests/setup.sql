@@ -26,5 +26,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- current snapshot, walks all 10 manifests, and discovers all 10 data files.
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.web_analytics
 USING ICEBERG
-LOCATION 'web_analytics';
+LOCATION 'iceberg-native-large-manifests/web_analytics';
 

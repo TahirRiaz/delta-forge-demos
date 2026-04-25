@@ -20,7 +20,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.line_metrics (
     line_name       VARCHAR,
     recorded_at     VARCHAR,
     year_month      VARCHAR
-) LOCATION 'line_metrics'
+) LOCATION 'delta-partition-time-series/line_metrics'
 PARTITIONED BY (year_month);
 
 

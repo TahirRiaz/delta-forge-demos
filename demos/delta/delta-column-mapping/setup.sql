@@ -32,7 +32,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.employee_directory (
     start_date  VARCHAR,
     salary      DOUBLE,
     is_active   INT
-) LOCATION 'employee_directory'
+) LOCATION 'delta-column-mapping/employee_directory'
 TBLPROPERTIES (
     'delta.columnMapping.mode' = 'name',
     'delta.minReaderVersion' = '2',

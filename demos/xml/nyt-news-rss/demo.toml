@@ -1,5 +1,5 @@
 [demo]
-id = "xml-nyt-news-rss"
+id = "nyt-news-rss"
 name = "XML NYT News — RSS Feed Analysis"
 version = "1.0.0"
 author = "DeltaForge Team"

@@ -247,7 +247,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.regional_sales_iceberg
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.regional_sales_iceberg
 USING ICEBERG
-LOCATION 'regional_sales';
+LOCATION 'iceberg-uniform-partitioned/regional_sales';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 26 Transactions After All Mutations

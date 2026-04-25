@@ -346,7 +346,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.ingestion_log_iceberg 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.ingestion_log_iceberg
 USING ICEBERG
-LOCATION 'ingestion_log';
+LOCATION 'iceberg-uniform-concurrent-writes/ingestion_log';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 50 Records After Full Lifecycle

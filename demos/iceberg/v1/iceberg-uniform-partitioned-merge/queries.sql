@@ -314,7 +314,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory_ic
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory_iceberg
 USING ICEBERG
-LOCATION 'warehouse_inventory';
+LOCATION 'iceberg-uniform-partitioned-merge/warehouse_inventory';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 36 SKUs After Both MERGEs

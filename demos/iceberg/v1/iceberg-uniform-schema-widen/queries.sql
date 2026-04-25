@@ -209,7 +209,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sensor_readings_iceber
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sensor_readings_iceberg
 USING ICEBERG
-LOCATION 'sensor_readings';
+LOCATION 'iceberg-uniform-schema-widen/sensor_readings';
 
 -- ============================================================================
 -- Iceberg Verify 1: Per-Location Aggregates Match Delta Final State

@@ -155,7 +155,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg WIT
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.compliance_iceberg
 USING ICEBERG
-LOCATION 'compliance_records';
+LOCATION 'iceberg-uniform-restore/compliance_records';
 
 
 -- ============================================================================

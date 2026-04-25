@@ -41,7 +41,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.events (
     amount      DOUBLE,
     version     INT,
     received_at VARCHAR
-) LOCATION 'events';
+) LOCATION 'delta-merge-dedup/events';
 
 
 INSERT INTO {{zone_name}}.delta_demos.events VALUES
@@ -86,5 +86,5 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.events_deduped (
     amount      DOUBLE,
     version     INT,
     received_at VARCHAR
-) LOCATION 'events_deduped';
+) LOCATION 'delta-merge-dedup/events_deduped';
 

@@ -243,7 +243,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.delta_demos.warehouse_orders_iceberg
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.delta_demos.warehouse_orders_iceberg
 USING ICEBERG
-LOCATION 'warehouse_orders';
+LOCATION 'delta-partition-delete/warehouse_orders';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 33 Orders After All Deletes

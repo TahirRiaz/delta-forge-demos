@@ -1,5 +1,5 @@
 [demo]
-id = "json-typed-billing-events"
+id = "typed-billing-events"
 name = "JSON Typed Billing Events — type_hints + as_list"
 version = "1.0.1"
 author = "DeltaForge Team"

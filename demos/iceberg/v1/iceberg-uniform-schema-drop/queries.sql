@@ -207,7 +207,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.user_profiles_iceberg 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.user_profiles_iceberg
 USING ICEBERG
-LOCATION 'user_profiles';
+LOCATION 'iceberg-uniform-schema-drop/user_profiles';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 24 Users

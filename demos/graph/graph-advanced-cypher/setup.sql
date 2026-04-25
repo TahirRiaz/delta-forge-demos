@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_network.researchers (
     rank        STRING,
     h_index     INT,
     active      BOOLEAN
-) LOCATION 'researchers';
+) LOCATION 'graph-advanced-cypher/researchers';
 
 
 INSERT INTO {{zone_name}}.research_network.researchers
@@ -67,7 +67,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_network.collaborations (
     collab_type     STRING,
     project_count   INT,
     since_year      INT
-) LOCATION 'collaborations';
+) LOCATION 'graph-advanced-cypher/collaborations';
 
 
 -- Batch 1: Intra-department co-authors (~70 edges)

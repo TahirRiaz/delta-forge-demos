@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.fleet_daily_summary (
     stop_count         INT,
     idle_minutes       INT,
     last_sync          VARCHAR
-) LOCATION 'fleet_daily_summary';
+) LOCATION 'delta-merge-composite-keys/fleet_daily_summary';
 
 
 INSERT INTO {{zone_name}}.delta_demos.fleet_daily_summary VALUES
@@ -86,7 +86,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.telemetry_batch (
     stop_count         INT,
     idle_minutes       INT,
     last_sync          VARCHAR
-) LOCATION 'telemetry_batch';
+) LOCATION 'delta-merge-composite-keys/telemetry_batch';
 
 
 INSERT INTO {{zone_name}}.delta_demos.telemetry_batch VALUES

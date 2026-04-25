@@ -37,7 +37,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.daily_revenue (
     order_count     INT,
     avg_order_value DOUBLE,
     last_updated    VARCHAR
-) LOCATION 'daily_revenue';
+) LOCATION 'delta-merge-subquery/daily_revenue';
 
 
 INSERT INTO {{zone_name}}.delta_demos.daily_revenue VALUES
@@ -83,7 +83,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_events (
     event_timestamp VARCHAR,
     channel         VARCHAR,
     region          VARCHAR
-) LOCATION 'order_events';
+) LOCATION 'delta-merge-subquery/order_events';
 
 
 INSERT INTO {{zone_name}}.delta_demos.order_events VALUES

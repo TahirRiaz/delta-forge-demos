@@ -1,5 +1,5 @@
 [demo]
-id = "api-jsonplaceholder-blog-moderation-corpus"
+id = "jsonplaceholder-blog-moderation-corpus"
 name = "Blog Moderation Corpus — Page-Based Pagination Walkthrough"
 version = "1.0.0"
 description = """

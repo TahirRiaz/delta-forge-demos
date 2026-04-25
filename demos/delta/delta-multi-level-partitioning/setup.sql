@@ -41,7 +41,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_ml (
     qty         INT,
     channel     VARCHAR,
     sale_date   VARCHAR
-) LOCATION 'sales_ml'
+) LOCATION 'delta-multi-level-partitioning/sales_ml'
 PARTITIONED BY (region, quarter);
 
 
@@ -126,7 +126,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.region_dim (
     target_amount DOUBLE,
     target_qty    INT,
     market        VARCHAR
-) LOCATION 'region_dim';
+) LOCATION 'delta-multi-level-partitioning/region_dim';
 
 
 INSERT INTO {{zone_name}}.delta_demos.region_dim VALUES
@@ -144,7 +144,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.quarter_dim (
     budget     DOUBLE,
     target_qty INT,
     half_year  VARCHAR
-) LOCATION 'quarter_dim';
+) LOCATION 'delta-multi-level-partitioning/quarter_dim';
 
 
 INSERT INTO {{zone_name}}.delta_demos.quarter_dim VALUES

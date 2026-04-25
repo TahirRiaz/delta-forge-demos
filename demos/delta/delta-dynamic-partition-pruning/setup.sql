@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_facts (
     qty         INT,
     channel     VARCHAR,
     sale_date   VARCHAR
-) LOCATION 'sales_facts'
+) LOCATION 'delta-dynamic-partition-pruning/sales_facts'
 PARTITIONED BY (region);
 
 
@@ -129,7 +129,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.region_targets (
     region        VARCHAR,
     target_amount DOUBLE,
     target_qty    INT
-) LOCATION 'region_targets';
+) LOCATION 'delta-dynamic-partition-pruning/region_targets';
 
 
 INSERT INTO {{zone_name}}.delta_demos.region_targets VALUES

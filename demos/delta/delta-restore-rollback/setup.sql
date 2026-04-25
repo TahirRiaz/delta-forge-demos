@@ -27,7 +27,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_inventory (
     price           DOUBLE,
     qty             INT,
     status          VARCHAR
-) LOCATION 'product_inventory';
+) LOCATION 'delta-restore-rollback/product_inventory';
 
 
 INSERT INTO {{zone_name}}.delta_demos.product_inventory VALUES

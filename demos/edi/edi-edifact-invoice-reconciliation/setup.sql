@@ -58,7 +58,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.commerce_messages
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-edifact-invoice-reconciliation/*.edi'
 OPTIONS (
     edi_config = '{"ediFormat": "edifact"}',
     file_metadata = '{"columns":["df_file_name","df_row_number"]}'
@@ -85,7 +85,7 @@ OPTIONS (
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.commerce_materialized
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-edifact-invoice-reconciliation/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "edifact",

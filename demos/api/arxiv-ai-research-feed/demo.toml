@@ -1,5 +1,5 @@
 [demo]
-id = "api-arxiv-ai-research-feed"
+id = "arxiv-ai-research-feed"
 name = "arXiv AI Research Feed — RESPONSE FORMAT XML"
 version = "1.0.0"
 description = """

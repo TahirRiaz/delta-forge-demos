@@ -30,7 +30,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.email_eu_core
 -- ############################################################################
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.email_eu_core_raw.email_eu_edges
-USING CSV LOCATION 'edges.csv'
+USING CSV LOCATION 'graph-email-eu-core/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 -- ############################################################################
@@ -40,7 +40,7 @@ OPTIONS (header = 'true', delimiter = '|');
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.email_eu_core.edges
-LOCATION 'delta/edges'
+LOCATION 'graph-email-eu-core/delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -51,12 +51,12 @@ FROM {{zone_name}}.email_eu_core_raw.email_eu_edges;
 -- === Vertex Table (from CSV with member names and departments) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.email_eu_core_raw.email_eu_vertices
-USING CSV LOCATION 'vertices.csv'
+USING CSV LOCATION 'graph-email-eu-core/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.email_eu_core.vertices
-LOCATION 'delta/vertices'
+LOCATION 'graph-email-eu-core/delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

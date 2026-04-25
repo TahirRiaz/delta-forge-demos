@@ -24,7 +24,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.logistics.warehouses (
     lat               DOUBLE,
     lng               DOUBLE,
     capacity_pallets  INT
-) LOCATION 'logistics_warehouses';
+) LOCATION 'h3-gis-delivery-optimization/logistics_warehouses';
 
 
 INSERT INTO {{zone_name}}.logistics.warehouses VALUES
@@ -50,7 +50,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.logistics.stores (
     lng             DOUBLE,
     warehouse_id    INT,
     monthly_orders  INT
-) LOCATION 'logistics_stores';
+) LOCATION 'h3-gis-delivery-optimization/logistics_stores';
 
 
 INSERT INTO {{zone_name}}.logistics.stores VALUES

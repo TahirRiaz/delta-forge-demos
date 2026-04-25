@@ -220,7 +220,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.product_catalog_iceber
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.product_catalog_iceberg
 USING ICEBERG
-LOCATION 'product_catalog';
+LOCATION 'iceberg-uniform-basics/product_catalog';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count

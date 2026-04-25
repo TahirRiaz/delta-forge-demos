@@ -28,12 +28,12 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.karate_manual
 -- ############################################################################
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.karate_manual_raw.karate_edges
-USING CSV LOCATION 'edges.csv'
+USING CSV LOCATION 'graph-manual-csr/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.karate_manual_raw.karate_vertices
-USING CSV LOCATION 'vertices.csv'
+USING CSV LOCATION 'graph-manual-csr/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
@@ -44,7 +44,7 @@ OPTIONS (header = 'true', delimiter = '|');
 -- === Edge Table ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_manual.edges
-LOCATION 'delta/edges'
+LOCATION 'graph-manual-csr/delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -56,7 +56,7 @@ FROM {{zone_name}}.karate_manual_raw.karate_edges;
 -- === Vertex Table ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_manual.vertices
-LOCATION 'delta/vertices'
+LOCATION 'graph-manual-csr/delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

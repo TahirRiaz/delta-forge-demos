@@ -292,7 +292,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.delivery_tracking_iceb
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.delivery_tracking_iceberg
 USING ICEBERG
-LOCATION 'delivery_tracking';
+LOCATION 'iceberg-uniform-zorder/delivery_tracking';
 
 -- ============================================================================
 -- Iceberg Verify 1: Spot-Check Individual Rows — Data Fidelity

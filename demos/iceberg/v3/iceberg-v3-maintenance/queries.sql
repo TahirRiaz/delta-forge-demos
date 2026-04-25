@@ -272,7 +272,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.subscriptions_iceberg 
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.subscriptions_iceberg
 USING ICEBERG
-LOCATION 'subscriptions';
+LOCATION 'iceberg-v3-maintenance/subscriptions';
 
 
 -- ============================================================================

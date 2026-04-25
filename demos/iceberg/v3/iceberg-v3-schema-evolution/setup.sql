@@ -27,7 +27,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.drug_registry (
     dosage_mg         INT,
     approval_status   VARCHAR,
     submission_date   VARCHAR
-) LOCATION 'drug_registry'
+) LOCATION 'iceberg-v3-schema-evolution/drug_registry'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergVersion' = '3',

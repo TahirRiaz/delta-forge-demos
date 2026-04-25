@@ -1,5 +1,5 @@
 [demo]
-id = "orc-server-logs"
+id = "server-logs"
 name = "ORC Server Logs — HTTP Access Analytics"
 version = "1.0.0"
 author = "DeltaForge Team"

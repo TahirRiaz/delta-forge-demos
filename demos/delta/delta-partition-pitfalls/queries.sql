@@ -102,7 +102,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.events_by_month (
     amount       DOUBLE,
     created_at   VARCHAR,
     event_month  VARCHAR
-) LOCATION 'events_by_month'
+) LOCATION 'delta-partition-pitfalls/events_by_month'
 PARTITIONED BY (event_month);
 
 

@@ -39,7 +39,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.landmarks (
     country VARCHAR,
     lat DOUBLE,
     lng DOUBLE
-) LOCATION 'landmarks';
+) LOCATION 'h3-gps-fleet-tracker/landmarks';
 
 
 INSERT INTO {{zone_name}}.spatial_demos.landmarks VALUES
@@ -67,7 +67,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.regions (
     country VARCHAR,
     polygon_wkt VARCHAR,
     timezone VARCHAR
-) LOCATION 'regions';
+) LOCATION 'h3-gps-fleet-tracker/regions';
 
 
 INSERT INTO {{zone_name}}.spatial_demos.regions VALUES
@@ -91,7 +91,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.spatial_demos.gps_points (
     lng DOUBLE,
     device_id VARCHAR,
     city VARCHAR
-) LOCATION 'gps_points';
+) LOCATION 'h3-gps-fleet-tracker/gps_points';
 
 
 -- San Francisco: 2,000 points within bounding box

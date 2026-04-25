@@ -300,7 +300,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.product_catalog_nested
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.product_catalog_nested_iceberg
 USING ICEBERG
-LOCATION 'product_catalog_nested';
+LOCATION 'iceberg-uniform-complex-types/product_catalog_nested';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 21 Products After All Mutations

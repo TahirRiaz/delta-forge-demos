@@ -1,5 +1,5 @@
 [demo]
-id = "json-music-catalog"
+id = "music-catalog"
 name = "JSON Music Catalog — Nested Arrays & Explode"
 version = "1.0.0"
 author = "DeltaForge Team"

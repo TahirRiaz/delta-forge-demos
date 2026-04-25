@@ -1,5 +1,5 @@
 [demo]
-id = "orc-banking-transactions"
+id = "banking-transactions"
 name = "ORC Banking Transactions — Transaction Monitoring"
 version = "1.0.0"
 author = "DeltaForge Team"

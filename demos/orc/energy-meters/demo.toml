@@ -1,5 +1,5 @@
 [demo]
-id = "orc-energy-meters"
+id = "energy-meters"
 name = "ORC Energy Meters — Utility Billing Analytics"
 version = "1.0.0"
 author = "DeltaForge Team"

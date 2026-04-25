@@ -26,7 +26,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.subscriptions (
     mrr           DOUBLE,
     status        VARCHAR,
     start_date    VARCHAR
-) LOCATION 'subscriptions'
+) LOCATION 'iceberg-v3-maintenance/subscriptions'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergVersion' = '3',

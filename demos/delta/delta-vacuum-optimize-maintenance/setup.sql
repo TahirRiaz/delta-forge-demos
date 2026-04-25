@@ -40,7 +40,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_pipeline (
     price           DOUBLE,
     status          VARCHAR,
     order_date      VARCHAR
-) LOCATION 'order_pipeline';
+) LOCATION 'delta-vacuum-optimize-maintenance/order_pipeline';
 
 
 -- ============================================================================

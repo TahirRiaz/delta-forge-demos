@@ -1,5 +1,5 @@
 [demo]
-id = "avro-iot-sensors"
+id = "iot-sensors"
 name = "Avro IoT Sensors — Smart Building Telemetry"
 version = "1.0.0"
 author = "DeltaForge Team"

@@ -30,7 +30,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_catalog (
     stock           INT,
     supplier        VARCHAR,
     last_updated    VARCHAR
-) LOCATION 'product_catalog';
+) LOCATION 'delta-merge-dv-lifecycle/product_catalog';
 
 
 INSERT INTO {{zone_name}}.delta_demos.product_catalog VALUES
@@ -90,7 +90,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.supplier_feed (
     stock           INT,
     supplier        VARCHAR,
     last_updated    VARCHAR
-) LOCATION 'supplier_feed';
+) LOCATION 'delta-merge-dv-lifecycle/supplier_feed';
 
 
 INSERT INTO {{zone_name}}.delta_demos.supplier_feed VALUES

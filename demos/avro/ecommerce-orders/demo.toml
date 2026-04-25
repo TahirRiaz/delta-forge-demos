@@ -1,5 +1,5 @@
 [demo]
-id = "avro-ecommerce-orders"
+id = "ecommerce-orders"
 name = "Avro E-Commerce Orders — Logical Types & Nullable Unions"
 version = "2.0.0"
 description = """

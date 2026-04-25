@@ -1,5 +1,5 @@
 [demo]
-id = "protobuf-freight-shipping-manifest"
+id = "freight-shipping-manifest"
 name = "Protobuf Freight Shipping — Multi-Carrier Manifest"
 version = "1.0.0"
 author = "DeltaForge Team"

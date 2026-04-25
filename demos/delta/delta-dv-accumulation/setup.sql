@@ -29,7 +29,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.patient_visits (
     visit_date    VARCHAR,
     cost          DECIMAL(10,2),
     status        VARCHAR
-) LOCATION 'patient_visits';
+) LOCATION 'delta-dv-accumulation/patient_visits';
 
 
 -- Cardiology department (20 visits)

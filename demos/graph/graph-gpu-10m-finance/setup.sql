@@ -52,7 +52,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_finance_network.gfn_banks (
     country     STRING,
     region      STRING,
     tier        STRING
-) LOCATION 'gfn_banks';
+) LOCATION 'graph-gpu-10m-finance/gfn_banks';
 
 
 INSERT INTO {{zone_name}}.gpu_finance_network.gfn_banks VALUES
@@ -102,7 +102,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_finance_network.gfn_accounts 
     kyc_level       STRING,
     open_year       INT,
     active          BOOLEAN
-) LOCATION 'gfn_accounts';
+) LOCATION 'graph-gpu-10m-finance/gfn_accounts';
 
 
 INSERT INTO {{zone_name}}.gpu_finance_network.gfn_accounts
@@ -195,7 +195,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.gpu_finance_network.gfn_transacti
     weight              DOUBLE,
     transaction_type    STRING,
     tx_year             INT
-) LOCATION 'gfn_transactions';
+) LOCATION 'graph-gpu-10m-finance/gfn_transactions';
 
 
 -- ============================================================================

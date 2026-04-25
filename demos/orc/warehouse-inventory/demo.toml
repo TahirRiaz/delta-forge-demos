@@ -1,5 +1,5 @@
 [demo]
-id = "orc-warehouse-inventory"
+id = "warehouse-inventory"
 name = "ORC Warehouse Inventory — Stock Level Analytics"
 version = "1.0.0"
 author = "DeltaForge Team"

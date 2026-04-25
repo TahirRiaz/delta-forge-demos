@@ -175,7 +175,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.payment_transactions_i
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.payment_transactions_iceberg
 USING ICEBERG
-LOCATION 'payment_transactions';
+LOCATION 'iceberg-v3-cdf-uniform/payment_transactions';
 
 
 -- ============================================================================

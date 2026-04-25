@@ -25,5 +25,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- The format-version field in metadata.json is 1 (original Iceberg spec).
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.warehouse_inventory
 USING ICEBERG
-LOCATION 'warehouse_inventory';
+LOCATION 'iceberg-v1-warehouse-inventory/warehouse_inventory';
 

@@ -150,7 +150,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.sales_iceberg WITH FIL
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.sales_iceberg
 USING ICEBERG
-LOCATION 'sales';
+LOCATION 'iceberg-v2-cross-format-join/sales';
 
 
 -- ============================================================================

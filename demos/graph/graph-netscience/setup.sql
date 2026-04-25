@@ -31,7 +31,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.netscience_collab
 -- ############################################################################
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.netscience_raw.netscience_edges
-USING CSV LOCATION 'edges.csv'
+USING CSV LOCATION 'graph-netscience/edges.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 -- ############################################################################
@@ -41,7 +41,7 @@ OPTIONS (header = 'true', delimiter = '|');
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience_collab.edges
-LOCATION 'delta/edges'
+LOCATION 'graph-netscience/delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -52,12 +52,12 @@ FROM {{zone_name}}.netscience_raw.netscience_edges;
 -- === Vertex Table (from CSV with researcher names and roles) ===
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.netscience_raw.netscience_vertices
-USING CSV LOCATION 'vertices.csv'
+USING CSV LOCATION 'graph-netscience/vertices.csv'
 OPTIONS (header = 'true', delimiter = '|');
 
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience_collab.vertices
-LOCATION 'delta/vertices'
+LOCATION 'graph-netscience/delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

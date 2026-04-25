@@ -1,5 +1,5 @@
 [demo]
-id = "api-rust-release-catalog"
+id = "rust-release-catalog"
 name = "Rust Release Catalog"
 version = "1.0.0"
 description = """

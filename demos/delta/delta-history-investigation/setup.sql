@@ -34,7 +34,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_metrics (
     revenue         DOUBLE,
     active_users    INT,
     conversion_rate DOUBLE
-) LOCATION 'product_metrics';
+) LOCATION 'delta-history-investigation/product_metrics';
 
 
 -- ============================================================================

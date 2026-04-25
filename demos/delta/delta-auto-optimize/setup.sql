@@ -35,7 +35,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.iot_readings (
     quality     VARCHAR,
     batch_id    INT,
     recorded_at VARCHAR
-) LOCATION 'iot_readings'
+) LOCATION 'delta-auto-optimize/iot_readings'
 TBLPROPERTIES (
     'spark.databricks.delta.autoCompact.minNumFiles' = '3'
 );

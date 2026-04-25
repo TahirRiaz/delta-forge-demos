@@ -126,7 +126,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.members_iceberg WITH F
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.members_iceberg
 USING ICEBERG
-LOCATION 'members';
+LOCATION 'iceberg-uniform-bloom-filters/members';
 
 
 -- ============================================================================

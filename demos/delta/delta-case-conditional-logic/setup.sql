@@ -31,7 +31,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.insurance_claims (
     status         VARCHAR,
     adjuster_id    INT,
     fraud_score    DOUBLE
-) LOCATION 'insurance_claims';
+) LOCATION 'delta-case-conditional-logic/insurance_claims';
 
 -- Auto claims (11 rows)
 INSERT INTO {{zone_name}}.delta_demos.insurance_claims VALUES

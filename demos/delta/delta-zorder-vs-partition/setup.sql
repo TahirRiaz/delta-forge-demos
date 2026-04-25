@@ -36,7 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.orders_partitioned (
     shipping_priority VARCHAR,
     customer_rating   INT
 ) PARTITIONED BY (customer_region)
-  LOCATION 'orders_partitioned';
+  LOCATION 'delta-zorder-vs-partition/orders_partitioned';
 
 
 -- ============================================================================
@@ -53,7 +53,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.orders_zorder (
     payment_method    VARCHAR,
     shipping_priority VARCHAR,
     customer_rating   INT
-) LOCATION 'orders_zorder';
+) LOCATION 'delta-zorder-vs-partition/orders_zorder';
 
 
 -- ============================================================================

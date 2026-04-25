@@ -1,5 +1,5 @@
 [demo]
-id = "iceberg-energy-grid-monitoring"
+id = "energy-grid-monitoring"
 name = "Iceberg Energy Grid — Native Table Reading"
 version = "1.0.0"
 author = "DeltaForge Team"

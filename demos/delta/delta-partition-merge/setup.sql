@@ -32,7 +32,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.product_catalog (
     stock      INT,
     supplier   VARCHAR,
     category   VARCHAR
-) LOCATION 'product_catalog'
+) LOCATION 'delta-partition-merge/product_catalog'
 PARTITIONED BY (category);
 
 
@@ -134,7 +134,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.supplier_feed (
     stock      INT,
     supplier   VARCHAR,
     category   VARCHAR
-) LOCATION 'supplier_feed';
+) LOCATION 'delta-partition-merge/supplier_feed';
 
 
 INSERT INTO {{zone_name}}.delta_demos.supplier_feed VALUES

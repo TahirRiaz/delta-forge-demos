@@ -1,5 +1,5 @@
 [demo]
-id = "protobuf-sensor-network"
+id = "sensor-network"
 name = "Protobuf IoT Sensor Network — Manufacturing Floor Sensors"
 version = "1.0.0"
 author = "DeltaForge Team"

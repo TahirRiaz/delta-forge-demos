@@ -28,6 +28,6 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sales_invoices (
     sales_rep    VARCHAR,
     commission   DOUBLE,
     invoice_date VARCHAR
-) LOCATION 'sales_invoices';
+) LOCATION 'delta-computed-columns/sales_invoices';
 
 

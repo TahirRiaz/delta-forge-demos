@@ -23,5 +23,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- STEP 2: Register the Iceberg V3 table
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.lab_results
 USING ICEBERG
-LOCATION 'lab_results';
+LOCATION 'iceberg-v3-null-edge-cases/lab_results';
 

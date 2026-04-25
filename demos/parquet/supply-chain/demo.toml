@@ -1,5 +1,5 @@
 [demo]
-id = "parquet-supply-chain"
+id = "supply-chain"
 name = "Parquet Supply Chain — Order Analytics"
 version = "1.0.0"
 author = "DeltaForge Team"

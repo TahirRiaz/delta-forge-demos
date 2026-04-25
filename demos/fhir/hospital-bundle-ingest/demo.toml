@@ -1,5 +1,5 @@
 [demo]
-id = "fhir-hospital-bundle-ingest"
+id = "hospital-bundle-ingest"
 name = "FHIR Hospital Bundle Ingest — Dedicated FHIR Provider with Unbundle"
 version = "1.0.0"
 author = "DeltaForge Team"

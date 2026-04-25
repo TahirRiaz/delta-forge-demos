@@ -49,7 +49,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.status_messages
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-hipaa-claim-status-tracking/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
@@ -85,7 +85,7 @@ OPTIONS (
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.status_details
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-hipaa-claim-status-tracking/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "x12",

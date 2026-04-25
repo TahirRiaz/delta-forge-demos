@@ -1,5 +1,5 @@
 [demo]
-id = "excel-sales-analytics"
+id = "sales-analytics"
 name = "Excel Sales Analytics — Superstore Orders"
 version = "1.0.0"
 author = "DeltaForge Team"

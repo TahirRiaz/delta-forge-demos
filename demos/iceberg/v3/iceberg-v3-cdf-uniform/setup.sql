@@ -28,7 +28,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.payment_transaction
     status       VARCHAR,
     pay_method   VARCHAR,
     txn_date     VARCHAR
-) LOCATION 'payment_transactions'
+) LOCATION 'iceberg-v3-cdf-uniform/payment_transactions'
 TBLPROPERTIES (
     'delta.universalFormat.enabledFormats' = 'iceberg',
     'delta.universalFormat.icebergVersion' = '3',

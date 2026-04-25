@@ -1,5 +1,5 @@
 [demo]
-id = "parquet-flight-delays"
+id = "flight-delays"
 name = "Parquet Flight Delays — Airline Delay Analysis"
 version = "1.0.0"
 author = "DeltaForge Team"

@@ -31,5 +31,5 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.iceberg_demos
 -- The partition-spec uses bucket(8, source_ip) and days(capture_time).
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.network_traffic
 USING ICEBERG
-LOCATION 'network_traffic';
+LOCATION 'iceberg-native-partition-transforms/network_traffic';
 

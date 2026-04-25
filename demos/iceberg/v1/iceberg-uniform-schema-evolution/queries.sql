@@ -246,7 +246,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.customer_orders_iceber
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.customer_orders_iceberg
 USING ICEBERG
-LOCATION 'customer_orders';
+LOCATION 'iceberg-uniform-schema-evolution/customer_orders';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 24 Orders (20 Original + 4 Post-Evolution)

@@ -49,7 +49,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.edi_demos
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.claims_header
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-hipaa-claims-financial/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "x12",
@@ -83,7 +83,7 @@ OPTIONS (
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.edi_demos.claims_remittance
 USING EDI
-LOCATION '*.edi'
+LOCATION 'edi-hipaa-claims-financial/*.edi'
 OPTIONS (
     edi_config = '{
         "ediFormat": "x12",

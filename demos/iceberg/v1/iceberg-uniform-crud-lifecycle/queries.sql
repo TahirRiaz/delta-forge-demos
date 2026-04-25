@@ -232,7 +232,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.employees_iceberg WITH
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.employees_iceberg
 USING ICEBERG
-LOCATION 'employees';
+LOCATION 'iceberg-uniform-crud-lifecycle/employees';
 
 -- ============================================================================
 -- Iceberg Verify 1: Row Count — 21 Employees After Full Lifecycle

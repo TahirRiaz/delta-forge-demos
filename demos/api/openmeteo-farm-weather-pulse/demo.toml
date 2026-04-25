@@ -1,5 +1,5 @@
 [demo]
-id = "api-openmeteo-farm-weather-pulse"
+id = "openmeteo-farm-weather-pulse"
 name = "Farm Weather Pulse — Query-Param Overrides via USING"
 version = "1.0.0"
 description = """

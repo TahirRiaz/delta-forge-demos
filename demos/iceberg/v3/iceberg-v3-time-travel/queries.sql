@@ -241,7 +241,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings_ice
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.portfolio_holdings_iceberg
 USING ICEBERG
-LOCATION 'portfolio_holdings';
+LOCATION 'iceberg-v3-time-travel/portfolio_holdings';
 
 
 -- ============================================================================

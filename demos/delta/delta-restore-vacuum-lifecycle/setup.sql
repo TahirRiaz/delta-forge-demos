@@ -36,7 +36,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.sensor_readings (
     humidity        DOUBLE,
     reading_time    VARCHAR,
     status          VARCHAR
-) LOCATION 'sensor_readings';
+) LOCATION 'delta-restore-vacuum-lifecycle/sensor_readings';
 
 
 -- ============================================================================

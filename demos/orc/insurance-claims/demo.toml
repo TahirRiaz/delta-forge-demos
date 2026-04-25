@@ -1,5 +1,5 @@
 [demo]
-id = "orc-insurance-claims"
+id = "insurance-claims"
 name = "ORC Insurance Claims — Policy Cross-Reference"
 version = "1.0.0"
 author = "DeltaForge Team"

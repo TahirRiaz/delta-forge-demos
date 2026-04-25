@@ -129,7 +129,7 @@ DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.iceberg_demos.transactions_iceberg W
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.iceberg_demos.transactions_iceberg
 USING ICEBERG
-LOCATION 'transactions';
+LOCATION 'iceberg-uniform-constraints/transactions';
 
 
 -- ============================================================================
