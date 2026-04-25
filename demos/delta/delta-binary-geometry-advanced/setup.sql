@@ -42,7 +42,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.documents (
     size_bytes      INT,
     location_id     INT,
     created_at      VARCHAR
-) LOCATION 'documents';
+) LOCATION '{{data_path}}/documents';
 
 
 -- Insert 30 documents (ids 1-30)
@@ -94,7 +94,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.locations (
     longitude   DOUBLE,
     region      VARCHAR,
     elevation_m INT
-) LOCATION 'locations';
+) LOCATION '{{data_path}}/locations';
 
 
 -- 15 POINT locations
@@ -142,7 +142,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.audit_log (
     user_name   VARCHAR,
     action      VARCHAR,
     accessed_at VARCHAR
-) LOCATION 'audit_log';
+) LOCATION '{{data_path}}/audit_log';
 
 
 -- 40 access events across documents and locations

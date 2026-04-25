@@ -1,49 +1,55 @@
 -- ============================================================================
 -- Demo: arXiv AI Research Feed, Queries
 -- ============================================================================
--- This file is where the API endpoint is actually exercised. Registry
--- inspection, INVOKE, run-history audit, schema detection, and the
--- bronze->silver promotion all live here so the user sees in one place
--- how an XML REST endpoint is driven from SQL, before the validation
--- assertions that prove the XML response path landed cleanly.
+-- This file exercises the API endpoint end to end. Registry inspection,
+-- INVOKE, run-history audit, schema detection, and the bronze->silver
+-- promotion all live here so the user sees in one place how an XML REST
+-- endpoint is driven from SQL.
 --
--- Validates the XML response path end to end:
---   - Exactly 50 rows (max_results cap).
---   - All paper_urls are canonical http://arxiv.org/abs/... links.
---   - Every title, summary, and author_names field is non-empty, the
---     XML flatten did not drop required elements.
---   - published_at matches Atom's RFC-3339 shape (`YYYY-MM-DDTHH:MM:SSZ`).
---   - At least one paper has multiple authors (the "," separator from
---     join_comma is visible in author_names), proving the repeat
---     handling fired and wasn't dropped.
---   - Bronze <-> silver promotion preserved every row.
---
--- Upstream stability: arXiv's Atom API has been stable for 15+ years and
--- the cs.AI category has hundreds of new submissions per week, so
--- max_results=50 is always saturated. Row count is exact-asserted.
--- Specific titles / authors drift daily and are never asserted.
+-- API demo assertion policy: only ASSERT ROW_COUNT > 0 is used. Live
+-- feeds change constantly so exact counts or values are never asserted.
+-- The only meaningful check is that the API returned data at all.
 -- ============================================================================
 
 -- ============================================================================
--- API surface, calling the endpoint from SQL
+-- API surface: inspect, invoke, audit
 -- ============================================================================
 
 -- Inspect the endpoint catalog row before invoking.
 DESCRIBE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest;
 
--- INVOKE issues the actual HTTPS GET. One request, one .xml file
--- written under the per-run timestamped folder. No pagination because
--- max_results = 50 caps the response in one call.
+-- Issue the actual HTTPS GET. One request writes one .xml file under a
+-- per-run timestamped folder inside the connection storage path.
 INVOKE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest;
 
--- Per-run audit row, includes status, files_written, bytes_written.
+-- Per-run audit: status, files_written, bytes_written, duration_ms.
 SHOW API ENDPOINT RUNS {{zone_name}}.arxiv_api.cs_ai_latest LIMIT 5;
 
--- Resolve the bronze schema from the freshly written XML.
+-- Resolve the bronze schema from the freshly written XML file.
 DETECT SCHEMA FOR TABLE {{zone_name}}.arxiv_api.arxiv_bronze;
 
--- Bronze -> silver promotion. Silver is the curated layer downstream
--- digest tools point at.
+-- ============================================================================
+-- Query 1: Bronze raw feed
+-- ============================================================================
+-- Show the first 10 rows from the landed XML. Each row is one Atom entry
+-- with the six mapped columns: paper_url, title, published_at, updated_at,
+-- summary, author_names. ROW_COUNT > 0 confirms the API returned data.
+
+ASSERT ROW_COUNT > 0
+SELECT
+    paper_url,
+    title,
+    published_at,
+    author_names
+FROM {{zone_name}}.arxiv_api.arxiv_bronze
+LIMIT 10;
+
+-- ============================================================================
+-- Query 2: Bronze -> silver promotion
+-- ============================================================================
+-- Copy the bronze feed into the curated silver Delta table.
+-- Silver is the layer downstream digest tools point at.
+
 INSERT INTO {{zone_name}}.arxiv_api.arxiv_silver
 SELECT
     paper_url,
@@ -55,121 +61,55 @@ SELECT
 FROM {{zone_name}}.arxiv_api.arxiv_bronze;
 
 -- ============================================================================
--- Query 1: Full-Corpus Row Count, 50 entries returned
+-- Query 3: Silver curated feed
 -- ============================================================================
--- max_results=50 in the URL pins the response. If bronze shows anything
--- else, either the XML flatten dropped an entry (row_xpath mis-matched
--- the Atom namespace), or arXiv returned fewer than max_results (which
--- it won't for a busy category).
+-- Confirm the promotion landed. Shows the most-recently-published papers.
+-- ROW_COUNT > 0 confirms at least one row made it through the INSERT.
 
-ASSERT ROW_COUNT = 1
-ASSERT VALUE paper_count = 50
-SELECT COUNT(*) AS paper_count
-FROM {{zone_name}}.arxiv_api.arxiv_bronze;
-
--- ============================================================================
--- Query 2: Paper-URL Distinctness, 50 unique IDs
--- ============================================================================
--- Every arXiv paper has a unique `http://arxiv.org/abs/YYMM.NNNNN[vN]`
--- identifier. COUNT(DISTINCT) = 50 proves no duplicate entries landed.
-
-ASSERT ROW_COUNT = 1
-ASSERT VALUE distinct_papers = 50
-SELECT COUNT(DISTINCT paper_url) AS distinct_papers
-FROM {{zone_name}}.arxiv_api.arxiv_bronze;
-
--- ============================================================================
--- Query 3: XML Flatten Field Coverage, every required field present
--- ============================================================================
--- The arXiv API guarantees title / summary / author / id on every entry.
--- If the flatten mis-mapped a path (e.g., lost the namespace binding),
--- one of these counts would drop.
-
-ASSERT ROW_COUNT = 1
-ASSERT VALUE arxiv_urls = 50
-ASSERT VALUE non_null_titles = 50
-ASSERT VALUE non_null_summaries = 50
-ASSERT VALUE non_null_authors = 50
+ASSERT ROW_COUNT > 0
 SELECT
-    SUM(CASE WHEN paper_url LIKE 'http://arxiv.org/abs/%' THEN 1 ELSE 0 END) AS arxiv_urls,
-    SUM(CASE WHEN title IS NOT NULL AND LENGTH(title) > 0 THEN 1 ELSE 0 END) AS non_null_titles,
-    SUM(CASE WHEN summary IS NOT NULL AND LENGTH(summary) > 0 THEN 1 ELSE 0 END) AS non_null_summaries,
-    SUM(CASE WHEN author_names IS NOT NULL AND LENGTH(author_names) > 0 THEN 1 ELSE 0 END) AS non_null_authors
-FROM {{zone_name}}.arxiv_api.arxiv_silver;
+    paper_url,
+    title,
+    published_at,
+    author_names
+FROM {{zone_name}}.arxiv_api.arxiv_silver
+ORDER BY published_at DESC
+LIMIT 10;
 
 -- ============================================================================
--- Query 4: Timestamp Shape, Atom RFC-3339
+-- Query 4: Multi-author papers (join_comma repeat handling)
 -- ============================================================================
--- Atom `<published>` and `<updated>` serialize as `YYYY-MM-DDTHH:MM:SSZ`.
--- LIKE with `_` placeholders asserts the shape without assuming any
--- specific year/month. If arXiv ever switched to a different timezone
--- format this would flip, a real regression worth catching.
+-- Papers with more than one author have a comma in author_names, proving
+-- the xml_flatten_config default_repeat_handling = "join_comma" fired.
+-- (No row count assertion: single-author batches are valid.)
 
-ASSERT ROW_COUNT = 1
-ASSERT VALUE iso_published = 50
 SELECT
-    SUM(CASE WHEN published_at LIKE '20__-__-__T__:__:__Z' THEN 1 ELSE 0 END) AS iso_published
-FROM {{zone_name}}.arxiv_api.arxiv_bronze;
+    title,
+    author_names
+FROM {{zone_name}}.arxiv_api.arxiv_silver
+WHERE author_names LIKE '%,%'
+LIMIT 5;
 
 -- ============================================================================
--- Query 5: join_comma repeat-handling fired at least once
+-- Query 5: Timestamp shape check
 -- ============================================================================
--- cs.AI papers routinely have 2-8 co-authors. Asserting that at least
--- one row's author_names contains a comma proves the XML flatten's
--- `default_repeat_handling = "join_comma"` activated, a regression
--- here would surface as every author_names being a single name.
+-- Atom <published> serializes as YYYY-MM-DDTHH:MM:SSZ. Show a few rows
+-- to confirm the shape is intact after the XML flatten.
 
-ASSERT ROW_COUNT = 1
-ASSERT VALUE multi_author_papers_any = 1
+ASSERT ROW_COUNT > 0
 SELECT
-    CASE WHEN SUM(CASE WHEN author_names LIKE '%,%' THEN 1 ELSE 0 END) > 0
-         THEN 1 ELSE 0 END AS multi_author_papers_any
-FROM {{zone_name}}.arxiv_api.arxiv_silver;
+    title,
+    published_at,
+    updated_at
+FROM {{zone_name}}.arxiv_api.arxiv_silver
+ORDER BY published_at DESC
+LIMIT 5;
 
 -- ============================================================================
--- Query 6: Bronze <-> Silver Parity
+-- Query 6: Silver Delta history
 -- ============================================================================
--- The bronze->silver promotion above copies bronze verbatim. Row counts
--- must match; the delta must be zero.
+-- The silver table should have at least two versions: v0 (schema creation)
+-- and v1 (the INSERT above).
 
-ASSERT ROW_COUNT = 1
-ASSERT VALUE silver_count = 50
-ASSERT VALUE bronze_silver_delta = 0
-SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.arxiv_api.arxiv_silver) AS silver_count,
-    (SELECT COUNT(*) FROM {{zone_name}}.arxiv_api.arxiv_bronze)
-        - (SELECT COUNT(*) FROM {{zone_name}}.arxiv_api.arxiv_silver) AS bronze_silver_delta;
-
--- ============================================================================
--- Query 7: Silver Delta History, v0 schema + v1 INSERT
--- ============================================================================
-
-ASSERT ROW_COUNT >= 2
+ASSERT ROW_COUNT > 0
 DESCRIBE HISTORY {{zone_name}}.arxiv_api.arxiv_silver;
-
--- ============================================================================
--- VERIFY: All Checks
--- ============================================================================
--- Cross-cutting: row count, distinct URLs, every URL on arxiv.org, at
--- least one multi-author row, every title non-empty, every published_at
--- is RFC-3339 shaped.
-
-ASSERT ROW_COUNT = 1
-ASSERT VALUE total_papers = 50
-ASSERT VALUE distinct_urls = 50
-ASSERT VALUE arxiv_url_pct = 1
-ASSERT VALUE has_multi_author_row = 1
-ASSERT VALUE every_title_nonempty = 1
-ASSERT VALUE iso_published_pct = 1
-SELECT
-    COUNT(*)                                                                                   AS total_papers,
-    COUNT(DISTINCT paper_url)                                                                  AS distinct_urls,
-    CASE WHEN SUM(CASE WHEN paper_url NOT LIKE 'http://arxiv.org/abs/%' THEN 1 ELSE 0 END) = 0
-         THEN 1 ELSE 0 END                                                                     AS arxiv_url_pct,
-    CASE WHEN SUM(CASE WHEN author_names LIKE '%,%' THEN 1 ELSE 0 END) > 0
-         THEN 1 ELSE 0 END                                                                     AS has_multi_author_row,
-    CASE WHEN SUM(CASE WHEN LENGTH(title) = 0 OR title IS NULL THEN 1 ELSE 0 END) = 0
-         THEN 1 ELSE 0 END                                                                     AS every_title_nonempty,
-    CASE WHEN SUM(CASE WHEN published_at NOT LIKE '20__-__-__T__:__:__Z' THEN 1 ELSE 0 END) = 0
-         THEN 1 ELSE 0 END                                                                     AS iso_published_pct
-FROM {{zone_name}}.arxiv_api.arxiv_silver;

@@ -41,7 +41,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.order_pipeline (
     estimated_profit  DECIMAL(10,2),
     region            VARCHAR,
     processed_at      VARCHAR
-) LOCATION 'order_pipeline';
+) LOCATION '{{data_path}}/order_pipeline';
 
 
 -- ============================================================================

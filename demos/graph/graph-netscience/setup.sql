@@ -41,7 +41,7 @@ OPTIONS (header = 'true', delimiter = '|');
 -- === Edge Table (CTAS from external) ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience_collab.edges
-LOCATION 'delta/edges'
+LOCATION '{{data_path}}/delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -57,7 +57,7 @@ OPTIONS (header = 'true', delimiter = '|');
 
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.netscience_collab.vertices
-LOCATION 'delta/vertices'
+LOCATION '{{data_path}}/delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,

@@ -33,7 +33,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inventory (
     qty       INT,
     price     DOUBLE,
     warehouse VARCHAR
-) LOCATION 'inventory';
+) LOCATION '{{data_path}}/inventory';
 
 
 INSERT INTO {{zone_name}}.delta_demos.inventory VALUES

@@ -27,7 +27,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.products (
     price      DOUBLE,
     stock      INT,
     is_active  BOOLEAN
-) LOCATION 'products';
+) LOCATION '{{data_path}}/products';
 
 
 -- Insert 20 known products as baseline data

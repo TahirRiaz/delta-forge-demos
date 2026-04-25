@@ -30,7 +30,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inherited_plain (
     price           DOUBLE,
     in_stock        BOOLEAN,
     last_updated    VARCHAR
-) LOCATION 'inherited_plain';
+) LOCATION '{{data_path}}/inherited_plain';
 
 
 INSERT INTO {{zone_name}}.delta_demos.inherited_plain VALUES
@@ -61,7 +61,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inherited_cdc (
     plan            VARCHAR,
     monthly_spend   DOUBLE,
     signup_date     VARCHAR
-) LOCATION 'inherited_cdc'
+) LOCATION '{{data_path}}/inherited_cdc'
 TBLPROPERTIES (
     'delta.enableChangeDataFeed' = 'true'
 );
@@ -92,7 +92,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.inherited_constrained
     unit_price      DOUBLE,
     discount_pct    DOUBLE,
     warehouse       VARCHAR
-) LOCATION 'inherited_constrained'
+) LOCATION '{{data_path}}/inherited_constrained'
 TBLPROPERTIES (
     'delta.enableChangeDataFeed' = 'true'
 );

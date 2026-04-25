@@ -35,7 +35,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.subscriptions (
     tier            VARCHAR,
     discount_pct    DOUBLE,
     priority_score  DOUBLE
-) LOCATION 'subscriptions';
+) LOCATION '{{data_path}}/subscriptions';
 
 
 INSERT INTO {{zone_name}}.delta_demos.subscriptions VALUES
@@ -64,7 +64,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.subscription_changes 
     plan            VARCHAR,
     monthly_amount  DOUBLE,
     months_active   INT
-) LOCATION 'subscription_changes';
+) LOCATION '{{data_path}}/subscription_changes';
 
 
 INSERT INTO {{zone_name}}.delta_demos.subscription_changes VALUES

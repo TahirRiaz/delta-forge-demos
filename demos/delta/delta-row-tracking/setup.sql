@@ -41,7 +41,7 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.delta_demos.compliance_audit (
     actor             VARCHAR,
     version_tag       INT,
     audit_timestamp   VARCHAR
-) LOCATION 'compliance_audit';
+) LOCATION '{{data_path}}/compliance_audit';
 
 
 -- ============================================================================

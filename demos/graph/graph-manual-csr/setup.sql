@@ -44,7 +44,7 @@ OPTIONS (header = 'true', delimiter = '|');
 -- === Edge Table ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_manual.edges
-LOCATION 'delta/edges'
+LOCATION '{{data_path}}/delta/edges'
 AS SELECT
     CAST(src AS BIGINT) AS src,
     CAST(dst AS BIGINT) AS dst,
@@ -56,7 +56,7 @@ FROM {{zone_name}}.karate_manual_raw.karate_edges;
 -- === Vertex Table ===
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.karate_manual.vertices
-LOCATION 'delta/vertices'
+LOCATION '{{data_path}}/delta/vertices'
 AS SELECT
     CAST(vertex_id AS BIGINT) AS vertex_id,
     CAST(name AS VARCHAR) AS name,
