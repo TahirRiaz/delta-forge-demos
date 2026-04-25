@@ -3222,6 +3222,166 @@
       ]
     },
     {
+      "id": "delta-row-index-catalog-rebuild",
+      "path": "demos/delta/delta-row-index-catalog-rebuild",
+      "iconPath": "icons/delta-row-index-catalog-rebuild.svg",
+      "name": "Library Catalog — Index Lifecycle, Staleness, and Rebuild",
+      "summary": "Public library catalog of 40 books with an index on isbn deliberately created with auto_update=false. Walks the full index lifecycle: build, use, write (which makes the index stale), correct-but-slower lookups during the stale window, REBUILD INDEX, and ALTER to switch on auto_update. Demonstrates that stale indexes never produce wrong answers.",
+      "categories": [
+        "delta-table"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "row-level-index",
+        "rebuild",
+        "stale",
+        "lifecycle",
+        "auto-update"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.library_catalog"
+        }
+      ]
+    },
+    {
+      "id": "delta-row-index-customer-lookup",
+      "path": "demos/delta/delta-row-index-customer-lookup",
+      "iconPath": "icons/delta-row-index-customer-lookup.svg",
+      "name": "Online Retail Customer Lookup with Row-Level Index",
+      "summary": "Online retailer support desk workflow on a 60-customer Delta table built across three insert batches. A row-level index on customer_id accelerates the four lookup shapes the desk runs every day: point lookup, range scan, IN list, and a combined index-plus-residual query. Beginner-level introduction to row-level indexes.",
+      "categories": [
+        "delta-table"
+      ],
+      "tags": [
+        "delta-table",
+        "beginner",
+        "row-level-index",
+        "index",
+        "point-lookup",
+        "range-scan"
+      ],
+      "difficulty": "beginner",
+      "estimatedTimeMinutes": 5,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.customers"
+        }
+      ]
+    },
+    {
+      "id": "delta-row-index-iot-telemetry",
+      "path": "demos/delta/delta-row-index-iot-telemetry",
+      "iconPath": "icons/delta-row-index-iot-telemetry.svg",
+      "name": "Industrial IoT Telemetry — Composite Row-Level Index",
+      "summary": "Manufacturing plant telemetry from 8 sensors (4 vibration, 4 temperature) producing 80 readings across morning and afternoon ingest batches. A composite index on (sensor_id, reading_time) accelerates leading-column and prefix queries; a final query on reading_time alone shows the leftmost-prefix rule and graceful fallback when violated.",
+      "categories": [
+        "delta-table"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "row-level-index",
+        "composite-index",
+        "leftmost-prefix",
+        "iot",
+        "time-series"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 6,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.sensor_telemetry"
+        }
+      ]
+    },
+    {
+      "id": "delta-row-index-marketplace-search",
+      "path": "demos/delta/delta-row-index-marketplace-search",
+      "iconPath": "icons/delta-row-index-marketplace-search.svg",
+      "name": "Multi-Vendor Marketplace — Multiple Indexes on the Same Table",
+      "summary": "Marketplace catalog of 70 listings across 6 brands and 5 categories carrying three concurrent indexes: idx_sku for warehouse fulfillment, idx_brand for storefront, and a composite (category, price) for faceted browse. Demonstrates the planner picking the cheapest applicable index per query, leftmost-prefix on composites, and graceful fallback when no index applies.",
+      "categories": [
+        "delta-table"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "row-level-index",
+        "multiple-indexes",
+        "selector",
+        "marketplace",
+        "search"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 8,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.marketplace_listings"
+        }
+      ]
+    },
+    {
+      "id": "delta-row-index-order-tracking",
+      "path": "demos/delta/delta-row-index-order-tracking",
+      "iconPath": "icons/delta-row-index-order-tracking.svg",
+      "name": "E-Commerce Order Tracking — Indexed UPDATE / DELETE / MERGE",
+      "summary": "E-commerce fulfillment table of 50 active orders keyed by tracking_number, with deletion vectors enabled. Walks single-row UPDATE, batched IN-list UPDATE, DELETE for a cancelled shipment, and a MERGE upsert from a carrier event stream. Each mutation asserts the post-state. Headline ACID payoff for row-level indexes.",
+      "categories": [
+        "delta-table"
+      ],
+      "tags": [
+        "delta-table",
+        "intermediate",
+        "row-level-index",
+        "index",
+        "update",
+        "delete",
+        "merge",
+        "acid"
+      ],
+      "difficulty": "intermediate",
+      "estimatedTimeMinutes": 7,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-25T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.delta_demos.shipment_orders"
+        }
+      ]
+    },
+    {
       "id": "delta-row-tracking",
       "path": "demos/delta/delta-row-tracking",
       "iconPath": "icons/delta-row-tracking.svg",
