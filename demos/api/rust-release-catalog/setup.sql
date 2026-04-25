@@ -86,7 +86,7 @@ CREATE API ENDPOINT {{zone_name}}.github_releases.rust_releases
 -- the response array and maps them to friendly flat column names, the
 -- queryable shape the platform + release-engineering teams want.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.github_releases.rust_releases
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.github_releases.rust_releases_bronze
 USING JSON
 LOCATION 'github_releases/rust_releases'
 OPTIONS (

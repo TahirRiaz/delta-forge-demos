@@ -34,7 +34,7 @@ zone_name = { description = "Target zone for the bronze landing path. Defaults t
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.github_releases.rust_releases"
+name = "{{zone_name}}.github_releases.rust_releases_bronze"
 
 [[demo.target_objects]]
 type = "delta_table"

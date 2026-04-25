@@ -13,7 +13,7 @@
 DROP DELTA TABLE IF EXISTS {{zone_name}}.github_releases.rust_releases_silver WITH FILES;
 
 -- 2. Bronze external table (also removes the JSON files INVOKE wrote)
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.github_releases.rust_releases WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.github_releases.rust_releases_bronze WITH FILES;
 
 -- 3. API endpoint definition (cascades its run history)
 DROP API ENDPOINT IF EXISTS {{zone_name}}.github_releases.rust_releases;
