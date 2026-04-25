@@ -32,7 +32,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.fx_catalog
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.frankfurter_fx
     COMMENT 'FX rate catalog, latest + historical snapshots';
 
 -- --------------------------------------------------------------------------
@@ -108,7 +108,7 @@ ALTER API ENDPOINT {{zone_name}}.frankfurter_fx.historical_stub
 -- LOCATION points at the connection's base_path so both endpoint
 -- subfolders are picked up.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.fx_catalog.fx_rates_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.frankfurter_fx.fx_rates_bronze
 USING JSON
 LOCATION 'frankfurter_fx'
 OPTIONS (
@@ -135,7 +135,7 @@ OPTIONS (
 -- 7. Silver Delta table, schema-only declaration
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.fx_catalog.fx_rates_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.frankfurter_fx.fx_rates_silver (
     base_currency  STRING,
     rate_date      DATE,
     base_amount    DOUBLE

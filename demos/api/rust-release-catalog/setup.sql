@@ -28,7 +28,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.release_intel
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.github_releases
     COMMENT 'Upstream OSS release intelligence, GitHub releases feed for the toolchains the platform team tracks';
 
 -- --------------------------------------------------------------------------
@@ -86,7 +86,7 @@ CREATE API ENDPOINT {{zone_name}}.github_releases.rust_releases
 -- the response array and maps them to friendly flat column names, the
 -- queryable shape the platform + release-engineering teams want.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.release_intel.rust_releases
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.github_releases.rust_releases
 USING JSON
 LOCATION 'github_releases/rust_releases'
 OPTIONS (
@@ -143,7 +143,7 @@ OPTIONS (
 -- when the INSERT (or a downstream MERGE in a real pipeline) runs.
 -- That separation is what makes the medallion model auditable.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.release_intel.rust_releases_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.github_releases.rust_releases_silver (
     release_id     BIGINT,
     tag_name       STRING,
     release_name   STRING,

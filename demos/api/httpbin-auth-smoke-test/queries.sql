@@ -45,8 +45,8 @@ SHOW API ENDPOINT RUNS {{zone_name}}.httpbin_smoke.probe_headers LIMIT 5;
 SHOW API ENDPOINT RUNS {{zone_name}}.httpbin_smoke.probe_uuid LIMIT 5;
 
 -- Resolve bronze schemas from the freshly written JSON pages.
-DETECT SCHEMA FOR TABLE {{zone_name}}.vendor_smoke.headers_bronze;
-DETECT SCHEMA FOR TABLE {{zone_name}}.vendor_smoke.uuid_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.httpbin_smoke.headers_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.httpbin_smoke.uuid_bronze;
 
 -- ============================================================================
 -- Query 1: Headers Endpoint Returned 1 Row
@@ -55,7 +55,7 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.vendor_smoke.uuid_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE headers_rows = 1
 SELECT COUNT(*) AS headers_rows
-FROM {{zone_name}}.vendor_smoke.headers_bronze;
+FROM {{zone_name}}.httpbin_smoke.headers_bronze;
 
 -- ============================================================================
 -- Query 2: UUID Endpoint Returned 1 Row
@@ -64,7 +64,7 @@ FROM {{zone_name}}.vendor_smoke.headers_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE uuid_rows = 1
 SELECT COUNT(*) AS uuid_rows
-FROM {{zone_name}}.vendor_smoke.uuid_bronze;
+FROM {{zone_name}}.httpbin_smoke.uuid_bronze;
 
 -- ============================================================================
 -- Query 3: X-API-Key Round-Trip, the strong auth-path proof
@@ -89,7 +89,7 @@ ASSERT VALUE correct_host = 1
 SELECT
     SUM(CASE WHEN x_api_key_echo = 'df-smoke-test-abc123' THEN 1 ELSE 0 END) AS api_key_roundtrip,
     SUM(CASE WHEN request_host = 'httpbin.org'            THEN 1 ELSE 0 END) AS correct_host
-FROM {{zone_name}}.vendor_smoke.headers_bronze;
+FROM {{zone_name}}.httpbin_smoke.headers_bronze;
 
 -- ============================================================================
 -- Query 4: UUID Shape, canonical 8-4-4-4-12 hex format
@@ -101,7 +101,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE uuid_looks_right = 1
 SELECT
     CASE WHEN generated_uuid LIKE '________-____-____-____-____________' THEN 1 ELSE 0 END AS uuid_looks_right
-FROM {{zone_name}}.vendor_smoke.uuid_bronze;
+FROM {{zone_name}}.httpbin_smoke.uuid_bronze;
 
 -- ============================================================================
 -- Query 5: Exact-String Echo Proof
@@ -115,7 +115,7 @@ ASSERT VALUE headers_echo_length = 20
 SELECT
     x_api_key_echo           AS headers_echo,
     LENGTH(x_api_key_echo)   AS headers_echo_length
-FROM {{zone_name}}.vendor_smoke.headers_bronze;
+FROM {{zone_name}}.httpbin_smoke.headers_bronze;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -130,12 +130,12 @@ ASSERT VALUE api_key_present = 1
 ASSERT VALUE uuid_shape_ok = 1
 ASSERT VALUE distinct_endpoints_landed = 2
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.vendor_smoke.headers_bronze)
-      + (SELECT COUNT(*) FROM {{zone_name}}.vendor_smoke.uuid_bronze)                           AS total_probes,
+    (SELECT COUNT(*) FROM {{zone_name}}.httpbin_smoke.headers_bronze)
+      + (SELECT COUNT(*) FROM {{zone_name}}.httpbin_smoke.uuid_bronze)                           AS total_probes,
     (SELECT CASE WHEN x_api_key_echo = 'df-smoke-test-abc123' THEN 1 ELSE 0 END
-       FROM {{zone_name}}.vendor_smoke.headers_bronze)                                           AS api_key_present,
+       FROM {{zone_name}}.httpbin_smoke.headers_bronze)                                           AS api_key_present,
     (SELECT CASE WHEN generated_uuid LIKE '________-____-____-____-____________' THEN 1 ELSE 0 END
-       FROM {{zone_name}}.vendor_smoke.uuid_bronze)                                              AS uuid_shape_ok,
-    CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.vendor_smoke.headers_bronze) > 0
-           AND (SELECT COUNT(*) FROM {{zone_name}}.vendor_smoke.uuid_bronze) > 0
+       FROM {{zone_name}}.httpbin_smoke.uuid_bronze)                                              AS uuid_shape_ok,
+    CASE WHEN (SELECT COUNT(*) FROM {{zone_name}}.httpbin_smoke.headers_bronze) > 0
+           AND (SELECT COUNT(*) FROM {{zone_name}}.httpbin_smoke.uuid_bronze) > 0
          THEN 2 ELSE 0 END                                                                       AS distinct_endpoints_landed;

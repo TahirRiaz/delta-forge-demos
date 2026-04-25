@@ -44,18 +44,18 @@ SHOW API ENDPOINT RUNS {{zone_name}}.blog_moderation.blog_posts LIMIT 5;
 
 -- After data lands, detect the bronze schema from the freshly written
 -- JSON files so DESCRIBE TABLE returns the resolved columns.
-DETECT SCHEMA FOR TABLE {{zone_name}}.content_moderation.posts_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.blog_moderation.posts_bronze;
 
 -- Bronze -> silver promotion: typed columns + computed char_len. This is
 -- the medallion lift the moderation team's models query directly.
-INSERT INTO {{zone_name}}.content_moderation.posts_silver
+INSERT INTO {{zone_name}}.blog_moderation.posts_silver
 SELECT
     CAST(post_id AS BIGINT)      AS post_id,
     CAST(author_id AS BIGINT)    AS author_id,
     title,
     body,
     CAST(LENGTH(body) AS BIGINT) AS char_len
-FROM {{zone_name}}.content_moderation.posts_bronze;
+FROM {{zone_name}}.blog_moderation.posts_bronze;
 
 -- ============================================================================
 -- Query 1: Full-Corpus Row Count, 5 pages x 20 per page = 100
@@ -67,7 +67,7 @@ FROM {{zone_name}}.content_moderation.posts_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE post_count = 100
 SELECT COUNT(*) AS post_count
-FROM {{zone_name}}.content_moderation.posts_bronze;
+FROM {{zone_name}}.blog_moderation.posts_bronze;
 
 -- ============================================================================
 -- Query 2: Post-ID Contiguity, 1..100 with no gaps or duplicates
@@ -84,7 +84,7 @@ SELECT
     COUNT(DISTINCT CAST(post_id AS BIGINT)) AS distinct_post_ids,
     MIN(CAST(post_id AS BIGINT))            AS min_post_id,
     MAX(CAST(post_id AS BIGINT))            AS max_post_id
-FROM {{zone_name}}.content_moderation.posts_bronze;
+FROM {{zone_name}}.blog_moderation.posts_bronze;
 
 -- ============================================================================
 -- Query 3: Author Coverage, JSONPlaceholder's fixed 10 users
@@ -96,7 +96,7 @@ FROM {{zone_name}}.content_moderation.posts_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE distinct_authors = 10
 SELECT COUNT(DISTINCT author_id) AS distinct_authors
-FROM {{zone_name}}.content_moderation.posts_bronze;
+FROM {{zone_name}}.blog_moderation.posts_bronze;
 
 -- ============================================================================
 -- Query 4: Even Author Distribution, 10 posts per user
@@ -109,7 +109,7 @@ ASSERT VALUE posts_per_author = 10 WHERE author_id = 1
 ASSERT VALUE posts_per_author = 10 WHERE author_id = 5
 ASSERT VALUE posts_per_author = 10 WHERE author_id = 10
 SELECT author_id, COUNT(*) AS posts_per_author
-FROM {{zone_name}}.content_moderation.posts_bronze
+FROM {{zone_name}}.blog_moderation.posts_bronze
 GROUP BY author_id
 ORDER BY author_id;
 
@@ -126,7 +126,7 @@ ORDER BY author_id;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE post1_title = 'sunt aut facere repellat provident occaecati excepturi optio reprehenderit'
 SELECT title AS post1_title
-FROM {{zone_name}}.content_moderation.posts_bronze
+FROM {{zone_name}}.blog_moderation.posts_bronze
 WHERE post_id = 1;
 
 -- ============================================================================
@@ -141,9 +141,9 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE silver_count = 100
 ASSERT VALUE bronze_silver_delta = 0
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.content_moderation.posts_silver) AS silver_count,
-    (SELECT COUNT(*) FROM {{zone_name}}.content_moderation.posts_bronze)
-        - (SELECT COUNT(*) FROM {{zone_name}}.content_moderation.posts_silver) AS bronze_silver_delta;
+    (SELECT COUNT(*) FROM {{zone_name}}.blog_moderation.posts_silver) AS silver_count,
+    (SELECT COUNT(*) FROM {{zone_name}}.blog_moderation.posts_bronze)
+        - (SELECT COUNT(*) FROM {{zone_name}}.blog_moderation.posts_silver) AS bronze_silver_delta;
 
 -- ============================================================================
 -- Query 7: Silver Delta History, v0 schema + v1 INSERT
@@ -153,7 +153,7 @@ SELECT
 -- rollback if a re-ingest ships bad data.
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.content_moderation.posts_silver;
+DESCRIBE HISTORY {{zone_name}}.blog_moderation.posts_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -180,4 +180,4 @@ SELECT
     MAX(post_id)                                      AS posts_max_id,
     SUM(CASE WHEN LENGTH(body) > 0 THEN 1 ELSE 0 END) AS nonempty_bodies,
     SUM(CASE WHEN author_id = 1 THEN 1 ELSE 0 END)    AS author_one_count
-FROM {{zone_name}}.content_moderation.posts_silver;
+FROM {{zone_name}}.blog_moderation.posts_silver;

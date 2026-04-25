@@ -45,10 +45,10 @@ SHOW API ENDPOINT RUNS {{zone_name}}.openmeteo_api.observation_hamburg LIMIT 5;
 SHOW API ENDPOINT RUNS {{zone_name}}.openmeteo_api.observation_dublin LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written JSON.
-DETECT SCHEMA FOR TABLE {{zone_name}}.agri_telemetry.weather_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.openmeteo_api.weather_bronze;
 
 -- Bronze -> silver promotion with CASE-based farm_name lookup.
-INSERT INTO {{zone_name}}.agri_telemetry.weather_silver
+INSERT INTO {{zone_name}}.openmeteo_api.weather_silver
 SELECT
     CASE
         WHEN CAST(longitude AS DOUBLE) BETWEEN 10.5 AND 11 THEN 'oslo'
@@ -64,7 +64,7 @@ SELECT
     CAST(wind_speed_kmh AS DOUBLE)      AS wind_speed_kmh,
     CAST(humidity_pct AS DOUBLE)        AS humidity_pct,
     CAST(precipitation_mm AS DOUBLE)    AS precipitation_mm
-FROM {{zone_name}}.agri_telemetry.weather_bronze;
+FROM {{zone_name}}.openmeteo_api.weather_bronze;
 
 -- ============================================================================
 -- Query 1: Farm Count, 3 INVOKEs -> 3 rows
@@ -76,7 +76,7 @@ FROM {{zone_name}}.agri_telemetry.weather_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE farm_count = 3
 SELECT COUNT(*) AS farm_count
-FROM {{zone_name}}.agri_telemetry.weather_bronze;
+FROM {{zone_name}}.openmeteo_api.weather_bronze;
 
 -- ============================================================================
 -- Query 2: Farm-Name Classification, CASE resolved all 3 sites
@@ -96,7 +96,7 @@ SELECT
     SUM(CASE WHEN farm_name = 'hamburg' THEN 1 ELSE 0 END) AS hamburg_rows,
     SUM(CASE WHEN farm_name = 'dublin'  THEN 1 ELSE 0 END) AS dublin_rows,
     SUM(CASE WHEN farm_name = 'unknown' THEN 1 ELSE 0 END) AS unknown_rows
-FROM {{zone_name}}.agri_telemetry.weather_silver;
+FROM {{zone_name}}.openmeteo_api.weather_silver;
 
 -- ============================================================================
 -- Query 3: Coordinate Round-Trip, URL -> response -> flatten
@@ -118,7 +118,7 @@ SELECT
     MAX(CASE WHEN farm_name = 'hamburg' AND latitude BETWEEN 53.4 AND 53.8 THEN 1 ELSE 0 END) AS lat_in_hamburg_band,
     MAX(CASE WHEN farm_name = 'dublin'  AND latitude BETWEEN 53.0 AND 53.5 THEN 1 ELSE 0 END) AS lat_in_dublin_band,
     MAX(CASE WHEN farm_name = 'dublin'  AND longitude BETWEEN -7 AND -5    THEN 1 ELSE 0 END) AS lon_in_dublin_band
-FROM {{zone_name}}.agri_telemetry.weather_silver;
+FROM {{zone_name}}.openmeteo_api.weather_silver;
 
 -- ============================================================================
 -- Query 4: Physical-Plausibility Ranges, every weather value sane
@@ -140,7 +140,7 @@ SELECT
     SUM(CASE WHEN wind_speed_kmh >= 0              THEN 1 ELSE 0 END) AS non_negative_wind,
     SUM(CASE WHEN precipitation_mm >= 0            THEN 1 ELSE 0 END) AS non_negative_precip,
     SUM(CASE WHEN humidity_pct <= 100              THEN 1 ELSE 0 END) AS humidity_upper_band
-FROM {{zone_name}}.agri_telemetry.weather_silver;
+FROM {{zone_name}}.openmeteo_api.weather_silver;
 
 -- ============================================================================
 -- Query 5: Timestamp Shape & Timezone, ISO-minute, UTC/GMT
@@ -156,14 +156,14 @@ ASSERT VALUE utc_tz = 3
 SELECT
     SUM(CASE WHEN observation_time LIKE '20__-__-__T__:__'    THEN 1 ELSE 0 END) AS iso_observations,
     SUM(CASE WHEN timezone IN ('UTC', 'GMT')                  THEN 1 ELSE 0 END) AS utc_tz
-FROM {{zone_name}}.agri_telemetry.weather_bronze;
+FROM {{zone_name}}.openmeteo_api.weather_bronze;
 
 -- ============================================================================
 -- Query 6: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.agri_telemetry.weather_silver;
+DESCRIBE HISTORY {{zone_name}}.openmeteo_api.weather_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -187,4 +187,4 @@ SELECT
          THEN 1 ELSE 0 END                                                      AS plausible_temps_all,
     CASE WHEN MIN(humidity_pct) >= 0   AND MAX(humidity_pct) <= 100
          THEN 1 ELSE 0 END                                                      AS plausible_humidity_all
-FROM {{zone_name}}.agri_telemetry.weather_silver;
+FROM {{zone_name}}.openmeteo_api.weather_silver;

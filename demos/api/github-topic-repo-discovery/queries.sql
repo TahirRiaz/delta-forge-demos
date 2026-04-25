@@ -46,10 +46,10 @@ INVOKE API ENDPOINT {{zone_name}}.github_search_api.delta_lake_topic FULL REFRES
 SHOW API ENDPOINT RUNS {{zone_name}}.github_search_api.delta_lake_topic LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written JSON pages.
-DETECT SCHEMA FOR TABLE {{zone_name}}.oss_intel.delta_lake_repos_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.github_search_api.delta_lake_repos_bronze;
 
 -- Bronze -> silver promotion with typed BIGINT + BOOLEAN columns.
-INSERT INTO {{zone_name}}.oss_intel.delta_lake_repos_silver
+INSERT INTO {{zone_name}}.github_search_api.delta_lake_repos_silver
 SELECT
     CAST(repo_id AS BIGINT)     AS repo_id,
     full_name,
@@ -60,7 +60,7 @@ SELECT
     CAST(is_archived AS BOOLEAN) AS is_archived,
     CAST(is_fork AS BOOLEAN)    AS is_fork,
     html_url
-FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_bronze;
 
 -- ============================================================================
 -- Query 1: Page Budget, 30 per page x 3 pages = 90 rows
@@ -73,7 +73,7 @@ FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE repo_count = 90
 SELECT COUNT(*) AS repo_count
-FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_bronze;
 
 -- ============================================================================
 -- Query 2: Search-API Distinctness, no duplicates across pages
@@ -89,7 +89,7 @@ ASSERT VALUE distinct_full_names = 90
 SELECT
     COUNT(DISTINCT repo_id)   AS distinct_repos,
     COUNT(DISTINCT full_name) AS distinct_full_names
-FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_bronze;
 
 -- ============================================================================
 -- Query 3: URL + Identifier Invariants
@@ -106,7 +106,7 @@ SELECT
     SUM(CASE WHEN html_url LIKE 'https://github.com/%' THEN 1 ELSE 0 END) AS github_urls,
     SUM(CASE WHEN full_name IS NOT NULL                THEN 1 ELSE 0 END) AS non_null_full_names,
     SUM(CASE WHEN owner_login IS NOT NULL              THEN 1 ELSE 0 END) AS non_null_owners
-FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_silver;
 
 -- ============================================================================
 -- Query 4: Star-Count Sanity, BIGINT typed column, non-negative
@@ -122,7 +122,7 @@ ASSERT VALUE max_stars_positive = 1
 SELECT
     CASE WHEN MIN(stars) >= 0 THEN 1 ELSE 0 END AS min_stars_non_negative,
     CASE WHEN MAX(stars) > 0  THEN 1 ELSE 0 END AS max_stars_positive
-FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_silver;
 
 -- ============================================================================
 -- Query 5: Fork Majority, the topic is dominated by originals
@@ -138,7 +138,7 @@ SELECT
     CASE WHEN SUM(CASE WHEN is_fork = false THEN 1 ELSE 0 END)
               > SUM(CASE WHEN is_fork = true THEN 1 ELSE 0 END)
          THEN 1 ELSE 0 END AS non_fork_majority
-FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_silver;
 
 -- ============================================================================
 -- Query 6: full_name Shape Invariant, every name is `owner/repo`
@@ -151,7 +151,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE full_name_has_slash = 90
 SELECT
     SUM(CASE WHEN full_name LIKE '%/%' THEN 1 ELSE 0 END) AS full_name_has_slash
-FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_silver;
 
 -- ============================================================================
 -- Query 7: Silver Delta History, v0 schema + v1 INSERT
@@ -160,7 +160,7 @@ FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
 -- refreshes would add another version each time.
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.oss_intel.delta_lake_repos_silver;
+DESCRIBE HISTORY {{zone_name}}.github_search_api.delta_lake_repos_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -185,6 +185,6 @@ SELECT
          THEN 1 ELSE 0 END                                                         AS all_have_slash,
     CASE WHEN MAX(stars) >= MIN(stars) AND MIN(stars) >= 0
          THEN 1 ELSE 0 END                                                         AS stars_monotonic_plausible,
-    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze)
+    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.github_search_api.delta_lake_repos_bronze)
          THEN 1 ELSE 0 END                                                         AS bronze_silver_parity
-FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
+FROM {{zone_name}}.github_search_api.delta_lake_repos_silver;

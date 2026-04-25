@@ -27,7 +27,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.research_intel
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.arxiv_api
     COMMENT 'Research intelligence, arXiv cs.AI latest-papers feed';
 
 -- --------------------------------------------------------------------------
@@ -87,7 +87,7 @@ CREATE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest
 -- 5-author paper lands as "Alice Smith, Bob Jones, Carol Lee, ..." in
 -- one row, the team's digest tool expects this shape.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.research_intel.arxiv_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.arxiv_api.arxiv_bronze
 USING XML
 LOCATION 'arxiv_api/cs_ai_latest'
 OPTIONS (
@@ -130,7 +130,7 @@ OPTIONS (
 -- cast. Bronze stays around for researchers who need to re-parse the
 -- raw XML. The bronze->silver INSERT lives in queries.sql.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_intel.arxiv_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.arxiv_api.arxiv_silver (
     paper_url     STRING,
     title         STRING,
     published_at  STRING,

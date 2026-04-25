@@ -27,7 +27,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.agri_telemetry
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.openmeteo_api
     COMMENT 'Agronomy weather telemetry for partner farms';
 
 -- --------------------------------------------------------------------------
@@ -71,7 +71,7 @@ CREATE API ENDPOINT {{zone_name}}.openmeteo_api.observation_dublin
 -- descend into that sub-object to produce a wide, flat one-row-per-
 -- farm shape.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.agri_telemetry.weather_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.openmeteo_api.weather_bronze
 USING JSON
 LOCATION 'openmeteo_api'
 OPTIONS (
@@ -115,7 +115,7 @@ OPTIONS (
 -- Typed columns (DOUBLE for temperature, etc.) let downstream
 -- predicates work without casting.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.agri_telemetry.weather_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.openmeteo_api.weather_silver (
     farm_name         STRING,
     latitude          DOUBLE,
     longitude         DOUBLE,

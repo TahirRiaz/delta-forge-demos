@@ -40,11 +40,11 @@ INVOKE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest;
 SHOW API ENDPOINT RUNS {{zone_name}}.arxiv_api.cs_ai_latest LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written XML.
-DETECT SCHEMA FOR TABLE {{zone_name}}.research_intel.arxiv_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.arxiv_api.arxiv_bronze;
 
 -- Bronze -> silver promotion. Silver is the curated layer downstream
 -- digest tools point at.
-INSERT INTO {{zone_name}}.research_intel.arxiv_silver
+INSERT INTO {{zone_name}}.arxiv_api.arxiv_silver
 SELECT
     paper_url,
     title,
@@ -52,7 +52,7 @@ SELECT
     updated_at,
     summary,
     author_names
-FROM {{zone_name}}.research_intel.arxiv_bronze;
+FROM {{zone_name}}.arxiv_api.arxiv_bronze;
 
 -- ============================================================================
 -- Query 1: Full-Corpus Row Count, 50 entries returned
@@ -65,7 +65,7 @@ FROM {{zone_name}}.research_intel.arxiv_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE paper_count = 50
 SELECT COUNT(*) AS paper_count
-FROM {{zone_name}}.research_intel.arxiv_bronze;
+FROM {{zone_name}}.arxiv_api.arxiv_bronze;
 
 -- ============================================================================
 -- Query 2: Paper-URL Distinctness, 50 unique IDs
@@ -76,7 +76,7 @@ FROM {{zone_name}}.research_intel.arxiv_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE distinct_papers = 50
 SELECT COUNT(DISTINCT paper_url) AS distinct_papers
-FROM {{zone_name}}.research_intel.arxiv_bronze;
+FROM {{zone_name}}.arxiv_api.arxiv_bronze;
 
 -- ============================================================================
 -- Query 3: XML Flatten Field Coverage, every required field present
@@ -95,7 +95,7 @@ SELECT
     SUM(CASE WHEN title IS NOT NULL AND LENGTH(title) > 0 THEN 1 ELSE 0 END) AS non_null_titles,
     SUM(CASE WHEN summary IS NOT NULL AND LENGTH(summary) > 0 THEN 1 ELSE 0 END) AS non_null_summaries,
     SUM(CASE WHEN author_names IS NOT NULL AND LENGTH(author_names) > 0 THEN 1 ELSE 0 END) AS non_null_authors
-FROM {{zone_name}}.research_intel.arxiv_silver;
+FROM {{zone_name}}.arxiv_api.arxiv_silver;
 
 -- ============================================================================
 -- Query 4: Timestamp Shape, Atom RFC-3339
@@ -109,7 +109,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE iso_published = 50
 SELECT
     SUM(CASE WHEN published_at LIKE '20__-__-__T__:__:__Z' THEN 1 ELSE 0 END) AS iso_published
-FROM {{zone_name}}.research_intel.arxiv_bronze;
+FROM {{zone_name}}.arxiv_api.arxiv_bronze;
 
 -- ============================================================================
 -- Query 5: join_comma repeat-handling fired at least once
@@ -124,7 +124,7 @@ ASSERT VALUE multi_author_papers_any = 1
 SELECT
     CASE WHEN SUM(CASE WHEN author_names LIKE '%,%' THEN 1 ELSE 0 END) > 0
          THEN 1 ELSE 0 END AS multi_author_papers_any
-FROM {{zone_name}}.research_intel.arxiv_silver;
+FROM {{zone_name}}.arxiv_api.arxiv_silver;
 
 -- ============================================================================
 -- Query 6: Bronze <-> Silver Parity
@@ -136,16 +136,16 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE silver_count = 50
 ASSERT VALUE bronze_silver_delta = 0
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.research_intel.arxiv_silver) AS silver_count,
-    (SELECT COUNT(*) FROM {{zone_name}}.research_intel.arxiv_bronze)
-        - (SELECT COUNT(*) FROM {{zone_name}}.research_intel.arxiv_silver) AS bronze_silver_delta;
+    (SELECT COUNT(*) FROM {{zone_name}}.arxiv_api.arxiv_silver) AS silver_count,
+    (SELECT COUNT(*) FROM {{zone_name}}.arxiv_api.arxiv_bronze)
+        - (SELECT COUNT(*) FROM {{zone_name}}.arxiv_api.arxiv_silver) AS bronze_silver_delta;
 
 -- ============================================================================
 -- Query 7: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.research_intel.arxiv_silver;
+DESCRIBE HISTORY {{zone_name}}.arxiv_api.arxiv_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -172,4 +172,4 @@ SELECT
          THEN 1 ELSE 0 END                                                                     AS every_title_nonempty,
     CASE WHEN SUM(CASE WHEN published_at NOT LIKE '20__-__-__T__:__:__Z' THEN 1 ELSE 0 END) = 0
          THEN 1 ELSE 0 END                                                                     AS iso_published_pct
-FROM {{zone_name}}.research_intel.arxiv_silver;
+FROM {{zone_name}}.arxiv_api.arxiv_silver;

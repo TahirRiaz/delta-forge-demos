@@ -44,8 +44,8 @@ zone_name = { description = "Target zone for the bronze landing path. Defaults t
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.game_ref.pokedex_bronze"
+name = "{{zone_name}}.pokedex_api.pokedex_bronze"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.game_ref.pokedex_silver"
+name = "{{zone_name}}.pokedex_api.pokedex_silver"

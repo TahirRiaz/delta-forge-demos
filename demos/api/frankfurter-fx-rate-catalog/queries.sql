@@ -50,15 +50,15 @@ SHOW API ENDPOINT RUNS {{zone_name}}.frankfurter_fx.latest_eur_basket LIMIT 5;
 SHOW API ENDPOINT RUNS {{zone_name}}.frankfurter_fx.euro_launch_day_rates LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written JSON pages.
-DETECT SCHEMA FOR TABLE {{zone_name}}.fx_catalog.fx_rates_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.frankfurter_fx.fx_rates_bronze;
 
 -- Bronze -> silver promotion with parsed DATE.
-INSERT INTO {{zone_name}}.fx_catalog.fx_rates_silver
+INSERT INTO {{zone_name}}.frankfurter_fx.fx_rates_silver
 SELECT
     base_currency,
     CAST(rate_date AS DATE)   AS rate_date,
     CAST(base_amount AS DOUBLE) AS base_amount
-FROM {{zone_name}}.fx_catalog.fx_rates_bronze;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_bronze;
 
 -- ============================================================================
 -- Query 1: Endpoint Fan-In, 2 endpoints -> 2 rows
@@ -67,7 +67,7 @@ FROM {{zone_name}}.fx_catalog.fx_rates_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE endpoint_rows = 2
 SELECT COUNT(*) AS endpoint_rows
-FROM {{zone_name}}.fx_catalog.fx_rates_bronze;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_bronze;
 
 -- ============================================================================
 -- Query 2: Base-Currency Split, EUR latest + USD historical
@@ -83,7 +83,7 @@ SELECT
     COUNT(DISTINCT base_currency)                              AS distinct_bases,
     SUM(CASE WHEN base_currency = 'EUR' THEN 1 ELSE 0 END)     AS eur_rows,
     SUM(CASE WHEN base_currency = 'USD' THEN 1 ELSE 0 END)     AS usd_rows
-FROM {{zone_name}}.fx_catalog.fx_rates_bronze;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_bronze;
 
 -- ============================================================================
 -- Query 3: ALTER SET URL Round-Trip, 1999-01-04 is present
@@ -96,7 +96,7 @@ FROM {{zone_name}}.fx_catalog.fx_rates_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE euro_launch = 1
 SELECT SUM(CASE WHEN rate_date = DATE '1999-01-04' THEN 1 ELSE 0 END) AS euro_launch
-FROM {{zone_name}}.fx_catalog.fx_rates_silver;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_silver;
 
 -- ============================================================================
 -- Query 4: Base-Amount Convention, "1 unit of base"
@@ -108,7 +108,7 @@ FROM {{zone_name}}.fx_catalog.fx_rates_silver;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE base_amount_one = 2
 SELECT SUM(CASE WHEN base_amount = 1.0 THEN 1 ELSE 0 END) AS base_amount_one
-FROM {{zone_name}}.fx_catalog.fx_rates_silver;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_silver;
 
 -- ============================================================================
 -- Query 5: Date Sanity, not in the future, 2 distinct days
@@ -120,14 +120,14 @@ ASSERT VALUE dates_distinct = 1
 SELECT
     CASE WHEN MAX(rate_date) <= CURRENT_DATE THEN 1 ELSE 0 END AS latest_not_future,
     CASE WHEN COUNT(DISTINCT rate_date) = 2 THEN 1 ELSE 0 END  AS dates_distinct
-FROM {{zone_name}}.fx_catalog.fx_rates_silver;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_silver;
 
 -- ============================================================================
 -- Query 6: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.fx_catalog.fx_rates_silver;
+DESCRIBE HISTORY {{zone_name}}.frankfurter_fx.fx_rates_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -143,6 +143,6 @@ SELECT
     CASE WHEN COUNT(DISTINCT base_currency) = 2 THEN 1 ELSE 0 END                           AS both_bases_present,
     CASE WHEN SUM(CASE WHEN rate_date = DATE '1999-01-04' THEN 1 ELSE 0 END) = 1
          THEN 1 ELSE 0 END                                                                  AS euro_anchor_present,
-    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.fx_catalog.fx_rates_bronze)
+    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.frankfurter_fx.fx_rates_bronze)
          THEN 1 ELSE 0 END                                                                  AS bronze_silver_parity
-FROM {{zone_name}}.fx_catalog.fx_rates_silver;
+FROM {{zone_name}}.frankfurter_fx.fx_rates_silver;

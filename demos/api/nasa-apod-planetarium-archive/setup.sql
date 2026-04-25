@@ -38,7 +38,7 @@ CREATE CREDENTIAL IF NOT EXISTS nasa_apod_key
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.space_imagery
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.nasa_api
     COMMENT 'Planetarium exhibit catalog, NASA APOD archive';
 
 -- --------------------------------------------------------------------------
@@ -87,7 +87,7 @@ CREATE API ENDPOINT {{zone_name}}.nasa_api.apod_archive
 -- records. The bare `$` root_path + top-level include_paths match the
 -- pattern from the existing public-holiday-calendar-sync demo.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.space_imagery.apod_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.nasa_api.apod_bronze
 USING JSON
 LOCATION 'nasa_api/apod_archive'
 OPTIONS (
@@ -128,7 +128,7 @@ OPTIONS (
 -- `WHERE apod_date = DATE '2024-12-25'` natively without string
 -- comparison.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.space_imagery.apod_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.nasa_api.apod_silver (
     apod_date         DATE,
     title             STRING,
     explanation       STRING,

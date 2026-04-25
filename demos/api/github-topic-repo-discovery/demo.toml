@@ -44,8 +44,8 @@ zone_name = { description = "Target zone for the bronze landing path. Defaults t
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.oss_intel.delta_lake_repos_bronze"
+name = "{{zone_name}}.github_search_api.delta_lake_repos_bronze"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.oss_intel.delta_lake_repos_silver"
+name = "{{zone_name}}.github_search_api.delta_lake_repos_silver"

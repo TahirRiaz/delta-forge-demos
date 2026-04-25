@@ -46,10 +46,10 @@ INVOKE API ENDPOINT {{zone_name}}.pokedex_api.first_generation;
 SHOW API ENDPOINT RUNS {{zone_name}}.pokedex_api.first_generation LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written JSON.
-DETECT SCHEMA FOR TABLE {{zone_name}}.game_ref.pokedex_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.pokedex_api.pokedex_bronze;
 
 -- Bronze -> silver promotion with parsed dex_id.
-INSERT INTO {{zone_name}}.game_ref.pokedex_silver
+INSERT INTO {{zone_name}}.pokedex_api.pokedex_silver
 SELECT
     CAST(
         REGEXP_REPLACE(detail_url, '^.*/pokemon/([0-9]+)/$', '\1')
@@ -57,7 +57,7 @@ SELECT
     )                AS dex_id,
     pokemon_name,
     detail_url
-FROM {{zone_name}}.game_ref.pokedex_bronze;
+FROM {{zone_name}}.pokedex_api.pokedex_bronze;
 
 -- ============================================================================
 -- Query 1: Pokedex Row Count, 5 pages x 20 per page = 100
@@ -69,7 +69,7 @@ FROM {{zone_name}}.game_ref.pokedex_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE dex_count = 100
 SELECT COUNT(*) AS dex_count
-FROM {{zone_name}}.game_ref.pokedex_bronze;
+FROM {{zone_name}}.pokedex_api.pokedex_bronze;
 
 -- ============================================================================
 -- Query 2: Canon-Entry Presence, Bulbasaur, Pikachu, Voltorb
@@ -86,7 +86,7 @@ SELECT
     SUM(CASE WHEN pokemon_name = 'bulbasaur' THEN 1 ELSE 0 END) AS has_bulbasaur,
     SUM(CASE WHEN pokemon_name = 'pikachu'   THEN 1 ELSE 0 END) AS has_pikachu,
     SUM(CASE WHEN pokemon_name = 'voltorb'   THEN 1 ELSE 0 END) AS has_voltorb
-FROM {{zone_name}}.game_ref.pokedex_bronze;
+FROM {{zone_name}}.pokedex_api.pokedex_bronze;
 
 -- ============================================================================
 -- Query 3: Dex-ID Parse, REGEXP_REPLACE round-trip
@@ -104,7 +104,7 @@ SELECT
     MAX(CASE WHEN pokemon_name = 'bulbasaur' THEN dex_id END) AS bulbasaur_dex,
     MAX(CASE WHEN pokemon_name = 'pikachu'   THEN dex_id END) AS pikachu_dex,
     MAX(CASE WHEN pokemon_name = 'voltorb'   THEN dex_id END) AS voltorb_dex
-FROM {{zone_name}}.game_ref.pokedex_silver;
+FROM {{zone_name}}.pokedex_api.pokedex_silver;
 
 -- ============================================================================
 -- Query 4: Contiguous ID Range, 1..100 with no gaps or duplicates
@@ -121,7 +121,7 @@ SELECT
     MIN(dex_id)            AS min_dex,
     MAX(dex_id)            AS max_dex,
     COUNT(DISTINCT dex_id) AS distinct_dex
-FROM {{zone_name}}.game_ref.pokedex_silver;
+FROM {{zone_name}}.pokedex_api.pokedex_silver;
 
 -- ============================================================================
 -- Query 5: Name-Formatting Invariants, all distinct, all lowercase
@@ -136,7 +136,7 @@ ASSERT VALUE all_lowercase = 100
 SELECT
     COUNT(DISTINCT pokemon_name)                                       AS distinct_names,
     SUM(CASE WHEN LOWER(pokemon_name) = pokemon_name THEN 1 ELSE 0 END) AS all_lowercase
-FROM {{zone_name}}.game_ref.pokedex_bronze;
+FROM {{zone_name}}.pokedex_api.pokedex_bronze;
 
 -- ============================================================================
 -- Query 6: Silver Delta History, v0 schema + v1 INSERT
@@ -146,7 +146,7 @@ FROM {{zone_name}}.game_ref.pokedex_bronze;
 -- VERSION AS OF rollback.
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.game_ref.pokedex_silver;
+DESCRIBE HISTORY {{zone_name}}.pokedex_api.pokedex_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -171,4 +171,4 @@ SELECT
     SUM(CASE WHEN detail_url LIKE 'https://pokeapi.co/%' THEN 1 ELSE 0 END)            AS url_pokeapi_pct,
     SUM(CASE WHEN dex_id = 1   AND pokemon_name = 'bulbasaur' THEN 1 ELSE 0 END)       AS bulba_first,
     SUM(CASE WHEN dex_id = 100 AND pokemon_name = 'voltorb'   THEN 1 ELSE 0 END)       AS voltorb_last
-FROM {{zone_name}}.game_ref.pokedex_silver;
+FROM {{zone_name}}.pokedex_api.pokedex_silver;

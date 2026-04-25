@@ -49,11 +49,11 @@ INVOKE API ENDPOINT {{zone_name}}.github_releases.rust_releases;
 SHOW API ENDPOINT RUNS {{zone_name}}.github_releases.rust_releases LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written JSON.
-DETECT SCHEMA FOR TABLE {{zone_name}}.release_intel.rust_releases;
+DETECT SCHEMA FOR TABLE {{zone_name}}.github_releases.rust_releases;
 
 -- Bronze -> silver promotion. Silver carries the same flat shape but
 -- in Delta format, what dashboards actually point at.
-INSERT INTO {{zone_name}}.release_intel.rust_releases_silver
+INSERT INTO {{zone_name}}.github_releases.rust_releases_silver
 SELECT
     release_id,
     tag_name,
@@ -64,7 +64,7 @@ SELECT
     published_at,
     html_url,
     author_login
-FROM {{zone_name}}.release_intel.rust_releases;
+FROM {{zone_name}}.github_releases.rust_releases;
 
 -- ============================================================================
 -- Query 1: Catalog Smoke Check, exactly the window we requested
@@ -76,7 +76,7 @@ FROM {{zone_name}}.release_intel.rust_releases;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE release_count = 30
 SELECT COUNT(*) AS release_count
-FROM {{zone_name}}.release_intel.rust_releases;
+FROM {{zone_name}}.github_releases.rust_releases;
 
 -- ============================================================================
 -- Query 2: Author Invariant, every release is authored by rustbot
@@ -92,7 +92,7 @@ ASSERT VALUE distinct_authors = 1
 ASSERT VALUE author_value = 'rustbot'
 SELECT COUNT(DISTINCT author_login) AS distinct_authors,
        MAX(author_login)            AS author_value
-FROM {{zone_name}}.release_intel.rust_releases;
+FROM {{zone_name}}.github_releases.rust_releases;
 
 -- ============================================================================
 -- Query 3: Release-Name Prefix, every entry is a "Rust x.y.z" line
@@ -104,7 +104,7 @@ FROM {{zone_name}}.release_intel.rust_releases;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE non_rust_named = 0
 SELECT COUNT(*) AS non_rust_named
-FROM {{zone_name}}.release_intel.rust_releases
+FROM {{zone_name}}.github_releases.rust_releases
 WHERE release_name NOT LIKE 'Rust %';
 
 -- ============================================================================
@@ -118,7 +118,7 @@ WHERE release_name NOT LIKE 'Rust %';
 ASSERT ROW_COUNT = 1
 ASSERT VALUE non_numeric_tags = 0
 SELECT COUNT(*) AS non_numeric_tags
-FROM {{zone_name}}.release_intel.rust_releases
+FROM {{zone_name}}.github_releases.rust_releases
 WHERE tag_name NOT LIKE '0%'
   AND tag_name NOT LIKE '1%'
   AND tag_name NOT LIKE '2%'
@@ -144,7 +144,7 @@ ASSERT VALUE prerelease_count = 0
 SELECT
     SUM(CASE WHEN is_draft       = true THEN 1 ELSE 0 END) AS draft_count,
     SUM(CASE WHEN is_prerelease  = true THEN 1 ELSE 0 END) AS prerelease_count
-FROM {{zone_name}}.release_intel.rust_releases_silver;
+FROM {{zone_name}}.github_releases.rust_releases_silver;
 
 -- ============================================================================
 -- Query 6: Tag Distinctness, the feed has no duplicates
@@ -156,7 +156,7 @@ FROM {{zone_name}}.release_intel.rust_releases_silver;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE duplicate_tags = 0
 SELECT COUNT(*) - COUNT(DISTINCT tag_name) AS duplicate_tags
-FROM {{zone_name}}.release_intel.rust_releases;
+FROM {{zone_name}}.github_releases.rust_releases;
 
 -- ============================================================================
 -- Query 7: Bronze <-> Silver Parity, promotion preserved every row
@@ -176,13 +176,13 @@ ASSERT VALUE row_count_delta = 0
 ASSERT VALUE distinct_tag_delta = 0
 ASSERT VALUE silver_release_count = 30
 SELECT
-    (SELECT COUNT(*) FROM {{zone_name}}.release_intel.rust_releases)
-        - (SELECT COUNT(*) FROM {{zone_name}}.release_intel.rust_releases_silver)
+    (SELECT COUNT(*) FROM {{zone_name}}.github_releases.rust_releases)
+        - (SELECT COUNT(*) FROM {{zone_name}}.github_releases.rust_releases_silver)
                                                                                  AS row_count_delta,
-    (SELECT COUNT(DISTINCT tag_name) FROM {{zone_name}}.release_intel.rust_releases)
-        - (SELECT COUNT(DISTINCT tag_name) FROM {{zone_name}}.release_intel.rust_releases_silver)
+    (SELECT COUNT(DISTINCT tag_name) FROM {{zone_name}}.github_releases.rust_releases)
+        - (SELECT COUNT(DISTINCT tag_name) FROM {{zone_name}}.github_releases.rust_releases_silver)
                                                                                  AS distinct_tag_delta,
-    (SELECT COUNT(*) FROM {{zone_name}}.release_intel.rust_releases_silver)      AS silver_release_count;
+    (SELECT COUNT(*) FROM {{zone_name}}.github_releases.rust_releases_silver)      AS silver_release_count;
 
 -- ============================================================================
 -- Query 8: Silver Delta Time-Travel, DESCRIBE HISTORY shows v0 + v1
@@ -194,7 +194,7 @@ SELECT
 -- capability you don't get from a bare external JSON table.
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.release_intel.rust_releases_silver;
+DESCRIBE HISTORY {{zone_name}}.github_releases.rust_releases_silver;
 
 -- ============================================================================
 -- Query 9: Silver Boolean Filter, typed columns enable native predicates
@@ -209,7 +209,7 @@ DESCRIBE HISTORY {{zone_name}}.release_intel.rust_releases_silver;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE published_releases = 30
 SELECT COUNT(*) AS published_releases
-FROM {{zone_name}}.release_intel.rust_releases_silver
+FROM {{zone_name}}.github_releases.rust_releases_silver
 WHERE is_draft = false
   AND is_prerelease = false;
 
@@ -239,6 +239,6 @@ SELECT
          THEN 1 ELSE 0 END                                                                        AS rust_prefix_only,
     CASE WHEN SUM(CASE WHEN is_draft = true OR is_prerelease = true THEN 1 ELSE 0 END) = 0
          THEN 1 ELSE 0 END                                                                        AS stable_channel_only,
-    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.release_intel.rust_releases)
+    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.github_releases.rust_releases)
          THEN 1 ELSE 0 END                                                                        AS silver_matches_bronze
-FROM {{zone_name}}.release_intel.rust_releases_silver;
+FROM {{zone_name}}.github_releases.rust_releases_silver;

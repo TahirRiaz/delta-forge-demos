@@ -8,9 +8,9 @@
 -- up without erroring.
 -- ============================================================================
 
-DROP DELTA TABLE IF EXISTS {{zone_name}}.fx_catalog.fx_rates_silver WITH FILES;
+DROP DELTA TABLE IF EXISTS {{zone_name}}.frankfurter_fx.fx_rates_silver WITH FILES;
 
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.fx_catalog.fx_rates_bronze WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.frankfurter_fx.fx_rates_bronze WITH FILES;
 
 DROP API ENDPOINT IF EXISTS {{zone_name}}.frankfurter_fx.latest_eur_basket;
 
@@ -23,4 +23,4 @@ DROP API ENDPOINT IF EXISTS {{zone_name}}.frankfurter_fx.historical_stub;
 
 DROP CONNECTION IF EXISTS frankfurter_fx;
 
-DROP SCHEMA IF EXISTS {{zone_name}}.fx_catalog;
+DROP SCHEMA IF EXISTS {{zone_name}}.frankfurter_fx;

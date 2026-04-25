@@ -41,10 +41,10 @@ INVOKE API ENDPOINT {{zone_name}}.nasa_api.apod_archive;
 SHOW API ENDPOINT RUNS {{zone_name}}.nasa_api.apod_archive LIMIT 5;
 
 -- Resolve the bronze schema from the freshly written JSON.
-DETECT SCHEMA FOR TABLE {{zone_name}}.space_imagery.apod_bronze;
+DETECT SCHEMA FOR TABLE {{zone_name}}.nasa_api.apod_bronze;
 
 -- Bronze -> silver promotion with parsed DATE.
-INSERT INTO {{zone_name}}.space_imagery.apod_silver
+INSERT INTO {{zone_name}}.nasa_api.apod_silver
 SELECT
     CAST(apod_date AS DATE) AS apod_date,
     title,
@@ -54,7 +54,7 @@ SELECT
     hd_url,
     service_version,
     copyright_holder
-FROM {{zone_name}}.space_imagery.apod_bronze;
+FROM {{zone_name}}.nasa_api.apod_bronze;
 
 -- ============================================================================
 -- Query 1: Window Row Count, 8 days in URL [start_date, end_date]
@@ -67,7 +67,7 @@ FROM {{zone_name}}.space_imagery.apod_bronze;
 ASSERT ROW_COUNT = 1
 ASSERT VALUE apod_count = 8
 SELECT COUNT(*) AS apod_count
-FROM {{zone_name}}.space_imagery.apod_bronze;
+FROM {{zone_name}}.nasa_api.apod_bronze;
 
 -- ============================================================================
 -- Query 2: Date Range, bounded correctly
@@ -84,7 +84,7 @@ SELECT
     COUNT(DISTINCT apod_date) AS distinct_dates,
     MIN(apod_date)            AS min_date,
     MAX(apod_date)            AS max_date
-FROM {{zone_name}}.space_imagery.apod_bronze;
+FROM {{zone_name}}.nasa_api.apod_bronze;
 
 -- ============================================================================
 -- Query 3: Christmas Day 2024 Present, fixed anchor date
@@ -97,7 +97,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE has_christmas = 1
 SELECT
     SUM(CASE WHEN apod_date = DATE '2024-12-25' THEN 1 ELSE 0 END) AS has_christmas
-FROM {{zone_name}}.space_imagery.apod_silver;
+FROM {{zone_name}}.nasa_api.apod_silver;
 
 -- ============================================================================
 -- Query 4: Required Fields Non-Empty
@@ -113,7 +113,7 @@ SELECT
     SUM(CASE WHEN title IS NOT NULL AND LENGTH(title) > 0             THEN 1 ELSE 0 END) AS non_null_titles,
     SUM(CASE WHEN explanation IS NOT NULL AND LENGTH(explanation) > 0 THEN 1 ELSE 0 END) AS non_null_explanations,
     SUM(CASE WHEN media_url IS NOT NULL AND LENGTH(media_url) > 0     THEN 1 ELSE 0 END) AS non_null_media_urls
-FROM {{zone_name}}.space_imagery.apod_bronze;
+FROM {{zone_name}}.nasa_api.apod_bronze;
 
 -- ============================================================================
 -- Query 5: Media Type Enum, only 'image' or 'video'
@@ -126,7 +126,7 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE valid_media_types = 8
 SELECT
     SUM(CASE WHEN media_type IN ('image', 'video') THEN 1 ELSE 0 END) AS valid_media_types
-FROM {{zone_name}}.space_imagery.apod_silver;
+FROM {{zone_name}}.nasa_api.apod_silver;
 
 -- ============================================================================
 -- Query 6: URL Scheme Sanity, every media_url is an http(s) URL
@@ -136,14 +136,14 @@ ASSERT ROW_COUNT = 1
 ASSERT VALUE non_http_urls = 0
 SELECT
     SUM(CASE WHEN media_url NOT LIKE 'http%' THEN 1 ELSE 0 END) AS non_http_urls
-FROM {{zone_name}}.space_imagery.apod_silver;
+FROM {{zone_name}}.nasa_api.apod_silver;
 
 -- ============================================================================
 -- Query 7: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 2
-DESCRIBE HISTORY {{zone_name}}.space_imagery.apod_silver;
+DESCRIBE HISTORY {{zone_name}}.nasa_api.apod_silver;
 
 -- ============================================================================
 -- VERIFY: All Checks
@@ -164,6 +164,6 @@ SELECT
          THEN 1 ELSE 0 END                                                                       AS all_media_types_ok,
     CASE WHEN SUM(CASE WHEN media_url NOT LIKE 'http%' THEN 1 ELSE 0 END) = 0
          THEN 1 ELSE 0 END                                                                       AS all_urls_http,
-    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.space_imagery.apod_bronze)
+    CASE WHEN COUNT(*) = (SELECT COUNT(*) FROM {{zone_name}}.nasa_api.apod_bronze)
          THEN 1 ELSE 0 END                                                                       AS bronze_silver_parity
-FROM {{zone_name}}.space_imagery.apod_silver;
+FROM {{zone_name}}.nasa_api.apod_silver;

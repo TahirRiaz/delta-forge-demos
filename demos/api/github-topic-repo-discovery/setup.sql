@@ -25,7 +25,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.oss_intel
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.github_search_api
     COMMENT 'Open-source ecosystem intelligence, quarterly GitHub topic snapshots';
 
 -- --------------------------------------------------------------------------
@@ -77,7 +77,7 @@ CREATE API ENDPOINT {{zone_name}}.github_search_api.delta_lake_topic
 -- $.owner.login path descends into the nested owner object, same
 -- pattern as rust-release-catalog's $.author.login.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.oss_intel.delta_lake_repos_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.github_search_api.delta_lake_repos_bronze
 USING JSON
 LOCATION 'github_search/delta_lake_topic'
 OPTIONS (
@@ -120,7 +120,7 @@ OPTIONS (
 -- points at silver; bronze stays available for deeper audits. The
 -- bronze->silver INSERT lives in queries.sql.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.oss_intel.delta_lake_repos_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.github_search_api.delta_lake_repos_silver (
     repo_id      BIGINT,
     full_name    STRING,
     owner_login  STRING,

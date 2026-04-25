@@ -9,9 +9,9 @@
 -- harmless if a prior failed run left half the state behind.
 -- ============================================================================
 
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.vendor_smoke.uuid_bronze WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.httpbin_smoke.uuid_bronze WITH FILES;
 
-DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.vendor_smoke.headers_bronze WITH FILES;
+DROP EXTERNAL TABLE IF EXISTS {{zone_name}}.httpbin_smoke.headers_bronze WITH FILES;
 
 DROP API ENDPOINT IF EXISTS {{zone_name}}.httpbin_smoke.probe_headers;
 
@@ -19,6 +19,6 @@ DROP API ENDPOINT IF EXISTS {{zone_name}}.httpbin_smoke.probe_uuid;
 
 DROP CONNECTION IF EXISTS httpbin_smoke;
 
-DROP CREDENTIAL IF EXISTS vendor_smoke_api_key;
+DROP CREDENTIAL IF EXISTS httpbin_smoke_api_key;
 
-DROP SCHEMA IF EXISTS {{zone_name}}.vendor_smoke;
+DROP SCHEMA IF EXISTS {{zone_name}}.httpbin_smoke;

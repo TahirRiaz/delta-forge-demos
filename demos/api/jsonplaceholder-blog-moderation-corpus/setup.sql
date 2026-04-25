@@ -25,7 +25,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.content_moderation
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.blog_moderation
     COMMENT 'Fake-blog moderation corpus sourced from JSONPlaceholder';
 
 -- --------------------------------------------------------------------------
@@ -80,7 +80,7 @@ CREATE API ENDPOINT {{zone_name}}.blog_moderation.blog_posts
 -- INVOKE has run, queries against it just return zero rows until the
 -- INVOKE in queries.sql lands data.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.content_moderation.posts_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.blog_moderation.posts_bronze
 USING JSON
 LOCATION 'blog_moderation/blog_posts'
 OPTIONS (
@@ -114,7 +114,7 @@ OPTIONS (
 -- batch can be rolled back with VERSION AS OF. The bronze->silver
 -- INSERT lives in queries.sql, after the INVOKE has populated bronze.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.content_moderation.posts_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.blog_moderation.posts_silver (
     post_id   BIGINT,
     author_id BIGINT,
     title     STRING,

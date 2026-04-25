@@ -26,7 +26,7 @@
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.game_ref
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.pokedex_api
     COMMENT 'Game reference catalogs (Pokedex, moves, items)';
 
 -- --------------------------------------------------------------------------
@@ -73,7 +73,7 @@ CREATE API ENDPOINT {{zone_name}}.pokedex_api.first_generation
 -- becomes one table row. include_paths and column_mappings are then
 -- relative to each results[i], `$.name`, `$.url`.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.game_ref.pokedex_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.pokedex_api.pokedex_bronze
 USING JSON
 LOCATION 'pokedex_api/first_generation'
 OPTIONS (
@@ -101,7 +101,7 @@ OPTIONS (
 -- detail_url with REGEXP_REPLACE + CAST so the battle team can JOIN
 -- on dex_id without string parsing every query.
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.game_ref.pokedex_silver (
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.pokedex_api.pokedex_silver (
     dex_id        BIGINT,
     pokemon_name  STRING,
     detail_url    STRING

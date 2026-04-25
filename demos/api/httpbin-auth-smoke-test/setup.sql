@@ -27,7 +27,7 @@
 -- reserved for cloud backends (AZURE, AWS, GCP); the OS Keychain is
 -- always-on and auto-provisioned at catalog migration time.
 
-CREATE CREDENTIAL IF NOT EXISTS vendor_smoke_api_key
+CREATE CREDENTIAL IF NOT EXISTS httpbin_smoke_api_key
     TYPE = CREDENTIAL
     SECRET 'df-smoke-test-abc123'
     DESCRIPTION 'Placeholder vendor API key for httpbin.org smoke testing';
@@ -39,7 +39,7 @@ CREATE CREDENTIAL IF NOT EXISTS vendor_smoke_api_key
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.vendor_smoke
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.httpbin_smoke
     COMMENT 'Vendor integration smoke-test landing, ingest pipeline regression';
 
 -- --------------------------------------------------------------------------
@@ -63,7 +63,7 @@ CREATE CONNECTION IF NOT EXISTS httpbin_smoke
         base_path        = 'httpbin_smoke',
         timeout_secs     = '30'
     )
-    CREDENTIAL = vendor_smoke_api_key;
+    CREDENTIAL = httpbin_smoke_api_key;
 
 -- --------------------------------------------------------------------------
 -- 4. Endpoint 1, /headers echoes back every request header
@@ -118,7 +118,7 @@ DROP API ENDPOINT {{zone_name}}.httpbin_smoke.probe_dropped_example;
 -- X-Api-Key comes back as the exact literal string 'df-smoke-test-
 -- abc123', every layer of the auth pipeline worked end-to-end.
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.vendor_smoke.headers_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.httpbin_smoke.headers_bronze
 USING JSON
 LOCATION 'httpbin_smoke/probe_headers'
 OPTIONS (
@@ -145,7 +145,7 @@ OPTIONS (
 -- 8. Bronze external table, /uuid flatten
 -- --------------------------------------------------------------------------
 
-CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.vendor_smoke.uuid_bronze
+CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.httpbin_smoke.uuid_bronze
 USING JSON
 LOCATION 'httpbin_smoke/probe_uuid'
 OPTIONS (

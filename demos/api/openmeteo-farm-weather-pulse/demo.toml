@@ -45,8 +45,8 @@ zone_name = { description = "Target zone for the bronze landing path. Defaults t
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.agri_telemetry.weather_bronze"
+name = "{{zone_name}}.openmeteo_api.weather_bronze"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.agri_telemetry.weather_silver"
+name = "{{zone_name}}.openmeteo_api.weather_silver"

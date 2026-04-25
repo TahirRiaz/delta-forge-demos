@@ -52,8 +52,8 @@ zone_name = { description = "Target zone for the bronze landing path. Defaults t
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.vendor_smoke.headers_bronze"
+name = "{{zone_name}}.httpbin_smoke.headers_bronze"
 
 [[demo.target_objects]]
 type = "external_table"
-name = "{{zone_name}}.vendor_smoke.uuid_bronze"
+name = "{{zone_name}}.httpbin_smoke.uuid_bronze"
