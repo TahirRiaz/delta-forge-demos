@@ -1,5 +1,5 @@
 -- ============================================================================
--- Demo: arXiv AI Research Feed — RESPONSE FORMAT XML
+-- Demo: arXiv AI Research Feed, RESPONSE FORMAT XML
 -- Feature: RESPONSE FORMAT XML on CREATE API ENDPOINT, xml_flatten_config
 --          with row_xpath + namespaces map + strip_namespace_prefixes,
 --          join_comma repeat handling for multi-author papers
@@ -12,25 +12,12 @@
 -- the 50-row max_results cap makes it a perfect testbed for exercising
 -- the XML response path end to end.
 --
--- Pipeline:
---   1. Zone + schema  — bronze landing + research_intel schema
---   2. Connection     — arXiv public API, no auth
---                         (polite rate limit: 0.5 rps / 1 request per 2s)
---   3. API endpoint   — URL carries the search query inline:
---                         ?search_query=cat%3Acs.AI
---                         &max_results=50
---                         &sortBy=submittedDate&sortOrder=descending
---                       RESPONSE FORMAT XML is the only bit of syntax that
---                       differs from a JSON endpoint — the engine writes
---                       response bodies as `.xml` instead of `.json`.
---   4. INVOKE         — single page fetch; the max_results=50 cap means
---                         pagination is not needed.
---   5. External table — XML flatten with row_xpath = "//entry", namespaces
---                         declared explicitly, strip_namespace_prefixes
---                         for clean column names, and join_comma for
---                         multi-author <author> repeats.
---   6. Silver Delta   — typed promotion with TIMESTAMP columns for
---                         published_at / updated_at.
+-- This file declares the catalog objects only (zone, schema,
+-- connection, endpoint, bronze + silver tables). The INVOKE that
+-- actually issues the HTTPS request, the SHOW API ENDPOINT RUNS audit
+-- read, the schema detection over the landed XML, and the
+-- bronze->silver promotion all live in queries.sql so the user can see
+-- in one place how an XML REST endpoint is driven from SQL.
 -- ============================================================================
 
 -- --------------------------------------------------------------------------
@@ -41,7 +28,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.research_intel
-    COMMENT 'Research intelligence — arXiv cs.AI latest-papers feed';
+    COMMENT 'Research intelligence, arXiv cs.AI latest-papers feed';
 
 -- --------------------------------------------------------------------------
 -- 2. REST API connection
@@ -63,11 +50,11 @@ CREATE CONNECTION IF NOT EXISTS arxiv_api
     );
 
 -- --------------------------------------------------------------------------
--- 3. API endpoint — RESPONSE FORMAT XML
+-- 3. API endpoint, RESPONSE FORMAT XML
 -- --------------------------------------------------------------------------
 -- The key bit: RESPONSE FORMAT XML. For JSON this line reads
 -- `RESPONSE FORMAT JSON`. The engine uses this to pick the file
--- extension it writes (.xml vs .json) — the external table below then
+-- extension it writes (.xml vs .json), the external table below then
 -- reads those `.xml` files. There is no runtime parsing at INVOKE time;
 -- the engine hands the wire bytes to the downstream table unchanged.
 --
@@ -91,22 +78,14 @@ CREATE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest
     );
 
 -- --------------------------------------------------------------------------
--- 4. INVOKE — single-page XML fetch
--- --------------------------------------------------------------------------
--- One GET, one .xml file written under the per-run timestamped folder.
--- No pagination because max_results = 50 caps the response in one call.
-
-INVOKE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest;
-
--- --------------------------------------------------------------------------
--- 5. External table — XML flatten over the landed Atom feed
+-- 4. Bronze external table, XML flatten over the landed Atom feed
 -- --------------------------------------------------------------------------
 -- row_xpath = "//entry" pivots each Atom <entry> into one row.
 -- namespaces declares the three URIs arXiv uses; strip_namespace_prefixes
 -- means column names don't carry atom_ / arxiv_ prefixes. The repeating
 -- <author><name/></author> structure is flattened via join_comma so a
 -- 5-author paper lands as "Alice Smith, Bob Jones, Carol Lee, ..." in
--- one row — the team's digest tool expects this shape.
+-- one row, the team's digest tool expects this shape.
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.research_intel.arxiv_bronze
 USING XML
@@ -143,14 +122,13 @@ OPTIONS (
     }'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.research_intel.arxiv_bronze;
-
 -- --------------------------------------------------------------------------
--- 6. Silver Delta table — typed promotion
+-- 5. Silver Delta table, schema-only declaration
 -- --------------------------------------------------------------------------
--- Silver is what the digest tool queries: TIMESTAMP columns let it do
--- `WHERE published_at >= NOW() - INTERVAL '1 day'` natively. Bronze
--- stays around for researchers who need to re-parse the raw XML.
+-- Silver is what the digest tool queries: TIMESTAMP-shaped string columns
+-- let it do `WHERE published_at >= ...` natively after a downstream
+-- cast. Bronze stays around for researchers who need to re-parse the
+-- raw XML. The bronze->silver INSERT lives in queries.sql.
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_intel.arxiv_silver (
     paper_url     STRING,
@@ -161,14 +139,3 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.research_intel.arxiv_silver (
     author_names  STRING
 )
 LOCATION 'silver/arxiv_latest';
-
-INSERT INTO {{zone_name}}.research_intel.arxiv_silver
-SELECT
-    paper_url,
-    title,
-    published_at,
-    updated_at,
-    summary,
-    author_names
-FROM {{zone_name}}.research_intel.arxiv_bronze;
-

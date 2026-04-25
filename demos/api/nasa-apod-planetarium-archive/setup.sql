@@ -1,7 +1,6 @@
 -- ============================================================================
--- Demo: Planetarium APOD Archive — api_key_query Auth + Header Overrides
--- Feature: CREATE CREDENTIAL + auth_mode = 'api_key_query',
---          INVOKE ... USING (header.* = ..., query_param.* = ...)
+-- Demo: Planetarium APOD Archive, api_key_query Auth
+-- Feature: CREATE CREDENTIAL + auth_mode = 'api_key_query'
 -- ============================================================================
 --
 -- Real-world story: a science-center planetarium caches NASA's
@@ -11,36 +10,20 @@
 -- display refresh. The archive is rebuilt weekly, pulling a 7-8 day
 -- window at a time.
 --
--- Pipeline:
---   1. Credential       — stores the NASA DEMO_KEY in the OS keychain
---                          under a named vault entry. This value is
---                          NASA's documented public shared key with a
---                          30 req/hour budget.
---   2. Zone + schema    — bronze landing + space_imagery schema
---   3. Connection       — auth_mode = 'api_key_query' binds the vault
---                          entry so the engine splices
---                          `?api_key=<secret>` into every request
---                          automatically. The endpoint URL never sees
---                          the secret in plaintext.
---   4. API endpoint     — URL '/planetary/apod' with NO stored
---                          start_date/end_date — the caller supplies
---                          the window via USING at INVOKE time.
---   5. INVOKE ... USING — per-call query params + a custom
---                          `header.X-Request-ID` header override so
---                          this run shows up uniquely in NASA's
---                          access logs (and the platform's own
---                          request-tracing tools).
---   6. External table   — JSON flatten per APOD entry
---   7. Silver Delta     — typed promotion; exhibit queries point here
+-- This file declares the catalog objects only. The INVOKE that issues
+-- the actual HTTPS request, the per-run audit, the schema detection,
+-- and the bronze->silver promotion all live in queries.sql so the
+-- user can see in one place how a query-string-credentialed REST
+-- endpoint is driven from SQL.
 -- ============================================================================
 
 -- --------------------------------------------------------------------------
--- 1. Credential — NASA DEMO_KEY, stored in OS Keychain (default backend)
+-- 1. Credential, NASA DEMO_KEY, stored in OS Keychain (default backend)
 -- --------------------------------------------------------------------------
--- `DEMO_KEY` is NASA's public shared test key — documented at
+-- `DEMO_KEY` is NASA's public shared test key, documented at
 -- https://api.nasa.gov and intentionally passed around in demos. A
 -- real deployment would replace the SECRET value with a team-issued
--- key from https://api.nasa.gov (just change this one line — the
+-- key from https://api.nasa.gov (just change this one line, the
 -- downstream pipeline is identical).
 
 CREATE CREDENTIAL IF NOT EXISTS nasa_apod_key
@@ -56,17 +39,17 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.space_imagery
-    COMMENT 'Planetarium exhibit catalog — NASA APOD archive';
+    COMMENT 'Planetarium exhibit catalog, NASA APOD archive';
 
 -- --------------------------------------------------------------------------
--- 3. Connection — auth_mode = 'api_key_query'
+-- 3. Connection, auth_mode = 'api_key_query'
 -- --------------------------------------------------------------------------
 -- `auth_mode = 'api_key_query'` tells the engine to splice
 -- `api_key=<secret>` into every request's query string. The default
 -- param name is `api_key` (exactly what NASA expects); a future
 -- endpoint-level override could change it per API if needed. The
 -- `CREDENTIAL = nasa_apod_key` binding is what the engine resolves
--- at session-token build time — the secret material is inner-sealed
+-- at session-token build time, the secret material is inner-sealed
 -- into the token so the engine never pulls the value out of the
 -- keychain on the per-page HTTP path.
 
@@ -83,11 +66,11 @@ CREATE CONNECTION IF NOT EXISTS nasa_api
     CREDENTIAL = nasa_apod_key;
 
 -- --------------------------------------------------------------------------
--- 4. API endpoint — URL carries no dates, no auth
+-- 4. API endpoint, fixed date window in the URL
 -- --------------------------------------------------------------------------
--- Every piece of secret material (api_key) is handled by the connection-
--- level auth_mode. Every per-run parameter (date window) is supplied
--- by USING below. The endpoint itself is shape-only.
+-- The api_key (secret material) is handled by the connection-level
+-- auth_mode and never appears in the URL. start_date/end_date pin the
+-- 8-day archive window inline so the response is deterministic.
 
 CREATE API ENDPOINT {{zone_name}}.nasa_api.apod_archive
     URL '/planetary/apod?start_date=2024-12-20&end_date=2024-12-27'
@@ -98,16 +81,7 @@ CREATE API ENDPOINT {{zone_name}}.nasa_api.apod_archive
     );
 
 -- --------------------------------------------------------------------------
--- 5. INVOKE — single-page fetch
--- --------------------------------------------------------------------------
--- The date window (2024-12-20..2024-12-27) is baked into the URL.
--- With that window NASA returns a JSON array of 8 APOD records in
--- one response.
-
-INVOKE API ENDPOINT {{zone_name}}.nasa_api.apod_archive;
-
--- --------------------------------------------------------------------------
--- 6. External table — flatten each APOD entry
+-- 5. Bronze external table, flatten each APOD entry
 -- --------------------------------------------------------------------------
 -- With start_date+end_date, NASA returns a JSON array of 8 APOD
 -- records. The bare `$` root_path + top-level include_paths match the
@@ -136,7 +110,7 @@ OPTIONS (
             "$.explanation":      "explanation",
             "$.media_type":       "media_type",
             "$.url":              "media_url",
-            "$.hdurl":            "hd_url",
+            "$.hdurl":             "hd_url",
             "$.service_version":  "service_version",
             "$.copyright":        "copyright_holder"
         },
@@ -146,14 +120,13 @@ OPTIONS (
     }'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.space_imagery.apod_bronze;
-
 -- --------------------------------------------------------------------------
--- 7. Silver Delta table — typed promotion with parsed DATE
+-- 6. Silver Delta table, schema-only declaration
 -- --------------------------------------------------------------------------
 -- APOD's date field is ISO-8601 `YYYY-MM-DD`. Casting to DATE at
--- promotion lets exhibit queries do `WHERE apod_date = DATE '2024-12-25'`
--- natively without string comparison.
+-- promotion (in queries.sql) lets exhibit queries do
+-- `WHERE apod_date = DATE '2024-12-25'` natively without string
+-- comparison.
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.space_imagery.apod_silver (
     apod_date         DATE,
@@ -166,16 +139,3 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.space_imagery.apod_silver (
     copyright_holder  STRING
 )
 LOCATION 'silver/apod_archive';
-
-INSERT INTO {{zone_name}}.space_imagery.apod_silver
-SELECT
-    CAST(apod_date AS DATE) AS apod_date,
-    title,
-    explanation,
-    media_type,
-    media_url,
-    hd_url,
-    service_version,
-    copyright_holder
-FROM {{zone_name}}.space_imagery.apod_bronze;
-

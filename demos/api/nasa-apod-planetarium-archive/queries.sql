@@ -1,17 +1,23 @@
 -- ============================================================================
--- Demo: Planetarium APOD Archive — Queries
+-- Demo: Planetarium APOD Archive, Queries
 -- ============================================================================
--- Validates the api_key_query + USING (header.*, query_param.*) path
--- end to end:
---   • 8 rows — one per day in the requested window (2024-12-20..27).
---   • All 8 dates distinct, exactly matching the USING window.
---   • Christmas Day 2024 present (specific date assertion).
---   • Every row has a non-empty title, explanation, and media_url —
+-- This file is where the credentialed APOD endpoint is actually
+-- exercised. Inspection, INVOKE, run-history audit, schema detection,
+-- and the bronze->silver promotion all live here so the user sees in
+-- one place how a query-string-credentialed REST endpoint is driven
+-- from SQL, before the assertions that prove the api_key_query path
+-- worked end to end.
+--
+-- Validates the api_key_query auth path:
+--   - 8 rows, one per day in the requested window (2024-12-20..27).
+--   - All 8 dates distinct, exactly matching the URL window.
+--   - Christmas Day 2024 present (specific date assertion).
+--   - Every row has a non-empty title, explanation, and media_url,
 --     NASA's APOD API guarantees these fields on every entry.
---   • media_type is always 'image' or 'video' (the only two values
+--   - media_type is always 'image' or 'video' (the only two values
 --     NASA's APOD service emits).
---   • Every media_url starts with http — a crude SSRF sanity check.
---   • Bronze ↔ silver promotion preserved every row.
+--   - Every media_url starts with http, a crude SSRF sanity check.
+--   - Bronze <-> silver promotion preserved every row.
 --
 -- Stability: the APOD archive is historical (the images were chosen and
 -- the explanations written on the specific days in 2024), so the exact
@@ -21,12 +27,42 @@
 -- ============================================================================
 
 -- ============================================================================
--- Query 1: Window Row Count — 8 days in USING (..start_date, ..end_date)
+-- API surface, calling the endpoint from SQL
+-- ============================================================================
+
+-- Inspect the endpoint catalog row before invoking.
+DESCRIBE API ENDPOINT {{zone_name}}.nasa_api.apod_archive;
+
+-- INVOKE issues a single HTTPS GET; with the URL's start_date/end_date
+-- window NASA returns a JSON array of 8 APOD records in one response.
+INVOKE API ENDPOINT {{zone_name}}.nasa_api.apod_archive;
+
+-- Per-run audit row.
+SHOW API ENDPOINT RUNS {{zone_name}}.nasa_api.apod_archive LIMIT 5;
+
+-- Resolve the bronze schema from the freshly written JSON.
+DETECT SCHEMA FOR TABLE {{zone_name}}.space_imagery.apod_bronze;
+
+-- Bronze -> silver promotion with parsed DATE.
+INSERT INTO {{zone_name}}.space_imagery.apod_silver
+SELECT
+    CAST(apod_date AS DATE) AS apod_date,
+    title,
+    explanation,
+    media_type,
+    media_url,
+    hd_url,
+    service_version,
+    copyright_holder
+FROM {{zone_name}}.space_imagery.apod_bronze;
+
+-- ============================================================================
+-- Query 1: Window Row Count, 8 days in URL [start_date, end_date]
 -- ============================================================================
 -- start_date=2024-12-20 + end_date=2024-12-27 is an inclusive 8-day
 -- window. NASA returns one row per calendar day. Any count other than 8
--- means either the query_param.start_date / end_date USING overrides
--- didn't make it to the URL, or the flatten dropped an entry.
+-- means either the URL's date params didn't make it to the wire, or
+-- the flatten dropped an entry.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE apod_count = 8
@@ -34,11 +70,11 @@ SELECT COUNT(*) AS apod_count
 FROM {{zone_name}}.space_imagery.apod_bronze;
 
 -- ============================================================================
--- Query 2: Date Range — bounded correctly by USING
+-- Query 2: Date Range, bounded correctly
 -- ============================================================================
 -- All 8 dates distinct. MIN must be 2024-12-20 (start_date inclusive);
 -- MAX must be 2024-12-27 (end_date inclusive). NASA returns the window
--- literally — no off-by-one.
+-- literally, no off-by-one.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE distinct_dates = 8
@@ -51,7 +87,7 @@ SELECT
 FROM {{zone_name}}.space_imagery.apod_bronze;
 
 -- ============================================================================
--- Query 3: Christmas Day 2024 Present — fixed anchor date
+-- Query 3: Christmas Day 2024 Present, fixed anchor date
 -- ============================================================================
 -- APOD publishes every single day without gaps (15+ year streak).
 -- Asserting the Christmas-Day row exists in silver confirms the
@@ -80,7 +116,7 @@ SELECT
 FROM {{zone_name}}.space_imagery.apod_bronze;
 
 -- ============================================================================
--- Query 5: Media Type Enum — only 'image' or 'video'
+-- Query 5: Media Type Enum, only 'image' or 'video'
 -- ============================================================================
 -- APOD's media_type is a closed enum. The planetarium's exhibit player
 -- switches rendering logic based on this flag; an unknown value would
@@ -93,7 +129,7 @@ SELECT
 FROM {{zone_name}}.space_imagery.apod_silver;
 
 -- ============================================================================
--- Query 6: URL Scheme Sanity — every media_url is an http(s) URL
+-- Query 6: URL Scheme Sanity, every media_url is an http(s) URL
 -- ============================================================================
 
 ASSERT ROW_COUNT = 1
@@ -103,7 +139,7 @@ SELECT
 FROM {{zone_name}}.space_imagery.apod_silver;
 
 -- ============================================================================
--- Query 7: Silver Delta History — v0 schema + v1 INSERT
+-- Query 7: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 2

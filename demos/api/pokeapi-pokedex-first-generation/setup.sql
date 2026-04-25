@@ -1,11 +1,10 @@
 -- ============================================================================
--- Demo: Pokédex First-Generation Reference — Offset Pagination + CALL Preview
+-- Demo: Pokedex First-Generation Reference, Offset Pagination + CALL Preview
 -- Feature: pagination = 'offset' (offset_param, limit_param, limit, max_pages),
---          CALL API ENDPOINT ... LIMIT N PAGE, JSON flatten with nested
---          root_path = "$.results"
+--          JSON flatten with nested root_path = "$.results"
 -- ============================================================================
 --
--- Real-world story: a mobile game studio maintains an internal Pokédex
+-- Real-world story: a mobile game studio maintains an internal Pokedex
 -- reference catalog to power battle-balance analytics and in-game
 -- creature search. The battle team pulls the first 100 National Dex
 -- entries (Kanto-gen, Bulbasaur #1 through Voltorb #100) from PokeAPI,
@@ -13,25 +12,11 @@
 -- promotes to a typed silver Delta table with the integer dex_id
 -- extracted from each entry's detail URL.
 --
--- Pipeline:
---   1. Zone + schema    — bronze landing + game_ref schema
---   2. REST connection  — PokeAPI is public, auth_mode = 'none'
---   3. API endpoint     — URL '/api/v2/pokemon' with OFFSET pagination:
---                           pagination    = 'offset'
---                           offset_param  = 'offset'
---                           limit_param   = 'limit'
---                           limit         = '20'  (20 rows per page)
---                           max_pages     = '5'   (→ 5 × 20 = 100 rows)
---   4. CALL preview     — LIMIT 1 PAGE fetches one response body into an
---                           in-memory buffer and returns it as
---                           (_page_index, _raw_body). No file write, no
---                           run-log update — the authoring-loop
---                           affordance for previewing the wire format.
---   5. INVOKE           — engine walks offsets 0, 20, 40, 60, 80 and
---                           lands 5 JSON envelope files.
---   6. External table   — JSON flatten with root_path = "$.results" to
---                           pull each envelope's results[] into rows.
---   7. Silver Delta     — typed promotion; dex_id parsed from detail_url.
+-- This file declares the catalog objects only. The CALL preview, the
+-- INVOKE that drives the offset crawl, the run audit, the schema
+-- detection, and the bronze->silver promotion all live in queries.sql
+-- so the user can see in one place how an offset-paginated REST
+-- endpoint is driven from SQL.
 -- ============================================================================
 
 -- --------------------------------------------------------------------------
@@ -42,7 +27,7 @@ CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE EXTERNAL
     COMMENT 'Bronze landing zone for REST API ingests';
 
 CREATE SCHEMA IF NOT EXISTS {{zone_name}}.game_ref
-    COMMENT 'Game reference catalogs (Pokédex, moves, items)';
+    COMMENT 'Game reference catalogs (Pokedex, moves, items)';
 
 -- --------------------------------------------------------------------------
 -- 2. REST API connection (public, no auth)
@@ -60,7 +45,7 @@ CREATE CONNECTION IF NOT EXISTS pokedex_api
     );
 
 -- --------------------------------------------------------------------------
--- 3. API endpoint — OFFSET pagination
+-- 3. API endpoint, OFFSET pagination
 -- --------------------------------------------------------------------------
 -- Offset pagination pairs two query-string params: the engine increments
 -- the offset by `limit` each page until `max_pages` is reached. PokeAPI
@@ -81,31 +66,12 @@ CREATE API ENDPOINT {{zone_name}}.pokedex_api.first_generation
     );
 
 -- --------------------------------------------------------------------------
--- 4. CALL API ENDPOINT — preview the wire format, no disk write
--- --------------------------------------------------------------------------
--- Raw one-page preview. Returns (_page_index INT, _raw_body STRING) with
--- no flatten, no parse, no run-log update. Useful before authoring the
--- json_flatten_config so you know what shape you're flattening. When
--- LIMIT N PAGE is present the pagination engine stays active up to N
--- pages; this demo uses LIMIT 1 PAGE for the first-page-only sanity
--- check.
-
-CALL API ENDPOINT {{zone_name}}.pokedex_api.first_generation LIMIT 1 PAGE;
-
--- --------------------------------------------------------------------------
--- 5. INVOKE — actual HTTPS fetch across 5 pages
--- --------------------------------------------------------------------------
--- offsets 0, 20, 40, 60, 80 — each page writes one envelope file.
-
-INVOKE API ENDPOINT {{zone_name}}.pokedex_api.first_generation;
-
--- --------------------------------------------------------------------------
--- 6. External table — root_path = "$.results" for wrapped arrays
+-- 4. Bronze external table, root_path = "$.results" for wrapped arrays
 -- --------------------------------------------------------------------------
 -- PokeAPI wraps pages as {count, next, previous, results: [...]}. The
 -- flatten root_path dives into $.results so every entry in the array
 -- becomes one table row. include_paths and column_mappings are then
--- relative to each results[i] — `$.name`, `$.url`.
+-- relative to each results[i], `$.name`, `$.url`.
 
 CREATE EXTERNAL TABLE IF NOT EXISTS {{zone_name}}.game_ref.pokedex_bronze
 USING JSON
@@ -128,14 +94,12 @@ OPTIONS (
     }'
 );
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.game_ref.pokedex_bronze;
-
 -- --------------------------------------------------------------------------
--- 7. Silver Delta table — typed promotion with parsed dex_id
+-- 5. Silver Delta table, schema-only declaration
 -- --------------------------------------------------------------------------
--- The detail_url ends in `/pokemon/<n>/` — REGEXP_REPLACE strips the
--- prefix/suffix and CAST promotes the remaining digits to BIGINT. Now
--- the battle team can JOIN on dex_id without string parsing every query.
+-- The bronze->silver INSERT in queries.sql parses dex_id out of the
+-- detail_url with REGEXP_REPLACE + CAST so the battle team can JOIN
+-- on dex_id without string parsing every query.
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.game_ref.pokedex_silver (
     dex_id        BIGINT,
@@ -143,14 +107,3 @@ CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.game_ref.pokedex_silver (
     detail_url    STRING
 )
 LOCATION 'silver/pokedex_silver';
-
-INSERT INTO {{zone_name}}.game_ref.pokedex_silver
-SELECT
-    CAST(
-        REGEXP_REPLACE(detail_url, '^.*/pokemon/([0-9]+)/$', '\1')
-        AS BIGINT
-    )                AS dex_id,
-    pokemon_name,
-    detail_url
-FROM {{zone_name}}.game_ref.pokedex_bronze;
-

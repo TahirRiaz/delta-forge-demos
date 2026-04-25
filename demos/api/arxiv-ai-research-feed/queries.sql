@@ -1,16 +1,22 @@
 -- ============================================================================
--- Demo: arXiv AI Research Feed — Queries
+-- Demo: arXiv AI Research Feed, Queries
 -- ============================================================================
+-- This file is where the API endpoint is actually exercised. Registry
+-- inspection, INVOKE, run-history audit, schema detection, and the
+-- bronze->silver promotion all live here so the user sees in one place
+-- how an XML REST endpoint is driven from SQL, before the validation
+-- assertions that prove the XML response path landed cleanly.
+--
 -- Validates the XML response path end to end:
---   • Exactly 50 rows (max_results cap).
---   • All paper_urls are canonical http://arxiv.org/abs/... links.
---   • Every title, summary, and author_names field is non-empty — the
+--   - Exactly 50 rows (max_results cap).
+--   - All paper_urls are canonical http://arxiv.org/abs/... links.
+--   - Every title, summary, and author_names field is non-empty, the
 --     XML flatten did not drop required elements.
---   • published_at matches Atom's RFC-3339 shape (`YYYY-MM-DDTHH:MM:SSZ`).
---   • At least one paper has multiple authors (the "," separator from
---     join_comma is visible in author_names) — proving the repeat
+--   - published_at matches Atom's RFC-3339 shape (`YYYY-MM-DDTHH:MM:SSZ`).
+--   - At least one paper has multiple authors (the "," separator from
+--     join_comma is visible in author_names), proving the repeat
 --     handling fired and wasn't dropped.
---   • Bronze ↔ silver promotion preserved every row.
+--   - Bronze <-> silver promotion preserved every row.
 --
 -- Upstream stability: arXiv's Atom API has been stable for 15+ years and
 -- the cs.AI category has hundreds of new submissions per week, so
@@ -19,7 +25,37 @@
 -- ============================================================================
 
 -- ============================================================================
--- Query 1: Full-Corpus Row Count — 50 entries returned
+-- API surface, calling the endpoint from SQL
+-- ============================================================================
+
+-- Inspect the endpoint catalog row before invoking.
+DESCRIBE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest;
+
+-- INVOKE issues the actual HTTPS GET. One request, one .xml file
+-- written under the per-run timestamped folder. No pagination because
+-- max_results = 50 caps the response in one call.
+INVOKE API ENDPOINT {{zone_name}}.arxiv_api.cs_ai_latest;
+
+-- Per-run audit row, includes status, files_written, bytes_written.
+SHOW API ENDPOINT RUNS {{zone_name}}.arxiv_api.cs_ai_latest LIMIT 5;
+
+-- Resolve the bronze schema from the freshly written XML.
+DETECT SCHEMA FOR TABLE {{zone_name}}.research_intel.arxiv_bronze;
+
+-- Bronze -> silver promotion. Silver is the curated layer downstream
+-- digest tools point at.
+INSERT INTO {{zone_name}}.research_intel.arxiv_silver
+SELECT
+    paper_url,
+    title,
+    published_at,
+    updated_at,
+    summary,
+    author_names
+FROM {{zone_name}}.research_intel.arxiv_bronze;
+
+-- ============================================================================
+-- Query 1: Full-Corpus Row Count, 50 entries returned
 -- ============================================================================
 -- max_results=50 in the URL pins the response. If bronze shows anything
 -- else, either the XML flatten dropped an entry (row_xpath mis-matched
@@ -32,7 +68,7 @@ SELECT COUNT(*) AS paper_count
 FROM {{zone_name}}.research_intel.arxiv_bronze;
 
 -- ============================================================================
--- Query 2: Paper-URL Distinctness — 50 unique IDs
+-- Query 2: Paper-URL Distinctness, 50 unique IDs
 -- ============================================================================
 -- Every arXiv paper has a unique `http://arxiv.org/abs/YYMM.NNNNN[vN]`
 -- identifier. COUNT(DISTINCT) = 50 proves no duplicate entries landed.
@@ -43,7 +79,7 @@ SELECT COUNT(DISTINCT paper_url) AS distinct_papers
 FROM {{zone_name}}.research_intel.arxiv_bronze;
 
 -- ============================================================================
--- Query 3: XML Flatten Field Coverage — every required field present
+-- Query 3: XML Flatten Field Coverage, every required field present
 -- ============================================================================
 -- The arXiv API guarantees title / summary / author / id on every entry.
 -- If the flatten mis-mapped a path (e.g., lost the namespace binding),
@@ -62,12 +98,12 @@ SELECT
 FROM {{zone_name}}.research_intel.arxiv_silver;
 
 -- ============================================================================
--- Query 4: Timestamp Shape — Atom RFC-3339
+-- Query 4: Timestamp Shape, Atom RFC-3339
 -- ============================================================================
 -- Atom `<published>` and `<updated>` serialize as `YYYY-MM-DDTHH:MM:SSZ`.
 -- LIKE with `_` placeholders asserts the shape without assuming any
 -- specific year/month. If arXiv ever switched to a different timezone
--- format this would flip — a real regression worth catching.
+-- format this would flip, a real regression worth catching.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE iso_published = 50
@@ -80,7 +116,7 @@ FROM {{zone_name}}.research_intel.arxiv_bronze;
 -- ============================================================================
 -- cs.AI papers routinely have 2-8 co-authors. Asserting that at least
 -- one row's author_names contains a comma proves the XML flatten's
--- `default_repeat_handling = "join_comma"` activated — a regression
+-- `default_repeat_handling = "join_comma"` activated, a regression
 -- here would surface as every author_names being a single name.
 
 ASSERT ROW_COUNT = 1
@@ -91,10 +127,10 @@ SELECT
 FROM {{zone_name}}.research_intel.arxiv_silver;
 
 -- ============================================================================
--- Query 6: Bronze ↔ Silver Parity
+-- Query 6: Bronze <-> Silver Parity
 -- ============================================================================
--- The bronze→silver promotion in setup copies bronze verbatim. Row
--- counts must match; the delta must be zero.
+-- The bronze->silver promotion above copies bronze verbatim. Row counts
+-- must match; the delta must be zero.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE silver_count = 50
@@ -105,7 +141,7 @@ SELECT
         - (SELECT COUNT(*) FROM {{zone_name}}.research_intel.arxiv_silver) AS bronze_silver_delta;
 
 -- ============================================================================
--- Query 7: Silver Delta History — v0 schema + v1 INSERT
+-- Query 7: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 
 ASSERT ROW_COUNT >= 2

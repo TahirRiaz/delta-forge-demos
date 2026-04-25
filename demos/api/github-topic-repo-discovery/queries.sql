@@ -1,17 +1,23 @@
 -- ============================================================================
--- Demo: GitHub Topic Repo Discovery — Queries
+-- Demo: GitHub Topic Repo Discovery, Queries
 -- ============================================================================
+-- This file is where the API endpoint is actually exercised. Inspection,
+-- the INVOKE FULL REFRESH that drives the link-header crawl, the
+-- per-run audit, schema detection, and the bronze->silver promotion
+-- all live here so the user sees in one place how a link-header
+-- paginated REST endpoint is driven from SQL.
+--
 -- Validates link-header pagination + FULL REFRESH + nested-flatten on
 -- GitHub search responses:
---   • Exactly 90 rows (30 per page × 3 pages, bounded by max_pages).
---   • Every row has a distinct repo_id and full_name (the search API
+--   - Exactly 90 rows (30 per page x 3 pages, bounded by max_pages).
+--   - Every row has a distinct repo_id and full_name (the search API
 --     never returns duplicates across pages of a single sort order).
---   • Every html_url is a github.com URL (SSRF guard proof).
---   • Every full_name is `owner/repo` shaped (has a slash) — the
+--   - Every html_url is a github.com URL (SSRF guard proof).
+--   - Every full_name is `owner/repo` shaped (has a slash), the
 --     flatten preserved GitHub's canonical name format.
---   • Star counts are all non-negative; max > 0 (topic has >= 1 popular
---     repo — Delta Lake's home).
---   • Most rows are original repos, not forks.
+--   - Star counts are all non-negative; max > 0 (topic has >= 1 popular
+--     repo, Delta Lake's home).
+--   - Most rows are original repos, not forks.
 --
 -- Stability note: the GitHub search API surface and shape are stable,
 -- but star counts drift daily. Assertions that would flake (exact star
@@ -20,7 +26,44 @@
 -- ============================================================================
 
 -- ============================================================================
--- Query 1: Page Budget — 30 per page × 3 pages = 90 rows
+-- API surface, calling the endpoint from SQL
+-- ============================================================================
+
+-- Inspect the endpoint catalog row before invoking.
+DESCRIBE API ENDPOINT {{zone_name}}.github_search_api.delta_lake_topic;
+
+-- INVOKE ... FULL REFRESH is replace-mode, not incremental. FULL REFRESH
+-- reseeds the watermark state the engine tracks across runs. For this
+-- endpoint there's no watermark config (a topic search isn't
+-- time-keyed), but FULL REFRESH still records in the run log that the
+-- caller asked for a clean start, downstream consumers can decide to
+-- truncate-and-insert silver instead of merge-on-key. For endpoints
+-- with a watermark this is the "replay the whole history" button; for
+-- this one it's the "start over" signal.
+INVOKE API ENDPOINT {{zone_name}}.github_search_api.delta_lake_topic FULL REFRESH;
+
+-- Per-run audit row.
+SHOW API ENDPOINT RUNS {{zone_name}}.github_search_api.delta_lake_topic LIMIT 5;
+
+-- Resolve the bronze schema from the freshly written JSON pages.
+DETECT SCHEMA FOR TABLE {{zone_name}}.oss_intel.delta_lake_repos_bronze;
+
+-- Bronze -> silver promotion with typed BIGINT + BOOLEAN columns.
+INSERT INTO {{zone_name}}.oss_intel.delta_lake_repos_silver
+SELECT
+    CAST(repo_id AS BIGINT)     AS repo_id,
+    full_name,
+    owner_login,
+    CAST(stars AS BIGINT)       AS stars,
+    CAST(forks AS BIGINT)       AS forks,
+    language,
+    CAST(is_archived AS BOOLEAN) AS is_archived,
+    CAST(is_fork AS BOOLEAN)    AS is_fork,
+    html_url
+FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze;
+
+-- ============================================================================
+-- Query 1: Page Budget, 30 per page x 3 pages = 90 rows
 -- ============================================================================
 -- max_pages = 3 is the hard cap. The `topic:delta-lake` search returns
 -- far more than 90 matches, so the crawl is guaranteed bounded. Any
@@ -33,7 +76,7 @@ SELECT COUNT(*) AS repo_count
 FROM {{zone_name}}.oss_intel.delta_lake_repos_bronze;
 
 -- ============================================================================
--- Query 2: Search-API Distinctness — no duplicates across pages
+-- Query 2: Search-API Distinctness, no duplicates across pages
 -- ============================================================================
 -- GitHub's search API guarantees a single consistent ordering for a
 -- fixed query+sort; a repo never appears on two pages. COUNT(DISTINCT)
@@ -66,12 +109,12 @@ SELECT
 FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
 
 -- ============================================================================
--- Query 4: Star-Count Sanity — BIGINT typed column, non-negative
+-- Query 4: Star-Count Sanity, BIGINT typed column, non-negative
 -- ============================================================================
 -- Silver's BIGINT stars column lets the report do `ORDER BY stars DESC`
 -- natively. MIN >= 0 proves no negative leaked through the CAST (which
 -- would have been a flatten regression). MAX > 0 proves at least one
--- repo has stars — trivially true for a search sorted by stars desc.
+-- repo has stars, trivially true for a search sorted by stars desc.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE min_stars_non_negative = 1
@@ -82,7 +125,7 @@ SELECT
 FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
 
 -- ============================================================================
--- Query 5: Fork Majority — the topic is dominated by originals
+-- Query 5: Fork Majority, the topic is dominated by originals
 -- ============================================================================
 -- Sorting by stars desc pushes the topic's canonical repos to the top;
 -- forks don't accumulate stars independently. The top 90 is
@@ -98,10 +141,10 @@ SELECT
 FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
 
 -- ============================================================================
--- Query 6: full_name Shape Invariant — every name is `owner/repo`
+-- Query 6: full_name Shape Invariant, every name is `owner/repo`
 -- ============================================================================
 -- GitHub full names are always `<owner>/<repo>`. Asserting every row
--- matches `%/%` proves the flatten preserved the string intact — no
+-- matches `%/%` proves the flatten preserved the string intact, no
 -- trimming, no splitting.
 
 ASSERT ROW_COUNT = 1
@@ -111,7 +154,7 @@ SELECT
 FROM {{zone_name}}.oss_intel.delta_lake_repos_silver;
 
 -- ============================================================================
--- Query 7: Silver Delta History — v0 schema + v1 INSERT
+-- Query 7: Silver Delta History, v0 schema + v1 INSERT
 -- ============================================================================
 -- CREATE DELTA TABLE (v0) + INSERT FROM SELECT (v1). Subsequent
 -- refreshes would add another version each time.
@@ -124,7 +167,7 @@ DESCRIBE HISTORY {{zone_name}}.oss_intel.delta_lake_repos_silver;
 -- ============================================================================
 -- One cross-cutting query covering every invariant: row count, distinct
 -- repos, github.com-only URLs, owner/repo shape, non-negative stars,
--- and bronze↔silver row parity.
+-- and bronze<->silver row parity.
 
 ASSERT ROW_COUNT = 1
 ASSERT VALUE total_repos = 90
