@@ -2609,6 +2609,51 @@
       ]
     },
     {
+      "id": "delta-odbc-type-coverage",
+      "path": "demos/delta/delta-odbc-type-coverage",
+      "iconPath": "icons/delta-odbc-type-coverage.svg",
+      "name": "Global Logistics Shipment Telemetry: Full Type Coverage for ODBC",
+      "summary": "Single Delta table that exercises every primitive and complex type Delta Forge supports, sized as a real BI workload (200 shipment rows, 34 columns) so ODBC clients such as Power BI, Tableau, DBeaver, and Excel can issue meaningful SELECT, GROUP BY, time-series, struct-projection, and collection-size queries against it. Built as the canonical fixture for ODBC driver type-mapping development: TINYINT/SMALLINT/INT/BIGINT, FLOAT/DOUBLE, DECIMAL(15,4) and DECIMAL(6,5), STRING/VARCHAR/CHAR/TEXT/JSON, BOOLEAN, BINARY/BYTES/BYTEA, DATE/TIME/TIME64/TIMESTAMP/TIMESTAMP_NTZ, ARRAY<INT>/ARRAY<STRING>/ARRAY<DOUBLE>, MAP<STRING,STRING> and MAP<STRING,INT>, plus three STRUCT shapes including one nested with an ARRAY field.",
+      "categories": [
+        "delta-table",
+        "data-types",
+        "odbc",
+        "bi"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "odbc",
+        "powerbi",
+        "tableau",
+        "dbeaver",
+        "excel",
+        "data-types",
+        "type-mapping",
+        "struct",
+        "array",
+        "map",
+        "decimal",
+        "timestamp",
+        "binary",
+        "bi",
+        "logistics"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 12,
+      "dataSizeBytes": 0,
+      "fileCount": 4,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-26T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.bi_demos.shipments_full_types"
+        }
+      ]
+    },
+    {
       "id": "delta-optimize-compaction",
       "path": "demos/delta/delta-optimize-compaction",
       "iconPath": "icons/delta-optimize-compaction.svg",
