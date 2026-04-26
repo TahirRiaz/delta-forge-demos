@@ -291,8 +291,9 @@ INSERT INTO {{zone_name}}.bi_demos.shipments_full_types VALUES
 
 
 -- ----------------------------------------------------------------------------
--- Schema detection & permissions
+-- Schema detection
 -- ----------------------------------------------------------------------------
+-- The creating user is automatically granted ADMIN, so no explicit GRANT is
+-- needed.
 
 DETECT SCHEMA FOR TABLE {{zone_name}}.bi_demos.shipments_full_types;
-GRANT ADMIN ON TABLE {{zone_name}}.bi_demos.shipments_full_types TO USER {{current_user}};
