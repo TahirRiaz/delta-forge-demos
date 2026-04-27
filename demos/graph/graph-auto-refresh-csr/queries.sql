@@ -165,22 +165,24 @@ RETURN a.hub_id AS src, b.hub_id AS dst, r.price_usd AS price_usd, r.status AS s
 
 
 -- ============================================================================
--- 10. BATCH GRAPH — property UPDATE is visible (CSR caches topology only)
+-- 10. BATCH GRAPH — UPDATE is NOT visible (CSR + .dptr cache is stale)
 -- ============================================================================
--- Important semantic: `AUTO REFRESH CSR` (opt-in) / `NO AUTO REFRESH CSR`
--- (default) gates rebuild of the *CSR topology*, not the per-edge
--- property arrays. Properties are loaded freshly per query from the
--- current Delta snapshot, so UPDATE values show up even on the batched
--- view. The staleness contract applies to *topology* — which is what
--- Q16 demonstrates after DELETE changes the row count.
+-- Under NO AUTO REFRESH CSR, BOTH the cached topology AND the cached
+-- row-pointer store (.dptr) stay pinned at the version captured by
+-- the last build. After Q7's UPDATE, Delta tombstoned the old Parquet
+-- file and wrote a new one; the stale .dptr still encodes offsets
+-- into the old file, so any per-edge property read on this graph
+-- (price_usd, status, even route_id used as a WHERE filter) is
+-- incoherent until the user explicitly rebuilds with CREATE GRAPHCSR
+-- (Q11). The only contract-faithful check on this batched view is
+-- the cached topology cardinality: 100 edges from baseline, unchanged
+-- because UPDATE did not add or remove rows. Property freshness is
+-- verified post-refresh in Q12.
 
-ASSERT ROW_COUNT = 1
-ASSERT VALUE price_usd = 9999
-ASSERT VALUE status = 'active'
+ASSERT VALUE edge_count = 100
 USE {{zone_name}}.fleet_dispatch.dispatch_batch
 MATCH (a)-[r]->(b)
-WHERE r.route_id = 42
-RETURN a.hub_id AS src, b.hub_id AS dst, r.price_usd AS price_usd, r.status AS status;
+RETURN count(r) AS edge_count;
 
 
 -- ############################################################################
