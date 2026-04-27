@@ -304,5 +304,5 @@ DETECT SCHEMA FOR TABLE {{zone_name}}.bi_demos.shipments_full_types;
 -- Required by ODBC clients that exercise view-backed query paths (e.g. Power
 -- BI / Tableau metadata discovery, catalog-routed SELECTs through a view).
 
-CREATE VIEW IF NOT EXISTS {{zone_name}}.bi_demos.v_shipments_full_types AS
+CREATE OR REPLACE VIEW {{zone_name}}.bi_demos.v_shipments_full_types AS
 SELECT * FROM {{zone_name}}.bi_demos.shipments_full_types;
