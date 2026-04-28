@@ -406,10 +406,18 @@ SELECT
     CAST(rn % 1000000 AS DECIMAL(38,9)) + CAST(0.000000001 AS DECIMAL(38,9))             AS d_d,
     DATE '2000-01-01' + CAST(rn % 18250 AS INT)                                          AS dt_a,
     DATE '1970-01-01' + CAST(rn % 36500 AS INT)                                          AS dt_b,
-    TIMESTAMP '2025-01-01 00:00:00' + (CAST(rn % 86400 AS INT) * INTERVAL '1 second')    AS ts_a,
-    TIMESTAMP '2030-06-15 12:00:00' - (CAST(rn % 86400 AS INT) * INTERVAL '1 second')    AS ts_b,
-    TIME '00:00:00' + (CAST(rn % 86400 AS INT) * INTERVAL '1 second')                    AS tm_a,
-    TIME '12:00:00' + (CAST(rn % 43200 AS INT) * INTERVAL '1 second')                    AS tm_b
+    to_timestamp(to_unix_timestamp(TIMESTAMP '2025-01-01 00:00:00') + CAST(rn % 86400 AS BIGINT))    AS ts_a,
+    to_timestamp(to_unix_timestamp(TIMESTAMP '2030-06-15 12:00:00') - CAST(rn % 86400 AS BIGINT))    AS ts_b,
+    make_time(
+        CAST((rn % 86400) / 3600 AS INT),
+        CAST(((rn % 86400) % 3600) / 60 AS INT),
+        CAST((rn % 86400) % 60 AS DOUBLE)
+    )                                                                                                AS tm_a,
+    make_time(
+        CAST((43200 + rn % 43200) / 3600 AS INT),
+        CAST(((43200 + rn % 43200) % 3600) / 60 AS INT),
+        CAST((43200 + rn % 43200) % 60 AS DOUBLE)
+    )                                                                                                AS tm_b
 FROM (
     SELECT a.v * 1000000 + b.v AS rn
     FROM generate_series(0, 4) AS a(v)
@@ -467,8 +475,8 @@ SELECT
     CASE WHEN rn % 20 = 0 THEN DATE '2000-01-01' + CAST(rn % 18250 AS INT) ELSE NULL END,
     CASE WHEN rn % 20 = 0 THEN DATE '1970-01-01' + CAST((rn * 3) % 36500 AS INT) ELSE NULL END,
     CASE WHEN rn % 20 = 0 THEN DATE '2025-01-01' + CAST(rn % 1000 AS INT) ELSE NULL END,
-    CASE WHEN rn % 20 = 0 THEN TIMESTAMP '2025-01-01 00:00:00' + (CAST(rn % 86400 AS INT) * INTERVAL '1 second') ELSE NULL END,
-    CASE WHEN rn % 20 = 0 THEN TIMESTAMP '2030-06-15 12:00:00' - (CAST(rn % 86400 AS INT) * INTERVAL '1 second') ELSE NULL END,
+    CASE WHEN rn % 20 = 0 THEN to_timestamp(to_unix_timestamp(TIMESTAMP '2025-01-01 00:00:00') + CAST(rn % 86400 AS BIGINT)) ELSE NULL END,
+    CASE WHEN rn % 20 = 0 THEN to_timestamp(to_unix_timestamp(TIMESTAMP '2030-06-15 12:00:00') - CAST(rn % 86400 AS BIGINT)) ELSE NULL END,
     CASE WHEN rn % 20 = 0 THEN rn % 2 = 0 ELSE NULL END
 FROM (
     SELECT a.v * 1000000 + b.v AS rn
