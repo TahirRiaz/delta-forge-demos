@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.acme
 
 -- --------------------------------------------------------------------------
 -- Table 1: acme.market_ticks
--- 50M-row equity tick stream. 8 cols, all INT64/DOUBLE, no nulls.
+-- 100M-row equity tick stream. 8 cols, all INT64/DOUBLE, no nulls.
 -- Stresses driver upper bound: pure decode + memcpy. Speed-of-light baseline.
 -- --------------------------------------------------------------------------
 
@@ -255,7 +255,7 @@ TBLPROPERTIES (
 -- ==========================================================================
 
 -- --------------------------------------------------------------------------
--- Populate acme.market_ticks (50M rows). tick_id ranges 1..50_000_000.
+-- Populate acme.market_ticks (100M rows). tick_id ranges 1..100_000_000.
 -- --------------------------------------------------------------------------
 
 INSERT INTO {{zone_name}}.acme.market_ticks
@@ -270,7 +270,7 @@ SELECT
     SQRT(CAST(rn AS DOUBLE)) AS vwap_volatility_score
 FROM (
     SELECT a.v * 1000000 + b.v AS rn
-    FROM generate_series(0, 49) AS a(v)
+    FROM generate_series(0, 99) AS a(v)
     CROSS JOIN generate_series(1, 1000000) AS b(v)
 ) t;
 

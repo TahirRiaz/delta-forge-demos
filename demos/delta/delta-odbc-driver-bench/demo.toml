@@ -1,7 +1,7 @@
 [demo]
 id = "delta-odbc-driver-bench"
 name = "ACME Corporation Production Warehouse (ODBC Driver Wire Benchmark)"
-version = "2.1.0"
+version = "2.2.0"
 author = "DeltaForge Team"
 description = """
 Ten realistic operational tables that double as a deterministic ODBC \
@@ -11,9 +11,9 @@ regression on byte counts or throughput points at one code path. Every \
 cell is row_number-derived: two runs are bit-identical and any drift is \
 real, not noise.
 
-Tables (~70.65M rows total (Large tier), scaled to stay under Arrow's 2GB \
+Tables (~120.65M rows total (XL tier), scaled to stay under Arrow's 2GB \
 i32 string-offset limit):
-- acme.market_ticks (50M rows): equity tick stream, 8 INT64/DOUBLE cols, \
+- acme.market_ticks (100M rows): equity tick stream, 8 INT64/DOUBLE cols, \
   speed-of-light memcpy baseline.
 - acme.manufacturing_runs (2M rows): plant run snapshots, 60 fixed-width \
   primitive sensor cols, per-cell overhead and column slab cache.
@@ -70,7 +70,7 @@ tags = [
     "forum"
 ]
 difficulty = "advanced"
-estimated_time_minutes = 25
+estimated_time_minutes = 35
 
 [demo.variables]
 data_path = { description = "Root path where Delta table data is stored", required = true }

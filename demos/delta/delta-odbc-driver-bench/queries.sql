@@ -7,14 +7,14 @@
 -- ============================================================================
 -- Query 1: acme.market_ticks row + sum + spot-check
 -- ============================================================================
--- 50M-row equity tick stream. SUM(tick_id) closed form
--- = N*(N+1)/2 = 50_000_000 * 50_000_001 / 2 = 1_250_000_025_000_000.
+-- 100M-row equity tick stream. SUM(tick_id) closed form
+-- = N*(N+1)/2 = 100_000_000 * 100_000_001 / 2 = 5_000_000_050_000_000.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 50000000
-ASSERT VALUE sum_tick_id = 1250000025000000
+ASSERT VALUE n_rows = 100000000
+ASSERT VALUE sum_tick_id = 5000000050000000
 ASSERT VALUE min_tick_id = 1
-ASSERT VALUE max_tick_id = 50000000
+ASSERT VALUE max_tick_id = 100000000
 SELECT
     COUNT(*) AS n_rows,
     SUM(tick_id) AS sum_tick_id,
@@ -25,7 +25,7 @@ FROM {{zone_name}}.acme.market_ticks;
 -- ============================================================================
 -- Query 2: acme.market_ticks per-cell spot-check at tick_id=12_345_678
 -- ============================================================================
--- Mid-table check (tick_id well inside the 50M range). Pins exact values
+-- Mid-table check (tick_id well inside the 100M range). Pins exact values
 -- for every column so a wire-decode or cast regression on INT64/DOUBLE
 -- drops out immediately. 12345678 % 1024 = 334 because 12056 * 1024 =
 -- 12345344 and 12345678 - 12345344 = 334.
@@ -332,7 +332,7 @@ ORDER BY post_id;
 
 ASSERT ROW_COUNT = 10
 ASSERT RESULT SET INCLUDES
-    ('market_ticks',         50000000, 1250000025000000),
+    ('market_ticks',        100000000, 5000000050000000),
     ('manufacturing_runs',    2000000,    2000001000000),
     ('support_tickets',       5000000,   12500002500000),
     ('product_catalog',       1000000,     500000500000),
