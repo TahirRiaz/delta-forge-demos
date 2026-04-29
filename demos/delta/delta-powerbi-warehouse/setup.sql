@@ -429,8 +429,8 @@ SELECT
         ELSE 4
     END AS INT)                                                         AS fiscal_quarter,
     dayofweek(d) IN (1, 7)                                              AS is_weekend,
-    d = last_dayofmonth(d)                                                     AS is_month_end,
-    d = last_dayofmonth(d) AND month(d) IN (3, 6, 9, 12)                       AS is_quarter_end,
+    d = last_day(d)                                                     AS is_month_end,
+    d = last_day(d) AND month(d) IN (3, 6, 9, 12)                       AS is_quarter_end,
     month(d) = 12 AND dayofmonth(d) = 31                                       AS is_year_end,
     (month(d) = 1  AND dayofmonth(d) = 1)
         OR (month(d) = 7  AND dayofmonth(d) = 4)
