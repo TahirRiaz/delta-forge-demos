@@ -1,0 +1,127 @@
+[demo]
+id = "delta-powerbi-warehouse"
+name = "Pacific Retail Group: Power BI Star Warehouse Benchmark"
+version = "1.0.0"
+author = "DeltaForge Team"
+description = """
+A production-grade star-schema retail warehouse sized for serious Power BI \
+benchmarking. Pacific Retail Group is a fictional global multi-channel \
+retailer whose finance team builds Power BI dashboards over sales, \
+inventory, and clickstream data. The demo provisions four wide \
+dimensions and three wide fact tables totalling roughly 506 million rows \
+and 265 columns of realistic, deterministic data: real-looking customer \
+names, addresses, product hierarchies, store banners, sales channels, \
+loyalty tiers, fiscal periods, and clickstream event types, generated \
+through array lookups rather than md5 hashes or row*0.5 placeholders.
+
+Tables (~506.03M rows total):
+- retail.dim_date (7,305 rows, 24 cols): standard PBI date table covering \
+  2010-01-01 through 2029-12-31. Year, quarter, month, week, day, fiscal \
+  attributes, weekend / month-end / quarter-end / year-end / holiday flags, \
+  season label.
+- retail.dim_store (25,000 rows, 30 cols): physical and online store master. \
+  Banner, format, region, district, division, geography, square footage, \
+  manager, employee count, lease, capability flags.
+- retail.dim_product (1,000,000 rows, 36 cols): product master with three \
+  category levels, brand, manufacturer, color, size, dimensions, cost / \
+  list / msrp, supplier, country of origin, lifecycle dates, ABC class.
+- retail.dim_customer (5,000,000 rows, 40 cols): customer master with \
+  salutation, first / middle / last name, email, phone, demographic bands, \
+  full address, geography, signup channel, loyalty tier and points, \
+  lifetime metrics, churn risk, segment.
+- retail.fact_sales (200,000,000 rows, 75 cols): order-line grain. Foreign \
+  keys to all four dims, three timestamp pairs (order, ship, delivery), \
+  twenty-plus money / quantity measures, channel and payment status flags, \
+  and fifteen denormalized customer / product / store columns so Power BI \
+  Import can slice without joining (a real PBI star-schema pattern).
+- retail.fact_inventory_snapshot (100,000,000 rows, 28 cols): daily \
+  store-and-product snapshots. On-hand, on-order, in-transit, allocated, \
+  available, days of supply, reorder point, valuation, shrink, sell-through.
+- retail.fact_web_events (200,000,000 rows, 32 cols): clickstream event \
+  log. Session, customer, event type, page hierarchy, UTM attribution, \
+  device, browser, OS, geography, time-on-page, conversion value, search.
+
+Every fact table sets delta.targetFileSize = 157286400 (150 MB) so the \
+writer produces predictable Parquet file sizes that align with Power BI \
+Import refresh, partition pruning, and DirectQuery scan behaviour. 150 MB \
+is large enough to amortise per-file overhead on Power Query yet small \
+enough that parallel scan dispatch is not bottlenecked.
+
+This demo intentionally takes hours to set up, not minutes. It is meant for \
+serious benchmark, regression, and Power BI proof-of-concept work, not for \
+quick tutorials. For a smaller deterministic ODBC wire regression suite see \
+the sibling demo delta-odbc-driver-bench.
+
+What the queries exercise (mirrors what Power BI itself emits):
+- Time-intelligence aggregations (year, quarter, month, day-of-week)
+- Top-N reports (top customers, top products, top stores by revenue)
+- Multi-dimension joins (fact_sales x dim_customer x dim_product)
+- Segment slicing (loyalty tier, region, store format, channel, country)
+- Window functions for running totals and rankings
+- DISTINCTCOUNT-style cardinality checks for slicer pickers
+- Closed-form integrity checks on row counts and BIGINT key sums
+"""
+categories = ["delta-table", "benchmark", "power-bi", "star-schema"]
+tags = [
+    "delta-table",
+    "advanced",
+    "benchmark",
+    "power-bi",
+    "powerbi",
+    "odbc",
+    "star-schema",
+    "wide-tables",
+    "real-world-scenarios",
+    "retail",
+    "ecommerce",
+    "warehouse",
+    "dimensional-modelling",
+    "kimball",
+    "fact-table",
+    "dimension-table",
+    "time-intelligence",
+    "aggregation",
+    "directquery",
+    "import-mode",
+    "deterministic",
+    "150mb-files",
+    "parquet-tuning",
+    "bi",
+    "dashboard",
+    "clickstream",
+    "inventory",
+]
+difficulty = "advanced"
+estimated_time_minutes = 240
+
+[demo.variables]
+data_path = { description = "Root path where Delta table data is stored", required = true }
+zone_name = { description = "Target zone name for tables", required = false }
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.dim_date"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.dim_store"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.dim_product"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.dim_customer"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.fact_sales"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.fact_inventory_snapshot"
+
+[[demo.target_objects]]
+type = "delta_table"
+name = "{{zone_name}}.retail.fact_web_events"

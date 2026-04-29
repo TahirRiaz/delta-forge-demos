@@ -3111,6 +3111,85 @@
       ]
     },
     {
+      "id": "delta-powerbi-warehouse",
+      "path": "demos/delta/delta-powerbi-warehouse",
+      "iconPath": "icons/delta-powerbi-warehouse.svg",
+      "name": "Pacific Retail Group: Power BI Star Warehouse Benchmark",
+      "summary": "A production-grade star-schema retail warehouse sized for serious Power BI benchmarking. Pacific Retail Group is a fictional global multi-channel retailer; the demo provisions four wide dimensions and three wide fact tables totalling roughly 506 million rows and 265 columns of realistic deterministic data: customer names, addresses, product hierarchies, store banners, sales channels, loyalty tiers, fiscal periods, and clickstream event types generated through array lookups instead of md5 hashes. fact_sales is 200M rows x 75 columns at order-line grain (FKs to all four dims, three timestamp pairs, twenty-plus money/quantity measures, plus fifteen denormalized customer/product/store columns so PBI Import slicers do not require joins). fact_inventory_snapshot is 100M rows x 28 columns of daily store-and-product snapshots. fact_web_events is 200M rows x 32 columns of clickstream. Every fact sets delta.targetFileSize = 157286400 (150 MB) so Parquet files align with Power BI Import refresh, partition pruning, and DirectQuery scan behaviour. Setup runs in hours, not minutes; intended for benchmark and Power BI proof-of-concept work, not for tutorials.",
+      "categories": [
+        "delta-table",
+        "benchmark",
+        "power-bi",
+        "star-schema"
+      ],
+      "tags": [
+        "delta-table",
+        "advanced",
+        "benchmark",
+        "power-bi",
+        "powerbi",
+        "odbc",
+        "star-schema",
+        "wide-tables",
+        "real-world-scenarios",
+        "retail",
+        "ecommerce",
+        "warehouse",
+        "dimensional-modelling",
+        "kimball",
+        "fact-table",
+        "dimension-table",
+        "time-intelligence",
+        "aggregation",
+        "directquery",
+        "import-mode",
+        "deterministic",
+        "150mb-files",
+        "parquet-tuning",
+        "bi",
+        "dashboard",
+        "clickstream",
+        "inventory"
+      ],
+      "difficulty": "advanced",
+      "estimatedTimeMinutes": 240,
+      "dataSizeBytes": 0,
+      "fileCount": 0,
+      "author": "DeltaForge Team",
+      "version": "1.0.0",
+      "updatedAt": "2026-04-29T12:00:00Z",
+      "targetObjects": [
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.dim_date"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.dim_store"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.dim_product"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.dim_customer"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.fact_sales"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.fact_inventory_snapshot"
+        },
+        {
+          "objectType": "delta_table",
+          "name": "{{zone_name}}.retail.fact_web_events"
+        }
+      ]
+    },
+    {
       "id": "delta-protocol-feature-inspection",
       "path": "demos/delta/delta-protocol-feature-inspection",
       "iconPath": "icons/delta-protocol-feature-inspection.svg",
