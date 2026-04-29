@@ -2613,7 +2613,7 @@
       "path": "demos/delta/delta-odbc-driver-bench",
       "iconPath": "icons/delta-odbc-driver-bench.svg",
       "name": "ACME Corporation Production Warehouse (ODBC Driver Wire Benchmark)",
-      "summary": "Ten realistic operational tables that double as a deterministic ODBC wire-benchmark suite, ~3.27M rows total. Every cell is row_number-derived (bit-identical between runs); each table targets 128 MB Parquet files (delta.targetFileSize=134217728) for predictable Power Query / Power BI partition refresh behaviour. Tables: market_ticks (1M rows, equity tick stream, 8 INT64/DOUBLE cols, memcpy baseline), manufacturing_runs (100K rows, plant snapshots, 60 fixed-width sensor cols), support_tickets (500K rows, 5 text cols at 30% NULL, UTF-8 hot path), product_catalog (100K rows, 40 i18n locale cols at 5% NULL), knowledge_articles (10K rows, 4 cols of 6.4KB cells for SQLGetData chunked reads), document_archive (5K rows, BINARY 32B-32KB for SQL_C_BINARY chunked truncation), banking_transactions (500K rows, DECIMAL(38,9) plus DATE/TIMESTAMP/TIME), shipment_orders (50K rows, nested STRUCT/ARRAY/MAP), patient_records (500K rows, 30 sparse extension cols at 95% NULL), forum_posts (500K rows, 99% short + 1% 100KB essays). Assertions are closed-form math, never engine round trips: 17 query blocks plus a final cross-table verification. A standalone extras/huge_fixed_narrow_200m.sql script creates a separate 200M-row table for stress-testing writer and ODBC throughput at memcpy scale.",
+      "summary": "Ten realistic operational tables that double as a deterministic ODBC wire-benchmark suite, ~70.65M rows total (Large tier). Every cell is row_number-derived (bit-identical between runs); each table targets 128 MB Parquet files (delta.targetFileSize=134217728) for predictable Power Query / Power BI partition refresh behaviour. Tables: market_ticks (50M rows, equity tick stream, 8 INT64/DOUBLE cols, memcpy baseline), manufacturing_runs (2M rows, plant snapshots, 60 fixed-width sensor cols), support_tickets (5M rows, 5 text cols at 30% NULL, UTF-8 hot path), product_catalog (1M rows, 40 i18n locale cols at 5% NULL), knowledge_articles (100K rows, 4 cols of 6.4KB cells for SQLGetData chunked reads), document_archive (50K rows, BINARY 32B-32KB for SQL_C_BINARY chunked truncation), banking_transactions (5M rows, DECIMAL(38,9) plus DATE/TIMESTAMP/TIME), shipment_orders (500K rows, nested STRUCT/ARRAY/MAP), patient_records (5M rows, 30 sparse extension cols at 95% NULL), forum_posts (2M rows, 99.5% short + 0.5% 100KB essays for chunked-read offset machinery under realistic skew). Assertions are closed-form math, never engine round trips: 17 query blocks plus a final cross-table verification. A standalone extras/huge_fixed_narrow_200m.sql script creates a separate 200M-row table for stress-testing writer and ODBC throughput at memcpy scale.",
       "categories": [
         "delta-table",
         "benchmark",
@@ -2645,12 +2645,12 @@
         "forum"
       ],
       "difficulty": "advanced",
-      "estimatedTimeMinutes": 5,
+      "estimatedTimeMinutes": 25,
       "dataSizeBytes": 0,
       "fileCount": 0,
       "author": "DeltaForge Team",
-      "version": "2.0.0",
-      "updatedAt": "2026-04-29T12:00:00Z",
+      "version": "2.1.0",
+      "updatedAt": "2026-04-29T13:30:00Z",
       "targetObjects": [
         {
           "objectType": "delta_table",

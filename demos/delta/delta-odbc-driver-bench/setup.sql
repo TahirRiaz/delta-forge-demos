@@ -3,17 +3,17 @@
 -- ==========================================================================
 -- Ten realistic operational tables that double as a deterministic ODBC
 -- wire-benchmark suite. Each table represents a recognisable real-world
--- workload (market ticks, manufacturing runs, support tickets, i18n
--- product catalogue, knowledge articles, document archive, banking
--- transactions, shipment orders, patient records, forum posts) while
--- still isolating one ODBC wire dimension at a time so a regression on
--- byte counts or throughput points at one code path. Every cell remains
--- row_number-derived: two runs are bit-identical and any drift is real.
+-- workload while still isolating one ODBC wire dimension at a time so a
+-- regression on byte counts or throughput points at one code path. Every
+-- cell remains row_number-derived: two runs are bit-identical and any
+-- drift is real.
+--
+-- Large tier: ~70.65M rows total. forum_posts uses a 0.5% long-cell rate
+-- (rn % 200 = 0) so the 100KB skew character is preserved while staying
+-- safely under Arrow's 2GB i32 string-offset limit.
 --
 -- All tables target 128 MB Parquet files (Databricks-recommended sweet
--- spot for analytic scans) via delta.targetFileSize. This produces more
--- files than a 500 MB target but each one is small enough to land
--- predictably in OS file cache and to align with Power Query / Power BI
+-- spot) via delta.targetFileSize, aligned with Power Query / Power BI
 -- partition refresh behaviour.
 -- ==========================================================================
 
@@ -29,7 +29,7 @@ CREATE SCHEMA IF NOT EXISTS {{zone_name}}.acme
 
 -- --------------------------------------------------------------------------
 -- Table 1: acme.market_ticks
--- 1M-row equity tick stream. 8 cols, all INT64/DOUBLE, no nulls.
+-- 50M-row equity tick stream. 8 cols, all INT64/DOUBLE, no nulls.
 -- Stresses driver upper bound: pure decode + memcpy. Speed-of-light baseline.
 -- --------------------------------------------------------------------------
 
@@ -50,8 +50,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 2: acme.manufacturing_runs
--- 100K-row plant run snapshots. 60 fixed-width primitive cols cover all
--- machine sensors captured at one moment in time.
+-- 2M plant run snapshots. 60 fixed-width primitive sensor cols.
 -- Stresses per-cell overhead at scale and the column slab cache hit path.
 -- --------------------------------------------------------------------------
 
@@ -87,8 +86,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 3: acme.support_tickets
--- 500K customer-support tickets. 5 cols, ~30% NULL on every text column
--- because triage agents leave most fields blank early in the pipeline.
+-- 5M customer-support tickets. 5 cols, ~30% NULL on every text column.
 -- Stresses the UTF-8 decode hot path and the indicator-array path.
 -- --------------------------------------------------------------------------
 
@@ -107,10 +105,9 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 4: acme.product_catalog
--- 100K products, 40 i18n display-name cols (one per supported locale),
+-- 1M products, 40 i18n display-name cols (one per supported locale),
 -- ~5% NULL because not every product is translated into every locale.
--- Each non-null cell is exactly 50 chars. Stresses indicator-array path
--- plus UTF-8 cost when most cells are present.
+-- Each non-null cell is exactly 50 chars.
 -- --------------------------------------------------------------------------
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.product_catalog (
@@ -133,8 +130,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 5: acme.knowledge_articles
--- 10K wiki/KB articles. 4 cols of ~6.4KB strings each (abstract, body,
--- metadata blob, legal disclaimer).
+-- 100K wiki/KB articles. 4 cols of ~6.4KB strings each.
 -- Tests SQLGetData chunked reads (buf_len smaller than cell).
 -- --------------------------------------------------------------------------
 
@@ -152,7 +148,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 6: acme.document_archive
--- 5K document records with embedded image / PDF / attachment payloads.
+-- 50K document records with embedded image / PDF / attachment payloads.
 -- 3 BINARY cols of 32B-32KB. Stresses SQL_C_BINARY chunked truncation.
 -- --------------------------------------------------------------------------
 
@@ -169,9 +165,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 7: acme.banking_transactions
--- 500K bank transactions. DECIMAL(38,9) for money + fx, multi-stage temporal
--- (value/settle dates, captured/posted timestamps, processing-window times).
--- Tests decimal cast and temporal formatting, often a regression hot spot.
+-- 5M bank transactions. DECIMAL(38,9) for money + fx, multi-stage temporal.
 -- --------------------------------------------------------------------------
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.banking_transactions (
@@ -194,10 +188,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 8: acme.shipment_orders
--- 50K e-commerce orders. Customer info, shipping/billing addresses (nested
--- STRUCT), line-item quantities (ARRAY<INT>), discount codes (ARRAY<INT>),
--- tracking event MAPs.
--- Exercises the format-bound nested-type wire path.
+-- 500K e-commerce orders with nested STRUCT, ARRAY, MAP.
 -- --------------------------------------------------------------------------
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.shipment_orders (
@@ -217,11 +208,7 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 9: acme.patient_records
--- 500K patient records with 30 sparse extension fields (lab values,
--- diagnosis codes, clinical notes, vitals, billing amounts, dates,
--- timestamps, an amendment flag). 95% NULL on every nullable column,
--- the typical shape of an EHR with optional / specialist-only fields.
--- Exercises the indicator-only fast path.
+-- 5M patient records with 30 sparse extension fields. 95% NULL.
 -- --------------------------------------------------------------------------
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.patient_records (
@@ -242,10 +229,9 @@ TBLPROPERTIES (
 
 -- --------------------------------------------------------------------------
 -- Table 10: acme.forum_posts
--- 500K discussion-forum posts. Most posts are short comments (1-6 chars in
--- this synthetic generator, modelling a chat-style channel); exactly 1%
--- are long-form essays of ~100KB.
--- Stresses chunked-read offset machinery under realistic skew.
+-- 2M discussion-forum posts. Most posts are short comments (1-7 chars,
+-- modelling chat-style channels); 0.5% (rn % 200 = 0) are 100KB essays.
+-- 10K outliers x 100KB = 1 GB per col total, well under Arrow's 2GB cap.
 -- --------------------------------------------------------------------------
 
 CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.forum_posts (
@@ -263,29 +249,33 @@ TBLPROPERTIES (
 );
 
 -- ==========================================================================
--- Population: each INSERT below is fully deterministic. Single
--- generate_series per insert, N <= 1M, well under the documented "very
--- large ranges materialize in memory" pitfall and Arrow's i32 offset limit.
+-- Population: each INSERT below is fully deterministic. Tables larger than
+-- 1M rows use a cross-join of two generate_series factors so no single
+-- series exceeds 1M values.
 -- ==========================================================================
 
 -- --------------------------------------------------------------------------
--- Populate acme.market_ticks (1M rows). tick_id ranges 1..1_000_000.
+-- Populate acme.market_ticks (50M rows). tick_id ranges 1..50_000_000.
 -- --------------------------------------------------------------------------
 
 INSERT INTO {{zone_name}}.acme.market_ticks
 SELECT
-    b.v AS tick_id,
-    b.v AS instrument_id,
-    b.v * 7 AS bid_size_units,
-    b.v % 1024 AS exchange_lookup_code,
-    CAST(b.v AS DOUBLE) AS last_price,
-    CAST(b.v AS DOUBLE) * 0.5 AS bid_price,
-    CAST(b.v % 1000 AS DOUBLE) / 100.0 AS ask_spread_bps,
-    SQRT(CAST(b.v AS DOUBLE)) AS vwap_volatility_score
-FROM generate_series(1, 1000000) AS b(v);
+    rn AS tick_id,
+    rn AS instrument_id,
+    rn * 7 AS bid_size_units,
+    rn % 1024 AS exchange_lookup_code,
+    CAST(rn AS DOUBLE) AS last_price,
+    CAST(rn AS DOUBLE) * 0.5 AS bid_price,
+    CAST(rn % 1000 AS DOUBLE) / 100.0 AS ask_spread_bps,
+    SQRT(CAST(rn AS DOUBLE)) AS vwap_volatility_score
+FROM (
+    SELECT a.v * 1000000 + b.v AS rn
+    FROM generate_series(0, 49) AS a(v)
+    CROSS JOIN generate_series(1, 1000000) AS b(v)
+) t;
 
 -- --------------------------------------------------------------------------
--- Populate acme.manufacturing_runs (100K rows). run_id ranges 1..100_000.
+-- Populate acme.manufacturing_runs (2M rows). run_id ranges 1..2_000_000.
 -- --------------------------------------------------------------------------
 
 INSERT INTO {{zone_name}}.acme.manufacturing_runs
@@ -341,37 +331,43 @@ SELECT
     DATE '2000-01-01' + CAST(rn % 18250 AS INT),
     DATE '1970-01-01' + CAST((rn * 7) % 36500 AS INT)
 FROM (
-    SELECT b.v AS rn FROM generate_series(1, 100000) AS b(v)
+    SELECT a.v * 1000000 + b.v AS rn
+    FROM generate_series(0, 1) AS a(v)
+    CROSS JOIN generate_series(1, 1000000) AS b(v)
 ) t;
 
 -- --------------------------------------------------------------------------
--- Populate acme.support_tickets (500K rows). NULL when ticket_id % 10 IN
--- (0,1,2): exactly 30% NULL. Non-null ticket_code = lpad to 20 chars,
--- non-null summary/description/etc = repeat(md5,6) = 192 chars.
+-- Populate acme.support_tickets (5M rows). NULL when ticket_id % 10 IN
+-- (0,1,2): exactly 30% NULL = 1.5M rows. Non-null ticket_code = lpad to
+-- 20 chars, non-null summary/description/etc = repeat(md5,6) = 192 chars.
 -- --------------------------------------------------------------------------
 
 INSERT INTO {{zone_name}}.acme.support_tickets
 SELECT
-    b.v AS ticket_id,
-    CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
-         ELSE lpad(CAST(b.v AS STRING), 20, '0')
+    rn AS ticket_id,
+    CASE WHEN rn % 10 IN (0, 1, 2) THEN NULL
+         ELSE lpad(CAST(rn AS STRING), 20, '0')
     END,
-    CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
-         ELSE repeat(md5(CAST(b.v AS STRING)), 6)
+    CASE WHEN rn % 10 IN (0, 1, 2) THEN NULL
+         ELSE repeat(md5(CAST(rn AS STRING)), 6)
     END,
-    CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
-         ELSE repeat(md5(CAST(b.v * 3 AS STRING)), 6)
+    CASE WHEN rn % 10 IN (0, 1, 2) THEN NULL
+         ELSE repeat(md5(CAST(rn * 3 AS STRING)), 6)
     END,
-    CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
-         ELSE repeat(md5(CAST(b.v * 7 AS STRING)), 6)
+    CASE WHEN rn % 10 IN (0, 1, 2) THEN NULL
+         ELSE repeat(md5(CAST(rn * 7 AS STRING)), 6)
     END,
-    CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
-         ELSE repeat(md5(CAST(b.v * 11 AS STRING)), 6)
+    CASE WHEN rn % 10 IN (0, 1, 2) THEN NULL
+         ELSE repeat(md5(CAST(rn * 11 AS STRING)), 6)
     END
-FROM generate_series(1, 500000) AS b(v);
+FROM (
+    SELECT a.v * 1000000 + b.v AS rn
+    FROM generate_series(0, 4) AS a(v)
+    CROSS JOIN generate_series(1, 1000000) AS b(v)
+) t;
 
 -- --------------------------------------------------------------------------
--- Populate acme.product_catalog (100K rows). NULL when product_id % 20 = 0
+-- Populate acme.product_catalog (1M rows). NULL when product_id % 20 = 0
 -- which gives exactly 5% NULL. Each non-null cell is exactly 50 chars.
 -- --------------------------------------------------------------------------
 
@@ -418,10 +414,10 @@ SELECT
     CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('sw-', CAST(b.v AS STRING)), 50, 'x') END,
     CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('zu-', CAST(b.v AS STRING)), 50, 'x') END,
     CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ha-', CAST(b.v AS STRING)), 50, 'x') END
-FROM generate_series(1, 100000) AS b(v);
+FROM generate_series(1, 1000000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate acme.knowledge_articles (10K rows). md5 is 32 hex chars; repeat
+-- Populate acme.knowledge_articles (100K rows). md5 is 32 hex chars; repeat
 -- 200x gives a 6400-char cell.
 -- --------------------------------------------------------------------------
 
@@ -432,10 +428,10 @@ SELECT
     repeat(md5(CAST(b.v * 3 AS STRING)), 200)    AS body_markdown,
     repeat(md5(CAST(b.v * 7 AS STRING)), 200)    AS metadata_blob,
     repeat(md5(CAST(b.v * 11 AS STRING)), 200)   AS legal_disclaimer
-FROM generate_series(1, 10000) AS b(v);
+FROM generate_series(1, 100000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate acme.document_archive (5K rows). Sizes vary by (rn mod K) so
+-- Populate acme.document_archive (50K rows). Sizes vary by (rn mod K) so
 -- the driver sees the full chunked-truncation matrix:
 --   thumbnail_png:          32 .. 1024  bytes  (1 + rn%32 repeats of md5)
 --   preview_pdf_first_page: 32 .. 2048  bytes  (1 + rn%64 repeats)
@@ -448,10 +444,10 @@ SELECT
     CAST(repeat(md5(CAST(b.v AS STRING)), 1 + CAST(b.v % 32 AS INT)) AS BINARY)        AS thumbnail_png,
     CAST(repeat(md5(CAST(b.v * 3 AS STRING)), 1 + CAST(b.v % 64 AS INT)) AS BINARY)    AS preview_pdf_first_page,
     CAST(repeat(md5(CAST(b.v * 7 AS STRING)), 1 + CAST(b.v % 1024 AS INT)) AS BINARY)  AS archived_attachment
-FROM generate_series(1, 5000) AS b(v);
+FROM generate_series(1, 50000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate acme.banking_transactions (500K rows). captured_ts / posted_ts
+-- Populate acme.banking_transactions (5M rows). captured_ts / posted_ts
 -- are bare TIMESTAMP, processing_window_* are TIME.
 -- --------------------------------------------------------------------------
 
@@ -487,11 +483,13 @@ SELECT
         CAST((43200 + rn % 43200) % 60 AS DOUBLE)
     )                                                                                                AS processing_window_end
 FROM (
-    SELECT b.v AS rn FROM generate_series(1, 500000) AS b(v)
+    SELECT a.v * 1000000 + b.v AS rn
+    FROM generate_series(0, 4) AS a(v)
+    CROSS JOIN generate_series(1, 1000000) AS b(v)
 ) t;
 
 -- --------------------------------------------------------------------------
--- Populate acme.shipment_orders (50K rows). Mix of STRUCT, ARRAY, MAP.
+-- Populate acme.shipment_orders (500K rows). Mix of STRUCT, ARRAY, MAP.
 -- --------------------------------------------------------------------------
 
 INSERT INTO {{zone_name}}.acme.shipment_orders
@@ -504,10 +502,10 @@ SELECT
     array(CAST(b.v % 7 AS INT), CAST(b.v % 13 AS INT)),
     map('id', CAST(b.v AS STRING), 'mod10', CAST(b.v % 10 AS STRING)),
     map('hash', md5(CAST(b.v AS STRING)))
-FROM generate_series(1, 50000) AS b(v);
+FROM generate_series(1, 500000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate acme.patient_records (500K rows). All 30 nullable cols populated
+-- Populate acme.patient_records (5M rows). All 30 nullable cols populated
 -- only when record_id % 20 = 0, so 5% non-null density per column.
 -- --------------------------------------------------------------------------
 
@@ -555,29 +553,34 @@ SELECT
     ) ELSE NULL END,
     CASE WHEN rn % 20 = 0 THEN rn % 2 = 0 ELSE NULL END
 FROM (
-    SELECT b.v AS rn FROM generate_series(1, 500000) AS b(v)
+    SELECT a.v * 1000000 + b.v AS rn
+    FROM generate_series(0, 4) AS a(v)
+    CROSS JOIN generate_series(1, 1000000) AS b(v)
 ) t;
 
 -- --------------------------------------------------------------------------
--- Populate acme.forum_posts (500K rows). The body column is a 1%/99% mix:
--- when post_id % 100 = 0 the cell is repeat(md5,3125) = 100,000 chars
--- (5K cells total = 500MB); otherwise CAST(post_id AS STRING) which is
--- 1-6 chars.
+-- Populate acme.forum_posts (2M rows). The body column is a 0.5%/99.5% mix:
+-- when post_id % 200 = 0 the cell is repeat(md5,3125) = 100,000 chars
+-- (10K cells total = 1 GB per col); otherwise CAST(post_id AS STRING).
 -- --------------------------------------------------------------------------
 
 INSERT INTO {{zone_name}}.acme.forum_posts
 SELECT
-    b.v AS post_id,
-    CAST(b.v AS STRING)                              AS author_handle,
-    CONCAT('row-', CAST(b.v AS STRING))              AS post_title,
-    CONCAT('mod10-', CAST(b.v % 10 AS STRING))       AS thread_category,
-    CONCAT('mod100-', CAST(b.v % 100 AS STRING))     AS tag_list_csv,
-    md5(CAST(b.v AS STRING))                         AS content_hash,
-    CASE WHEN b.v % 100 = 0
-         THEN repeat(md5(CAST(b.v AS STRING)), 3125)
-         ELSE CAST(b.v AS STRING)
+    rn AS post_id,
+    CAST(rn AS STRING)                              AS author_handle,
+    CONCAT('row-', CAST(rn AS STRING))              AS post_title,
+    CONCAT('mod10-', CAST(rn % 10 AS STRING))       AS thread_category,
+    CONCAT('mod100-', CAST(rn % 100 AS STRING))     AS tag_list_csv,
+    md5(CAST(rn AS STRING))                         AS content_hash,
+    CASE WHEN rn % 200 = 0
+         THEN repeat(md5(CAST(rn AS STRING)), 3125)
+         ELSE CAST(rn AS STRING)
     END AS body
-FROM generate_series(1, 500000) AS b(v);
+FROM (
+    SELECT a.v * 1000000 + b.v AS rn
+    FROM generate_series(0, 1) AS a(v)
+    CROSS JOIN generate_series(1, 1000000) AS b(v)
+) t;
 
 -- --------------------------------------------------------------------------
 -- Schema Detection & Permissions

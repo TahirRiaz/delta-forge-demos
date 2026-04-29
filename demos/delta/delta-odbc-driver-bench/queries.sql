@@ -2,21 +2,19 @@
 -- Demo: ACME Corporation Production Warehouse (ODBC Driver Wire Benchmark)
 -- ============================================================================
 -- Every assertion below is derived from closed-form math against the
--- generation rule, never from an engine round trip. If the engine drifts on
--- counts, sums, or selected cell values, the corresponding ODBC code path is
--- the suspect.
+-- generation rule, never from an engine round trip.
 
 -- ============================================================================
 -- Query 1: acme.market_ticks row + sum + spot-check
 -- ============================================================================
--- 1M-row equity tick stream. SUM(tick_id) is the closed form
--- N*(N+1)/2 = 1_000_000 * 1_000_001 / 2 = 500_000_500_000.
+-- 50M-row equity tick stream. SUM(tick_id) closed form
+-- = N*(N+1)/2 = 50_000_000 * 50_000_001 / 2 = 1_250_000_025_000_000.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 1000000
-ASSERT VALUE sum_tick_id = 500000500000
+ASSERT VALUE n_rows = 50000000
+ASSERT VALUE sum_tick_id = 1250000025000000
 ASSERT VALUE min_tick_id = 1
-ASSERT VALUE max_tick_id = 1000000
+ASSERT VALUE max_tick_id = 50000000
 SELECT
     COUNT(*) AS n_rows,
     SUM(tick_id) AS sum_tick_id,
@@ -25,34 +23,36 @@ SELECT
 FROM {{zone_name}}.acme.market_ticks;
 
 -- ============================================================================
--- Query 2: acme.market_ticks per-cell deterministic spot-check at tick_id=12345
+-- Query 2: acme.market_ticks per-cell spot-check at tick_id=12_345_678
 -- ============================================================================
--- Pins exact values for every column so a wire-decode or cast regression on
--- INT64/DOUBLE drops out immediately. 12345 % 1024 = 57 because
--- 12 * 1024 = 12288 and 12345 - 12288 = 57.
+-- Mid-table check (tick_id well inside the 50M range). Pins exact values
+-- for every column so a wire-decode or cast regression on INT64/DOUBLE
+-- drops out immediately. 12345678 % 1024 = 334 because 12056 * 1024 =
+-- 12345344 and 12345678 - 12345344 = 334.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE instrument_id = 12345
-ASSERT VALUE bid_size_units = 86415
-ASSERT VALUE exchange_lookup_code = 57
-ASSERT VALUE last_price = 12345.0
-ASSERT VALUE bid_price = 6172.5
-ASSERT VALUE ask_spread_bps = 3.45
+ASSERT VALUE instrument_id = 12345678
+ASSERT VALUE bid_size_units = 86419746
+ASSERT VALUE exchange_lookup_code = 334
+ASSERT VALUE last_price = 12345678.0
+ASSERT VALUE bid_price = 6172839.0
+ASSERT VALUE ask_spread_bps = 6.78
 SELECT instrument_id, bid_size_units, exchange_lookup_code, last_price, bid_price, ask_spread_bps
 FROM {{zone_name}}.acme.market_ticks
-WHERE tick_id = 12345;
+WHERE tick_id = 12345678;
 
 -- ============================================================================
 -- Query 3: acme.manufacturing_runs row count + sum + boolean partition counts
 -- ============================================================================
--- 100K rows, 60 fixed-width sensor cols. Multiples of 2 in [1, 100K] = 50_000;
--- multiples of 3 in [1, 100K] = floor(100_000/3) = 33_333.
+-- 2M rows. SUM(run_id) closed form = 2_000_000 * 2_000_001 / 2
+-- = 2_000_001_000_000. Multiples of 2 in [1, 2M] = 1_000_000;
+-- multiples of 3 = floor(2_000_000/3) = 666_666.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 100000
-ASSERT VALUE sum_run_id = 5000050000
-ASSERT VALUE n_overcurrent_true = 50000
-ASSERT VALUE n_alarm_true = 33333
+ASSERT VALUE n_rows = 2000000
+ASSERT VALUE sum_run_id = 2000001000000
+ASSERT VALUE n_overcurrent_true = 1000000
+ASSERT VALUE n_alarm_true = 666666
 SELECT
     COUNT(*) AS n_rows,
     SUM(run_id) AS sum_run_id,
@@ -81,14 +81,14 @@ WHERE run_id = 12345;
 -- ============================================================================
 -- Query 5: acme.support_tickets null density + length spot-check
 -- ============================================================================
--- 500K rows, NULL when ticket_id % 10 IN (0,1,2): exactly 30% NULL = 150_000
--- rows. 350_000 non-null rows. md5*6 = 192 chars; lpad to 20 chars.
+-- 5M rows, NULL when ticket_id % 10 IN (0,1,2): exactly 30% NULL = 1.5M
+-- rows. 3.5M non-null rows. md5*6 = 192 chars; lpad to 20 chars.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 500000
-ASSERT VALUE n_code_null = 150000
-ASSERT VALUE n_code_not_null = 350000
-ASSERT VALUE n_summary_null = 150000
+ASSERT VALUE n_rows = 5000000
+ASSERT VALUE n_code_null = 1500000
+ASSERT VALUE n_code_not_null = 3500000
+ASSERT VALUE n_summary_null = 1500000
 SELECT
     COUNT(*) AS n_rows,
     SUM(CASE WHEN ticket_code IS NULL THEN 1 ELSE 0 END) AS n_code_null,
@@ -133,14 +133,14 @@ WHERE ticket_id = 10;
 -- ============================================================================
 -- Query 8: acme.product_catalog null density + cell length
 -- ============================================================================
--- 100K rows, NULL when product_id % 20 = 0: exactly 5% NULL = 5_000 rows.
+-- 1M rows, NULL when product_id % 20 = 0: exactly 5% NULL = 50K rows.
 -- Each non-null cell is exactly 50 chars.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 100000
-ASSERT VALUE n_en_null = 5000
-ASSERT VALUE n_en_not_null = 95000
-ASSERT VALUE n_ha_null = 5000
+ASSERT VALUE n_rows = 1000000
+ASSERT VALUE n_en_null = 50000
+ASSERT VALUE n_en_not_null = 950000
+ASSERT VALUE n_ha_null = 50000
 SELECT
     COUNT(*) AS n_rows,
     SUM(CASE WHEN display_name_en IS NULL THEN 1 ELSE 0 END) AS n_en_null,
@@ -170,13 +170,12 @@ ORDER BY product_id;
 -- ============================================================================
 -- Query 10: acme.knowledge_articles row count + per-cell length
 -- ============================================================================
--- 10K rows. Every cell is exactly md5 (32 chars) repeated 200 times = 6400
--- chars. Tests SQLGetData chunked-read path with cells well over typical
--- buf_len boundaries. SUM(article_id) closed form = 50_005_000.
+-- 100K rows. Every cell is exactly md5 (32 chars) repeated 200 times = 6400
+-- chars. SUM(article_id) closed form = 100_000 * 100_001 / 2 = 5_000_050_000.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 10000
-ASSERT VALUE sum_article_id = 50005000
+ASSERT VALUE n_rows = 100000
+ASSERT VALUE sum_article_id = 5000050000
 ASSERT VALUE min_abstract_len = 6400
 ASSERT VALUE max_abstract_len = 6400
 ASSERT VALUE min_disclaimer_len = 6400
@@ -194,11 +193,11 @@ FROM {{zone_name}}.acme.knowledge_articles;
 -- thumbnail_png  = 32 * (1 + rn%32)   -> [32, 1024]   bytes
 -- preview_pdf    = 32 * (1 + rn%64)   -> [32, 2048]   bytes
 -- archived       = 32 * (1 + rn%1024) -> [32, 32768]  bytes
--- N=5_000. SUM(document_id) closed form = 12_502_500.
+-- N=50_000. SUM(document_id) closed form = 50_000 * 50_001 / 2 = 1_250_025_000.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 5000
-ASSERT VALUE sum_document_id = 12502500
+ASSERT VALUE n_rows = 50000
+ASSERT VALUE sum_document_id = 1250025000
 ASSERT VALUE min_thumb_len = 32
 ASSERT VALUE max_thumb_len = 1024
 ASSERT VALUE min_preview_len = 32
@@ -217,13 +216,13 @@ FROM {{zone_name}}.acme.document_archive;
 -- ============================================================================
 -- Query 12: acme.banking_transactions row + sum + decimal spot-check
 -- ============================================================================
--- 500K rows. SUM(transaction_id) closed form = 125_000_250_000.
--- withholding_tax at transaction_id=12345:
+-- 5M rows. SUM(transaction_id) closed form = 5_000_000 * 5_000_001 / 2
+-- = 12_500_002_500_000. withholding_tax at transaction_id=12345:
 -- (12345 % 1_000_000) + 0.000000001 = 12345.000000001.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 500000
-ASSERT VALUE sum_transaction_id = 125000250000
+ASSERT VALUE n_rows = 5000000
+ASSERT VALUE sum_transaction_id = 12500002500000
 SELECT
     COUNT(*) AS n_rows,
     SUM(transaction_id) AS sum_transaction_id
@@ -239,11 +238,11 @@ WHERE transaction_id = 12345;
 -- ============================================================================
 -- Query 13: acme.shipment_orders row + sum
 -- ============================================================================
--- 50K rows. STRUCT/ARRAY/MAP exercise the format-bound wire path.
+-- 500K rows. SUM(order_id) closed form = 500_000 * 500_001 / 2 = 125_000_250_000.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 50000
-ASSERT VALUE sum_order_id = 1250025000
+ASSERT VALUE n_rows = 500000
+ASSERT VALUE sum_order_id = 125000250000
 SELECT
     COUNT(*) AS n_rows,
     SUM(order_id) AS sum_order_id
@@ -252,17 +251,16 @@ FROM {{zone_name}}.acme.shipment_orders;
 -- ============================================================================
 -- Query 14: acme.patient_records null density across all 30 nullable columns
 -- ============================================================================
--- 500K rows, 30 nullable cols. Each col populated only when record_id%20=0,
--- so non-null = 25_000 and null = 475_000 per column. We sample columns of
--- different physical layouts (BIGINT, STRING, DECIMAL, BOOLEAN).
+-- 5M rows, 30 nullable cols. Each col populated only when record_id%20=0,
+-- so non-null = 250_000 and null = 4_750_000 per column.
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 500000
-ASSERT VALUE n_lab_not_null = 25000
-ASSERT VALUE n_lab_null = 475000
-ASSERT VALUE n_note_not_null = 25000
-ASSERT VALUE n_billing_not_null = 25000
-ASSERT VALUE n_amended_not_null = 25000
+ASSERT VALUE n_rows = 5000000
+ASSERT VALUE n_lab_not_null = 250000
+ASSERT VALUE n_lab_null = 4750000
+ASSERT VALUE n_note_not_null = 250000
+ASSERT VALUE n_billing_not_null = 250000
+ASSERT VALUE n_amended_not_null = 250000
 SELECT
     COUNT(*) AS n_rows,
     SUM(CASE WHEN lab_value_l01      IS NOT NULL THEN 1 ELSE 0 END) AS n_lab_not_null,
@@ -289,40 +287,40 @@ WHERE record_id = 20;
 -- ============================================================================
 -- Query 16: acme.forum_posts skew distribution
 -- ============================================================================
--- 500K rows. body is 100_000 chars when post_id%100=0 (5_000 rows),
--- otherwise CAST(post_id AS STRING) which is 1..6 chars for post_id in
--- [1, 500_000].
+-- 2M rows. body is 100_000 chars when post_id%200=0 (10_000 rows, 0.5%
+-- rate), otherwise CAST(post_id AS STRING) which is 1..7 chars for
+-- post_id in [1, 2_000_000].
 
 ASSERT ROW_COUNT = 1
-ASSERT VALUE n_rows = 500000
-ASSERT VALUE n_long_posts = 5000
-ASSERT VALUE n_short_posts = 495000
+ASSERT VALUE n_rows = 2000000
+ASSERT VALUE n_long_posts = 10000
+ASSERT VALUE n_short_posts = 1990000
 ASSERT VALUE max_body_len = 100000
 SELECT
     COUNT(*) AS n_rows,
     SUM(CASE WHEN LENGTH(body) = 100000 THEN 1 ELSE 0 END) AS n_long_posts,
-    SUM(CASE WHEN LENGTH(body) <= 6     THEN 1 ELSE 0 END) AS n_short_posts,
+    SUM(CASE WHEN LENGTH(body) <= 7     THEN 1 ELSE 0 END) AS n_short_posts,
     MAX(LENGTH(body)) AS max_body_len
 FROM {{zone_name}}.acme.forum_posts;
 
 -- ============================================================================
--- Query 17: acme.forum_posts spot-check at post_id=100 and post_id=101
+-- Query 17: acme.forum_posts spot-check at post_id=200 and post_id=201
 -- ============================================================================
--- 100 % 100 = 0 -> 100_000-char essay (the 1% long-form case).
--- 101 % 100 = 1 -> CAST(101 AS STRING) = '101' (3 chars).
+-- 200 % 200 = 0 -> 100_000-char essay (the 0.5% long-form case).
+-- 201 % 200 = 1 -> CAST(201 AS STRING) = '201' (3 chars).
 
 ASSERT ROW_COUNT = 2
-ASSERT VALUE body_len = 100000 WHERE post_id = 100
-ASSERT VALUE body_len = 3      WHERE post_id = 101
-ASSERT VALUE author_len = 3    WHERE post_id = 100
-ASSERT VALUE hash_len = 32     WHERE post_id = 100
+ASSERT VALUE body_len = 100000 WHERE post_id = 200
+ASSERT VALUE body_len = 3      WHERE post_id = 201
+ASSERT VALUE author_len = 3    WHERE post_id = 200
+ASSERT VALUE hash_len = 32     WHERE post_id = 200
 SELECT
     post_id,
     LENGTH(body) AS body_len,
     LENGTH(author_handle) AS author_len,
     LENGTH(content_hash) AS hash_len
 FROM {{zone_name}}.acme.forum_posts
-WHERE post_id IN (100, 101)
+WHERE post_id IN (200, 201)
 ORDER BY post_id;
 
 -- ============================================================================
@@ -334,16 +332,16 @@ ORDER BY post_id;
 
 ASSERT ROW_COUNT = 10
 ASSERT RESULT SET INCLUDES
-    ('market_ticks',          1000000, 500000500000),
-    ('manufacturing_runs',     100000,   5000050000),
-    ('support_tickets',        500000, 125000250000),
-    ('product_catalog',        100000,   5000050000),
-    ('knowledge_articles',      10000,     50005000),
-    ('document_archive',         5000,     12502500),
-    ('banking_transactions',   500000, 125000250000),
-    ('shipment_orders',         50000,   1250025000),
-    ('patient_records',        500000, 125000250000),
-    ('forum_posts',            500000, 125000250000)
+    ('market_ticks',         50000000, 1250000025000000),
+    ('manufacturing_runs',    2000000,    2000001000000),
+    ('support_tickets',       5000000,   12500002500000),
+    ('product_catalog',       1000000,     500000500000),
+    ('knowledge_articles',     100000,       5000050000),
+    ('document_archive',        50000,       1250025000),
+    ('banking_transactions',  5000000,   12500002500000),
+    ('shipment_orders',        500000,     125000250000),
+    ('patient_records',       5000000,   12500002500000),
+    ('forum_posts',           2000000,    2000001000000)
 SELECT 'market_ticks'          AS tbl, COUNT(*) AS n, SUM(tick_id)        AS s FROM {{zone_name}}.acme.market_ticks
 UNION ALL SELECT 'manufacturing_runs',    COUNT(*), SUM(run_id)            FROM {{zone_name}}.acme.manufacturing_runs
 UNION ALL SELECT 'support_tickets',       COUNT(*), SUM(ticket_id)         FROM {{zone_name}}.acme.support_tickets
