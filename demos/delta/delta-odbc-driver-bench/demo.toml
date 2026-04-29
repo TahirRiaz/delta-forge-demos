@@ -1,29 +1,47 @@
 [demo]
 id = "delta-odbc-driver-bench"
-name = "ODBC Driver Wire Benchmark Suite"
-version = "1.0.0"
+name = "ACME Corporation Production Warehouse (ODBC Driver Wire Benchmark)"
+version = "2.0.0"
 author = "DeltaForge Team"
 description = """
-The DeltaForge driver-engineering team needs a deterministic, regression-safe \
-corpus that isolates one ODBC wire dimension at a time so that when a build \
-regresses on byte counts or throughput, the responsible code path is obvious. \
-This suite seeds ten Delta tables totalling ~3.27M rows, scaled to stay safely \
-under Arrow's 2GB i32 string-offset limit: a 1M-row fixed-narrow speed-of-light \
-baseline (8 cols, INT64/DOUBLE, no nulls), a 100K-row 60-column fixed-wide \
-table for per-cell overhead and column slab cache, 500K-row and 100K-row \
-UTF-8 string tables (30% NULL and 5% NULL respectively) for decode and \
-indicator-array hot paths, a 10K-row 6.4KB-per-cell long-string table that \
-exercises SQLGetData chunked reads, a 5K-row BINARY blob table with 32B-32KB \
-cells that stresses SQL_C_BINARY chunked truncation, a 500K-row decimal_temporal \
-table covering DECIMAL(38,9), DATE, TIMESTAMP, and TIME formatting paths, a \
-50K-row deeply-nested table with STRUCT, ARRAY, and MAP for the format-bound \
-path, a 500K-row 30-column 95%-NULL fact-table simulator for the indicator-only \
-fast path, and a 500K-row skewed strings table whose one column mixes 99% short \
-with 1% 100KB cells to stress the chunked-read offset machinery under realistic \
-skew. Every value is row_number-derived so two runs are bit-identical and any \
-byte-count regression is real, not noise. A standalone scale-up script, \
-extras/huge_fixed_narrow_200m.sql, creates a separate 200M-row table for \
-load-testing the writer and ODBC throughput at memcpy speed-of-light.
+Ten realistic operational tables that double as a deterministic ODBC \
+wire-benchmark suite. Each table represents a recognisable real-world \
+workload while still isolating one ODBC wire dimension at a time so a \
+regression on byte counts or throughput points at one code path. Every \
+cell is row_number-derived: two runs are bit-identical and any drift is \
+real, not noise.
+
+Tables (~3.27M rows total, scaled to stay under Arrow's 2GB i32 \
+string-offset limit):
+- acme.market_ticks (1M rows): equity tick stream, 8 INT64/DOUBLE cols, \
+  speed-of-light memcpy baseline.
+- acme.manufacturing_runs (100K rows): plant run snapshots, 60 fixed-width \
+  primitive sensor cols, per-cell overhead and column slab cache.
+- acme.support_tickets (500K rows): customer-support tickets, 5 text cols \
+  at 30% NULL, UTF-8 hot path and indicator-array.
+- acme.product_catalog (100K rows): i18n product catalogue, 40 locale \
+  display-name cols at 5% NULL, indicator-array under high cell-presence.
+- acme.knowledge_articles (10K rows): wiki/KB articles, 4 cols of 6.4KB \
+  cells, SQLGetData chunked-read path.
+- acme.document_archive (5K rows): document image / PDF / attachment \
+  payloads, BINARY 32B-32KB, SQL_C_BINARY chunked truncation.
+- acme.banking_transactions (500K rows): bank transactions, DECIMAL(38,9) \
+  with multi-stage temporal cols (DATE / TIMESTAMP / TIME), decimal cast \
+  and temporal formatting.
+- acme.shipment_orders (50K rows): e-commerce orders with nested STRUCT, \
+  ARRAY, and MAP, format-bound nested-type wire path.
+- acme.patient_records (500K rows): EHR with 30 sparse extension cols at \
+  95% NULL, indicator-only fast path.
+- acme.forum_posts (500K rows): discussion-forum posts, 99% short comments \
+  + 1% 100KB essays, chunked-read offset machinery under realistic skew.
+
+Every table sets delta.targetFileSize = 134217728 (128 MB) per the \
+Databricks recommendation, producing predictable Parquet file sizes that \
+align with Power Query / Power BI partition refresh behaviour.
+
+A separate 200M-row stress-test script lives at \
+extras/huge_fixed_narrow_200m.sql for throughput experiments at memcpy \
+speed-of-light scale.
 """
 categories = ["delta-table", "benchmark", "odbc"]
 tags = [
@@ -34,60 +52,66 @@ tags = [
     "wire-format",
     "regression-suite",
     "deterministic",
+    "real-world-scenarios",
+    "power-bi",
+    "power-query",
     "fixed-width",
     "string-decode",
     "binary-blobs",
     "decimal",
     "temporal",
     "nested-types",
-    "variant",
     "null-density",
     "skewed-data",
-    "large-rows"
+    "i18n",
+    "ehr",
+    "banking",
+    "ecommerce",
+    "forum"
 ]
 difficulty = "advanced"
-estimated_time_minutes = 60
+estimated_time_minutes = 5
 
 [demo.variables]
 data_path = { description = "Root path where Delta table data is stored", required = true }
-zone_name = { description = "Target zone name for tables (defaults to 'bench_zone')", required = false }
+zone_name = { description = "Target zone name for tables", required = false }
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.fixed_narrow"
+name = "{{zone_name}}.acme.market_ticks"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.fixed_wide"
+name = "{{zone_name}}.acme.manufacturing_runs"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.string_narrow"
+name = "{{zone_name}}.acme.support_tickets"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.string_wide_kv"
+name = "{{zone_name}}.acme.product_catalog"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.string_long"
+name = "{{zone_name}}.acme.knowledge_articles"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.binary_blobs"
+name = "{{zone_name}}.acme.document_archive"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.decimal_temporal"
+name = "{{zone_name}}.acme.banking_transactions"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.nested_json"
+name = "{{zone_name}}.acme.shipment_orders"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.null_heavy"
+name = "{{zone_name}}.acme.patient_records"
 
 [[demo.target_objects]]
 type = "delta_table"
-name = "{{zone_name}}.bench.skewed_strings"
+name = "{{zone_name}}.acme.forum_posts"

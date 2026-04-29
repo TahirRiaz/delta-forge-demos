@@ -1,14 +1,20 @@
 -- ==========================================================================
--- Demo: ODBC Driver Wire Benchmark Suite
--- Feature: Ten Delta tables, ~3.27M rows total, each isolating one ODBC wire
---          dimension so a regression on byte counts or throughput points at
---          one code path. Every cell is row_number-derived: two runs are
---          bit-identical and any drift is a real regression.
+-- Demo: ACME Corporation Production Warehouse (ODBC Driver Wire Benchmark)
+-- ==========================================================================
+-- Ten realistic operational tables that double as a deterministic ODBC
+-- wire-benchmark suite. Each table represents a recognisable real-world
+-- workload (market ticks, manufacturing runs, support tickets, i18n
+-- product catalogue, knowledge articles, document archive, banking
+-- transactions, shipment orders, patient records, forum posts) while
+-- still isolating one ODBC wire dimension at a time so a regression on
+-- byte counts or throughput points at one code path. Every cell remains
+-- row_number-derived: two runs are bit-identical and any drift is real.
 --
--- Sizes are sized to stay safely under Arrow's 2GB i32-offset limit per
--- StringArray batch. To stress-test fixed_narrow at 200M rows separately,
--- run the standalone script:
---   demos/delta/delta-odbc-driver-bench/extras/huge_fixed_narrow_200m.sql
+-- All tables target 128 MB Parquet files (Databricks-recommended sweet
+-- spot for analytic scans) via delta.targetFileSize. This produces more
+-- files than a 500 MB target but each one is small enough to land
+-- predictably in OS file cache and to align with Power Query / Power BI
+-- partition refresh behaviour.
 -- ==========================================================================
 
 -- --------------------------------------------------------------------------
@@ -16,224 +22,273 @@
 -- --------------------------------------------------------------------------
 
 CREATE ZONE IF NOT EXISTS {{zone_name}} TYPE DELTA
-    COMMENT 'ODBC driver wire-benchmark zone';
+    COMMENT 'ACME Corporation production data warehouse';
 
-CREATE SCHEMA IF NOT EXISTS {{zone_name}}.bench
-    COMMENT 'Benchmark tables that isolate one ODBC wire dimension at a time';
+CREATE SCHEMA IF NOT EXISTS {{zone_name}}.acme
+    COMMENT 'Mixed-workload demo schema; each table maps to one ODBC wire dimension';
 
 -- --------------------------------------------------------------------------
--- Table 1: bench.fixed_narrow
--- 1M rows, 8 cols, all INT64/DOUBLE, no nulls.
+-- Table 1: acme.market_ticks
+-- 1M-row equity tick stream. 8 cols, all INT64/DOUBLE, no nulls.
 -- Stresses driver upper bound: pure decode + memcpy. Speed-of-light baseline.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.fixed_narrow (
-    rn    BIGINT NOT NULL,
-    i64_a BIGINT NOT NULL,
-    i64_b BIGINT NOT NULL,
-    i64_c BIGINT NOT NULL,
-    f64_a DOUBLE NOT NULL,
-    f64_b DOUBLE NOT NULL,
-    f64_c DOUBLE NOT NULL,
-    f64_d DOUBLE NOT NULL
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.market_ticks (
+    tick_id               BIGINT NOT NULL,
+    instrument_id         BIGINT NOT NULL,
+    bid_size_units        BIGINT NOT NULL,
+    exchange_lookup_code  BIGINT NOT NULL,
+    last_price            DOUBLE NOT NULL,
+    bid_price             DOUBLE NOT NULL,
+    ask_spread_bps        DOUBLE NOT NULL,
+    vwap_volatility_score DOUBLE NOT NULL
 )
-LOCATION '{{data_path}}/bench/fixed_narrow';
+LOCATION '{{data_path}}/acme/market_ticks'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 2: bench.fixed_wide
--- 100K rows, 60 cols, all fixed-width primitives.
+-- Table 2: acme.manufacturing_runs
+-- 100K-row plant run snapshots. 60 fixed-width primitive cols cover all
+-- machine sensors captured at one moment in time.
 -- Stresses per-cell overhead at scale and the column slab cache hit path.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.fixed_wide (
-    rn   BIGINT NOT NULL,
-    l01 BIGINT NOT NULL, l02 BIGINT NOT NULL, l03 BIGINT NOT NULL, l04 BIGINT NOT NULL,
-    l05 BIGINT NOT NULL, l06 BIGINT NOT NULL, l07 BIGINT NOT NULL, l08 BIGINT NOT NULL,
-    l09 BIGINT NOT NULL, l10 BIGINT NOT NULL, l11 BIGINT NOT NULL, l12 BIGINT NOT NULL,
-    i01 INT NOT NULL, i02 INT NOT NULL, i03 INT NOT NULL, i04 INT NOT NULL,
-    i05 INT NOT NULL, i06 INT NOT NULL, i07 INT NOT NULL, i08 INT NOT NULL,
-    i09 INT NOT NULL, i10 INT NOT NULL, i11 INT NOT NULL, i12 INT NOT NULL,
-    s01 SMALLINT NOT NULL, s02 SMALLINT NOT NULL, s03 SMALLINT NOT NULL, s04 SMALLINT NOT NULL,
-    s05 SMALLINT NOT NULL, s06 SMALLINT NOT NULL, s07 SMALLINT NOT NULL, s08 SMALLINT NOT NULL,
-    t01 TINYINT NOT NULL, t02 TINYINT NOT NULL, t03 TINYINT NOT NULL, t04 TINYINT NOT NULL,
-    t05 TINYINT NOT NULL, t06 TINYINT NOT NULL, t07 TINYINT NOT NULL, t08 TINYINT NOT NULL,
-    d01 DOUBLE NOT NULL, d02 DOUBLE NOT NULL, d03 DOUBLE NOT NULL, d04 DOUBLE NOT NULL,
-    d05 DOUBLE NOT NULL, d06 DOUBLE NOT NULL, d07 DOUBLE NOT NULL, d08 DOUBLE NOT NULL,
-    f01 FLOAT NOT NULL, f02 FLOAT NOT NULL, f03 FLOAT NOT NULL, f04 FLOAT NOT NULL,
-    f05 FLOAT NOT NULL, f06 FLOAT NOT NULL, f07 FLOAT NOT NULL, f08 FLOAT NOT NULL,
-    b01 BOOLEAN NOT NULL, b02 BOOLEAN NOT NULL,
-    da01 DATE NOT NULL, da02 DATE NOT NULL
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.manufacturing_runs (
+    run_id BIGINT NOT NULL,
+    machine_serial_l01 BIGINT NOT NULL, machine_serial_l02 BIGINT NOT NULL, machine_serial_l03 BIGINT NOT NULL,
+    machine_serial_l04 BIGINT NOT NULL, machine_serial_l05 BIGINT NOT NULL, machine_serial_l06 BIGINT NOT NULL,
+    machine_serial_l07 BIGINT NOT NULL, machine_serial_l08 BIGINT NOT NULL, machine_serial_l09 BIGINT NOT NULL,
+    machine_serial_l10 BIGINT NOT NULL, machine_serial_l11 BIGINT NOT NULL, machine_serial_l12 BIGINT NOT NULL,
+    cycle_count_i01 INT NOT NULL, cycle_count_i02 INT NOT NULL, cycle_count_i03 INT NOT NULL,
+    cycle_count_i04 INT NOT NULL, cycle_count_i05 INT NOT NULL, cycle_count_i06 INT NOT NULL,
+    cycle_count_i07 INT NOT NULL, cycle_count_i08 INT NOT NULL, cycle_count_i09 INT NOT NULL,
+    cycle_count_i10 INT NOT NULL, cycle_count_i11 INT NOT NULL, cycle_count_i12 INT NOT NULL,
+    batch_size_s01 SMALLINT NOT NULL, batch_size_s02 SMALLINT NOT NULL, batch_size_s03 SMALLINT NOT NULL,
+    batch_size_s04 SMALLINT NOT NULL, batch_size_s05 SMALLINT NOT NULL, batch_size_s06 SMALLINT NOT NULL,
+    batch_size_s07 SMALLINT NOT NULL, batch_size_s08 SMALLINT NOT NULL,
+    shift_id_t01 TINYINT NOT NULL, shift_id_t02 TINYINT NOT NULL, shift_id_t03 TINYINT NOT NULL,
+    shift_id_t04 TINYINT NOT NULL, shift_id_t05 TINYINT NOT NULL, shift_id_t06 TINYINT NOT NULL,
+    shift_id_t07 TINYINT NOT NULL, shift_id_t08 TINYINT NOT NULL,
+    temperature_c_d01 DOUBLE NOT NULL, temperature_c_d02 DOUBLE NOT NULL, temperature_c_d03 DOUBLE NOT NULL,
+    temperature_c_d04 DOUBLE NOT NULL, temperature_c_d05 DOUBLE NOT NULL, temperature_c_d06 DOUBLE NOT NULL,
+    temperature_c_d07 DOUBLE NOT NULL, temperature_c_d08 DOUBLE NOT NULL,
+    pressure_psi_f01 FLOAT NOT NULL, pressure_psi_f02 FLOAT NOT NULL, pressure_psi_f03 FLOAT NOT NULL,
+    pressure_psi_f04 FLOAT NOT NULL, pressure_psi_f05 FLOAT NOT NULL, pressure_psi_f06 FLOAT NOT NULL,
+    pressure_psi_f07 FLOAT NOT NULL, pressure_psi_f08 FLOAT NOT NULL,
+    is_overcurrent BOOLEAN NOT NULL, has_alarm BOOLEAN NOT NULL,
+    run_start_date DATE NOT NULL, shift_change_date DATE NOT NULL
 )
-LOCATION '{{data_path}}/bench/fixed_wide';
+LOCATION '{{data_path}}/acme/manufacturing_runs'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 3: bench.string_narrow
--- 500K rows, 5 cols (one short + four long), ~30% NULL density.
--- Stresses the UTF-8 decode hot path and the indicator-array path with
--- realistic null sparsity.
+-- Table 3: acme.support_tickets
+-- 500K customer-support tickets. 5 cols, ~30% NULL on every text column
+-- because triage agents leave most fields blank early in the pipeline.
+-- Stresses the UTF-8 decode hot path and the indicator-array path.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.string_narrow (
-    rn       BIGINT NOT NULL,
-    s_short  STRING,
-    s_long_a STRING,
-    s_long_b STRING,
-    s_long_c STRING,
-    s_long_d STRING
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.support_tickets (
+    ticket_id         BIGINT NOT NULL,
+    ticket_code       STRING,
+    summary           STRING,
+    description       STRING,
+    resolution_notes  STRING,
+    internal_comment  STRING
 )
-LOCATION '{{data_path}}/bench/string_narrow';
+LOCATION '{{data_path}}/acme/support_tickets'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 4: bench.string_wide_kv
--- 100K rows, 40 cols, all ~50-char UTF-8, ~5% NULL.
--- Stresses indicator-array path plus UTF-8 cost when most cells are present.
+-- Table 4: acme.product_catalog
+-- 100K products, 40 i18n display-name cols (one per supported locale),
+-- ~5% NULL because not every product is translated into every locale.
+-- Each non-null cell is exactly 50 chars. Stresses indicator-array path
+-- plus UTF-8 cost when most cells are present.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.string_wide_kv (
-    rn  BIGINT NOT NULL,
-    k01 STRING, k02 STRING, k03 STRING, k04 STRING, k05 STRING,
-    k06 STRING, k07 STRING, k08 STRING, k09 STRING, k10 STRING,
-    k11 STRING, k12 STRING, k13 STRING, k14 STRING, k15 STRING,
-    k16 STRING, k17 STRING, k18 STRING, k19 STRING, k20 STRING,
-    k21 STRING, k22 STRING, k23 STRING, k24 STRING, k25 STRING,
-    k26 STRING, k27 STRING, k28 STRING, k29 STRING, k30 STRING,
-    k31 STRING, k32 STRING, k33 STRING, k34 STRING, k35 STRING,
-    k36 STRING, k37 STRING, k38 STRING, k39 STRING, k40 STRING
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.product_catalog (
+    product_id BIGINT NOT NULL,
+    display_name_en STRING, display_name_fr STRING, display_name_de STRING, display_name_es STRING,
+    display_name_it STRING, display_name_pt STRING, display_name_ja STRING, display_name_zh_cn STRING,
+    display_name_zh_tw STRING, display_name_ko STRING, display_name_ar STRING, display_name_he STRING,
+    display_name_nl STRING, display_name_sv STRING, display_name_no STRING, display_name_fi STRING,
+    display_name_da STRING, display_name_pl STRING, display_name_cs STRING, display_name_ru STRING,
+    display_name_uk STRING, display_name_tr STRING, display_name_el STRING, display_name_th STRING,
+    display_name_vi STRING, display_name_id STRING, display_name_ms STRING, display_name_hi STRING,
+    display_name_bn STRING, display_name_ta STRING, display_name_te STRING, display_name_ml STRING,
+    display_name_kn STRING, display_name_mr STRING, display_name_pa STRING, display_name_ur STRING,
+    display_name_fa STRING, display_name_sw STRING, display_name_zu STRING, display_name_ha STRING
 )
-LOCATION '{{data_path}}/bench/string_wide_kv';
+LOCATION '{{data_path}}/acme/product_catalog'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 5: bench.string_long
--- 10K rows, 4 cols of ~6.4KB strings each.
+-- Table 5: acme.knowledge_articles
+-- 10K wiki/KB articles. 4 cols of ~6.4KB strings each (abstract, body,
+-- metadata blob, legal disclaimer).
 -- Tests SQLGetData chunked reads (buf_len smaller than cell).
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.string_long (
-    rn BIGINT NOT NULL,
-    s1 STRING NOT NULL,
-    s2 STRING NOT NULL,
-    s3 STRING NOT NULL,
-    s4 STRING NOT NULL
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.knowledge_articles (
+    article_id        BIGINT NOT NULL,
+    abstract_text     STRING NOT NULL,
+    body_markdown     STRING NOT NULL,
+    metadata_blob     STRING NOT NULL,
+    legal_disclaimer  STRING NOT NULL
 )
-LOCATION '{{data_path}}/bench/string_long';
+LOCATION '{{data_path}}/acme/knowledge_articles'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 6: bench.binary_blobs
--- 5K rows, 3 cols of BINARY 32B-32KB per cell.
--- Stresses SQL_C_BINARY path and chunked truncation.
+-- Table 6: acme.document_archive
+-- 5K document records with embedded image / PDF / attachment payloads.
+-- 3 BINARY cols of 32B-32KB. Stresses SQL_C_BINARY chunked truncation.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.binary_blobs (
-    rn BIGINT NOT NULL,
-    b1 BINARY NOT NULL,
-    b2 BINARY NOT NULL,
-    b3 BINARY NOT NULL
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.document_archive (
+    document_id            BIGINT NOT NULL,
+    thumbnail_png          BINARY NOT NULL,
+    preview_pdf_first_page BINARY NOT NULL,
+    archived_attachment    BINARY NOT NULL
 )
-LOCATION '{{data_path}}/bench/binary_blobs';
+LOCATION '{{data_path}}/acme/document_archive'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 7: bench.decimal_temporal
--- 500K rows, 10 cols: DECIMAL(38,9), DATE, TIMESTAMP, TIME.
+-- Table 7: acme.banking_transactions
+-- 500K bank transactions. DECIMAL(38,9) for money + fx, multi-stage temporal
+-- (value/settle dates, captured/posted timestamps, processing-window times).
 -- Tests decimal cast and temporal formatting, often a regression hot spot.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.decimal_temporal (
-    rn      BIGINT NOT NULL,
-    d_a     DECIMAL(38,9) NOT NULL,
-    d_b     DECIMAL(38,9) NOT NULL,
-    d_c     DECIMAL(38,9) NOT NULL,
-    d_d     DECIMAL(38,9) NOT NULL,
-    dt_a    DATE NOT NULL,
-    dt_b    DATE NOT NULL,
-    ts_a    TIMESTAMP,
-    ts_b    TIMESTAMP,
-    tm_a    TIME,
-    tm_b    TIME
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.banking_transactions (
+    transaction_id           BIGINT NOT NULL,
+    amount_usd               DECIMAL(38,9) NOT NULL,
+    fx_amount_eur            DECIMAL(38,9) NOT NULL,
+    wire_fee_usd             DECIMAL(38,9) NOT NULL,
+    withholding_tax          DECIMAL(38,9) NOT NULL,
+    value_date               DATE NOT NULL,
+    settle_date              DATE NOT NULL,
+    captured_ts              TIMESTAMP,
+    posted_ts                TIMESTAMP,
+    processing_window_start  TIME,
+    processing_window_end    TIME
 )
-LOCATION '{{data_path}}/bench/decimal_temporal';
+LOCATION '{{data_path}}/acme/banking_transactions'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 8: bench.nested_json
--- 50K rows, 7 cols: 3 STRUCT, 2 ARRAY<INT>, 2 MAP<STRING,STRING>.
--- Exercises the format-bound path that shipments_full_types first exposed.
+-- Table 8: acme.shipment_orders
+-- 50K e-commerce orders. Customer info, shipping/billing addresses (nested
+-- STRUCT), line-item quantities (ARRAY<INT>), discount codes (ARRAY<INT>),
+-- tracking event MAPs.
+-- Exercises the format-bound nested-type wire path.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.nested_json (
-    rn   BIGINT NOT NULL,
-    st_a STRUCT<id: BIGINT, name: STRING, score: DOUBLE>,
-    st_b STRUCT<lat: DOUBLE, lng: DOUBLE>,
-    st_c STRUCT<inner: STRUCT<k: BIGINT, v: STRING>>,
-    ar_a ARRAY<INT>,
-    ar_b ARRAY<INT>,
-    mp_a MAP<STRING, STRING>,
-    mp_b MAP<STRING, STRING>
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.shipment_orders (
+    order_id                 BIGINT NOT NULL,
+    customer                 STRUCT<id: BIGINT, name: STRING, score: DOUBLE>,
+    shipping_address         STRUCT<lat: DOUBLE, lng: DOUBLE>,
+    billing_info             STRUCT<inner: STRUCT<k: BIGINT, v: STRING>>,
+    line_item_quantities     ARRAY<INT>,
+    applied_discount_codes   ARRAY<INT>,
+    tracking_metadata        MAP<STRING, STRING>,
+    audit_tags               MAP<STRING, STRING>
 )
-LOCATION '{{data_path}}/bench/nested_json';
+LOCATION '{{data_path}}/acme/shipment_orders'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 9: bench.null_heavy
--- 500K rows, 30 mixed-type cols, 95% NULL. Common shape in real fact tables.
+-- Table 9: acme.patient_records
+-- 500K patient records with 30 sparse extension fields (lab values,
+-- diagnosis codes, clinical notes, vitals, billing amounts, dates,
+-- timestamps, an amendment flag). 95% NULL on every nullable column,
+-- the typical shape of an EHR with optional / specialist-only fields.
 -- Exercises the indicator-only fast path.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.null_heavy (
-    rn   BIGINT NOT NULL,
-    l01 BIGINT, l02 BIGINT, l03 BIGINT, l04 BIGINT, l05 BIGINT,
-    i01 INT, i02 INT, i03 INT, i04 INT, i05 INT,
-    s01 STRING, s02 STRING, s03 STRING, s04 STRING, s05 STRING,
-    d01 DOUBLE, d02 DOUBLE, d03 DOUBLE, d04 DOUBLE, d05 DOUBLE,
-    m01 DECIMAL(18,4), m02 DECIMAL(18,4), m03 DECIMAL(18,4), m04 DECIMAL(18,4),
-    da01 DATE, da02 DATE, da03 DATE,
-    ts01 TIMESTAMP, ts02 TIMESTAMP,
-    bo01 BOOLEAN
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.patient_records (
+    record_id BIGINT NOT NULL,
+    lab_value_l01 BIGINT, lab_value_l02 BIGINT, lab_value_l03 BIGINT, lab_value_l04 BIGINT, lab_value_l05 BIGINT,
+    diagnosis_code_i01 INT, diagnosis_code_i02 INT, diagnosis_code_i03 INT, diagnosis_code_i04 INT, diagnosis_code_i05 INT,
+    clinical_note_s01 STRING, clinical_note_s02 STRING, clinical_note_s03 STRING, clinical_note_s04 STRING, clinical_note_s05 STRING,
+    vital_reading_d01 DOUBLE, vital_reading_d02 DOUBLE, vital_reading_d03 DOUBLE, vital_reading_d04 DOUBLE, vital_reading_d05 DOUBLE,
+    billing_amt_m01 DECIMAL(18,4), billing_amt_m02 DECIMAL(18,4), billing_amt_m03 DECIMAL(18,4), billing_amt_m04 DECIMAL(18,4),
+    admission_date DATE, discharge_date DATE, follow_up_date DATE,
+    charted_ts TIMESTAMP, signed_ts TIMESTAMP,
+    is_amended BOOLEAN
 )
-LOCATION '{{data_path}}/bench/null_heavy';
+LOCATION '{{data_path}}/acme/patient_records'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- --------------------------------------------------------------------------
--- Table 10: bench.skewed_strings
--- 500K rows, 6 cols. The skew column is 99% short strings + 1% 100KB strings.
+-- Table 10: acme.forum_posts
+-- 500K discussion-forum posts. Most posts are short comments (1-6 chars in
+-- this synthetic generator, modelling a chat-style channel); exactly 1%
+-- are long-form essays of ~100KB.
 -- Stresses chunked-read offset machinery under realistic skew.
 -- --------------------------------------------------------------------------
 
-CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.bench.skewed_strings (
-    rn   BIGINT NOT NULL,
-    c1   STRING NOT NULL,
-    c2   STRING NOT NULL,
-    c3   STRING NOT NULL,
-    c4   STRING NOT NULL,
-    c5   STRING NOT NULL,
-    skew STRING NOT NULL
+CREATE DELTA TABLE IF NOT EXISTS {{zone_name}}.acme.forum_posts (
+    post_id          BIGINT NOT NULL,
+    author_handle    STRING NOT NULL,
+    post_title       STRING NOT NULL,
+    thread_category  STRING NOT NULL,
+    tag_list_csv     STRING NOT NULL,
+    content_hash     STRING NOT NULL,
+    body             STRING NOT NULL
 )
-LOCATION '{{data_path}}/bench/skewed_strings';
+LOCATION '{{data_path}}/acme/forum_posts'
+TBLPROPERTIES (
+    'delta.targetFileSize' = '134217728'
+);
 
 -- ==========================================================================
 -- Population: each INSERT below is fully deterministic. Single
--- generate_series per insert keeps the input stream simple, with N <= 1M
--- in every case to stay well under the documented "very large ranges
--- materialize in memory" pitfall and Arrow's i32 offset limit.
+-- generate_series per insert, N <= 1M, well under the documented "very
+-- large ranges materialize in memory" pitfall and Arrow's i32 offset limit.
 -- ==========================================================================
 
 -- --------------------------------------------------------------------------
--- Populate bench.fixed_narrow (1M rows). rn ranges 1..1_000_000.
+-- Populate acme.market_ticks (1M rows). tick_id ranges 1..1_000_000.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.fixed_narrow
+INSERT INTO {{zone_name}}.acme.market_ticks
 SELECT
-    b.v AS rn,
-    b.v AS i64_a,
-    b.v * 7 AS i64_b,
-    b.v % 1024 AS i64_c,
-    CAST(b.v AS DOUBLE) AS f64_a,
-    CAST(b.v AS DOUBLE) * 0.5 AS f64_b,
-    CAST(b.v % 1000 AS DOUBLE) / 100.0 AS f64_c,
-    SQRT(CAST(b.v AS DOUBLE)) AS f64_d
+    b.v AS tick_id,
+    b.v AS instrument_id,
+    b.v * 7 AS bid_size_units,
+    b.v % 1024 AS exchange_lookup_code,
+    CAST(b.v AS DOUBLE) AS last_price,
+    CAST(b.v AS DOUBLE) * 0.5 AS bid_price,
+    CAST(b.v % 1000 AS DOUBLE) / 100.0 AS ask_spread_bps,
+    SQRT(CAST(b.v AS DOUBLE)) AS vwap_volatility_score
 FROM generate_series(1, 1000000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate bench.fixed_wide (100K rows). rn ranges 1..100_000.
+-- Populate acme.manufacturing_runs (100K rows). run_id ranges 1..100_000.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.fixed_wide
+INSERT INTO {{zone_name}}.acme.manufacturing_runs
 SELECT
     rn,
     rn, rn + 1, rn + 2, rn + 3, rn + 4, rn + 5, rn + 6, rn + 7, rn + 8, rn + 9, rn + 10, rn + 11,
@@ -286,163 +341,162 @@ SELECT
     DATE '2000-01-01' + CAST(rn % 18250 AS INT),
     DATE '1970-01-01' + CAST((rn * 7) % 36500 AS INT)
 FROM (
-    SELECT b.v AS rn
-    FROM generate_series(1, 100000) AS b(v)
+    SELECT b.v AS rn FROM generate_series(1, 100000) AS b(v)
 ) t;
 
 -- --------------------------------------------------------------------------
--- Populate bench.string_narrow (500K rows). NULL when rn % 10 IN (0, 1, 2)
--- which gives exactly 30% NULL density. s_short = lpad to 20 chars,
--- s_long_* = repeat(md5, 6) which is 192 chars per cell.
+-- Populate acme.support_tickets (500K rows). NULL when ticket_id % 10 IN
+-- (0,1,2): exactly 30% NULL. Non-null ticket_code = lpad to 20 chars,
+-- non-null summary/description/etc = repeat(md5,6) = 192 chars.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.string_narrow
+INSERT INTO {{zone_name}}.acme.support_tickets
 SELECT
-    b.v AS rn,
+    b.v AS ticket_id,
     CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
          ELSE lpad(CAST(b.v AS STRING), 20, '0')
-    END AS s_short,
+    END,
     CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
          ELSE repeat(md5(CAST(b.v AS STRING)), 6)
-    END AS s_long_a,
+    END,
     CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
          ELSE repeat(md5(CAST(b.v * 3 AS STRING)), 6)
-    END AS s_long_b,
+    END,
     CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
          ELSE repeat(md5(CAST(b.v * 7 AS STRING)), 6)
-    END AS s_long_c,
+    END,
     CASE WHEN b.v % 10 IN (0, 1, 2) THEN NULL
          ELSE repeat(md5(CAST(b.v * 11 AS STRING)), 6)
-    END AS s_long_d
+    END
 FROM generate_series(1, 500000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate bench.string_wide_kv (100K rows). NULL when rn % 20 = 0 which
--- gives exactly 5% NULL density. Each non-null cell is exactly 50 chars.
+-- Populate acme.product_catalog (100K rows). NULL when product_id % 20 = 0
+-- which gives exactly 5% NULL. Each non-null cell is exactly 50 chars.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.string_wide_kv
+INSERT INTO {{zone_name}}.acme.product_catalog
 SELECT
-    b.v AS rn,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k01-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k02-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k03-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k04-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k05-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k06-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k07-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k08-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k09-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k10-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k11-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k12-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k13-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k14-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k15-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k16-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k17-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k18-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k19-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k20-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k21-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k22-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k23-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k24-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k25-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k26-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k27-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k28-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k29-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k30-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k31-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k32-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k33-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k34-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k35-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k36-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k37-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k38-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k39-', CAST(b.v AS STRING)), 50, 'x') END,
-    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('k40-', CAST(b.v AS STRING)), 50, 'x') END
+    b.v AS product_id,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('en-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('fr-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('de-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('es-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('it-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('pt-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ja-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('zh_cn-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('zh_tw-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ko-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ar-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('he-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('nl-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('sv-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('no-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('fi-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('da-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('pl-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('cs-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ru-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('uk-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('tr-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('el-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('th-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('vi-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('id-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ms-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('hi-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('bn-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ta-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('te-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ml-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('kn-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('mr-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('pa-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ur-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('fa-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('sw-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('zu-', CAST(b.v AS STRING)), 50, 'x') END,
+    CASE WHEN b.v % 20 = 0 THEN NULL ELSE lpad(CONCAT('ha-', CAST(b.v AS STRING)), 50, 'x') END
 FROM generate_series(1, 100000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate bench.string_long (10K rows). md5 is 32 hex chars; repeat 200x
--- gives a 6400-char cell.
+-- Populate acme.knowledge_articles (10K rows). md5 is 32 hex chars; repeat
+-- 200x gives a 6400-char cell.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.string_long
+INSERT INTO {{zone_name}}.acme.knowledge_articles
 SELECT
-    b.v AS rn,
-    repeat(md5(CAST(b.v AS STRING)), 200)        AS s1,
-    repeat(md5(CAST(b.v * 3 AS STRING)), 200)    AS s2,
-    repeat(md5(CAST(b.v * 7 AS STRING)), 200)    AS s3,
-    repeat(md5(CAST(b.v * 11 AS STRING)), 200)   AS s4
+    b.v AS article_id,
+    repeat(md5(CAST(b.v AS STRING)), 200)        AS abstract_text,
+    repeat(md5(CAST(b.v * 3 AS STRING)), 200)    AS body_markdown,
+    repeat(md5(CAST(b.v * 7 AS STRING)), 200)    AS metadata_blob,
+    repeat(md5(CAST(b.v * 11 AS STRING)), 200)   AS legal_disclaimer
 FROM generate_series(1, 10000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate bench.binary_blobs (5K rows). Sizes vary by (rn mod K) so the
--- driver sees the full chunked-truncation matrix:
---   b1: 32 .. 1024 bytes  (1 + rn%32 repeats of 32-byte md5)
---   b2: 32 .. 2048 bytes  (1 + rn%64 repeats)
---   b3: 32 .. 32768 bytes (1 + rn%1024 repeats; ~32KB max)
+-- Populate acme.document_archive (5K rows). Sizes vary by (rn mod K) so
+-- the driver sees the full chunked-truncation matrix:
+--   thumbnail_png:          32 .. 1024  bytes  (1 + rn%32 repeats of md5)
+--   preview_pdf_first_page: 32 .. 2048  bytes  (1 + rn%64 repeats)
+--   archived_attachment:    32 .. 32768 bytes  (1 + rn%1024 repeats)
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.binary_blobs
+INSERT INTO {{zone_name}}.acme.document_archive
 SELECT
-    b.v AS rn,
-    CAST(repeat(md5(CAST(b.v AS STRING)), 1 + CAST(b.v % 32 AS INT)) AS BINARY)        AS b1,
-    CAST(repeat(md5(CAST(b.v * 3 AS STRING)), 1 + CAST(b.v % 64 AS INT)) AS BINARY)    AS b2,
-    CAST(repeat(md5(CAST(b.v * 7 AS STRING)), 1 + CAST(b.v % 1024 AS INT)) AS BINARY)  AS b3
+    b.v AS document_id,
+    CAST(repeat(md5(CAST(b.v AS STRING)), 1 + CAST(b.v % 32 AS INT)) AS BINARY)        AS thumbnail_png,
+    CAST(repeat(md5(CAST(b.v * 3 AS STRING)), 1 + CAST(b.v % 64 AS INT)) AS BINARY)    AS preview_pdf_first_page,
+    CAST(repeat(md5(CAST(b.v * 7 AS STRING)), 1 + CAST(b.v % 1024 AS INT)) AS BINARY)  AS archived_attachment
 FROM generate_series(1, 5000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate bench.decimal_temporal (500K rows). ts_a / ts_b are bare TIMESTAMP.
+-- Populate acme.banking_transactions (500K rows). captured_ts / posted_ts
+-- are bare TIMESTAMP, processing_window_* are TIME.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.decimal_temporal
+INSERT INTO {{zone_name}}.acme.banking_transactions
 SELECT
     rn,
-    CAST(rn AS DECIMAL(38,9)) + CAST(0.123456789 AS DECIMAL(38,9))                       AS d_a,
-    CAST(rn * 7 AS DECIMAL(38,9)) + CAST(0.987654321 AS DECIMAL(38,9))                   AS d_b,
-    CAST(rn * 13 AS DECIMAL(38,9)) / CAST(1000 AS DECIMAL(38,9))                         AS d_c,
-    CAST(rn % 1000000 AS DECIMAL(38,9)) + CAST(0.000000001 AS DECIMAL(38,9))             AS d_d,
-    DATE '2000-01-01' + CAST(rn % 18250 AS INT)                                          AS dt_a,
-    DATE '1970-01-01' + CAST(rn % 36500 AS INT)                                          AS dt_b,
+    CAST(rn AS DECIMAL(38,9)) + CAST(0.123456789 AS DECIMAL(38,9))                       AS amount_usd,
+    CAST(rn * 7 AS DECIMAL(38,9)) + CAST(0.987654321 AS DECIMAL(38,9))                   AS fx_amount_eur,
+    CAST(rn * 13 AS DECIMAL(38,9)) / CAST(1000 AS DECIMAL(38,9))                         AS wire_fee_usd,
+    CAST(rn % 1000000 AS DECIMAL(38,9)) + CAST(0.000000001 AS DECIMAL(38,9))             AS withholding_tax,
+    DATE '2000-01-01' + CAST(rn % 18250 AS INT)                                          AS value_date,
+    DATE '1970-01-01' + CAST(rn % 36500 AS INT)                                          AS settle_date,
     make_timestamp(
         2025, 1, 1,
         CAST((rn % 86400) / 3600 AS INT),
         CAST(((rn % 86400) % 3600) / 60 AS INT),
         CAST((rn % 86400) % 60 AS DOUBLE)
-    )                                                                                                AS ts_a,
+    )                                                                                                AS captured_ts,
     make_timestamp(
         2030, 6, 15,
         CAST((rn % 86400) / 3600 AS INT),
         CAST(((rn % 86400) % 3600) / 60 AS INT),
         CAST((rn % 86400) % 60 AS DOUBLE)
-    )                                                                                                AS ts_b,
+    )                                                                                                AS posted_ts,
     make_time(
         CAST((rn % 86400) / 3600 AS INT),
         CAST(((rn % 86400) % 3600) / 60 AS INT),
         CAST((rn % 86400) % 60 AS DOUBLE)
-    )                                                                                                AS tm_a,
+    )                                                                                                AS processing_window_start,
     make_time(
         CAST((43200 + rn % 43200) / 3600 AS INT),
         CAST(((43200 + rn % 43200) % 3600) / 60 AS INT),
         CAST((43200 + rn % 43200) % 60 AS DOUBLE)
-    )                                                                                                AS tm_b
+    )                                                                                                AS processing_window_end
 FROM (
-    SELECT b.v AS rn
-    FROM generate_series(1, 500000) AS b(v)
+    SELECT b.v AS rn FROM generate_series(1, 500000) AS b(v)
 ) t;
 
 -- --------------------------------------------------------------------------
--- Populate bench.nested_json (50K rows). Mix of STRUCT, ARRAY, MAP.
+-- Populate acme.shipment_orders (50K rows). Mix of STRUCT, ARRAY, MAP.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.nested_json
+INSERT INTO {{zone_name}}.acme.shipment_orders
 SELECT
-    b.v AS rn,
+    b.v AS order_id,
     named_struct('id', b.v, 'name', CAST(b.v AS STRING), 'score', CAST(b.v AS DOUBLE) * 0.5),
     named_struct('lat', CAST(b.v % 180 AS DOUBLE) - 90.0, 'lng', CAST(b.v % 360 AS DOUBLE) - 180.0),
     named_struct('inner', named_struct('k', b.v, 'v', CAST(b.v AS STRING))),
@@ -453,11 +507,11 @@ SELECT
 FROM generate_series(1, 50000) AS b(v);
 
 -- --------------------------------------------------------------------------
--- Populate bench.null_heavy (500K rows). All 30 nullable cols populated only
--- when rn % 20 = 0, so 5% non-null density per column.
+-- Populate acme.patient_records (500K rows). All 30 nullable cols populated
+-- only when record_id % 20 = 0, so 5% non-null density per column.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.null_heavy
+INSERT INTO {{zone_name}}.acme.patient_records
 SELECT
     rn,
     CASE WHEN rn % 20 = 0 THEN rn ELSE NULL END,
@@ -501,52 +555,52 @@ SELECT
     ) ELSE NULL END,
     CASE WHEN rn % 20 = 0 THEN rn % 2 = 0 ELSE NULL END
 FROM (
-    SELECT b.v AS rn
-    FROM generate_series(1, 500000) AS b(v)
+    SELECT b.v AS rn FROM generate_series(1, 500000) AS b(v)
 ) t;
 
 -- --------------------------------------------------------------------------
--- Populate bench.skewed_strings (500K rows). The skew column is a 1%/99% mix:
--- when rn % 100 = 0 the cell is repeat(md5,3125) = 100,000 chars (5K cells
--- total = 500MB); otherwise CAST(rn AS STRING) which is 1-6 chars.
+-- Populate acme.forum_posts (500K rows). The body column is a 1%/99% mix:
+-- when post_id % 100 = 0 the cell is repeat(md5,3125) = 100,000 chars
+-- (5K cells total = 500MB); otherwise CAST(post_id AS STRING) which is
+-- 1-6 chars.
 -- --------------------------------------------------------------------------
 
-INSERT INTO {{zone_name}}.bench.skewed_strings
+INSERT INTO {{zone_name}}.acme.forum_posts
 SELECT
-    b.v AS rn,
-    CAST(b.v AS STRING)                              AS c1,
-    CONCAT('row-', CAST(b.v AS STRING))              AS c2,
-    CONCAT('mod10-', CAST(b.v % 10 AS STRING))       AS c3,
-    CONCAT('mod100-', CAST(b.v % 100 AS STRING))     AS c4,
-    md5(CAST(b.v AS STRING))                         AS c5,
+    b.v AS post_id,
+    CAST(b.v AS STRING)                              AS author_handle,
+    CONCAT('row-', CAST(b.v AS STRING))              AS post_title,
+    CONCAT('mod10-', CAST(b.v % 10 AS STRING))       AS thread_category,
+    CONCAT('mod100-', CAST(b.v % 100 AS STRING))     AS tag_list_csv,
+    md5(CAST(b.v AS STRING))                         AS content_hash,
     CASE WHEN b.v % 100 = 0
          THEN repeat(md5(CAST(b.v AS STRING)), 3125)
          ELSE CAST(b.v AS STRING)
-    END AS skew
+    END AS body
 FROM generate_series(1, 500000) AS b(v);
 
 -- --------------------------------------------------------------------------
 -- Schema Detection & Permissions
 -- --------------------------------------------------------------------------
 
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.fixed_narrow;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.fixed_wide;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.string_narrow;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.string_wide_kv;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.string_long;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.binary_blobs;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.decimal_temporal;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.nested_json;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.null_heavy;
-DETECT SCHEMA FOR TABLE {{zone_name}}.bench.skewed_strings;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.market_ticks;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.manufacturing_runs;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.support_tickets;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.product_catalog;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.knowledge_articles;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.document_archive;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.banking_transactions;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.shipment_orders;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.patient_records;
+DETECT SCHEMA FOR TABLE {{zone_name}}.acme.forum_posts;
 
-GRANT ADMIN ON TABLE {{zone_name}}.bench.fixed_narrow      TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.fixed_wide        TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.string_narrow     TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.string_wide_kv    TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.string_long       TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.binary_blobs      TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.decimal_temporal  TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.nested_json       TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.null_heavy        TO USER {{current_user}};
-GRANT ADMIN ON TABLE {{zone_name}}.bench.skewed_strings    TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.market_ticks          TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.manufacturing_runs    TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.support_tickets       TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.product_catalog       TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.knowledge_articles    TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.document_archive      TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.banking_transactions  TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.shipment_orders       TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.patient_records       TO USER {{current_user}};
+GRANT ADMIN ON TABLE {{zone_name}}.acme.forum_posts           TO USER {{current_user}};

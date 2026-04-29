@@ -2612,8 +2612,8 @@
       "id": "delta-odbc-driver-bench",
       "path": "demos/delta/delta-odbc-driver-bench",
       "iconPath": "icons/delta-odbc-driver-bench.svg",
-      "name": "ODBC Driver Wire Benchmark Suite",
-      "summary": "Ten Delta tables totalling ~3.27M rows that isolate one ODBC wire dimension at a time so a regression on byte counts or throughput points at one code path. Every cell is row_number-derived (deterministic, bit-identical between runs); sizes are tuned to stay safely under Arrow's 2GB i32 string-offset limit. Tables: fixed_narrow (1M rows, 8 INT64/DOUBLE cols, no nulls, speed-of-light memcpy baseline), fixed_wide (100K rows, 60 fixed-width primitives), string_narrow (500K rows, 5 cols, 30% NULL, UTF-8 hot path), string_wide_kv (100K rows, 40 cols, 5% NULL, indicator-array path), string_long (10K rows, 4 cols of 6.4KB cells for SQLGetData chunked reads), binary_blobs (5K rows, BINARY 32B-32KB for SQL_C_BINARY chunked truncation), decimal_temporal (500K rows, 10 cols spanning DECIMAL(38,9), DATE, TIMESTAMP, TIME), nested_json (50K rows of STRUCT, ARRAY, MAP for the format-bound path), null_heavy (500K rows, 30 cols at 95% NULL, indicator-only fast path), and skewed_strings (500K rows where one column is 99% short with 1% 100KB cells). Assertions are closed-form math, never engine round trips: 17 query blocks plus a final cross-table verification. A standalone extras/huge_fixed_narrow_200m.sql script creates a separate 200M-row table for stress-testing writer and ODBC throughput at memcpy scale.",
+      "name": "ACME Corporation Production Warehouse (ODBC Driver Wire Benchmark)",
+      "summary": "Ten realistic operational tables that double as a deterministic ODBC wire-benchmark suite, ~3.27M rows total. Every cell is row_number-derived (bit-identical between runs); each table targets 128 MB Parquet files (delta.targetFileSize=134217728) for predictable Power Query / Power BI partition refresh behaviour. Tables: market_ticks (1M rows, equity tick stream, 8 INT64/DOUBLE cols, memcpy baseline), manufacturing_runs (100K rows, plant snapshots, 60 fixed-width sensor cols), support_tickets (500K rows, 5 text cols at 30% NULL, UTF-8 hot path), product_catalog (100K rows, 40 i18n locale cols at 5% NULL), knowledge_articles (10K rows, 4 cols of 6.4KB cells for SQLGetData chunked reads), document_archive (5K rows, BINARY 32B-32KB for SQL_C_BINARY chunked truncation), banking_transactions (500K rows, DECIMAL(38,9) plus DATE/TIMESTAMP/TIME), shipment_orders (50K rows, nested STRUCT/ARRAY/MAP), patient_records (500K rows, 30 sparse extension cols at 95% NULL), forum_posts (500K rows, 99% short + 1% 100KB essays). Assertions are closed-form math, never engine round trips: 17 query blocks plus a final cross-table verification. A standalone extras/huge_fixed_narrow_200m.sql script creates a separate 200M-row table for stress-testing writer and ODBC throughput at memcpy scale.",
       "categories": [
         "delta-table",
         "benchmark",
@@ -2627,64 +2627,70 @@
         "wire-format",
         "regression-suite",
         "deterministic",
+        "real-world-scenarios",
+        "power-bi",
+        "power-query",
         "fixed-width",
         "string-decode",
         "binary-blobs",
         "decimal",
         "temporal",
         "nested-types",
-        "variant",
         "null-density",
         "skewed-data",
-        "large-rows"
+        "i18n",
+        "ehr",
+        "banking",
+        "ecommerce",
+        "forum"
       ],
       "difficulty": "advanced",
-      "estimatedTimeMinutes": 60,
+      "estimatedTimeMinutes": 5,
       "dataSizeBytes": 0,
       "fileCount": 0,
       "author": "DeltaForge Team",
-      "version": "1.0.0",
-      "updatedAt": "2026-04-28T12:00:00Z",
+      "version": "2.0.0",
+      "updatedAt": "2026-04-29T12:00:00Z",
       "targetObjects": [
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.fixed_narrow"
+          "name": "{{zone_name}}.acme.market_ticks"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.fixed_wide"
+          "name": "{{zone_name}}.acme.manufacturing_runs"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.string_narrow"
+          "name": "{{zone_name}}.acme.support_tickets"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.string_wide_kv"
+          "name": "{{zone_name}}.acme.product_catalog"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.string_long"
+          "name": "{{zone_name}}.acme.knowledge_articles"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.binary_blobs"
+          "name": "{{zone_name}}.acme.document_archive"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.decimal_temporal"
+          "name": "{{zone_name}}.acme.banking_transactions"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.nested_json"
+          "name": "{{zone_name}}.acme.shipment_orders"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.null_heavy"
+          "name": "{{zone_name}}.acme.patient_records"
         },
         {
           "objectType": "delta_table",
-          "name": "{{zone_name}}.bench.skewed_strings"
+          "name": "{{zone_name}}.acme.forum_posts"
         }
       ]
     },
